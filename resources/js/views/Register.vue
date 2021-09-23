@@ -2,37 +2,43 @@
     <main class="grow">
         <w-flex justify-center>
             <w-card title="Регистрация" title-class="blue-light5--bg" class="xs12 lg6">
-                <w-form @input="this.form.onValidate">
-                    <w-card v-show="this.step.common.isCurrent" class="xs12 lg6" title="Заполните поля" title-class="blue-light5--bg">
+                <w-form
+                    @update:model-value="this.wForm.step[this.currentStep].isValid = this.findInvalidFields($refs) === undefined"
+                >
+                    <w-card v-show="this.wForm.step.common.isCurrent" class="xs12 lg6" title="Заполните поля" title-class="blue-light5--bg">
                         <w-input
+                            ref="name"
                             label="Имя"
                             class="mb3"
-                            :validators="this.wInput.getValidators(this.form.common.name)"
+                            :validators="this.wForm.getValidators(this.wForm.common.name)"
                         />
                         <w-input
+                            ref="email"
                             label="Адрес электронной почты"
                             type="email"
                             class="mb3"
-                            :validators="this.wInput.getValidators(this.form.common.email)"
+                            :validators="this.wForm.getValidators(this.wForm.common.email)"
                         />
                         <w-input
+                            ref="password"
                             label="Пароль"
                             type="password"
                             class="mb3"
-                            :validators="this.wInput.getValidators(this.form.common.password)"
+                            :validators="this.wForm.getValidators(this.wForm.common.password)"
                         />
                     </w-card>
-                    <w-card v-show="this.step.role.isCurrent" class="xs12 lg6" title="Выберите роль" title-class="blue-light5--bg">
+                    <w-card v-show="this.wForm.step.role.isCurrent" class="xs12 lg6" title="Выберите роль" title-class="blue-light5--bg">
                         <w-radios
-                            :items="this.form.role.items"
-                            :validators="this.wInput.getValidators(this.form.role)"
+                            ref="role"
+                            :items="this.wForm.role.items"
+                            :validators="this.wForm.getValidators(this.wForm.role)"
                             inline
                         />
                     </w-card>
                     <w-button
                         type="submit"
                         class="mt3"
-                        :disabled="!this.step[this.currentStep()].isValid"
+                        :disabled="!this.wForm.step[this.currentStep].isValid"
                     >
                         Продолжить
                     </w-button>
@@ -43,34 +49,15 @@
 </template>
 
 <script>
-    import WaveInput from "Root/utils/WaveInput";
+    import { computed, reactive } from "vue"
+    import WaveForm from "Root/utils/WaveForm";
     export default {
         setup() {
-            const step = {
-                common: {
-                    isValid: false,
-                    isCurrent: true,
-                },
-                role: {
-                    isValid: false,
-                    isCurrent: false,
-                },
-            };
-            const currentStep = () =>
-                Object.keys(step).find(key => step[key].isCurrent === true);
-            const form = {
+            const wForm = reactive(new WaveForm({
                 common: {
                     name: {
                         validation: {
-                            required: value => {
-                                if (!!value) {
-                                    step[currentStep()].isValid = true;
-                                    return true;
-                                } else {
-                                    step[currentStep()].isValid = false;
-                                    return "Необходимо заполнить имя"
-                                }
-                            }
+                            required: value => !!value || "Необходимо заполнить имя"
                         }
                     },
                     email: {
@@ -95,10 +82,16 @@
                         required: value => !!value || "Необходимо выбрать роль"
                     }
                 },
-                onValidate: status => console.log(step)
-            };
-            const wInput = new WaveInput();
-            return { form, currentStep, wInput, step }
-        },
+                step: {
+                    common: { isValid: false, isCurrent: true },
+                    role: { isValid: false, isCurrent: false },
+                }
+            }));
+            const currentStep = computed(() =>
+                Object.keys(wForm.step).find(key => wForm.step[key].isCurrent === true)
+            );
+            const findInvalidFields = (fields) => wForm.validateStep(fields, currentStep.value);
+            return { wForm, currentStep, findInvalidFields }
+        }
     }
 </script>
