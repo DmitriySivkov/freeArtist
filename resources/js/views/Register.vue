@@ -1,9 +1,9 @@
 <template>
     <main class="grow">
         <w-flex justify-center>
-            <w-card title="Регистрация" title-class="blue-light5--bg" class="xs12 lg6">
+            <w-card title="Регистрация" title-class="blue-light5--bg" class="xs12 md6">
                 <w-form>
-                    <w-card v-show="this.form[0].isCurrent" class="xs12 lg6" title="Заполните поля" title-class="blue-light5--bg">
+                    <w-card v-if="this.form[0].isCurrent" title="Заполните поля" title-class="blue-light5--bg">
                         <w-input
                             ref="name"
                             label="Имя"
@@ -28,19 +28,25 @@
                             @input="this.form[0].fields.password.isValid = $refs.password.valid"
                         />
                     </w-card>
-                    <w-card v-show="this.form[1].isCurrent" class="xs12 lg6" title="Выберите роль" title-class="blue-light5--bg">
+                    <w-card v-if="this.form[1].isCurrent" title="Выберите роль" title-class="blue-light5--bg">
                         <w-radios
+                            class="xs12"
                             ref="role"
                             :items="this.form[1].fields.role.items"
                             :validators="this.validators(this.form[1].fields.role)"
                             @input="this.form[1].fields.role.isValid = $refs.role.inputValue"
-                            inline
-                        />
+                        >
+                            <template #item="{ item }">
+                                <w-card :title="item.label" title-class="blue-light5--bg">
+                                    {{ item.description }}
+                                </w-card>
+                            </template>
+                        </w-radios>
                     </w-card>
                     <w-button
-                        v-if="!this.form[0].isCurrent"
+                        :disabled="!!this.form[0].isCurrent"
                         @click="this.step.previous()"
-                        class="mt3"
+                        class="mt3 mr2"
                     >
                         Назад
                     </w-button>
@@ -89,7 +95,23 @@
                 1: {
                     fields: {
                         role: {
-                            items: [{label: "Мастер", value: 1}, {label: "Организация", value: 2}, {label: "Рекламодатель", value: 3}],
+                            items: [
+                                {
+                                    value: 1,
+                                    label: "Мастер",
+                                    description: "Бонусы и ачивки мастера"
+                                },
+                                {
+                                    value: 2,
+                                    label: "Организация",
+                                    description: "Различные перки организации"
+                                },
+                                {
+                                    value: 3,
+                                    label: "Рекламодатель",
+                                    description: "Доступность и прозрачность рекламы"
+                                },
+                            ],
                             validation: {
                                 required: value => !!value || "Необходимо выбрать роль"
                             },
