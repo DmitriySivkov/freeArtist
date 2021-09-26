@@ -4,20 +4,21 @@ export function useStepsForm(data) {
     const form = reactive(data);
 
     const currentStepIndex = computed(() =>
-        Object.keys(form).find(key => form[key].isCurrent === true));
+        Object.keys(form).find(stepIndex => form[stepIndex].isCurrent === true));
 
     const step = {
-        index: currentStepIndex.value,
         isInvalid: computed(() =>
             Object.keys(form[currentStepIndex.value].fields)
                 .find(key => form[currentStepIndex.value].fields[key].isValid !== true)),
         next: function () {
-            form[parseInt(currentStepIndex.value)+1].isCurrent = true
-            form[currentStepIndex.value].isCurrent = false
+            let i = parseInt(currentStepIndex.value);
+            form[i+1].isCurrent = true;
+            form[i].isCurrent = false;
         },
         previous: function () {
-            form[parseInt(currentStepIndex.value)-1].isCurrent = true
-            form[parseInt(currentStepIndex.value)+1].isCurrent = false
+            let i = parseInt(currentStepIndex.value);
+            form[i-1].isCurrent = true;
+            form[i].isCurrent = false;
         }
     };
 
