@@ -3,48 +3,52 @@
         <w-flex justify-center>
             <w-card title="Регистрация" title-class="blue-light5--bg" class="xs12 md6">
                 <w-form>
-                    <w-card v-if="this.form[0].isCurrent" title="Заполните поля" title-class="blue-light5--bg">
-                        <w-input
-                            ref="name"
-                            label="Имя"
-                            class="mb3"
-                            :validators="this.validators(this.form[0].fields.name)"
-                            @input="this.form[0].fields.name.isValid = $refs.name.valid"
-                        />
-                        <w-input
-                            ref="email"
-                            label="Адрес электронной почты"
-                            type="email"
-                            class="mb3"
-                            :validators="this.validators(this.form[0].fields.email)"
-                            @input="this.form[0].fields.email.isValid = $refs.email.valid"
-                        />
-                        <w-input
-                            ref="password"
-                            label="Пароль"
-                            type="password"
-                            class="mb3"
-                            :validators="this.validators(this.form[0].fields.password)"
-                            @input="this.form[0].fields.password.isValid = $refs.password.valid"
-                        />
-                    </w-card>
-                    <w-card v-if="this.form[1].isCurrent" title="Выберите роль" title-class="blue-light5--bg">
-                        <w-radios
-                            class="xs12"
-                            ref="role"
-                            :items="this.form[1].fields.role.items"
-                            :validators="this.validators(this.form[1].fields.role)"
-                            @input="this.form[1].fields.role.isValid = $refs.role.inputValue"
-                        >
-                            <template #item="{ item }">
-                                <w-card :title="item.label" title-class="blue-light5--bg">
-                                    {{ item.description }}
-                                </w-card>
-                            </template>
-                        </w-radios>
-                    </w-card>
+                    <div v-show="this.form[0].isCurrent">
+                        <w-card title="Заполните поля" title-class="blue-light5--bg">
+                            <w-input
+                                ref="name"
+                                label="Имя"
+                                class="mb3"
+                                :validators="this.validators(this.form[0].fields.name)"
+                                @input="this.form[0].fields.name.isValid = $refs.name.valid"
+                            />
+                            <w-input
+                                ref="email"
+                                label="Адрес электронной почты"
+                                type="email"
+                                class="mb3"
+                                :validators="this.validators(this.form[0].fields.email)"
+                                @input="this.form[0].fields.email.isValid = $refs.email.valid"
+                            />
+                            <w-input
+                                ref="password"
+                                label="Пароль"
+                                type="password"
+                                class="mb3"
+                                :validators="this.validators(this.form[0].fields.password)"
+                                @input="this.form[0].fields.password.isValid = $refs.password.valid"
+                            />
+                        </w-card>
+                    </div>
+                    <div v-show="this.form[1].isCurrent">
+                        <w-card title="Выберите роль" title-class="blue-light5--bg">
+                            <w-radios
+                                class="xs12"
+                                ref="role"
+                                :items="this.form[1].fields.role.items"
+                                :validators="this.validators(this.form[1].fields.role)"
+                                @input="this.form[1].fields.role.isValid = $refs.role.inputValue"
+                            >
+                                <template #item="{ item }">
+                                    <w-card :title="item.label" title-class="blue-light5--bg">
+                                        {{ item.description }}
+                                    </w-card>
+                                </template>
+                            </w-radios>
+                        </w-card>
+                    </div>
                     <w-button
-                        :disabled="!!this.form[0].isCurrent"
+                        :disabled="this.step.isFirst.value"
                         @click="this.step.previous()"
                         class="mt3 mr2"
                     >
@@ -64,10 +68,10 @@
 </template>
 
 <script>
-    import { useStepsForm } from "Root/composables/useStepsForm";
+    import { useStepForm } from "Root/composables/stepForm/useStepForm";
     export default {
         setup() {
-            const { form, step, validators } = useStepsForm({
+            const { form, step, validators } = useStepForm({
                 0: {
                     fields: {
                         name: {
