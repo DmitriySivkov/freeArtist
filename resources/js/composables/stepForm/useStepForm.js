@@ -1,16 +1,17 @@
-import { computed, reactive } from "vue"
+import { reactive, ref } from "vue"
 import { useStep } from "Root/composables/stepForm/useStep"
+import { useApi } from "Root/composables/useApi";
+import axios from "axios";
 
 export function useStepForm(data) {
     const form = reactive(data);
 
-    const currentStepIndex = computed(() =>
-        Object.keys(form).find(stepIndex => form[stepIndex].isCurrent === true));
-
-    const step = useStep(form, currentStepIndex);
+    const step = useStep(form);
 
     const validators = (input) =>
         Object.values(input.validation);
 
-    return { form, step, validators }
+    const submit = (data) => useApi(axios.post("api/register", data));
+
+    return { form, step, validators, submit }
 }

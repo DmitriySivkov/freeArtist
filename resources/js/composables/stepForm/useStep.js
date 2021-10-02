@@ -1,20 +1,24 @@
-import { computed } from "vue"
+import { computed, ref } from "vue"
 
-export function useStep(form, currentStepIndex) {
+export function useStep(form) {
+    const current = ref(0);
+
     const isInvalid = computed(() =>
-        Object.keys(form[currentStepIndex.value].fields)
-            .find(key => form[currentStepIndex.value].fields[key].isValid !== true));
-    const isLast = computed(() => parseInt(currentStepIndex.value) === Object.keys(form).length-1);
-    const isFirst = computed(() => parseInt(currentStepIndex.value) === 0);
+        Object.keys(form[current.value].fields)
+            .find(key => !form[current.value].fields[key].isValid));
+
+    const isLast = computed(() => current.value === Object.keys(form).length-1);
+    const isFirst = computed(() => current.value === 0);
+
     const next = function () {
-        let i = parseInt(currentStepIndex.value);
-        form[i+1].isCurrent = true;
-        form[i].isCurrent = false;
+        form[current.value].isCurrent = false
+        current.value++
+        form[current.value].isCurrent = true
     };
     const previous = function () {
-        let i = parseInt(currentStepIndex.value);
-        form[i-1].isCurrent = true;
-        form[i].isCurrent = false;
+        form[current.value].isCurrent = false
+        current.value--
+        form[current.value].isCurrent = true
     };
 
     return { isInvalid, isFirst, isLast, next, previous }

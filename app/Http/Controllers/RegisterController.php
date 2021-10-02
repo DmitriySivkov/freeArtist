@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
     public function store()
     {
-        User::create();
+        $attrs = request()->all();
+        User::create([
+            'name' => $attrs['name']['inputValue'],
+            'email' => $attrs['email']['inputValue'],
+            'password' => $attrs['password']['inputValue'],
+            'type' => $attrs['role']['modelValue']
+        ]);
     }
 }

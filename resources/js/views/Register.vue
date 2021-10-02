@@ -2,7 +2,7 @@
     <main class="grow">
         <w-flex justify-center>
             <w-card title="Регистрация" title-class="blue-light5--bg" class="xs12 md6">
-                <w-form>
+                <w-form @success="this.submit($refs).call()">
                     <div v-show="this.form[0].isCurrent">
                         <w-card title="Заполните поля" title-class="blue-light5--bg">
                             <w-input
@@ -37,7 +37,7 @@
                                 ref="role"
                                 :items="this.form[1].fields.role.items"
                                 :validators="this.validators(this.form[1].fields.role)"
-                                @input="this.form[1].fields.role.isValid = $refs.role.inputValue"
+                                v-model="this.form[1].fields.role.isValid"
                             >
                                 <template #item="{ item }">
                                     <w-card :title="item.label" title-class="blue-light5--bg">
@@ -54,12 +54,19 @@
                     >
                         Назад
                     </w-button>
-                    <w-button
+                    <w-button v-if="this.step.isLast.value === false"
                         @click="this.step.next()"
                         class="mt3"
                         :disabled="!!this.step.isInvalid.value"
                     >
                         Продолжить
+                    </w-button>
+                    <w-button v-else
+                        type="submit"
+                        class="mt3"
+                        :disabled="!!this.step.isInvalid.value"
+                    >
+                        Завершить регистрацию
                     </w-button>
                 </w-form>
             </w-card>
@@ -71,27 +78,27 @@
     import { useStepForm } from "Root/composables/stepForm/useStepForm";
     export default {
         setup() {
-            const { form, step, validators } = useStepForm({
+            const { form, step, validators, submit } = useStepForm({
                 0: {
                     fields: {
                         name: {
+                            isValid: false,
                             validation: {
                                 required: value => !!value || "Необходимо заполнить имя"
                             },
-                            isValid: false,
                         },
                         email: {
+                            isValid: false,
                             validation: {
                                 required: value => !!value || "Необходимо заполнить электронную почту"
                             },
-                            isValid: false,
                         },
                         password: {
+                            isValid: false,
                             validation: {
                                 required: value => !!value || "Необходимо заполнить пароль",
                                 minLength: value => value.length >= 8 || "Введите еще " + (8 - value.length) + " знаков"
                             },
-                            isValid: false,
                         },
                     },
                     isCurrent: true
@@ -99,6 +106,7 @@
                 1: {
                     fields: {
                         role: {
+                            isValid: false,
                             items: [
                                 {
                                     value: 1,
@@ -119,14 +127,13 @@
                             validation: {
                                 required: value => !!value || "Необходимо выбрать роль"
                             },
-                            isValid: false,
                         },
                     },
                     isCurrent: false
                 },
             });
-
-            return { form, step, validators }
+            const zxc = (data) => console.log(data)
+            return { form, step, validators, submit, zxc }
         }
     }
 </script>
