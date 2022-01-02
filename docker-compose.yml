@@ -45,5 +45,5 @@ services:
       - POSTGRES_DB=fa_db
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - LC_COLLATE=ru_RU.UTF-8
-      - LC_CTYPE=ru_RU.UTF-8
+#      - LC_COLLATE=ru_RU.UTF-8
+#      - LC_CTYPE=ru_RU.UTF-8
