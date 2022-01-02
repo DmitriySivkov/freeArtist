@@ -1,11 +1,11 @@
-.PHONY: mysql dump import
+.PHONY: pg dump import
 
-MYSQL_CONTAINER_NAME = fa-pg
+PG_CONTAINER_NAME = fa-pg
 PHP_CONTAINER_NAME = fa-php
 NGINX_CONTAINER_NAME = fa-nginx
 DB_NAME = fa_db
-MYSQL_USER = root
-MYSQL_PASS = root
+PG_USER = root
+PG_PASS = root
 
 EXEC_PG = docker exec -it $(PG_CONTAINER_NAME) bash
 EXEC_PHP = docker exec -it $(PHP_CONTAINER_NAME) bash
