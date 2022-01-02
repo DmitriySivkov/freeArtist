@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: docker/pg.dockerfile
-    container_name: gridcom-cpa-pg
+    container_name: fa-pg
     volumes:
       - ./Makefile:/Makefile
 #       Раскоментить если нужно запускать БД из дампа
