@@ -29,14 +29,17 @@
           filled
           v-model="roles.selected"
           :rules="[val => !!val || 'Выберите роль']"
+          borderless
         >
-          <q-option-group
-            filled
-            :options="roles.all"
-            type="radio"
-            v-model="roles.selected"
-            inline
-          />
+          <template v-slot:control>
+              <q-option-group
+                filled
+                :options="roles.all"
+                type="radio"
+                v-model="roles.selected"
+                inline
+              />
+          </template>
         </q-field>
         <div class="q-px-sm">
           Внимание! Вы будете зарегистрированы как:
