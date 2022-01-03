@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    abv
+    <router-link to="/register">sign-up</router-link>
   </q-page>
 </template>
 
