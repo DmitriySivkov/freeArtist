@@ -62,7 +62,7 @@ module.exports = function (ctx) {
       open: true
     },
 
-    animations: [],
+    animations: 'all',
 
     ssr: {
       pwa: false

@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 
 class RegisterController extends Controller
 {
-    public function store()
+    public function store(RegisterRequest $request)
     {
-        $attrs = request()->all();
-        User::create([
-            'name' => $attrs['name']['inputValue'],
-            'email' => $attrs['email']['inputValue'],
-            'password' => $attrs['password']['inputValue'],
-            'type' => $attrs['role']['modelValue']
-        ]);
+        return User::create($request->validated());
     }
 }

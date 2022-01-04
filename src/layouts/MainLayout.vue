@@ -12,10 +12,9 @@
         />
 
         <q-toolbar-title>
-          FreeArtist
+          {{ this.route.meta.routeName || ''}}
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -28,7 +27,7 @@
         <q-item-label
           header
         >
-          Links
+          Навигация
         </q-item-label>
 
         <EssentialLink
@@ -47,11 +46,12 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
+import { useRoute } from 'vue-router'
 
 const linksList = [
   {
-    title: 'Auth',
-    caption: 'authorization',
+    title: 'Авторизация',
+    caption: 'Войдите или зарегистрируйтесь',
     icon: 'account_circle',
     link: 'auth'
   }
@@ -68,13 +68,14 @@ export default defineComponent({
 
   setup () {
     const leftDrawerOpen = ref(false)
-
+    const route = useRoute()
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
+      route
     }
   }
 })

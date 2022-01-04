@@ -10,10 +10,10 @@
           filled
           v-model="name"
           label="Ваше имя *"
-          hint="ФИО"
           lazy-rules
           :rules="[
-            val => val && val.length > 6 || 'Введите имя, не менее 6 символов'
+            val => !!val || 'Введите имя',
+            val => val.length > 6 || 'не менее 6 символов',
           ]"
         />
 
@@ -22,18 +22,41 @@
           v-model="email"
           label="Адрес электронной почты *"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Введите адрес электронной почты']"
+          :rules="[
+            val => !!val || 'Введите адрес электронной почты',
+            isValidEmail
+          ]"
         />
 
-        <q-field
+        <q-input
+          v-model="password"
           filled
+          :type="isPwd ? 'password' : 'text'"
+          label="Пароль *"
+          lazy-rules
+          :rules="[
+            val => !!val || 'Введите пароль',
+            val => val.length > 6 || 'не менее 6 символов',
+          ]"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
+
+        <q-field
           v-model="roles.selected"
-          :rules="[val => !!val || 'Выберите роль']"
-          borderless
+          :rules="[val => !!val]"
+          stack-label
+          lazy-rules
+          label="Выберите роль:"
         >
           <template v-slot:control>
               <q-option-group
-                filled
                 :options="roles.all"
                 type="radio"
                 v-model="roles.selected"
@@ -41,18 +64,26 @@
               />
           </template>
         </q-field>
-        <div class="q-px-sm">
-          Внимание! Вы будете зарегистрированы как:
-        </div>
-        <div class="q-px-sm">
-          <strong>{{ role }}</strong>
-        </div>
+        <transition
+          v-if="roles.selected"
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+        >
+          <div>
+            Внимание! Вы будете зарегистрированы как:
+            <q-card>
+              <q-card-section class="row justify-center">
+                <strong>{{ role }}</strong>
+              </q-card-section>
+            </q-card>
+          </div>
+        </transition>
 
         <q-toggle v-model="accept" label="Я принимаю условия пользования сервисом" />
 
-        <div>
-          <q-btn label="Подтвердить" type="submit" color="primary"/>
-          <q-btn label="Сбросить" type="reset" color="primary" flat class="q-ml-sm" />
+        <div class="row justify-evenly">
+          <q-btn label="Подтвердить" type="submit" color="primary" class="col-xs-12 col-md-5"/>
+          <q-btn label="Сбросить" type="reset" color="primary" flat class="q-ml-sm col-xs-12 col-md-5" />
         </div>
       </q-form>
 
@@ -71,6 +102,8 @@
       const name = ref(null)
       const email = ref(null)
       const accept = ref(false)
+      const password = ref('')
+      const isPwd = ref(true)
 
       const roles = reactive({
         all: [],
@@ -94,6 +127,8 @@
       return {
         name,
         email,
+        password,
+        isPwd,
         roles,
         accept,
         role,
@@ -104,15 +139,30 @@
               color: 'red-5',
               textColor: 'white',
               icon: 'warning',
-              message: 'You need to accept the license and terms first'
+              message: 'Необходимо принять условия пользования сервисом'
             })
           }
           else {
-            $q.notify({
-              color: 'green-4',
-              textColor: 'white',
-              icon: 'cloud_done',
-              message: 'Submitted'
+            api.post("register", {
+              name: name.value,
+              email: email.value,
+              password: password.value,
+              roles: JSON.stringify(roles.selected),
+              consent: accept.value
+            }).then(() => {
+              $q.notify({
+                color: 'green-4',
+                textColor: 'white',
+                icon: 'cloud_done',
+                message: 'Вы успешно зарегистрированы!'
+              })
+            }).catch(() => {
+              $q.notify({
+                color: 'red-5',
+                textColor: 'white',
+                icon: 'warning',
+                message: 'Что-то пошло не так'
+              })
             })
           }
         },
@@ -120,8 +170,15 @@
         onReset () {
           name.value = null
           email.value = null
+          password.value = null
+          roles.selected = null
           accept.value = false
         },
+
+        isValidEmail (val) {
+          return /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/.test(val)
+            || 'Неверный формат';
+        }
 
       }
     },
