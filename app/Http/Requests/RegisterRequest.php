@@ -14,7 +14,7 @@ class RegisterRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,12 +24,23 @@ class RegisterRequest extends FormRequest
      */
     public function rules()
     {
-      Log::info(request()->all());
         return [
-          'name' => ['required', 'min:6', 'max:255'],
-          'email' => ['required', 'max:128', 'unique'],
+          'name' => ['required', 'min:2', 'max:255'],
+          'email' => ['required', 'max:128', 'unique:users'],
           'password' => ['required', 'min:6', 'max:255'],
           'roles' => ['required', 'json'],
         ];
     }
+
+  /**
+   * Get the error messages for the defined validation rules.
+   *
+   * @return array
+   */
+  public function messages()
+  {
+    return [
+      'email.unique' => 'Такая почта уже существует',
+    ];
+  }
 }

@@ -13,7 +13,7 @@
           lazy-rules
           :rules="[
             val => !!val || 'Введите имя',
-            val => val.length > 6 || 'не менее 6 символов',
+            val => val.length > 1 || 'не менее 2 символов',
           ]"
         />
 
@@ -143,27 +143,31 @@
             })
           }
           else {
-            api.post("register", {
-              name: name.value,
-              email: email.value,
-              password: password.value,
-              roles: JSON.stringify(roles.selected),
-              consent: accept.value
-            }).then(() => {
-              $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: 'Вы успешно зарегистрированы!'
+              api.post("register", {
+                name: name.value,
+                email: email.value,
+                password: password.value,
+                roles: JSON.stringify(roles.selected),
+                consent: accept.value
+              }).then(() => {
+                $q.notify({
+                  color: 'green-4',
+                  textColor: 'white',
+                  icon: 'cloud_done',
+                  message: 'Вы успешно зарегистрированы!'
+                })
+              }).catch((error) => {
+                const errors = Object.values(error.response.data.errors).reduce((accum, val) => accum.concat(...val), []);
+                for (var val of errors) {
+                  $q.notify({
+                    color: 'red-5',
+                    textColor: 'white',
+                    icon: 'warning',
+                    multiLine: true,
+                    message: val
+                  })
+                }
               })
-            }).catch(() => {
-              $q.notify({
-                color: 'red-5',
-                textColor: 'white',
-                icon: 'warning',
-                message: 'Что-то пошло не так'
-              })
-            })
           }
         },
 
