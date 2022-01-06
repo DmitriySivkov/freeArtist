@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class RegisterRequest extends FormRequest
@@ -32,15 +33,27 @@ class RegisterRequest extends FormRequest
         ];
     }
 
+    /** method "passedValidation" does not merge values for some reason,
+     * so this one is used
+     */
+    public function validated()
+    {
+      $request = $this->validator->validated();
+
+      $request['password'] = Hash::make($this->password);
+
+      return $request;
+    }
+
   /**
-   * Get the error messages for the defined validation rules.
-   *
-   * @return array
-   */
-  public function messages()
-  {
-    return [
-      'email.unique' => 'Такая почта уже существует',
-    ];
-  }
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+      return [
+        'email.unique' => 'Такая почта уже существует',
+      ];
+    }
 }

@@ -21,3 +21,6 @@ Route::group(['prefix' => 'roles'], function() {
   Route::get('', [RoleController::class, 'index']);
 });
 
+Route::middleware(['auth:api'])->group(function () {
+
+});
