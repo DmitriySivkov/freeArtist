@@ -147,7 +147,7 @@
                 name: name.value,
                 email: email.value,
                 password: password.value,
-                roles: JSON.stringify(roles.selected),
+                role_id: JSON.stringify(roles.selected),
                 consent: accept.value
               }).then(() => {
                 $q.notify({
@@ -163,7 +163,6 @@
                     color: 'red-5',
                     textColor: 'white',
                     icon: 'warning',
-                    multiLine: true,
                     message: val
                   })
                 }

@@ -12,7 +12,7 @@ class RegisterController extends Controller
         /** @var User $user */
         $user = User::create($request->validated());
 
-        $token = $user->createToken('My Token')->accessToken;
+        $token = $user->createToken('web-app')->accessToken;
 
         return $user;
     }

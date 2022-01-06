@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('register', [RegisterController::class, 'store']);
+Route::post('auth', AuthController::class);
 
 Route::group(['prefix' => 'roles'], function() {
   Route::get('', [RoleController::class, 'index']);

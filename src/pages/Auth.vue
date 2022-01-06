@@ -12,8 +12,12 @@
             v-model="email"
             label="Адрес электронной почты *"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Введите адрес электронной почты']"
+            :rules="[
+            val => !!val || 'Введите адрес электронной почты',
+            isValidEmail
+          ]"
           />
+
           <q-input
             v-model="password"
             filled
@@ -47,47 +51,54 @@
 
 <script>
   import { useQuasar } from 'quasar'
-  import { ref, reactive, computed } from 'vue'
+  import { ref } from 'vue'
   import { api } from 'boot/axios'
   export default {
     setup() {
       const $q = useQuasar()
 
       const email = ref(null)
-      const accept = ref(false)
       const password = ref('')
       const isPwd = ref(true)
 
       return {
         email,
-        accept,
         password,
         isPwd,
 
         onSubmit () {
-          if (accept.value !== true) {
-            $q.notify({
-              color: 'red-5',
-              textColor: 'white',
-              icon: 'warning',
-              message: 'Неверная почта или пароль'
-            })
-          }
-          else {
+          api.post("auth", {
+            email: email.value,
+            password: password.value,
+          }).then(() => {
             $q.notify({
               color: 'green-4',
               textColor: 'white',
               icon: 'cloud_done',
-              message: 'Вы успешно авторизованы!'
+              message: 'Будь как дома, путник!'
             })
-          }
+          }).catch((error) => {
+            const errors = Object.values(error.response.data.errors).reduce((accum, val) => accum.concat(...val), []);
+            for (var val of errors) {
+              $q.notify({
+                color: 'red-5',
+                textColor: 'white',
+                icon: 'warning',
+                message: val
+              })
+            }
+          })
         },
 
         onReset () {
           email.value = null
           password.value = null
-          accept.value = false
         },
+
+        isValidEmail (val) {
+          return /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/.test(val)
+            || 'Неверный формат';
+        }
 
       }
     },

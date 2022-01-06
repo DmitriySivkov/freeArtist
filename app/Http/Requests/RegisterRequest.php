@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class RegisterRequest extends FormRequest
 {
@@ -29,7 +28,7 @@ class RegisterRequest extends FormRequest
           'name' => ['required', 'min:2', 'max:255'],
           'email' => ['required', 'max:128', 'unique:users'],
           'password' => ['required', 'min:6', 'max:255'],
-          'roles' => ['required', 'json'],
+          'role_id' => ['required'],
         ];
     }
 
