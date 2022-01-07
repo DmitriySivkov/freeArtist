@@ -22,9 +22,10 @@ class AuthController extends Controller
       if (!$isValidCredentials) {
           return response($arError, 422);
       }
-      return $user->load([
-          'tokens'
-      ]);
+      $tokens = $user->tokens()->get();
+      setcookie('access-token', serialize($tokens), 0, "", "", false, true);
+      $user->tokens = $tokens;
+      return $user;
     }
 
 }

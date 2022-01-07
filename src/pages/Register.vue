@@ -95,8 +95,10 @@
   import { useQuasar } from 'quasar'
   import { ref, reactive, computed } from 'vue'
   import { api } from 'boot/axios'
+  import { useStore } from 'vuex'
   export default {
     setup() {
+      const $store = useStore()
       const $q = useQuasar()
 
       const name = ref(null)
@@ -143,30 +145,31 @@
             })
           }
           else {
-              api.post("register", {
-                name: name.value,
-                email: email.value,
-                password: password.value,
-                role_id: JSON.stringify(roles.selected),
-                consent: accept.value
-              }).then(() => {
-                $q.notify({
-                  color: 'green-4',
-                  textColor: 'white',
-                  icon: 'cloud_done',
-                  message: 'Вы успешно зарегистрированы!'
-                })
-              }).catch((error) => {
-                const errors = Object.values(error.response.data.errors).reduce((accum, val) => accum.concat(...val), []);
-                for (var val of errors) {
-                  $q.notify({
-                    color: 'red-5',
-                    textColor: 'white',
-                    icon: 'warning',
-                    message: val
-                  })
-                }
+            $store.dispatch("user/signUp", {
+              name: name.value,
+              email: email.value,
+              password: password.value,
+              role_id: JSON.stringify(roles.selected),
+              consent: accept.value
+            }).then(() => {
+              $q.notify({
+                color: 'green-4',
+                textColor: 'white',
+                icon: 'cloud_done',
+                message: 'Вы успешно зарегистрированы!'
               })
+            }).catch((error) => {
+              const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), []);
+              for (var val of errors) {
+                $q.notify({
+                  color: 'red-5',
+                  textColor: 'white',
+                  multiline: true,
+                  icon: 'warning',
+                  message: val
+                })
+              }
+            })
           }
         },
 
