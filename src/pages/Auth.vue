@@ -52,9 +52,10 @@
 <script>
   import { useQuasar } from 'quasar'
   import { ref } from 'vue'
-  import { api } from 'boot/axios'
+  import { useStore } from 'vuex'
   export default {
     setup() {
+      const $store = useStore()
       const $q = useQuasar()
 
       const email = ref(null)
@@ -67,7 +68,7 @@
         isPwd,
 
         onSubmit () {
-          api.post("auth", {
+          $store.dispatch("user/login", {
             email: email.value,
             password: password.value,
           }).then(() => {
@@ -78,7 +79,7 @@
               message: 'Будь как дома, путник!'
             })
           }).catch((error) => {
-            const errors = Object.values(error.response.data.errors).reduce((accum, val) => accum.concat(...val), []);
+            const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), []);
             for (var val of errors) {
               $q.notify({
                 color: 'red-5',
