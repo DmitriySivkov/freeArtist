@@ -8,7 +8,8 @@ import axios from 'axios'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: 'http://freeartist.loc:8080/api'
+  baseURL: 'https://freeartist.loc/api',
+  withCredentials: true
 });
 
 export default boot(({ app }) => {

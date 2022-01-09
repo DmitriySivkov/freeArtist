@@ -9,7 +9,9 @@ services:
     container_name: fa-nginx
     volumes:
       - ./:/var/www/freeArtist
+      - ./docker/ssl:/etc/nginx/ssl
     ports:
+      - 127.0.0.1:443:443
       - 127.0.0.1:8080:80
     links:
       - php

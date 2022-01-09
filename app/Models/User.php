@@ -49,4 +49,11 @@ class User extends Authenticatable
         return $this->hasOne(Role::class);
     }
 
+    public function getSerializedAccessTokens()
+    {
+        return serialize($this->tokens()->get()->map(function($item) {
+            return $item->id;
+        })->toArray());
+    }
+
 }
