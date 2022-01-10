@@ -28,6 +28,7 @@ services:
       PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
     links:
       - pg
+      - mailcatcher
 
   pg:
     build:
@@ -49,3 +50,9 @@ services:
       - POSTGRES_PASSWORD=root
 #      - LC_COLLATE=ru_RU.UTF-8
 #      - LC_CTYPE=ru_RU.UTF-8
+
+  mailcatcher:
+    image: yappabe/mailcatcher
+    ports:
+      - 127.0.0.1:1025:1025
+      - 127.0.0.1:1080:1080
