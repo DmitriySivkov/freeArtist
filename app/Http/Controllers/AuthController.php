@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\CookieService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
-    public function __invoke(Request $request)
+    public function auth(Request $request)
     {
         $credentials = $request->all(['email', 'password']);
 
@@ -29,6 +28,11 @@ class AuthController extends Controller
         );
 
         return response($user)->withCookie($authCookie->getCookie());
+    }
+
+    public function logout()
+    {
+        return auth()->logout();
     }
 
 }

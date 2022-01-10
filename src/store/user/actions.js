@@ -24,3 +24,16 @@ export const signUp = async ({commit}, payload) => {
       })
   })
 }
+
+export const logout = async ({commit}, payload) => {
+  return new Promise((resolve, reject) => {
+    api.post('logout', payload)
+      .then(() => {
+        commit("SET_USER", {})
+        resolve()
+      })
+      .catch((error) => {
+        reject(error.response.data.errors)
+      })
+  })
+}

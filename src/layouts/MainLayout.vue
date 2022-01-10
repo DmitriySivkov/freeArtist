@@ -31,7 +31,7 @@
         </q-item-label>
 
         <EssentialLink
-          v-for="link in essentialLinks"
+          v-for="link in linkList"
           :key="link.title"
           v-bind="link"
         />
@@ -47,17 +47,8 @@
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
 import { useRoute } from 'vue-router'
-
-const linksList = [
-  {
-    title: 'Авторизация',
-    caption: 'Войдите или зарегистрируйтесь',
-    icon: 'account_circle',
-    link: 'auth'
-  }
-];
-
-import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
+import { computed, defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -67,15 +58,27 @@ export default defineComponent({
   },
 
   setup () {
-    const leftDrawerOpen = ref(false)
+    const $store = useStore()
     const route = useRoute()
+
+    const leftDrawerOpen = ref(false)
+
+    const user = computed(() => $store.state.user.data)
+    const linkList = computed(() =>
+      Object.keys(user.value).length > 0 ?
+        $store.state.drawer.linkList.auth :
+        $store.state.drawer.linkList.unauth
+    )
+    /** if API call is requiring params. Then params are appended here */
+
     return {
-      essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
-      route
+      route,
+      linkList,
+      user
     }
   }
 })
