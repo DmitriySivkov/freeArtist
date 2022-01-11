@@ -1,7 +1,8 @@
 module.exports = function (ctx) {
   return {
     boot: [
-      'axios'
+      'axios',
+      'checkTokenCookie'
     ],
 
     css: [

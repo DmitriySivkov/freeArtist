@@ -6,7 +6,7 @@ namespace App\Services;
 
 use Symfony\Component\HttpFoundation\Cookie;
 
-class AuthCookieService
+class CookieService
 {
     /**
      * @var Cookie

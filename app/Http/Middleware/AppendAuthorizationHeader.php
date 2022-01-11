@@ -16,7 +16,8 @@ class AppendAuthorizationHeader
      */
     public function handle(Request $request, Closure $next)
     {
-        $request->headers->set('Authorization','Bearer ' . $request->cookie('token'));
+        if (!$request->hasHeader('Authorization') || $request->header('Authorization') !== 'Bearer ' . $request->cookie('token'))
+            $request->headers->set('Authorization','Bearer ' . $request->cookie('token'));
 
         return $next($request);
     }

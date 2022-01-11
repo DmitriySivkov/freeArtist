@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('register', [RegisterController::class, 'store']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('hasTokenCookie', [AuthController::class, 'hasTokenCookie']);
 
 Route::group(['prefix' => 'roles'], function() {
   Route::get('', [RoleController::class, 'index']);

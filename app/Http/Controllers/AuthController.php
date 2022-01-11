@@ -3,42 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Services\AuthCookieService;
+use App\Services\AuthService;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
-    {
-        $credentials = $request->all(['email', 'password']);
 
-        if (!auth()->attempt($credentials)) {
-          return response()->json(['errors' => ['total' => ['Неверные почта или пароль']]], 422);
+    public function login(Request $request, AuthService $authService)
+    {
+        if ($request->has(['email', 'password']) && !$request->hasCookie('token'))
+        {
+            return $authService->loginWithCredentials($request->all(['email', 'password']));
         }
 
-        /** @var User $user */
-        $user = auth()->user();
+        if ($request->hasCookie('token'))
+        {
+            return $authService->loginWithToken($request);
+        }
 
-        $token = $user->createToken('web-app')->accessToken;
-
-        /**
-         * mandatory for cross-site: SSL; headers: secure=true;sameSite=none
-         */
-        $authCookie = new AuthCookieService(
-            'token', $token, 0,
-            null, null, true, true, false, 'none'
-        );
-
-        return response($user)->withCookie($authCookie->get());
+        return response('Ошибка сервера авторизации', 422);
     }
 
+    /**
+     * @param Request $request
+     * @return ResponseFactory|Response
+     *
+     * its now logging out of current device.
+     * Theres also a way to logout for all devices
+     */
     public function logout(Request $request)
     {
         /** @var User $user */
         $user = auth()->user()->token();
+
         $user->revoke();
-        return response('logged out', 200);
+
+        if ($request->hasHeader('Authorization'))
+            $request->headers->remove('Authorization');
+
+        /**
+         * Cookie::forget is not used in this case because of required "sameSite=none" param
+         */
+        $cookie = cookie(
+            'token', '', -1, null, null, true, true, false, 'none'
+        );
+
+        return response('logged out', 200)->withCookie($cookie);
+    }
+
+    public function hasTokenCookie(Request $request)
+    {
+        return $request->hasCookie('token');
     }
 
 }

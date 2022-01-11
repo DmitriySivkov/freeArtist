@@ -37,3 +37,7 @@ export const logout = async ({commit}, payload) => {
       })
   })
 }
+
+export const checkTokenCookie = async () => {
+  await api.post('hasTokenCookie')
+}
