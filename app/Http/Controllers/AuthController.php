@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Services\CookieService;
+use App\Services\AuthCookieService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
-    public function auth(Request $request)
+    public function login(Request $request)
     {
         $credentials = $request->all(['email', 'password']);
 
@@ -19,20 +20,25 @@ class AuthController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
+        $token = $user->createToken('web-app')->accessToken;
+
         /**
          * mandatory for cross-site: SSL; headers: secure=true;sameSite=none
          */
-        $authCookie = new CookieService(
-            'tokens', $user->getSerializedAccessTokens(), 0,
+        $authCookie = new AuthCookieService(
+            'token', $token, 0,
             null, null, true, true, false, 'none'
         );
 
-        return response($user)->withCookie($authCookie->getCookie());
+        return response($user)->withCookie($authCookie->get());
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        return auth()->logout();
+        /** @var User $user */
+        $user = auth()->user()->token();
+        $user->revoke();
+        return response('logged out', 200);
     }
 
 }

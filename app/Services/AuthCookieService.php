@@ -4,19 +4,18 @@
 namespace App\Services;
 
 
-use Illuminate\Cookie\CookieJar;
 use Symfony\Component\HttpFoundation\Cookie;
 
-class CookieService
+class AuthCookieService
 {
     /**
-     * @var CookieJar|Cookie
+     * @var Cookie
      */
     protected $cookie;
 
     public function __construct($name, $value, $ttl = 0, $path = null, $domain = null, $secure = null, $httpOnly = true, $raw = false, $sameSite = null)
     {
-        $this->cookie = cookie(
+        $this->cookie = Cookie::create(
             $name,
             $value,
             $ttl,
@@ -30,9 +29,9 @@ class CookieService
     }
 
     /**
-     * @return CookieJar|Cookie
+     * @return Cookie
      */
-    public function getCookie()
+    public function get()
     {
         return $this->cookie;
     }

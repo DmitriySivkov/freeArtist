@@ -2,7 +2,7 @@ import { api } from 'boot/axios'
 
 export const login = async ({commit}, payload) => {
   return new Promise((resolve, reject) => {
-    api.post('auth', payload)
+    api.post('login', payload, {headers: {"X-APP-TYPE":"web-app"}})
       .then((response) => {
         commit("SET_USER", response.data)
         resolve()
@@ -15,7 +15,7 @@ export const login = async ({commit}, payload) => {
 
 export const signUp = async ({commit}, payload) => {
   return new Promise((resolve, reject) => {
-    api.post('register', payload)
+    api.post('register', payload, {headers: {"X-APP-TYPE":"web-app"}})
       .then(() => {
         resolve()
       })
