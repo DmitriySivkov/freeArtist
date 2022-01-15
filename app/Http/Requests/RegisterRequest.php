@@ -37,22 +37,22 @@ class RegisterRequest extends FormRequest
      */
     public function validated()
     {
-      $request = $this->validator->validated();
+        $request = $this->validator->validated();
 
-      $request['password'] = Hash::make($this->password);
+        $request['password'] = Hash::make($this->password);
 
-      return $request;
+        return $request;
     }
 
-  /**
+    /**
      * Get the error messages for the defined validation rules.
      *
      * @return array
      */
     public function messages()
     {
-      return [
-        'email.unique' => 'Такая почта уже существует',
-      ];
+        return [
+            'email.unique' => 'Такая почта уже существует',
+        ];
     }
 }

@@ -29,7 +29,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install -j$(nproc) gd
 
 # Install extensions
-RUN docker-php-ext-install pdo_pgsql zip exif pcntl soap ldap
+RUN docker-php-ext-install pdo_pgsql zip exif pcntl soap ldap sockets
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

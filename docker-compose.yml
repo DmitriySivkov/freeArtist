@@ -53,6 +53,19 @@ services:
 
   mailcatcher:
     image: yappabe/mailcatcher
+    container_name: fa-mailcatcher
     ports:
       - 127.0.0.1:1025:1025
       - 127.0.0.1:1080:1080
+
+  rabbitmq:
+    container_name: fa-rabbitmq
+    image: rabbitmq:3.9-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=root
+    ports:
+      # AMQP protocol port
+      - 127.0.0.1:5672:5672
+      # HTTP management UI
+      - 127.0.0.1:15672:15672
