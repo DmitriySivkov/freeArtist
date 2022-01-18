@@ -98,6 +98,9 @@ return [
                 'queue' => [
                     'job' => VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob::class,
                     // 'job' => App\Jobs\CustomHandleJob::class,
+                    'exchange' => 'application-x',
+                    'exchange_type' => 'topic',
+                    'exchange_routing_key' => 'mail.#',
                 ],
             ],
 
