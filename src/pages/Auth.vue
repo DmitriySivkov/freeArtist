@@ -51,23 +51,29 @@
 
 <script>
   import { useQuasar } from 'quasar'
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { useStore } from 'vuex'
-  import { useRoute } from 'vue-router'
+  import { useRouter, useRoute } from 'vue-router'
   export default {
     setup() {
+      const $router = useRouter()
+      const $currentRoute = useRoute();
       const $store = useStore()
       const $q = useQuasar()
-      const $route = useRoute()
+
+      const user = computed(() => $store.state.user.data)
+
+      if (Object.keys(user.value).length > 0)
+        $router.replace('personal')
 
       const email = ref(null)
       const password = ref('')
       const isPwd = ref(true)
 
-      if ($route.query["verify-email"] && $route.query["verify-email"] === "1")
+      if ($currentRoute.query["verify-email"] && $currentRoute.query["verify-email"] === "1")
         $store.dispatch("user/verifyEmail", {
-          hash: $route.query['hash'],
-          email: $route.query['email']
+          hash: $currentRoute.query['hash'],
+          email: $currentRoute.query['email']
         }).then(() => {
           $q.notify({
             color: 'green-4',
@@ -93,6 +99,7 @@
               icon: 'cloud_done',
               message: 'Будь как дома, путник!'
             })
+            $router.replace('personal')
           }).catch((error) => {
             const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), []);
             for (var val of errors) {

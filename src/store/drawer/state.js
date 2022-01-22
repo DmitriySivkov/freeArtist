@@ -5,9 +5,15 @@ export default {
   linkList: {
     auth: [
       {
+        title: 'Личный кабинет',
+        caption: '',
+        icon: 'account_circle',
+        link: 'personal'
+      },
+      {
         title: 'Выйти',
         caption: 'Завершить сессию',
-        icon: 'account_circle',
+        icon: 'logout',
         link: 'logout',
         isApiCall: true,
         apiCall: (store) => store.dispatch("user/logout").then(() => {
@@ -24,9 +30,9 @@ export default {
       {
         title: 'Авторизация',
         caption: 'Войдите или зарегистрируйтесь',
-        icon: 'account_circle',
+        icon: 'login',
         link: 'auth'
-      }
+      },
     ],
   }
 }

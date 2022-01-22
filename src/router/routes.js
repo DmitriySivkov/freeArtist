@@ -24,6 +24,13 @@ const routes = [
         meta: {
           routeName: 'Регистрация'
         }
+      },
+      {
+        path: 'personal',
+        component: () => import('pages/Personal'),
+        meta: {
+          routeName: 'Личный кабинет'
+        }
       }
     ]
   },
