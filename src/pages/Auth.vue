@@ -53,14 +53,29 @@
   import { useQuasar } from 'quasar'
   import { ref } from 'vue'
   import { useStore } from 'vuex'
+  import { useRoute } from 'vue-router'
   export default {
-    setup() {
+    async setup() {
       const $store = useStore()
       const $q = useQuasar()
+      const $route = useRoute()
 
       const email = ref(null)
       const password = ref('')
       const isPwd = ref(true)
+
+      if ($route.query["verify-email"] && $route.query["verify-email"] === "1")
+        await $store.dispatch("user/verifyEmail", {
+          hash: $route.query['hash'],
+          email: $route.query['email']
+        }).then(() => {
+          $q.notify({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            message: 'Почта успешно верифицирована!'
+          })
+        });
 
       return {
         email,

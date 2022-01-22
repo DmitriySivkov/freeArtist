@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
-use App\Jobs\SendMailJob;
+use App\Jobs\SendEmailVerificationJob;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -21,13 +21,13 @@ class RegisterController extends Controller
             $clientRepository = new ClientRepository();
             $clientRepository->create($user->id, $request->header('X-APP-TYPE'),'', null, true);
 
-            SendMailJob::dispatch($user);
-
             DB::commit();
         } catch (QueryException $e) {
             DB::rollBack();
             return response($e->getMessage(), $e->getCode());
         }
+
+        SendEmailVerificationJob::dispatch($user);
 
         return $user;
     }

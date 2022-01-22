@@ -2,7 +2,7 @@ import { api } from 'boot/axios'
 
 export const login = async ({commit}, payload) => {
   return new Promise((resolve, reject) => {
-    api.post('login', payload, {headers: {"X-APP-TYPE":"web-app"}})
+    api.post('auth', payload, {headers: {"X-APP-TYPE":"web-app"}})
       .then((response) => {
         commit("SET_USER", response.data)
         resolve()
@@ -40,4 +40,11 @@ export const logout = async ({commit}, payload) => {
 
 export const checkTokenCookie = async () => {
   await api.post('hasTokenCookie')
+}
+
+export const verifyEmail = async ({commit}, payload) => {
+  await api.post('auth/verify-email', {
+    hash: payload.hash,
+    email: payload.email
+  })
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\EmailVerificationNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,5 +47,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function role()
     {
         return $this->hasOne(Role::class);
+    }
+
+    /**
+     * We override the default verification and use our own
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new EmailVerificationNotification($this));
     }
 }

@@ -15,8 +15,12 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::group(['prefix' => 'auth'], function() {
+    Route::post('', [AuthController::class, 'login']);
+    Route::post('verify-email', [AuthController::class, 'verifyEmail']);
+});
+
 Route::post('register', [RegisterController::class, 'store']);
-Route::post('login', [AuthController::class, 'login']);
 Route::post('hasTokenCookie', [AuthController::class, 'hasTokenCookie']);
 
 Route::group(['prefix' => 'roles'], function() {

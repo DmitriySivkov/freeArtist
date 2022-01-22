@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\AuthService;
+use Carbon\Carbon;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
@@ -57,6 +59,19 @@ class AuthController extends Controller
     public function hasTokenCookie(Request $request)
     {
         return $request->hasCookie('token');
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        if (!hash_equals(
+            (string) $request->get('hash'),
+            sha1($request->get('email')))
+        )
+           return response('Не удалось верифицировать почту', 422);
+
+        return User::where('email', $request->get('email'))->update([
+            'email_verified_at' => Carbon::now()
+        ]);
     }
 
 }
