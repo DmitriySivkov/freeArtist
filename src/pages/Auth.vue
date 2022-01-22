@@ -55,7 +55,7 @@
   import { useStore } from 'vuex'
   import { useRoute } from 'vue-router'
   export default {
-    async setup() {
+    setup() {
       const $store = useStore()
       const $q = useQuasar()
       const $route = useRoute()
@@ -65,7 +65,7 @@
       const isPwd = ref(true)
 
       if ($route.query["verify-email"] && $route.query["verify-email"] === "1")
-        await $store.dispatch("user/verifyEmail", {
+        $store.dispatch("user/verifyEmail", {
           hash: $route.query['hash'],
           email: $route.query['email']
         }).then(() => {

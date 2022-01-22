@@ -1,3 +1,5 @@
+import { Notify } from 'quasar'
+
 export default {
   data: {},
   linkList: {
@@ -8,7 +10,14 @@ export default {
         icon: 'account_circle',
         link: 'logout',
         isApiCall: true,
-        apiCall: (store) => store.dispatch("user/logout")
+        apiCall: (store) => store.dispatch("user/logout").then(() => {
+          Notify.create({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            message: 'Успешный логаут'
+          })
+        })
       }
     ],
     unauth: [

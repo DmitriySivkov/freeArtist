@@ -156,7 +156,7 @@
                 color: 'green-4',
                 textColor: 'white',
                 icon: 'cloud_done',
-                message: 'Вы успешно зарегистрированы!'
+                message: 'На указанную почту отправлено письмо для подтверждения'
               })
             }).catch((error) => {
               const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), []);
