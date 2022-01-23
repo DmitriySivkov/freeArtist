@@ -24,7 +24,7 @@ class AuthService
         $authCookie = cookie('token', $token, 0,
             null, null, true, true, false, 'none');
 
-        return response($user)->withCookie($authCookie);
+        return response($user->load(['role']))->withCookie($authCookie);
     }
 
     public function loginWithToken(Request $request)
@@ -36,6 +36,6 @@ class AuthService
         /** @var User $user */
         $user = auth('api')->user();
 
-        return response($user);
+        return response($user->load(['role']));
     }
 }

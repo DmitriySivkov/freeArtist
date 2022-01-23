@@ -8,8 +8,8 @@ import { api } from './axios'
 
 export default async ({ store }) => {
   await api.post('hasTokenCookie')
-    .then((response) => {
+    .then(async (response) => {
       if (response.data)
-        store.dispatch('user/login')
+        await store.dispatch('user/login')
     })
 }
