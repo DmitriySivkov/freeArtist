@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserModel;
+use App\Models\User;
 use App\Services\AuthService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -38,7 +38,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        /** @var UserModel $user */
+        /** @var User $user */
         $user = auth()->user()->token();
 
         $user->revoke();
@@ -69,7 +69,7 @@ class AuthController extends Controller
         )
            return response('Не удалось верифицировать почту', 422);
 
-        return UserModel::where('email', $request->get('email'))->update([
+        return User::where('email', $request->get('email'))->update([
             'email_verified_at' => Carbon::now()
         ]);
     }

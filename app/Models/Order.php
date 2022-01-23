@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderModel extends Model
+class Order extends Model
 {
     use HasFactory;
 
     public function producer()
     {
-        return $this->belongsTo(ProducerModel::class);
+        return $this->belongsTo(Producer::class);
     }
 
     public function customer()
     {
-        return $this->belongsTo(UserModel::class);
+        return $this->belongsTo(User::class);
     }
 }
