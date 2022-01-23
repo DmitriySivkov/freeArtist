@@ -1,4 +1,4 @@
-import { Notify } from 'quasar'
+import {api} from "boot/axios";
 
 export default {
   data: {},
@@ -15,14 +15,10 @@ export default {
         caption: 'Завершить сессию',
         icon: 'logout',
         link: 'logout',
-        isApiCall: true,
-        apiCall: (store) => store.dispatch("user/logout").then(() => {
-          Notify.create({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Успешный логаут'
-          })
+        apiCall: (store) => new Promise((resolve, reject) => {
+          store.dispatch("user/logout")
+            .then(() => resolve())
+            .catch((error) => reject(error.response.data.errors))
         })
       }
     ],

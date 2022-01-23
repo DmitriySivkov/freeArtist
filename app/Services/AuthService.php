@@ -21,10 +21,8 @@ class AuthService
         /**
          * mandatory for cross-site: SSL; headers: secure=true;sameSite=none
          */
-        $authCookie = (new CookieService(
-            'token', $token, 0,
-            null, null, true, true, false, 'none'
-        ))->get();
+        $authCookie = cookie('token', $token, 0,
+            null, null, true, true, false, 'none');
 
         return response($user)->withCookie($authCookie);
     }

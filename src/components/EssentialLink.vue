@@ -1,5 +1,5 @@
 <template>
-  <q-item v-if="!this.isApiCall" :to="this.link">
+  <q-item v-if="!this.apiCall" :to="this.link">
     <q-item-section
       v-if="this.icon"
       avatar
@@ -31,10 +31,11 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import { useStore } from "vuex"
+import { useRouter } from 'vue-router'
+import { Notify } from "quasar";
 
-export default defineComponent({
+export default {
   name: 'EssentialLink',
   props: {
     title: {
@@ -53,21 +54,26 @@ export default defineComponent({
       type: String,
       default: ''
     },
-    isApiCall: {
-      type: Boolean,
-      default: false
-    },
     apiCall: {
       type: Function
     }
   },
   setup(props) {
+    const $router = useRouter()
     const $store = useStore()
     return {
-      makeApiCall() {
-        props.apiCall($store)
+      async makeApiCall() {
+        await props.apiCall($store).then(() => {
+          Notify.create({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            message: 'Успешный логаут'
+          })
+          $router.replace('auth')
+        })
       }
     }
   },
-})
+}
 </script>
