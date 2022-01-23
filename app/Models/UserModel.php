@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class UserModel extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasApiTokens;
 
@@ -46,7 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(RoleModel::class);
     }
 
     /**

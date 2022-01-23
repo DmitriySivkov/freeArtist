@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,14 +13,14 @@ class SendEmailVerificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected User $user;
+    protected UserModel $user;
 
     /**
      * Create a new job instance.
      *
-     * @param User $user
+     * @param UserModel $user
      */
-    public function __construct(User $user)
+    public function __construct(UserModel $user)
     {
         $this->user = $user;
     }

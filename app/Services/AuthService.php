@@ -4,7 +4,7 @@
 namespace App\Services;
 
 
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Http\Request;
 
 class AuthService
@@ -14,7 +14,7 @@ class AuthService
         if (!auth()->attempt($credentials))
             return response()->json(['errors' => ['total' => ['Неверные почта или пароль']]], 422);
 
-        /** @var User $user */
+        /** @var UserModel $user */
         $user = auth()->user();
 
         $token = $user->createToken('web-app')->accessToken;
@@ -33,7 +33,7 @@ class AuthService
             $request->headers->set('Authorization', 'Bearer ' . $request->cookie('token'));
         }
 
-        /** @var User $user */
+        /** @var UserModel $user */
         $user = auth('api')->user();
 
         return response($user->load(['role']));

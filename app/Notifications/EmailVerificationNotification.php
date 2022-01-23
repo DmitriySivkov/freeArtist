@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,14 +11,14 @@ class EmailVerificationNotification extends VerifyEmail
 {
     use Queueable;
 
-    protected User $user;
+    protected UserModel $user;
 
     /**
      * Create a new notification instance.
      *
-     * @param User $user
+     * @param UserModel $user
      */
-    public function __construct(User $user)
+    public function __construct(UserModel $user)
     {
         $this->user = $user;
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
 use App\Jobs\SendEmailVerificationJob;
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\ClientRepository;
@@ -15,8 +15,8 @@ class RegisterController extends Controller
     {
         DB::beginTransaction();
         try {
-            /** @var User $user */
-            $user = User::create($request->validated());
+            /** @var UserModel $user */
+            $user = UserModel::create($request->validated());
 
             $clientRepository = new ClientRepository();
             $clientRepository->create($user->id, $request->header('X-APP-TYPE'),'', null, true);
