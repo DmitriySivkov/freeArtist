@@ -5,22 +5,15 @@
         <q-badge color="purple" text-color="white">
           Личная информация
         </q-badge>
-        <q-markup-table dark class="bg-indigo-8">
-          <tbody>
-            <tr>
-              <td class="text-left">Имя</td>
-              <td class="text-left">{{ user.name }}</td>
-            </tr>
-            <tr>
-              <td class="text-left">Email</td>
-              <td class="text-left">{{ user.email }}</td>
-            </tr>
-            <tr>
-              <td class="text-left">Статус</td>
-              <td class="text-left">{{ user.role.title }}</td>
-            </tr>
-          </tbody>
-        </q-markup-table>
+        <TableData
+          :data="{
+            name:user.name,
+            email:user.email,
+            status:user.role.title
+          }"
+          class="bg-indigo-8"
+          :theme="{ dark: true }"
+        />
       </div>
     </div>
     <div class="q-pa-md row">
@@ -29,42 +22,32 @@
           Календарь заказов
         </q-badge>
         <div class="q-gutter-md row items-start">
-          <q-date
-            @update:model-value="this.showOrders($event)"
-            v-model="this.qdate"
-            mask="DD.MM.YYYY"
-            :locale="this.ruLocale"
-          />
+          <OrderCalendar />
         </div>
+      </div>
+      <div class="col-xs-12 col-md-6 col-lg-3">
+        <q-scroll-area style="height: 100%;">
+          <OrderCalendarList />
+        </q-scroll-area>
       </div>
     </div>
   </q-page>
 </template>
 
 <script>
-  import { computed, ref } from 'vue'
+  import { computed } from 'vue'
   import { useStore } from 'vuex'
-  import { date } from 'quasar'
+  import TableData from 'src/components/TableData'
+  import OrderCalendar from "src/components/OrderCalendar";
+  import OrderCalendarList from "src/components/OrderCalendarList"
+
   export default {
+    components: { TableData, OrderCalendar, OrderCalendarList },
     setup() {
       const $store = useStore()
       const user = computed(() => $store.state.user.data)
-      const qdate = ref(date.formatDate(Date.now(), 'DD.MM.YYYY'))
-      const ruLocale = {
-        days: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
-        daysShort: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
-        months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-        monthsShort: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-        firstDayOfWeek: 1
-      }
       return {
-        user,
-        qdate,
-        ruLocale,
-
-        showOrders(value) {
-          console.log(value)
-        }
+        user
       }
     },
   }

@@ -1,4 +1,4 @@
-import { api } from 'boot/axios'
+import { api } from 'src/boot/axios'
 
 export const login = async ({commit}, payload) => {
   return new Promise((resolve, reject) => {

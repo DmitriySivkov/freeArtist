@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
@@ -29,4 +30,8 @@ Route::group(['prefix' => 'roles'], function() {
 
 Route::group(['middleware' => ['appendAuthorizationHeader', 'auth:api']], function() {
     Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::group(['prefix' => 'orders'], function () {
+       Route::get('', [OrderController::class, 'index']);
+    });
 });

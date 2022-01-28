@@ -94,7 +94,7 @@
 <script>
   import { useQuasar } from 'quasar'
   import { ref, reactive, computed } from 'vue'
-  import { api } from 'boot/axios'
+  import { api } from 'src/boot/axios'
   import { useStore } from 'vuex'
   export default {
     setup() {
