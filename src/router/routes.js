@@ -30,7 +30,23 @@ const routes = [
         component: () => import('pages/Personal'),
         meta: {
           routeName: 'Личный кабинет'
-        }
+        },
+        children: [
+          {
+            path: 'orders',
+            component: () => import('pages/Orders'),
+            meta: {
+              routeName: 'Список заказов'
+            }
+          },
+          {
+            path: 'user',
+            component: () => import('pages/User'),
+            meta: {
+              routeName: 'Персональные данные'
+            }
+          },
+        ]
       }
     ]
   },

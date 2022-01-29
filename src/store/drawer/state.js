@@ -8,7 +8,7 @@ export default {
         title: 'Личный кабинет',
         caption: '',
         icon: 'account_circle',
-        link: 'personal'
+        link: '/personal'
       },
       {
         title: 'Выйти',
@@ -27,7 +27,7 @@ export default {
         title: 'Авторизация',
         caption: 'Войдите или зарегистрируйтесь',
         icon: 'login',
-        link: 'auth'
+        link: '/auth'
       },
     ],
   }

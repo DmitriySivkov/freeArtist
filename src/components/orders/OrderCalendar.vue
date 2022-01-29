@@ -4,6 +4,7 @@
     v-model="this.qdate"
     mask="DD.MM.YYYY"
     :locale="this.ruLocale"
+    style="width:100%"
   />
 </template>
 
