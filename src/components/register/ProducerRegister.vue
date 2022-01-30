@@ -48,6 +48,25 @@
 					</template>
 				</q-input>
 
+				<q-select
+					filled
+					v-model="producer"
+					use-input
+					input-debounce="0"
+					label="Выбрать фирму"
+					:options="producerList"
+					@filter="filterFn"
+					behavior="menu"
+				>
+					<template v-slot:no-option>
+						<q-item>
+							<q-item-section class="text-grey">
+								Фирма не найдена
+							</q-item-section>
+						</q-item>
+					</template>
+				</q-select>
+
 				<q-toggle
 					v-model="accept"
 					label="Я принимаю условия пользования сервисом"
@@ -79,9 +98,10 @@ import { useQuasar } from "quasar"
 import { ref } from "vue"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
+import { api } from "src/boot/axios"
 
 export default {
-	setup() {
+	async setup() {
 		const $q = useQuasar()
 		const $store = useStore()
 		const $router = useRouter()
@@ -91,6 +111,10 @@ export default {
 		const accept = ref(false)
 		const password = ref("")
 		const isPwd = ref(true)
+
+		await api.get("producers").then(() => {
+
+		})
 
 		return {
 			name,
