@@ -1,192 +1,36 @@
 <template>
-  <q-page class="flex flex-center">
-    <div class="q-pa-md">
-      <q-form
-        @submit="onSubmit"
-        @reset="onReset"
-        class="q-gutter-md"
-      >
-        <q-input
-          filled
-          v-model="name"
-          label="Ваше имя *"
-          lazy-rules
-          :rules="[
-            val => !!val || 'Введите имя',
-            val => val.length > 1 || 'не менее 2 символов',
-          ]"
-        />
-
-        <q-input
-          filled
-          v-model="email"
-          label="Адрес электронной почты *"
-          lazy-rules
-          :rules="[
-            val => !!val || 'Введите адрес электронной почты',
-            isValidEmail
-          ]"
-        />
-
-        <q-input
-          v-model="password"
-          filled
-          :type="isPwd ? 'password' : 'text'"
-          label="Пароль *"
-          lazy-rules
-          :rules="[
-            val => !!val || 'Введите пароль',
-            val => val.length > 6 || 'не менее 6 символов',
-          ]"
-        >
-          <template v-slot:append>
-            <q-icon
-              :name="isPwd ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              @click="isPwd = !isPwd"
-            />
-          </template>
-        </q-input>
-
-        <q-field
-          v-model="roles.selected"
-          :rules="[val => !!val]"
-          stack-label
-          lazy-rules
-          label="Выберите роль:"
-        >
-          <template v-slot:control>
-              <q-option-group
-                :options="roles.all"
-                type="radio"
-                v-model="roles.selected"
-                inline
-              />
-          </template>
-        </q-field>
-        <transition
-          v-if="roles.selected"
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-        >
-          <div>
-            Внимание! Вы будете зарегистрированы как:
-            <q-card>
-              <q-card-section class="row justify-center">
-                <strong>{{ role }}</strong>
-              </q-card-section>
-            </q-card>
-          </div>
-        </transition>
-
-        <q-toggle v-model="accept" label="Я принимаю условия пользования сервисом" />
-
-        <div class="row justify-evenly">
-          <q-btn label="Подтвердить" type="submit" color="primary" class="col-xs-12 col-md-5"/>
-          <q-btn label="Сбросить" type="reset" color="primary" flat class="q-ml-sm col-xs-12 col-md-5" />
-        </div>
-      </q-form>
-
-    </div>
-  </q-page>
+	<q-page class="flex flex-center">
+		<div class="q-pa-md q-col-gutter-sm">
+			<div
+				v-for="(item, index) in menuItems"
+				:key="index"
+				class="col-xs-12 col-md-6 col-lg-3 q-mb-sm"
+			>
+				<q-card class="bg-indigo-10 text-white">
+					<q-item
+						class="q-pa-xl"
+						:to="item.link"
+					>
+						<q-item-section class="text-center text-h5">{{ item.title }}</q-item-section>
+					</q-item>
+				</q-card>
+			</div>
+		</div>
+		<router-view />
+	</q-page>
 </template>
 
 <script>
-  import { useQuasar } from 'quasar'
-  import { ref, reactive, computed } from 'vue'
-  import { api } from 'src/boot/axios'
-  import { useStore } from 'vuex'
-  export default {
-    setup() {
-      const $store = useStore()
-      const $q = useQuasar()
+export default {
+	setup() {
+		const menuItems = [
+			{ link: "/register/user", title: "Зарегистрироваться как пользователь" },
+			{ link: "/register/producer", title: "Зарегистрироваться как мастер" }
+		]
 
-      const name = ref(null)
-      const email = ref(null)
-      const accept = ref(false)
-      const password = ref('')
-      const isPwd = ref(true)
-
-      const roles = reactive({
-        all: [],
-        selected: null
-      })
-      api.get("roles").then((response) => {
-        roles.all = response.data.roles.map((item) => {
-          return {
-            label: item.title,
-            value: item.id
-          }
-        })
-      })
-
-      const role = computed(() =>
-        roles.selected ?
-          roles.all.find((item) => item.value === roles.selected).label :
-          ''
-      )
-
-      return {
-        name,
-        email,
-        password,
-        isPwd,
-        roles,
-        accept,
-        role,
-
-        onSubmit () {
-          if (accept.value !== true) {
-            $q.notify({
-              color: 'red-5',
-              textColor: 'white',
-              icon: 'warning',
-              message: 'Необходимо принять условия пользования сервисом'
-            })
-          }
-          else {
-            $store.dispatch("user/signUp", {
-              name: name.value,
-              email: email.value,
-              password: password.value,
-              role_id: JSON.stringify(roles.selected),
-              consent: accept.value
-            }).then(() => {
-              $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: 'На указанную почту отправлено письмо для подтверждения'
-              })
-            }).catch((error) => {
-              const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), []);
-              for (var val of errors) {
-                $q.notify({
-                  color: 'red-5',
-                  textColor: 'white',
-                  multiline: true,
-                  icon: 'warning',
-                  message: val
-                })
-              }
-            })
-          }
-        },
-
-        onReset () {
-          name.value = null
-          email.value = null
-          password.value = null
-          roles.selected = null
-          accept.value = false
-        },
-
-        isValidEmail (val) {
-          return /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/.test(val)
-            || 'Неверный формат';
-        }
-
-      }
-    },
-  }
+		return {
+			menuItems
+		}
+	}
+}
 </script>
