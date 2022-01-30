@@ -53,10 +53,13 @@
 					v-model="producer"
 					use-input
 					input-debounce="0"
-					label="Выбрать фирму"
+					label="Выбрать фирму *"
 					:options="producerList"
-					@filter="filterFn"
-					behavior="menu"
+					@filter="this.filterSelect"
+					behavior="dialog"
+					:rules="[
+						val => !!val || 'Выберите фирму'
+					]"
 				>
 					<template v-slot:no-option>
 						<q-item>
@@ -101,7 +104,7 @@ import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 
 export default {
-	async setup() {
+	setup() {
 		const $q = useQuasar()
 		const $store = useStore()
 		const $router = useRouter()
@@ -111,9 +114,19 @@ export default {
 		const accept = ref(false)
 		const password = ref("")
 		const isPwd = ref(true)
+		const producer = ref(null)
 
-		await api.get("producers").then(() => {
+		const producerList = ref([])
+		let producerListDefault = []
 
+		api.get("producers").then((response) => {
+			producerList.value = response.data.producers.map((item) => {
+				return {
+					label: item.title,
+					value: item.id
+				}
+			})
+			producerListDefault = producerList.value
 		})
 
 		return {
@@ -121,6 +134,8 @@ export default {
 			email,
 			password,
 			isPwd,
+			producer,
+			producerList,
 			accept,
 
 			onSubmit () {
@@ -164,11 +179,22 @@ export default {
 				email.value = null
 				password.value = null
 				accept.value = false
+				producer.value = null
 			},
 
 			isValidEmail (val) {
 				return /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/.test(val)
             || "Неверный формат"
+			},
+
+			filterSelect (val, update) {
+				if (val === "") {
+					update(() => producerList.value = producerListDefault)
+					return
+				}
+				update(() => {
+					producerList.value = producerList.value.filter(v => v.label.toLowerCase().indexOf(val.toLowerCase()) > -1)
+				})
 			}
 
 		}

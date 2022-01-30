@@ -11,7 +11,7 @@
 						filled
 						v-model="email"
 						label="Адрес электронной почты *"
-						lazy-rules
+						:lazy-rules="true"
 						:rules="[
 							val => !!val || 'Введите адрес электронной почты',
 							isValidEmail
@@ -23,7 +23,7 @@
 						filled
 						:type="isPwd ? 'password' : 'text'"
 						label="Пароль *"
-						lazy-rules
+						:lazy-rules="true"
 						:rules="[
 							val => !!val || 'Введите пароль',
 							val => val.length > 6 || 'не менее 6 символов',
