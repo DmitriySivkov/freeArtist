@@ -38,23 +38,34 @@
 						</template>
 					</q-input>
 
-					<div class="row justify-evenly">
-						<q-btn
-							label="Подтвердить"
-							type="submit"
-							color="primary"
-							class="col-xs-12 col-md-5"
-						/>
-						<q-btn
-							label="Сбросить"
-							type="reset"
-							color="primary"
-							flat
-							class="q-ml-sm col-xs-12 col-md-5"
-						/>
+					<div class="row q-col-gutter-sm">
+						<div class="col-6 q-pl-none">
+							<q-btn
+								label="Подтвердить"
+								type="submit"
+								color="secondary"
+								class="q-pa-lg full-width"
+							/>
+						</div>
+						<div class="col-6 q-pr-none">
+							<q-btn
+								label="Сбросить"
+								type="reset"
+								color="warning"
+								class="q-pa-lg full-width"
+							/>
+						</div>
 					</div>
 				</q-form>
-				<div class="q-mt-lg">Ещё нет аккаунта? - <router-link to="/register">Зарегистрироваться</router-link></div>
+				<div class="full-width">
+					<div class="q-pa-md text-center text-subtitle1">Ещё нет аккаунта? -</div>
+				</div>
+				<q-btn
+					label="Зарегистрироваться"
+					to="/register"
+					color="primary"
+					class="q-pa-lg full-width"
+				/>
 			</div>
 		</div>
 	</q-page>

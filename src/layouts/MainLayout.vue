@@ -1,7 +1,7 @@
 <template>
 	<q-layout view="lHh Lpr lFf">
 		<q-header elevated>
-			<q-toolbar>
+			<q-toolbar class="q-mb-md q-mt-md">
 				<q-btn
 					flat
 					dense
@@ -9,9 +9,10 @@
 					icon="menu"
 					aria-label="Menu"
 					@click="toggleLeftDrawer"
+					size="lg"
 				/>
 
-				<q-toolbar-title>
+				<q-toolbar-title class="text-h5">
 					{{ this.route.meta.route_name || ''}}
 				</q-toolbar-title>
 
@@ -22,6 +23,8 @@
 			v-model="leftDrawerOpen"
 			show-if-above
 			bordered
+			elevated
+			class="bg-grey-2"
 		>
 			<q-list>
 				<q-item-label

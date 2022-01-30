@@ -6,7 +6,7 @@
 				:key="index"
 				class="col-xs-12 col-md-6 col-lg-3 q-mb-sm"
 			>
-				<q-card class="bg-indigo-10 text-white">
+				<q-card class="bg-primary text-white">
 					<q-item
 						class="q-pa-xl"
 						:to="item.link"

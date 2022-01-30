@@ -51,22 +51,27 @@
 				<q-toggle
 					v-model="accept"
 					label="Я принимаю условия пользования сервисом"
+					size="lg"
+					class="text-center"
 				/>
 
-				<div class="row justify-evenly">
-					<q-btn
-						label="Подтвердить"
-						type="submit"
-						color="primary"
-						class="col-xs-12 col-md-5"
-					/>
-					<q-btn
-						label="Сбросить"
-						type="reset"
-						color="primary"
-						flat
-						class="q-ml-sm col-xs-12 col-md-5"
-					/>
+				<div class="row q-col-gutter-sm">
+					<div class="col-6 q-pl-none">
+						<q-btn
+							label="Подтвердить"
+							type="submit"
+							color="secondary"
+							class="q-pa-lg full-width"
+						/>
+					</div>
+					<div class="col-6 q-pr-none">
+						<q-btn
+							label="Сбросить"
+							type="reset"
+							color="warning"
+							class="q-pa-lg full-width"
+						/>
+					</div>
 				</div>
 			</q-form>
 
