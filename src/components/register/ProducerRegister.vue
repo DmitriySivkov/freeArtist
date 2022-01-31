@@ -125,15 +125,16 @@ export default {
 		const producerList = ref([])
 		let producerListDefault = []
 
-		onMounted(async () => await api.get("producers").then((response) => {
-			producerList.value = response.data.producers.map((item) => {
-				return {
-					label: item.title,
-					value: item.id
-				}
-			})
-			producerListDefault = producerList.value
-		}))
+		onMounted(async () =>
+			await api.get("producers").then((response) => {
+				producerList.value = response.data.producers.map((item) => {
+					return {
+						label: item.title,
+						value: item.id
+					}
+				})
+				producerListDefault = producerList.value
+			}))
 
 		return {
 			name,
