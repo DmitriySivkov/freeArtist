@@ -31,7 +31,7 @@
 				<q-input
 					v-model="password"
 					filled
-					:type="isPwd ? 'password' : 'text'"
+					:type="is_pwd ? 'password' : 'text'"
 					label="Пароль *"
 					:lazy-rules="true"
 					:rules="[
@@ -41,9 +41,9 @@
 				>
 					<template v-slot:append>
 						<q-icon
-							:name="isPwd ? 'visibility_off' : 'visibility'"
+							:name="is_pwd ? 'visibility_off' : 'visibility'"
 							class="cursor-pointer"
-							@click="isPwd = !isPwd"
+							@click="is_pwd = !is_pwd"
 						/>
 					</template>
 				</q-input>
@@ -53,6 +53,7 @@
 					label="Я принимаю условия пользования сервисом"
 					size="lg"
 					class="text-center"
+					color="secondary"
 				/>
 
 				<div class="row q-col-gutter-sm">
@@ -60,7 +61,7 @@
 						<q-btn
 							label="Подтвердить"
 							type="submit"
-							color="secondary"
+							color="primary"
 							class="q-pa-lg full-width"
 						/>
 					</div>
@@ -95,13 +96,13 @@ export default {
 		const email = ref(null)
 		const accept = ref(false)
 		const password = ref("")
-		const isPwd = ref(true)
+		const is_pwd = ref(true)
 
 		return {
 			name,
 			email,
 			password,
-			isPwd,
+			is_pwd,
 			accept,
 
 			onSubmit () {

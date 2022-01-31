@@ -1,56 +1,87 @@
 <template>
 	<q-page class="flex flex-center">
-		<div class="q-pa-md">
-			<q-form
-				@submit="onSubmit"
-				@reset="onReset"
-				class="q-gutter-md"
+		<q-form
+			@submit="onSubmit"
+			@reset="onReset"
+			class="q-gutter-md"
+		>
+			<q-input
+				filled
+				input-class="q-ma-md"
+				v-model="name"
+				label="Ваше имя *"
+				:lazy-rules="true"
+				:rules="[
+					val => !!val || 'Введите имя',
+					val => val.length > 1 || 'не менее 2 символов',
+				]"
+			/>
+
+			<q-input
+				filled
+				v-model="email"
+				label="Адрес электронной почты *"
+				:lazy-rules="true"
+				:rules="[
+					val => !!val || 'Введите адрес электронной почты',
+					isValidEmail
+				]"
+			/>
+
+			<q-input
+				v-model="password"
+				filled
+				:type="is_pwd ? 'password' : 'text'"
+				label="Пароль *"
+				:lazy-rules="true"
+				:rules="[
+					val => !!val || 'Введите пароль',
+					val => val.length > 6 || 'не менее 6 символов',
+				]"
 			>
-				<q-input
-					filled
-					input-class="q-ma-md"
-					v-model="name"
-					label="Ваше имя *"
-					:lazy-rules="true"
-					:rules="[
-						val => !!val || 'Введите имя',
-						val => val.length > 1 || 'не менее 2 символов',
-					]"
-				/>
+				<template v-slot:append>
+					<q-icon
+						:name="is_pwd ? 'visibility_off' : 'visibility'"
+						class="cursor-pointer"
+						@click="is_pwd = !is_pwd"
+					/>
+				</template>
+			</q-input>
 
-				<q-input
-					filled
-					v-model="email"
-					label="Адрес электронной почты *"
-					:lazy-rules="true"
-					:rules="[
-						val => !!val || 'Введите адрес электронной почты',
-						isValidEmail
-					]"
-				/>
 
-				<q-input
-					v-model="password"
-					filled
-					:type="isPwd ? 'password' : 'text'"
-					label="Пароль *"
-					:lazy-rules="true"
-					:rules="[
-						val => !!val || 'Введите пароль',
-						val => val.length > 6 || 'не менее 6 символов',
-					]"
+			<q-card
+				v-for="item in firm_radio"
+				:key="item.value"
+				class="bg-primary no-padding"
+				dark
+			>
+				<q-radio
+					v-model="firm_radio_model"
+					:val="item.value"
+					dark
+					color="info"
 				>
-					<template v-slot:append>
-						<q-icon
-							:name="isPwd ? 'visibility_off' : 'visibility'"
-							class="cursor-pointer"
-							@click="isPwd = !isPwd"
-						/>
+					<template v-slot:default>
+						<div class="col-6 q-pa-lg">
+							{{ item.label }}
+						</div>
 					</template>
-				</q-input>
+				</q-radio>
+			</q-card>
 
+
+			<div v-if="firm_radio_model === 1">
+				<div class="row">
+					<q-badge
+						color="secondary"
+						class="col-xs-12 text-center justify-center no-border-radius"
+					>
+						Выберите фирму
+					</q-badge>
+				</div>
 				<q-select
 					filled
+					class="q-mt-none"
 					v-model="producer"
 					use-input
 					input-debounce="0"
@@ -70,35 +101,56 @@
 						</q-item>
 					</template>
 				</q-select>
-
-				<q-toggle
-					v-model="accept"
-					label="Я принимаю условия пользования сервисом"
-					size="lg"
-					class="text-center"
-				/>
-
-				<div class="row q-col-gutter-sm">
-					<div class="col-6 q-pl-none">
-						<q-btn
-							label="Подтвердить"
-							type="submit"
-							color="secondary"
-							class="q-pa-lg full-width"
-						/>
-					</div>
-					<div class="col-6 q-pr-none">
-						<q-btn
-							label="Сбросить"
-							type="reset"
-							color="warning"
-							class="q-pa-lg full-width"
-						/>
-					</div>
+			</div>
+			<div v-if="firm_radio_model === 2">
+				<div class="row">
+					<q-badge
+						color="secondary"
+						class="col-xs-12 text-center justify-center no-border-radius"
+					>
+						Создайте свою фирму
+					</q-badge>
 				</div>
-			</q-form>
+				<q-input
+					filled
+					class="q-mt-none"
+					v-model="new_firm_title"
+					label="Название фирмы *"
+					:lazy-rules="true"
+					:rules="[
+						val => !!val || 'Введите название своей фирмы',
+						isValidEmail
+					]"
+				/>
+			</div>
 
-		</div>
+			<q-toggle
+				v-model="accept"
+				label="Я принимаю условия пользования сервисом"
+				size="lg"
+				class="text-center"
+				color="secondary"
+			/>
+
+			<div class="row q-col-gutter-sm">
+				<div class="col-6 q-pl-none">
+					<q-btn
+						label="Подтвердить"
+						type="submit"
+						color="primary"
+						class="q-pa-lg full-width"
+					/>
+				</div>
+				<div class="col-6 q-pr-none">
+					<q-btn
+						label="Сбросить"
+						type="reset"
+						color="warning"
+						class="q-pa-lg full-width"
+					/>
+				</div>
+			</div>
+		</q-form>
 	</q-page>
 </template>
 
@@ -119,8 +171,13 @@ export default {
 		const email = ref(null)
 		const accept = ref(false)
 		const password = ref("")
-		const isPwd = ref(true)
+		const is_pwd = ref(true)
 		const producer = ref(null)
+
+		const new_firm_title = ref("")
+
+		const firm_radio_model = ref(null)
+		const firm_radio = [{label:"Выбрать из списка фирм", value:1},{label:"Создать свою фирму", value:2}]
 
 		const producerList = ref([])
 		let producerListDefault = []
@@ -140,10 +197,13 @@ export default {
 			name,
 			email,
 			password,
-			isPwd,
+			is_pwd,
 			producer,
 			producerList,
 			accept,
+			firm_radio,
+			firm_radio_model,
+			new_firm_title,
 
 			onSubmit () {
 				if (accept.value !== true) {
@@ -187,6 +247,7 @@ export default {
 				password.value = null
 				accept.value = false
 				producer.value = null
+				firm_radio_model.value = null
 			},
 
 			isValidEmail (val) {

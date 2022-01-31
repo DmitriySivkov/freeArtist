@@ -21,7 +21,7 @@
 					<q-input
 						v-model="password"
 						filled
-						:type="isPwd ? 'password' : 'text'"
+						:type="is_pwd ? 'password' : 'text'"
 						label="Пароль *"
 						:lazy-rules="true"
 						:rules="[
@@ -31,9 +31,9 @@
 					>
 						<template v-slot:append>
 							<q-icon
-								:name="isPwd ? 'visibility_off' : 'visibility'"
+								:name="is_pwd ? 'visibility_off' : 'visibility'"
 								class="cursor-pointer"
-								@click="isPwd = !isPwd"
+								@click="is_pwd = !is_pwd"
 							/>
 						</template>
 					</q-input>
@@ -43,7 +43,7 @@
 							<q-btn
 								label="Подтвердить"
 								type="submit"
-								color="secondary"
+								color="primary"
 								class="q-pa-lg full-width"
 							/>
 						</div>
@@ -90,7 +90,7 @@ export default {
 
 		const email = ref(null)
 		const password = ref("")
-		const isPwd = ref(true)
+		const is_pwd = ref(true)
 
 		if ($currentRoute.query["verify-email"] && $currentRoute.query["verify-email"] === "1")
 			$store.dispatch("user/verifyEmail", {
@@ -108,7 +108,7 @@ export default {
 		return {
 			email,
 			password,
-			isPwd,
+			is_pwd,
 
 			onSubmit () {
 				$store.dispatch("user/login", {
