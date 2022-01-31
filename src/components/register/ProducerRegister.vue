@@ -104,7 +104,7 @@
 
 <script>
 import { useQuasar } from "quasar"
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
@@ -125,7 +125,7 @@ export default {
 		const producerList = ref([])
 		let producerListDefault = []
 
-		api.get("producers").then((response) => {
+		onMounted(async () => await api.get("producers").then((response) => {
 			producerList.value = response.data.producers.map((item) => {
 				return {
 					label: item.title,
@@ -133,7 +133,7 @@ export default {
 				}
 			})
 			producerListDefault = producerList.value
-		})
+		}))
 
 		return {
 			name,
