@@ -3,11 +3,10 @@
 		<q-form
 			@submit="onSubmit"
 			@reset="onReset"
-			class="q-gutter-md"
+			class="q-gutter-md q-pa-sm"
 		>
 			<q-input
 				filled
-				input-class="q-ma-md"
 				v-model="name"
 				label="Ваше имя *"
 				:lazy-rules="true"
@@ -49,25 +48,33 @@
 			</q-input>
 
 
-			<q-card
-				v-for="item in firm_radio"
-				:key="item.value"
-				class="bg-primary no-padding"
-				dark
-			>
-				<q-radio
-					v-model="firm_radio_model"
-					:val="item.value"
-					dark
-					color="info"
+			<div class="row q-col-gutter-sm">
+				<div
+					class="col-6"
+					:class="{'q-pl-none': item.value % 2}"
+					v-for="item in firm_radio"
+					:key="item.value"
 				>
-					<template v-slot:default>
-						<div class="col-6 q-pa-lg">
-							{{ item.label }}
-						</div>
-					</template>
-				</q-radio>
-			</q-card>
+					<q-card
+						class="bg-primary "
+						dark
+					>
+						<q-radio
+							v-model="firm_radio_model"
+							:val="item.value"
+							dark
+							color="white"
+							class="q-pt-lg q-pb-lg q-pl-sm full-width"
+						>
+							<template v-slot:default>
+								<div class="q-pr-sm">
+									{{ item.label }}
+								</div>
+							</template>
+						</q-radio>
+					</q-card>
+				</div>
+			</div>
 
 
 			<div v-if="firm_radio_model === 1">
@@ -119,7 +126,6 @@
 					:lazy-rules="true"
 					:rules="[
 						val => !!val || 'Введите название своей фирмы',
-						isValidEmail
 					]"
 				/>
 			</div>
@@ -206,6 +212,15 @@ export default {
 			new_firm_title,
 
 			onSubmit () {
+				if (!firm_radio_model.value || !new_firm_title.value && !producer.value) {
+					$q.notify({
+						color: "red-5",
+						textColor: "white",
+						icon: "warning",
+						message: "Выберите фирму или создайте собственную"
+					})
+					return
+				}
 				if (accept.value !== true) {
 					$q.notify({
 						color: "red-5",
@@ -213,32 +228,31 @@ export default {
 						icon: "warning",
 						message: "Необходимо принять условия пользования сервисом"
 					})
+					return
 				}
-				else {
-					$store.dispatch("user/signUp", {
-						name: name.value,
-						email: email.value,
-						password: password.value,
-						role_id: $router.currentRoute.value.meta.role_id,
-						consent: accept.value
-					}).then(() => {
-						$q.notify({color: "green-4", textColor: "white",
-							icon: "cloud_done",
-							message: "На указанную почту отправлено письмо для подтверждения"
-						})
-					}).catch((error) => {
-						const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), [])
-						for (var val of errors) {
-							$q.notify({
-								color: "red-5",
-								textColor: "white",
-								multiline: true,
-								icon: "warning",
-								message: val
-							})
-						}
+				$store.dispatch("user/signUp", {
+					name: name.value,
+					email: email.value,
+					password: password.value,
+					role_id: $router.currentRoute.value.meta.role_id,
+					consent: accept.value
+				}).then(() => {
+					$q.notify({color: "green-4", textColor: "white",
+						icon: "cloud_done",
+						message: "На указанную почту отправлено письмо для подтверждения"
 					})
-				}
+				}).catch((error) => {
+					const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), [])
+					for (var val of errors) {
+						$q.notify({
+							color: "red-5",
+							textColor: "white",
+							multiline: true,
+							icon: "warning",
+							message: val
+						})
+					}
+				})
 			},
 
 			onReset () {
