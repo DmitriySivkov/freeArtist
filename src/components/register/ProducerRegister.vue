@@ -3,7 +3,7 @@
 		<q-form
 			@submit="onSubmit"
 			@reset="onReset"
-			class="q-gutter-md q-pa-sm"
+			class="q-gutter-md q-pa-md"
 		>
 			<q-input
 				filled
@@ -48,7 +48,7 @@
 			</q-input>
 
 
-			<div class="row q-col-gutter-sm">
+			<div class="row q-col-gutter-sm q-mt-none">
 				<div
 					class="col-6"
 					:class="{'q-pl-none': item.value % 2}"
@@ -67,7 +67,7 @@
 							class="q-pt-lg q-pb-lg q-pl-sm full-width"
 						>
 							<template v-slot:default>
-								<div class="q-pr-sm">
+								<div class="q-pr-sm q-pl-xs">
 									{{ item.label }}
 								</div>
 							</template>
@@ -88,7 +88,7 @@
 				</div>
 				<q-select
 					filled
-					class="q-mt-none"
+					class="q-mt-none q-pb-none"
 					v-model="producer"
 					use-input
 					input-debounce="0"
@@ -120,7 +120,7 @@
 				</div>
 				<q-input
 					filled
-					class="q-mt-none"
+					class="q-mt-none q-pb-none"
 					v-model="new_firm_title"
 					label="Название фирмы *"
 					:lazy-rules="true"
@@ -130,14 +130,15 @@
 				/>
 			</div>
 
-			<q-toggle
-				v-model="accept"
-				label="Я принимаю условия пользования сервисом"
-				size="lg"
-				class="text-center"
-				color="secondary"
-			/>
-
+			<div class="row q-mt-none">
+				<q-toggle
+					v-model="accept"
+					label="Я принимаю условия пользования сервисом"
+					size="lg"
+					class="col-xs-12 q-mt-md"
+					color="secondary"
+				/>
+			</div>
 			<div class="row q-col-gutter-sm">
 				<div class="col-6 q-pl-none">
 					<q-btn
@@ -212,7 +213,7 @@ export default {
 			new_firm_title,
 
 			onSubmit () {
-				if (!firm_radio_model.value || !new_firm_title.value && !producer.value) {
+				if (!firm_radio_model.value) {
 					$q.notify({
 						color: "red-5",
 						textColor: "white",

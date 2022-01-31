@@ -48,13 +48,15 @@
 					</template>
 				</q-input>
 
-				<q-toggle
-					v-model="accept"
-					label="Я принимаю условия пользования сервисом"
-					size="lg"
-					class="text-center"
-					color="secondary"
-				/>
+				<div class="row q-mt-none">
+					<q-toggle
+						v-model="accept"
+						label="Я принимаю условия пользования сервисом"
+						size="lg"
+						class="col-xs-12 q-mt-md"
+						color="secondary"
+					/>
+				</div>
 
 				<div class="row q-col-gutter-sm">
 					<div class="col-6 q-pl-none">
