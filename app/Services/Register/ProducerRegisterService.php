@@ -54,7 +54,7 @@ class ProducerRegisterService implements UserRegisterServiceContract
 			return response()->json([$e->getMessage(), $e->getCode()]);
 		}
 
-		SendEmailVerificationJob::dispatch($user);
+		SendEmailVerificationJob::dispatch($user)->onQueue('SendEmailVefiricationQueue');
 
 		return response()->json([$user, $producer]);
 	}

@@ -22,6 +22,8 @@ class SendEmailVerificationJob implements ShouldQueue
      */
     public function __construct(User $user)
     {
+		$this->onQueue(class_basename(self::class));
+
         $this->user = $user;
     }
 
