@@ -52,7 +52,7 @@
 				<div
 					class="col-6"
 					:class="{'q-pl-none': item.value % 2}"
-					v-for="item in firm_radio"
+					v-for="item in producer_radio"
 					:key="item.value"
 				>
 					<q-card
@@ -60,11 +60,12 @@
 						dark
 					>
 						<q-radio
-							v-model="firm_radio_model"
+							v-model="producer_radio_model"
 							:val="item.value"
 							dark
 							color="white"
 							class="q-pt-lg q-pb-lg q-pl-sm full-width"
+							@update:model-value="this.producerRadioSwitched"
 						>
 							<template v-slot:default>
 								<div class="q-pr-sm q-pl-xs">
@@ -77,7 +78,7 @@
 			</div>
 
 
-			<div v-if="firm_radio_model === 1">
+			<div v-if="producer_radio_model === 1">
 				<div class="row">
 					<q-badge
 						color="secondary"
@@ -109,7 +110,7 @@
 					</template>
 				</q-select>
 			</div>
-			<div v-if="firm_radio_model === 2">
+			<div v-if="producer_radio_model === 2">
 				<div class="row">
 					<q-badge
 						color="secondary"
@@ -121,7 +122,7 @@
 				<q-input
 					filled
 					class="q-mt-none q-pb-none"
-					v-model="new_firm_title"
+					v-model="new_producer_title"
 					label="Название фирмы *"
 					:lazy-rules="true"
 					:rules="[
@@ -181,10 +182,10 @@ export default {
 		const is_pwd = ref(true)
 		const producer = ref(null)
 
-		const new_firm_title = ref("")
+		const new_producer_title = ref("")
 
-		const firm_radio_model = ref(null)
-		const firm_radio = [{label:"Выбрать из списка фирм", value:1},{label:"Создать свою фирму", value:2}]
+		const producer_radio_model = ref(null)
+		const producer_radio = [{label:"Выбрать из списка фирм", value:1},{label:"Создать свою фирму", value:2}]
 
 		const producerList = ref([])
 		let producerListDefault = []
@@ -208,12 +209,12 @@ export default {
 			producer,
 			producerList,
 			accept,
-			firm_radio,
-			firm_radio_model,
-			new_firm_title,
+			producer_radio,
+			producer_radio_model,
+			new_producer_title,
 
 			onSubmit () {
-				if (!firm_radio_model.value) {
+				if (!producer_radio_model.value) {
 					$q.notify({
 						color: "red-5",
 						textColor: "white",
@@ -236,6 +237,8 @@ export default {
 					email: email.value,
 					password: password.value,
 					role_id: $router.currentRoute.value.meta.role_id,
+					new_producer_title: new_producer_title.value,
+					producer: producer.value,
 					consent: accept.value
 				}).then(() => {
 					$q.notify({color: "green-4", textColor: "white",
@@ -262,7 +265,7 @@ export default {
 				password.value = null
 				accept.value = false
 				producer.value = null
-				firm_radio_model.value = null
+				producer_radio_model.value = null
 			},
 
 			isValidEmail (val) {
@@ -278,6 +281,11 @@ export default {
 				update(() => {
 					producerList.value = producerList.value.filter(v => v.label.toLowerCase().indexOf(val.toLowerCase()) > -1)
 				})
+			},
+
+			producerRadioSwitched() {
+				producer.value = null
+				new_producer_title.value = ""
 			}
 
 		}

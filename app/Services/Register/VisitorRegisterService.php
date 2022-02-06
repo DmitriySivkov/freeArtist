@@ -1,0 +1,45 @@
+<?php
+
+
+namespace App\Services\Register;
+
+
+use App\Contracts\Services\UserRegisterServiceContract;
+use App\Http\Requests\Register\VisitorRegisterRequest;
+use App\Jobs\SendEmailVerificationJob;
+use App\Models\User;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Laravel\Passport\ClientRepository;
+
+class VisitorRegisterService implements UserRegisterServiceContract
+{
+	/**
+	 * @param VisitorRegisterRequest $request
+	 * @return JsonResponse
+	 */
+	public function run($request)
+	{
+		DB::beginTransaction();
+		try {
+			/** @var User $user */
+			$user = User::query()->create($request->validated());
+
+			$clientRepository = new ClientRepository();
+			$clientRepository->create(
+				$user->id,
+				$request->header('X-APP-TYPE'),'', null, true
+			);
+
+			DB::commit();
+		} catch (QueryException $e) {
+			DB::rollBack();
+			return response()->json([$e->getMessage(), $e->getCode()]);
+		}
+
+		SendEmailVerificationJob::dispatch($user);
+
+		return response()->json([$user]);
+	}
+}
