@@ -38,7 +38,6 @@ class VisitorRegisterRequest extends FormRequest implements UserRegisterRequestC
      */
     public function validated()
     {
-    	info('visitor');
         $request = $this->validator->validated();
 
         $request['password'] = Hash::make($this->password);

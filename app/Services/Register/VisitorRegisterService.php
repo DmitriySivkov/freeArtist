@@ -8,7 +8,6 @@ use App\Contracts\Services\UserRegisterServiceContract;
 use App\Http\Requests\Register\VisitorRegisterRequest;
 use App\Jobs\SendEmailVerificationJob;
 use App\Models\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\ClientRepository;
@@ -33,7 +32,7 @@ class VisitorRegisterService implements UserRegisterServiceContract
 			);
 
 			DB::commit();
-		} catch (QueryException $e) {
+		} catch (\Throwable $e) {
 			DB::rollBack();
 			return response()->json([$e->getMessage(), $e->getCode()]);
 		}
