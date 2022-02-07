@@ -13,16 +13,6 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasApiTokens;
 
-//    /**
-//     * The attributes that are mass assignable.
-//     *
-//     * @var array
-//     */
-//    protected $fillable = [
-//        'name',
-//        'email',
-//        'password',
-//    ];
     protected $guarded = [];
 
     /**
@@ -48,6 +38,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function producer()
+	{
+		return $this->belongsTo(Producer::class);
+	}
 
     /**
      * We override the default verification and use our own
