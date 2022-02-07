@@ -10,7 +10,7 @@
 
 <script>
 import { date } from "quasar"
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import { useStore } from "vuex"
 
 export default {
@@ -25,8 +25,10 @@ export default {
 			firstDayOfWeek: 1
 		}
 
+		const user = computed(() => $store.state.user.data)
+
 		$store.dispatch("order/getList", {
-			filter: {date: qdate.value}
+			filter: {date: qdate.value, user: user.value}
 		})
 
 		return {
@@ -35,7 +37,7 @@ export default {
 
 			showOrders(date) {
 				$store.dispatch("order/getList", {
-					filter: { date }
+					filter: { date, user: user.value }
 				})
 			}
 		}

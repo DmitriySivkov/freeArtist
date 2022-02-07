@@ -18,13 +18,12 @@ class AuthService
         $user = auth()->user();
 
         $token = $user->createToken('web-app')->accessToken;
-        /**
-         * mandatory for cross-site: SSL; headers: secure=true;sameSite=none
-         */
+
+        /** mandatory for cross-site: SSL; headers: secure=true;sameSite=none */
         $authCookie = cookie('token', $token, 0,
             null, null, true, true, false, 'none');
 
-        return response($user->load(['role']))->withCookie($authCookie);
+        return response()->json($user->load('role', 'producer'))->withCookie($authCookie);
     }
 
     public function loginWithToken(Request $request)
@@ -36,6 +35,6 @@ class AuthService
         /** @var User $user */
         $user = auth('api')->user();
 
-        return response($user->load(['role']));
+        return response()->json($user->load('role', 'producer'));
     }
 }

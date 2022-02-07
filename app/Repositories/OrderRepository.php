@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Order;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 
 class OrderRepository
 {
@@ -17,10 +18,14 @@ class OrderRepository
 
             $filter = json_decode(request()->get('filter'), true);
 
-            if ($filter['date']) {
+            if (Arr::has($filter, 'date')) {
                 $filter['date'] = Carbon::parse($filter['date'])->format('Y-m-d');
                 $query->whereDate('created_at', $filter['date']);
             }
+
+            if (Arr::has($filter, 'user.producer')) {
+            	$query->where('producer_id', $filter['user']['producer']['id']);
+			}
         }
 
         return $query->get();

@@ -6,10 +6,8 @@ use App\Models\User;
 use App\Services\AuthService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
