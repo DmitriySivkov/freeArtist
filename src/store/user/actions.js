@@ -1,4 +1,5 @@
 import { api } from "src/boot/axios"
+import { Notify } from "quasar"
 
 export const login = async ({commit}, payload) => {
 	return new Promise((resolve, reject) => {

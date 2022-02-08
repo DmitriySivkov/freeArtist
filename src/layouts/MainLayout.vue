@@ -26,19 +26,9 @@
 			elevated
 			class="bg-grey-2"
 		>
-			<q-list>
-				<q-item-label
-					header
-				>
-					Навигация
-				</q-item-label>
-
-				<EssentialLink
-					v-for="link in linkList"
-					:key="link.title"
-					v-bind="link"
-				/>
-			</q-list>
+			<template v-slot:default>
+				<LinkList />
+			</template>
 		</q-drawer>
 
 		<q-page-container>
@@ -48,40 +38,23 @@
 </template>
 
 <script>
-import EssentialLink from "components/EssentialLink.vue"
+import LinkList from "src/components/drawer/LinkList"
 import { useRoute } from "vue-router"
-import { useStore } from "vuex"
-import { computed, defineComponent, ref } from "vue"
+import { defineComponent, ref } from "vue"
 
 export default defineComponent({
 	name: "MainLayout",
-
-	components: {
-		EssentialLink
-	},
-
+	components: { LinkList },
 	setup () {
-		const $store = useStore()
 		const route = useRoute()
-
 		const leftDrawerOpen = ref(false)
-
-		const user = computed(() => $store.state.user.data)
-		const linkList = computed(() =>
-			Object.keys(user.value).length > 0 ?
-				$store.state.drawer.linkList.auth :
-				$store.state.drawer.linkList.unauth
-		)
-		/** if API call is requiring params. Then params are appended here */
 
 		return {
 			leftDrawerOpen,
 			toggleLeftDrawer () {
 				leftDrawerOpen.value = !leftDrawerOpen.value
 			},
-			route,
-			linkList,
-			user
+			route
 		}
 	}
 })
