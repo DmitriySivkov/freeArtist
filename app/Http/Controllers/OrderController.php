@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\OrderRepository;
+
+use App\Contracts\Services\OrderServiceContract;
 
 class OrderController extends Controller
 {
-    private OrderRepository $orderRepository;
-
-    public function __construct(OrderRepository $orderRepository)
+    public function index(OrderServiceContract $orderService)
     {
-        $this->orderRepository = $orderRepository;
-    }
-
-    public function index()
-    {
-        return response()->json($this->orderRepository->getList());
+        return response()->json($orderService->getList());
     }
 }

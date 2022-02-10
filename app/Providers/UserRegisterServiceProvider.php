@@ -11,7 +11,7 @@ use App\Services\Register\ProducerRegisterService;
 use App\Services\Register\VisitorRegisterService;
 use Illuminate\Support\ServiceProvider;
 
-class UserRegisterProvider extends ServiceProvider
+class UserRegisterServiceProvider extends ServiceProvider
 {
     /**
      * Register services.

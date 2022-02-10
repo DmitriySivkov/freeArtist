@@ -15,8 +15,5 @@ import OrderCalendarList from "src/components/orders/OrderCalendarList"
 
 export default {
 	components: { OrderCalendar, OrderCalendarList },
-	setup() {
-
-	}
 }
 </script>
