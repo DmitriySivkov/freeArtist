@@ -6,7 +6,7 @@ use App\Contracts\Requests\UserRegisterRequestContract;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 
-class VisitorRegisterRequest extends FormRequest implements UserRegisterRequestContract
+class CustomerRegisterRequest extends FormRequest implements UserRegisterRequestContract
 {
     /**
      * Determine if the user is authorized to make this request.

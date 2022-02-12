@@ -5,17 +5,17 @@ namespace App\Services\Register;
 
 
 use App\Contracts\Services\UserRegisterServiceContract;
-use App\Http\Requests\Register\VisitorRegisterRequest;
+use App\Http\Requests\Register\CustomerRegisterRequest;
 use App\Jobs\SendEmailVerificationJob;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\ClientRepository;
 
-class VisitorRegisterService implements UserRegisterServiceContract
+class CustomerRegisterService implements UserRegisterServiceContract
 {
 	/**
-	 * @param VisitorRegisterRequest $request
+	 * @param CustomerRegisterRequest $request
 	 * @return JsonResponse
 	 */
 	public function run($request)

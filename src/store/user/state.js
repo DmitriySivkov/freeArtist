@@ -1,5 +1,9 @@
 export default {
 	data: {},
+	roles: {
+		customer: 1,
+		producer: 2
+	},
 	linkList: {
 		auth: [
 			{

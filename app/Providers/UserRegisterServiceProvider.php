@@ -5,10 +5,10 @@ namespace App\Providers;
 use App\Contracts\Requests\UserRegisterRequestContract;
 use App\Contracts\Services\UserRegisterServiceContract;
 use App\Http\Requests\Register\ProducerRegisterRequest;
-use App\Http\Requests\Register\VisitorRegisterRequest;
+use App\Http\Requests\Register\CustomerRegisterRequest;
 use App\Models\Role;
 use App\Services\Register\ProducerRegisterService;
-use App\Services\Register\VisitorRegisterService;
+use App\Services\Register\CustomerRegisterService;
 use Illuminate\Support\ServiceProvider;
 
 class UserRegisterServiceProvider extends ServiceProvider
@@ -22,8 +22,8 @@ class UserRegisterServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRegisterRequestContract::class, function () {
         	switch (request()->get('role_id')) {
-				case Role::VISITOR:
-					return new VisitorRegisterRequest();
+				case Role::CUSTOMER:
+					return new CustomerRegisterRequest();
 				case Role::PRODUCER:
 					return new ProducerRegisterRequest();
 			}
@@ -32,8 +32,8 @@ class UserRegisterServiceProvider extends ServiceProvider
 
 		$this->app->bind(UserRegisterServiceContract::class, function () {
 			switch (request()->get('role_id')) {
-				case Role::VISITOR:
-					return new VisitorRegisterService();
+				case Role::CUSTOMER:
+					return new CustomerRegisterService();
 				case Role::PRODUCER:
 					return new ProducerRegisterService();
 			}
