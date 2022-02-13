@@ -1,7 +1,7 @@
 export default [
 	{
 		path: "",
-		component: () => import("pages/Index"),
+		component: () => import("pages/Producers"),
 		meta: {
 			route_name: "Главная"
 		}

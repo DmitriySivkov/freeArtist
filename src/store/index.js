@@ -2,6 +2,7 @@ import { store } from "quasar/wrappers"
 import { createStore } from "vuex"
 import user from "src/store/user"
 import order from "src/store/order"
+import producer from "src/store/producer"
 
 // import example from './module-example'
 
@@ -18,7 +19,8 @@ export default store(function (/* { ssrContext } */) {
 	return createStore({
 		modules: {
 			user,
-			order
+			order,
+			producer
 		},
 
 		// enable strict mode (adds overhead!)

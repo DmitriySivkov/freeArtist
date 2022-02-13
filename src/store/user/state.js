@@ -13,6 +13,12 @@ export default {
 				link: "/personal"
 			},
 			{
+				title: "Главная",
+				caption: "",
+				icon: "home",
+				link: "/"
+			},
+			{
 				title: "Выйти",
 				caption: "Завершить сессию",
 				icon: "logout",
@@ -27,6 +33,12 @@ export default {
 			}
 		],
 		unauth: [
+			{
+				title: "Главная",
+				caption: "",
+				icon: "home",
+				link: "/"
+			},
 			{
 				title: "Авторизация",
 				caption: "Войдите или зарегистрируйтесь",
