@@ -41,8 +41,8 @@ class OrderFactory extends Factory
                 ->first()
                 ->id,
             'products' => $products->toJson(),
-            'payment_method_id' => $this->faker->numberBetween(1,2),
-            'status_id' => 1,
+            'payment_method' => $this->faker->numberBetween(1,2),
+            'status' => 1,
         ];
 
     }

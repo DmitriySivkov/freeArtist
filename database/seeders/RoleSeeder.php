@@ -16,9 +16,9 @@ class RoleSeeder extends Seeder
     {
 		$roles = ['Посетитель', 'Мастер'];
 		foreach ($roles as $role) {
-			Role::create(array(
+			Role::create([
 				'title' => $role
-			));
+			]);
 		}
     }
 }
