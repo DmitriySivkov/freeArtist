@@ -23,9 +23,13 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-    	$ingredient = $this->faker->text(5);
+    	$ingredient1 = $this->faker->text(5);
+		$ingredient2 = $this->faker->text(5);
+		$ingredient3 = $this->faker->text(5);
     	$composition = collect([
-			$ingredient => $ingredient . 'Description'
+			$ingredient1 . 'Ingr' => $ingredient1 . 'IngrDescription',
+			$ingredient2 . 'Ingr' => $ingredient2 . 'IngrDescription',
+			$ingredient3 . 'Ingr' => $ingredient3 . 'IngrDescription',
 		]);
 		return [
 			'producer_id' => Producer::query()
@@ -34,7 +38,6 @@ class ProductFactory extends Factory
 				->id,
 			'title' => $this->faker->text(10) . 'Product',
 			'composition' => $composition->toJson(),
-			'payment_method_id' => $this->faker->numberBetween(1,2),
 		];
     }
 }
