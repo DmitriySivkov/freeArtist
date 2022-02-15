@@ -1,5 +1,5 @@
 <template>
-	<div class="q-pa-md row">
+	<div class="q-pa-md row q-col-gutter-sm">
 		<div class="col-xs-12 col-md-6 col-lg-3">
 			<q-markup-table
 				dark
@@ -12,6 +12,33 @@
 					>
 						<td class="text-left">{{ key }}</td>
 						<td class="text-left">{{ value }}</td>
+					</tr>
+				</tbody>
+			</q-markup-table>
+		</div>
+		<div class="col-xs-12 col-md-6 col-lg-3">
+			<q-markup-table
+				dark
+				class="bg-indigo-8"
+			>
+				<tbody>
+					<th class="text-left">Витрина</th>
+					<tr
+						v-for="product in producer.products"
+						:key="product.id"
+					>
+						<table>
+							<tbody>
+								<th>{{ product.title }}</th>
+								<tr
+									v-for="(description, ingredient) in product.composition"
+									:key="ingredient"
+								>
+									{{ ingredient }}: {{ description }}
+								</tr>
+							</tbody>
+						</table>
+
 					</tr>
 				</tbody>
 			</q-markup-table>
@@ -30,8 +57,8 @@ export default ({
 
 		const producer = computed(
 			() => $store.state.producer.data.find(
-				(producer) => producer.id == $router.currentRoute.value.params.id)
-		)
+				(producer) => producer.id == $router.currentRoute.value.params.id
+			))
 
 		return {
 			producer,

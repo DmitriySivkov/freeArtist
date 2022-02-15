@@ -9,8 +9,6 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $with = ['customer', 'producer'];
-
     public function customer()
     {
         /** for some reason laravel does not see user_id as a default foreign key.
