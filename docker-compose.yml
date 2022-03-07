@@ -1,0 +1,120 @@
+version: '3.3'
+
+services:
+
+  app-nginx:
+    build:
+      context: .
+      dockerfile: docker/app/nginx.dockerfile
+    container_name: app-nginx
+    volumes:
+      - ./main:/var/www/app
+      - ./docker/app/ssl:/etc/nginx/ssl
+    links:
+      - app-php
+    ports:
+      - 443:443
+      - 8080:80
+    networks:
+      net:
+        ipv4_address: 172.21.1.02
+
+  app-php:
+    build:
+      context: .
+      dockerfile: docker/app/php-fpm.dockerfile
+    container_name: app-php
+    volumes:
+      - ./main:/var/www/app
+      - ./docker/app/php-ini:/usr/local/etc/php/custom.d
+    environment:
+      PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
+    links:
+      - pg
+      - mailcatcher
+    networks:
+      net:
+        ipv4_address: 172.21.1.03
+
+  notifications-nginx:
+    build:
+      context: .
+      dockerfile: docker/notifications/nginx.dockerfile
+    container_name: notifications-nginx
+    volumes:
+      - ./notifications:/var/www/notifications
+    links:
+      - notifications-php
+    networks:
+      net:
+        ipv4_address: 172.21.1.04
+
+  notifications-php:
+    build:
+      context: .
+      dockerfile: docker/notifications/php-fpm.dockerfile
+    container_name: notifications-php
+    volumes:
+      - ./notifications:/var/www/notifications
+      - ./docker/notifications/php-ini:/usr/local/etc/php/custom.d
+    environment:
+      PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
+    networks:
+      net:
+        ipv4_address: 172.21.1.05
+
+  pg:
+    build:
+      context: .
+      dockerfile: docker/app/pg.dockerfile
+    container_name: app-pg
+    volumes:
+      - ./Makefile:/Makefile
+#       Раскоментить если нужно запускать БД из дампа
+#      - ./dump:/dump
+#      - ./dump:/docker-entrypoint-initdb.d:ro
+    ports:
+      - 53307:5432
+    #POSTGRES_USER - должен быть таким же как OWNER в импортируемом дампе
+    #LC_* - должны быть такие же как в дампе. Дефолтная - en_US. Своя устанавливается в докерфайле
+    environment:
+      - POSTGRES_DB=fa_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+#      - LC_COLLATE=ru_RU.UTF-8
+#      - LC_CTYPE=ru_RU.UTF-8
+    networks:
+      net:
+        ipv4_address: 172.21.1.252
+
+  mailcatcher:
+    image: yappabe/mailcatcher
+    container_name: fa-mailcatcher
+    ports:
+      - 1025:1025
+      - 1080:1080
+    networks:
+      net:
+        ipv4_address: 172.21.1.253
+
+  rabbitmq:
+    container_name: fa-rabbitmq
+    image: rabbitmq:3.9-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=root
+    ports:
+      # AMQP protocol port
+      - 5672:5672
+      # HTTP management UI
+      - 15672:15672
+    networks:
+      net:
+        ipv4_address: 172.21.1.254
+
+networks:
+  net:
+    ipam:
+      driver: bridge
+      config:
+        - subnet: "172.21.1.0/24"
