@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'sync'),
+    'default' => env('QUEUE_CONNECTION', 'rabbitmq'),
 
     /*
     |--------------------------------------------------------------------------
@@ -69,6 +69,77 @@ return [
             'retry_after' => 90,
             'block_for' => null,
             'after_commit' => false,
+        ],
+
+        'rabbitmq' => [
+
+            'driver' => 'rabbitmq',
+            /*
+             * Set to "horizon" if you wish to use Laravel Horizon.
+             */
+            'worker' => env('RABBITMQ_WORKER', 'default'),
+            'dsn' => env('RABBITMQ_DSN', null),
+            'connection' => PhpAmqpLib\Connection\AMQPLazyConnection::class,
+
+            'hosts' => [
+                [
+                    'host' => env('RABBITMQ_HOST', '127.0.0.1'),
+                    'port' => env('RABBITMQ_PORT', 5672),
+                    'user' => env('RABBITMQ_USER', 'guest'),
+                    'password' => env('RABBITMQ_PASSWORD', 'guest'),
+                    'vhost' => env('RABBITMQ_VHOST', '/'),
+                ],
+            ],
+
+            'options' => [
+                'exchange' => [
+
+                    'name' => env('RABBITMQ_NOTIFICATIONS_EXCHANGE_NAME'),
+
+                    /*
+                    * Determine if exchange should be created if it does not exist.
+                    */
+                    'declare' => env('RABBITMQ_NOTIFICATIONS_EXCHANGE_DECLARE', true),
+
+                    /*
+                    * Read more about possible values at https://www.rabbitmq.com/tutorials/amqp-concepts.html
+                    */
+                    'type' => env('RABBITMQ_NOTIFICATIONS_EXCHANGE_TYPE', AMQP_EX_TYPE_DIRECT),
+                    'passive' => env('RABBITMQ_EXCHANGE_PASSIVE', false),
+                    'durable' => env('RABBITMQ_EXCHANGE_DURABLE', true),
+                    'auto_delete' => env('RABBITMQ_EXCHANGE_AUTODELETE', false),
+                    'arguments' => env('RABBITMQ_EXCHANGE_ARGUMENTS'),
+                ],
+
+                'queue' => [
+
+                    /*
+                    * Determine if queue should be created if it does not exist.
+                    */
+                    'declare' => env('RABBITMQ_QUEUE_DECLARE', true),
+
+                    /*
+                    * Determine if queue should be binded to the exchange created.
+                    */
+                    'bind' => env('RABBITMQ_QUEUE_DECLARE_BIND', true),
+
+                    /*
+                    * Read more about possible values at https://www.rabbitmq.com/tutorials/amqp-concepts.html
+                    */
+                    'passive' => env('RABBITMQ_QUEUE_PASSIVE', false),
+                    'durable' => env('RABBITMQ_QUEUE_DURABLE', true),
+                    'exclusive' => env('RABBITMQ_QUEUE_EXCLUSIVE', false),
+                    'auto_delete' => env('RABBITMQ_QUEUE_AUTODELETE', false),
+                    'arguments' => env('RABBITMQ_QUEUE_ARGUMENTS'),
+                ],
+                'ssl_options' => [
+                    'cafile' => env('RABBITMQ_SSL_CAFILE', null),
+                    'local_cert' => env('RABBITMQ_SSL_LOCALCERT', null),
+                    'local_key' => env('RABBITMQ_SSL_LOCALKEY', null),
+                    'verify_peer' => env('RABBITMQ_SSL_VERIFY_PEER', true),
+                    'passphrase' => env('RABBITMQ_SSL_PASSPHRASE', null),
+                ],
+            ],
         ],
 
     ],
