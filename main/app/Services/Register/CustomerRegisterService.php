@@ -10,6 +10,7 @@ use App\Jobs\SendEmailVerificationJob;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Queue;
 use Laravel\Passport\ClientRepository;
 
 class CustomerRegisterService implements UserRegisterServiceContract
@@ -36,8 +37,7 @@ class CustomerRegisterService implements UserRegisterServiceContract
 			DB::rollBack();
 			return response()->json([$e->getMessage(), $e->getCode()]);
 		}
-
-		SendEmailVerificationJob::dispatch($user);
+		SendEmailVerificationJob::dispatch($user)->afterResponse();
 
 		return response()->json([$user]);
 	}

@@ -39,8 +39,7 @@ module.exports = function (ctx) {
 			showProgress: true,
 			gzip: false,
 			analyze: false,
-			distDir: "public/quasar",
-			publicPath: "/quasar/",
+			publicPath: "/",
 			ignorePublicFolder: true,
 
 			extendWebpack (cfg) {
