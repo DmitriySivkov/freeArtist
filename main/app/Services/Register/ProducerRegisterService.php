@@ -42,11 +42,7 @@ class ProducerRegisterService implements UserRegisterServiceContract
 				'producer_id' => $producer->id,
 			]);
 
-			$clientRepository = new ClientRepository();
-			$clientRepository->create(
-				$user->id,
-				$request->header('X-APP-TYPE'),'', null, true
-			);
+			$user->createToken($request->email);
 
 			DB::commit();
 		} catch (\Throwable $e) {
@@ -54,7 +50,7 @@ class ProducerRegisterService implements UserRegisterServiceContract
 			return response()->json([$e->getMessage(), $e->getCode()]);
 		}
 
-		SendEmailVerificationJob::dispatch($user);
+		SendEmailVerificationJob::dispatch($user)->afterResponse();
 
 		return response()->json([$user, $producer]);
 	}
