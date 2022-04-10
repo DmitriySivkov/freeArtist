@@ -14,15 +14,11 @@ class AuthController extends Controller
 
     public function login(Request $request, AuthService $authService)
     {
-        if ($request->has(['email', 'password']) && !$request->hasCookie('token'))
-        {
-            return $authService->loginWithCredentials($request->all(['email', 'password']));
-        }
+        if ($request->has(['email', 'password']))
+            return $authService->loginWithCredentials($request->only(['email', 'password']));
 
         if ($request->hasCookie('token'))
-        {
             return $authService->loginWithToken($request);
-        }
 
         return response('Ошибка сервера авторизации', 422);
     }
@@ -36,11 +32,12 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+    	info('in logout');
         /** @var User $user */
-        $user = auth()->user()->token();
+        $user = $request->user();
 
-        $user->revoke();
-
+        $user->currentAccessToken()->delete();
+		info('hasAuthHeader: ' . $request->hasHeader('Authorization'));
         if ($request->hasHeader('Authorization'))
             $request->headers->remove('Authorization');
 
@@ -54,10 +51,10 @@ class AuthController extends Controller
         return response('logged out', 200)->withCookie($cookie);
     }
 
-    public function hasTokenCookie(Request $request)
-    {
-        return $request->hasCookie('token');
-    }
+	public function hasTokenCookie(Request $request)
+	{
+		return $request->hasCookie('token');
+	}
 
     public function verifyEmail(Request $request)
     {

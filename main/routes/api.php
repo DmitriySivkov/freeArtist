@@ -36,7 +36,12 @@ Route::group(['prefix' => 'producers'], function() {
 });
 
 /** auth requiring routes */
-Route::group(['middleware' => ['auth:sanctum']], function() {
+Route::group([
+	'middleware' => [
+		'appendAuthorizationHeader',
+		'auth:sanctum'
+	]
+], function() {
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::group(['prefix' => 'orders'], function () {

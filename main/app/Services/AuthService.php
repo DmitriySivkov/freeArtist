@@ -17,7 +17,11 @@ class AuthService
         /** @var User $user */
         $user = auth()->user();
 
-        return response()->json($user->load('role', 'producer'));
+		$token = $user->createToken($user->email)
+			->plainTextToken;
+
+        return response()->json($user->load('role', 'producer'))
+			->withCookie(cookie('token', $token, 0, null, null, true, true, false, 'none'));;
     }
 
     public function loginWithToken(Request $request)
@@ -27,7 +31,7 @@ class AuthService
         }
 
         /** @var User $user */
-        $user = auth('api')->user();
+        $user = auth("sanctum")->user();
 
         return response()->json($user->load('role', 'producer'));
     }
