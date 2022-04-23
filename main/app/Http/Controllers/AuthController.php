@@ -32,12 +32,10 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-    	info('in logout');
         /** @var User $user */
         $user = $request->user();
 
         $user->currentAccessToken()->delete();
-		info('hasAuthHeader: ' . $request->hasHeader('Authorization'));
         if ($request->hasHeader('Authorization'))
             $request->headers->remove('Authorization');
 

@@ -6,10 +6,13 @@ import { api } from "./axios"
 // "export default () => {}" function below (which runs individually
 // for each client)
 
-export default async ({ store }) => {
-	await api.post("hasTokenCookie")
-		.then(async (response) => {
+/** seems like theres no need for asynchronous requests
+ * as it loads before entire app anyways
+ * */
+export default ({ store }) => {
+	api.post("hasTokenCookie")
+		.then((response) => {
 			if (response.data)
-				await store.dispatch("user/login")
+				store.dispatch("user/login")
 		})
 }
