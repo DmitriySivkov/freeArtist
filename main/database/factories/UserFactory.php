@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Producer;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -22,12 +24,20 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+    	$roleId = $this->faker->numberBetween(Role::CUSTOMER, ROLE::PRODUCER);
+    	$producerId = $roleId == Role::CUSTOMER ?
+			null :
+			Producer::query()
+				->inRandomOrder()
+				->first()
+				->id;
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->email,
             'email_verified_at' => now(),
             'password' => 'test123',
-            'role_id' => $this->faker->numberBetween(1, 2),
+            'role_id' => $roleId,
+			'producer_id' => $producerId,
             'remember_token' => null,
         ];
     }

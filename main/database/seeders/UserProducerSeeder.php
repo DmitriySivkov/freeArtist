@@ -4,10 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\Order;
 use App\Models\Producer;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
-class UserProducerOrderSeeder extends Seeder
+class UserProducerSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,8 +17,7 @@ class UserProducerOrderSeeder extends Seeder
      */
     public function run()
     {
+		Producer::factory(10)->create();
         User::factory(10)->create();
-        Producer::factory(10)->create();
-        Order::factory(10)->create();
     }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {
@@ -14,9 +15,12 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-		$roles = ['Посетитель', 'Мастер'];
+    	/** postgres specific command */
+		DB::statement("ALTER SEQUENCE roles_id_seq RESTART WITH 1");
+
+		$roles = ['customer', 'producer'];
 		foreach ($roles as $role) {
-			Role::create([
+			Role::query()->create([
 				'title' => $role
 			]);
 		}
