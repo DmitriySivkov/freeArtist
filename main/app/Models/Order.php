@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, HasJsonRelationships;
+
+    protected $casts = [
+    	'products' => 'json'
+	];
 
     public function customer()
     {
@@ -21,5 +26,10 @@ class Order extends Model
     {
         return $this->belongsTo(Producer::class);
     }
+
+    public function products()
+	{
+		return $this->belongsToJson(Product::class, 'products');
+	}
 
 }

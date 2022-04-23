@@ -27,15 +27,12 @@ export default {
 
 		const user = computed(() => $store.state.user.data)
 
-		$store.dispatch("order/getList", {
-			filter: {date: qdate.value, user: user.value}
-		})
-
 		return {
 			qdate,
 			ruLocale,
 
 			showOrders(date) {
+				if (date === null) return
 				$store.dispatch("order/getList", {
 					filter: { date, user: user.value }
 				})

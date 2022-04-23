@@ -36,7 +36,7 @@
 							bordered
 							class="bg-indigo-8 text-white q-pa-lg full-height"
 						>
-							<div>создан: <span>{{ item.created_at_parts.hi }}</span></div>
+							<div>создан: <span>{{ item.created_at_parts.hi }} {{ item.created_at_parts.date }}</span></div>
 							<div>обновлен: <span>{{ item.updated_at_parts.hi }} {{ item.updated_at_parts.date }}</span></div>
 							<div>исполнитель: <span>{{ item.producer.title }}</span></div>
 						</q-card>
@@ -49,18 +49,6 @@
 				/>
 			</template>
 		</q-virtual-scroll>
-	</div>
-	<div v-else>
-		<q-card
-			dark
-			bordered
-			class="bg-indigo-8"
-		>
-			<div class="text-h5 text-center q-pa-lg">
-				Заказов нет
-			</div>
-			<q-separator dark />
-		</q-card>
 	</div>
 </template>
 

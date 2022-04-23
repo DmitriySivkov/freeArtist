@@ -11,10 +11,6 @@ class Producer extends Model
 
     protected $guarded = [];
 
-    protected $with = [
-		'products'
-	];
-
     public function orders()
     {
         return $this->hasMany(Order::class);

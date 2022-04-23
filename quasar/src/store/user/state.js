@@ -1,7 +1,7 @@
 export default {
 	data: {
 		role: {},
-		producer: {}
+		producer: {},
 	},
 	roles: {
 		customer: 1,

@@ -34,7 +34,8 @@ class CustomerOrderService implements OrderServiceContract
 			}
 		}
 
-		$orders = $query->get();
+		$orders = $query->with(['producer', 'products'])->get();
+
 		$orders->map(function(Order $order) {
 			$order->created_at_parts = [
 				'hi' => Carbon::parse($order->created_at)->format('H:i'),
