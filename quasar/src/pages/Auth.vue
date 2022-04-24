@@ -85,7 +85,7 @@ export default {
 
 		const user = computed(() => $store.state.user.data)
 
-		if (Object.keys(user.value).length > 0)
+		if (user.value.isLogged === true)
 			$router.replace("personal")
 
 		const email = ref(null)
@@ -123,7 +123,7 @@ export default {
 					})
 					$router.replace("personal")
 				}).catch((error) => {
-					const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), [])
+					const errors = Object.values(error.response.data.errors).reduce((accum, val) => accum.concat(...val), [])
 					for (var val of errors) {
 						$q.notify({
 							color: "red-5",

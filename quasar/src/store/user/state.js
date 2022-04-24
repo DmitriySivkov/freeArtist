@@ -1,4 +1,5 @@
 export default {
+	isLogged: false,
 	data: {
 		role: {},
 		producer: {},

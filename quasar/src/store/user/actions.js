@@ -1,41 +1,20 @@
 import { api } from "src/boot/axios"
 
 export const login = async ({commit}, payload) => {
-	return new Promise((resolve, reject) => {
-		api.post("auth", payload, {headers: {"X-APP-TYPE":"web-app"}})
-			.then((response) => {
-				commit("SET_USER", response.data)
-				resolve()
-			})
-			.catch((error) => {
-				reject(error.response.data.errors)
-			})
-	})
+	const response = await api.post("auth", payload, {headers: {"X-APP-TYPE":"web-app"}})
+	console.log(response.errors)
+	commit("SET_USER", response.data.data)
+	commit("SET_IS_LOGGED", true)
 }
 
 export const signUp = async ({commit}, payload) => {
-	return new Promise((resolve, reject) => {
-		api.post("register", payload, {headers: {"X-APP-TYPE":"web-app"}})
-			.then(() => {
-				resolve()
-			})
-			.catch((error) => {
-				reject(error.response.data.errors)
-			})
-	})
+	await api.post("register", payload, {headers: {"X-APP-TYPE":"web-app"}})
 }
 
 export const logout = async ({commit}, payload) => {
-	return new Promise((resolve, reject) => {
-		api.post("logout", payload)
-			.then(() => {
-				commit("SET_USER", {})
-				resolve()
-			})
-			.catch((error) => {
-				reject(error.response.data.errors)
-			})
-	})
+	await api.post("logout", payload)
+	commit("SET_USER", {})
+	commit("SET_IS_LOGGED", false)
 }
 
 export const checkTokenCookie = async () => {

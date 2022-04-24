@@ -24,7 +24,7 @@ export default {
 		const user = computed(() => $store.state.user)
 
 		const linkList = computed(() =>
-			Object.keys(user.value.data).length > 0 ?
+			user.value.isLogged === true ?
 				user.value.linkList.auth :
 				user.value.linkList.unauth
 		)
