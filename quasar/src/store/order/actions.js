@@ -5,5 +5,5 @@ export const getList = async ({commit}, payload) => {
 		params: payload
 	})
 
-	commit("SET_ORDER_LIST", response.data.data)
+	commit("SET_ORDER_LIST", response.data)
 }
