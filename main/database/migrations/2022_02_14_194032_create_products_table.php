@@ -18,6 +18,7 @@ class CreateProductsTable extends Migration
             $table->foreignId('producer_id');
             $table->string('title');
             $table->json('composition');
+            $table->decimal('price', 9, 2);
             $table->timestamps();
         });
     }

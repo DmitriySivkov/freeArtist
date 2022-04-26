@@ -3,6 +3,7 @@
 		dark
 		class="bg-indigo-8"
 	>
+		<th class="bg-indigo-10 text-body1">Нажмите / наведите на продукт чтобы увидеть состав</th>
 		<tbody>
 			<tr
 				v-for="(product, index) in products"
@@ -10,14 +11,20 @@
 			>
 				<div class="row items-center">
 					<div class="col-xs-12 col-md-7 q-pa-md">
-						<div class="text-center">{{ product.title }}</div>
-						<div
-							v-for="(description, ingredient) in JSON.parse(product.composition)"
-							:key="ingredient"
-							class="text-center"
+						<div class="text-center cursor-pointer">{{ product.title }}</div>
+						<q-tooltip
+							anchor="bottom middle"
+							class="text-body2"
 						>
-							{{ ingredient }}<span v-if="description">: {{ description }}</span>
-						</div>
+							<div
+								v-for="(description, ingredient) in JSON.parse(product.composition)"
+								:key="ingredient"
+								class="text-center"
+							>
+								{{ ingredient }}<span v-if="description">: {{ description }}</span>
+							</div>
+						</q-tooltip>
+						<div class="text-center cursor-pointer">{{ product.price }} р.</div>
 					</div>
 					<div class="col-xs-12 col-md-5">
 						<q-input
@@ -51,6 +58,7 @@
 						</q-input>
 					</div>
 				</div>
+				<hr v-if="index !== (products.length - 1)"/>
 			</tr>
 		</tbody>
 	</q-markup-table>
