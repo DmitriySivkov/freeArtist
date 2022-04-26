@@ -31,11 +31,11 @@
 							v-model.number="orderList[product.id]"
 							@change="this.orderAmountChanged($event, product.id)"
 							type="number"
-							input-class="text-center"
-							bg-color="white"
-							dense
+							:input-class="orderList[product.id] > 0 ? 'text-center text-white' : 'text-center'"
+							:bg-color="orderList[product.id] > 0 ? 'teal' : 'white'"
 							standout="bg-teal text-white"
-							class="q-pa-md"
+							dense
+							class="q-ma-md"
 						>
 							<template v-slot:before>
 								<q-btn
