@@ -5,14 +5,14 @@
 	>
 		<tbody>
 			<tr
-				v-for="product in products"
-				:key="product.id"
+				v-for="(product, index) in products"
+				:key="index"
 			>
 				<div class="row items-center">
 					<div class="col-xs-12 col-md-7 q-pa-md">
 						<div class="text-center">{{ product.title }}</div>
 						<div
-							v-for="(description, ingredient) in product.composition"
+							v-for="(description, ingredient) in JSON.parse(product.composition)"
 							:key="ingredient"
 							class="text-center"
 						>
@@ -21,8 +21,8 @@
 					</div>
 					<div class="col-xs-12 col-md-5">
 						<q-input
-							mask="###"
-							v-model.number="amount_to_order[product.id]"
+							v-model.number="orderList[product.id]"
+							@change="this.orderAmountChanged($event, product.id)"
 							type="number"
 							input-class="text-center"
 							bg-color="white"
@@ -62,24 +62,32 @@ export default {
 	props: {
 		products: Object
 	},
-	setup() {
-		const amount_to_order = reactive({})
+	setup(props) {
+		const orderList = reactive(
+			props.products.reduce((accum, product) => ({ ...accum, [product.id]: 0 }), {})
+		)
 
 		const increase = (product_id) => {
-			if (amount_to_order[product_id] === 999) return
-			amount_to_order.hasOwnProperty(product_id) ?
-				amount_to_order[product_id]++ :
-				amount_to_order[product_id] = 1
+			if (orderList[product_id] === 999) return
+			orderList[product_id]++
 		}
 		const decrease = (product_id) => {
-			if (!amount_to_order.hasOwnProperty(product_id)) return
-			if (amount_to_order[product_id] === 0) return
-			amount_to_order[product_id]--
+			if (orderList[product_id] === 0) return
+			orderList[product_id]--
 		}
+
+		const orderAmountChanged = (product_amount, product_id) => {
+			if (parseInt(product_amount) >= 999)
+				orderList[product_id] = 999
+			if (product_amount === "")
+				orderList[product_id] = 0
+		}
+
 		return {
-			amount_to_order,
+			orderList,
 			increase,
-			decrease
+			decrease,
+			orderAmountChanged
 		}
 	}
 }

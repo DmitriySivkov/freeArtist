@@ -12,7 +12,9 @@ class ProducerController extends Controller
 	 */
 	public function index()
 	{
-		$producers = Producer::orderBy('title', 'asc')->get();
+		$producers = Producer::orderBy('title', 'asc')
+			->with(['products'])
+			->get();
 
 		return response()->json($producers);
 	}
