@@ -1,10 +1,6 @@
 <template>
 	<q-list>
-		<q-item-label header>
-			Навигация
-		</q-item-label>
-
-		<Link
+		<NavigationItem
 			v-for="link in linkList"
 			:key="link.title"
 			v-bind="link"
@@ -15,10 +11,10 @@
 <script>
 import { useStore } from "vuex"
 import { computed } from "vue"
-import Link from "src/components/drawer/Link"
+import NavigationItem from "src/components/drawer/NavigationItem"
 
 export default {
-	components: { Link },
+	components: { NavigationItem },
 	setup() {
 		const $store = useStore()
 		const user = computed(() => $store.state.user)

@@ -5,17 +5,14 @@
 				<q-btn
 					flat
 					dense
-					round
 					icon="menu"
 					aria-label="Menu"
 					@click="toggleLeftDrawer"
 					size="lg"
 				/>
-
 				<q-toolbar-title class="text-h5">
 					{{ this.route.meta.route_name || ''}}
 				</q-toolbar-title>
-
 			</q-toolbar>
 		</q-header>
 
@@ -23,37 +20,54 @@
 			v-model="leftDrawerOpen"
 			show-if-above
 			bordered
-			elevated
 			class="bg-grey-2"
 		>
 			<template v-slot:default>
-				<LinkList />
+				<Navigation />
 			</template>
 		</q-drawer>
 
 		<q-page-container>
 			<router-view />
 		</q-page-container>
+		<q-footer elevated>
+			<q-toolbar class="q-mb-md q-mt-md">
+				<q-btn
+					icon="shopping_cart"
+					label="Добавить в корзину"
+					stretch
+				/>
+				<q-separator dark/>
+			</q-toolbar>
+			<q-toolbar class="q-mb-md q-mt-md">
+				<q-btn
+					stretch
+					label="123"
+					icon-right="shopping_cart"
+					class="text-right"
+				/>
+			</q-toolbar>
+		</q-footer>
 	</q-layout>
 </template>
 
 <script>
-import LinkList from "src/components/drawer/LinkList"
+import Navigation from "src/components/drawer/Navigation"
 import { useRoute } from "vue-router"
 import { defineComponent, ref } from "vue"
 
 export default defineComponent({
 	name: "MainLayout",
-	components: { LinkList },
+	components: { Navigation },
 	setup () {
 		const route = useRoute()
 		const leftDrawerOpen = ref(false)
-
+		const toggleLeftDrawer = () => {
+			leftDrawerOpen.value = !leftDrawerOpen.value
+		}
 		return {
 			leftDrawerOpen,
-			toggleLeftDrawer () {
-				leftDrawerOpen.value = !leftDrawerOpen.value
-			},
+			toggleLeftDrawer,
 			route
 		}
 	}

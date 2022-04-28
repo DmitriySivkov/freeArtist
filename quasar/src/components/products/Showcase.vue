@@ -3,7 +3,11 @@
 		dark
 		class="bg-indigo-8"
 	>
-		<th class="bg-indigo-10 text-body1">Нажмите / наведите на продукт чтобы увидеть состав</th>
+		<th
+			class="bg-indigo-10 text-body"
+			style="white-space: normal"
+		>
+			Нажмите / наведите на продукт чтобы увидеть состав</th>
 		<tbody>
 			<tr
 				v-for="(product, index) in products"
