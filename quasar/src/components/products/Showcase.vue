@@ -72,6 +72,7 @@
 import { reactive } from "vue"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
+
 export default {
 	props: {
 		products: Object
@@ -79,9 +80,16 @@ export default {
 	setup(props) {
 		const $store = useStore()
 		const $router = useRouter()
-
+		const producerId = $router.currentRoute.value.params.id
 		const orderList = reactive(
-			props.products.reduce((accum, product) => ({ ...accum, [product.id]: 0 }), {})
+			props.products.reduce(
+				(accum, product) => ({ ...accum, [product.id]:
+						$store.state.cart.data.hasOwnProperty(producerId) && $store.state.cart.data[producerId].hasOwnProperty(product.id) ?
+							$store.state.cart.data[producerId][product.id] :
+							0
+				}),
+				{}
+			)
 		)
 
 		const increase = (product_id) => {
@@ -108,7 +116,7 @@ export default {
 			let order =  Object.assign({}, orderList)
 
 			$store.dispatch("cart/addToCart", {
-				producerId: $router.currentRoute.value.params.id,
+				producerId,
 				producerProductList: order
 			})
 		}

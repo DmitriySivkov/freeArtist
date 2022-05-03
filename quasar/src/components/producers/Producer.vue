@@ -30,7 +30,7 @@ import { computed } from "vue"
 import { useRouter } from "vue-router"
 import Showcase from "src/components/products/Showcase"
 
-export default ({
+export default {
 	components: { Showcase },
 	setup() {
 		const $store = useStore()
@@ -45,5 +45,5 @@ export default ({
 			producer,
 		}
 	}
-})
+}
 </script>

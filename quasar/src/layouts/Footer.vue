@@ -14,6 +14,7 @@
 <script>
 import { useStore } from "vuex"
 import { computed } from "vue"
+import { LocalStorage } from "quasar"
 export default {
 	setup() {
 		const $store = useStore()
@@ -21,6 +22,10 @@ export default {
 			() => Object.values($store.state.cart.data)
 				.reduce((accum, productList) => accum + Object.keys(productList).length, 0)
 		)
+
+		if (LocalStorage.has("cart"))
+			$store.dispatch("cart/setCart", LocalStorage.getItem("cart"))
+
 		return {
 			cartCounter
 		}
