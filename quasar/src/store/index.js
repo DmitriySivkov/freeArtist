@@ -3,6 +3,7 @@ import { createStore } from "vuex"
 import user from "src/store/user"
 import order from "src/store/order"
 import producer from "src/store/producer"
+import cart from "src/store/cart"
 
 // import example from './module-example'
 
@@ -20,7 +21,8 @@ export default store(function (/* { ssrContext } */) {
 		modules: {
 			user,
 			order,
-			producer
+			producer,
+			cart
 		},
 
 		// enable strict mode (adds overhead!)

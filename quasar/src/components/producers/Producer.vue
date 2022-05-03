@@ -38,7 +38,7 @@ export default ({
 
 		const producer = computed(
 			() => $store.state.producer.data.find(
-				(producer) => producer.id == $router.currentRoute.value.params.id
+				(producer) => producer.id === parseInt($router.currentRoute.value.params.id)
 			))
 
 		return {

@@ -70,11 +70,16 @@
 
 <script>
 import { reactive } from "vue"
+import { useStore } from "vuex"
+import { useRouter } from "vue-router"
 export default {
 	props: {
 		products: Object
 	},
 	setup(props) {
+		const $store = useStore()
+		const $router = useRouter()
+
 		const orderList = reactive(
 			props.products.reduce((accum, product) => ({ ...accum, [product.id]: 0 }), {})
 		)
@@ -82,17 +87,30 @@ export default {
 		const increase = (product_id) => {
 			if (orderList[product_id] === 999) return
 			orderList[product_id]++
+
+			orderAmountChanged()
 		}
 		const decrease = (product_id) => {
 			if (orderList[product_id] === 0) return
 			orderList[product_id]--
+
+			orderAmountChanged()
 		}
 
 		const orderAmountChanged = (product_amount, product_id) => {
+			if (product_amount === "") {
+				orderList[product_id] = 0
+			}
+
 			if (parseInt(product_amount) >= 999)
 				orderList[product_id] = 999
-			if (product_amount === "")
-				orderList[product_id] = 0
+
+			let order =  Object.assign({}, orderList)
+
+			$store.dispatch("cart/addToCart", {
+				producerId: $router.currentRoute.value.params.id,
+				producerProductList: order
+			})
 		}
 
 		return {
