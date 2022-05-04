@@ -7,7 +7,9 @@ export const login = async ({commit}, payload) => {
 }
 
 export const signUp = async ({commit}, payload) => {
-	await api.post("register", payload, {headers: {"X-APP-TYPE":"web-app"}})
+	const response = await api.post("register", payload, {headers: {"X-APP-TYPE":"web-app"}})
+	commit("SET_USER", response.data)
+	commit("SET_IS_LOGGED", true)
 }
 
 export const logout = async ({commit}, payload) => {

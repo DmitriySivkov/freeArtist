@@ -19,12 +19,12 @@
 
 				<q-input
 					filled
-					v-model="email"
-					label="Адрес электронной почты *"
+					v-model="phone"
+					label="Телефон *"
+					mask="8 (###) ###-##-##"
 					:lazy-rules="true"
 					:rules="[
-						val => !!val || 'Введите адрес электронной почты',
-						isValidEmail
+						val => !!val || 'Введите номер телефона'
 					]"
 				/>
 
@@ -95,14 +95,14 @@ export default {
 		const $router = useRouter()
 
 		const name = ref(null)
-		const email = ref(null)
+		const phone = ref(null)
 		const accept = ref(false)
 		const password = ref("")
 		const is_pwd = ref(true)
 
 		return {
 			name,
-			email,
+			phone,
 			password,
 			is_pwd,
 			accept,
@@ -119,7 +119,7 @@ export default {
 				else {
 					$store.dispatch("user/signUp", {
 						name: name.value,
-						email: email.value,
+						phone: phone.value,
 						password: password.value,
 						role_id: $router.currentRoute.value.meta.role_id,
 						consent: accept.value
@@ -128,10 +128,12 @@ export default {
 							color: "green-4",
 							textColor: "white",
 							icon: "cloud_done",
-							message: "На указанную почту отправлено письмо для подтверждения"
+							message: "Добро пожаловать, " + name.value
 						})
+						$router.push("/")
 					}).catch((error) => {
-						const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), [])
+						const errors = Object.values(error.response.data.errors)
+							.reduce((accum, val) => accum.concat(...val), [])
 						for (var val of errors) {
 							$q.notify({
 								color: "red-5",
@@ -147,15 +149,10 @@ export default {
 
 			onReset () {
 				name.value = null
-				email.value = null
+				phone.value = null
 				password.value = null
 				accept.value = false
 			},
-
-			isValidEmail (val) {
-				return /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/.test(val)
-            || "Неверный формат"
-			}
 
 		}
 	},

@@ -7,7 +7,7 @@
 			>
 				<tbody>
 					<tr
-						v-for="(value, key) in {name:user.name, email:user.email, status:user.role.title}"
+						v-for="(value, key) in {name:user.name, phone:user.phone, email:user.email, status:user.role.title}"
 						:key="key"
 					>
 						<td class="text-left">{{ key }}</td>

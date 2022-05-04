@@ -12,16 +12,16 @@ class AuthService
     public function loginWithCredentials($credentials)
     {
         if (!auth()->attempt($credentials))
-            return response()->json(['errors' => ['total' => ['Неверные почта или пароль']]], 422);
+            return response()->json(['errors' => ['total' => ['Неверный телефон или пароль']]], 422);
 
         /** @var User $user */
         $user = auth()->user();
 
-		$token = $user->createToken($user->email)
+		$token = $user->createToken($user->phone)
 			->plainTextToken;
 
         return response()->json($user->load(['role', 'producer']))
-			->withCookie(cookie('token', $token, 0, null, null, true, true, false, 'none'));;
+			->withCookie(cookie('token', $token, 0, null, null, true, true, false, 'none'));
     }
 
     public function loginWithToken(Request $request)

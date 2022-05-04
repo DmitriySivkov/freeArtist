@@ -9,12 +9,13 @@
 				>
 					<q-input
 						filled
-						v-model="email"
-						label="Адрес электронной почты *"
+						v-model="phone"
+						label="Телефон *"
+						mask="# (###) ###-##-##"
+						:unmasked-value="true"
 						:lazy-rules="true"
 						:rules="[
-							val => !!val || 'Введите адрес электронной почты',
-							isValidEmail
+							val => !!val || 'Введите номер телефона'
 						]"
 					/>
 
@@ -79,7 +80,7 @@ import { useRouter, useRoute } from "vue-router"
 export default {
 	setup() {
 		const $router = useRouter()
-		const $currentRoute = useRoute()
+		// const $currentRoute = useRoute()
 		const $store = useStore()
 		const $q = useQuasar()
 
@@ -88,31 +89,31 @@ export default {
 		if (user.value.isLogged === true)
 			$router.replace("personal")
 
-		const email = ref(null)
+		const phone = ref(null)
 		const password = ref("")
 		const is_pwd = ref(true)
 
-		if ($currentRoute.query["verify-email"] && $currentRoute.query["verify-email"] === "1")
-			$store.dispatch("user/verifyEmail", {
-				hash: $currentRoute.query["hash"],
-				email: $currentRoute.query["email"]
-			}).then(() => {
-				$q.notify({
-					color: "green-4",
-					textColor: "white",
-					icon: "cloud_done",
-					message: "Почта успешно верифицирована!"
-				})
-			})
+		// if ($currentRoute.query["verify-email"] && $currentRoute.query["verify-email"] === "1")
+		// 	$store.dispatch("user/verifyEmail", {
+		// 		hash: $currentRoute.query["hash"],
+		// 		email: $currentRoute.query["email"]
+		// 	}).then(() => {
+		// 		$q.notify({
+		// 			color: "green-4",
+		// 			textColor: "white",
+		// 			icon: "cloud_done",
+		// 			message: "Почта успешно верифицирована!"
+		// 		})
+		// 	})
 
 		return {
-			email,
+			phone,
 			password,
 			is_pwd,
 
 			onSubmit () {
 				$store.dispatch("user/login", {
-					email: email.value,
+					phone: phone.value,
 					password: password.value,
 				}).then(() => {
 					$q.notify({
@@ -136,13 +137,8 @@ export default {
 			},
 
 			onReset () {
-				email.value = null
+				phone.value = null
 				password.value = null
-			},
-
-			isValidEmail (val) {
-				return /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/.test(val)
-            || "Неверный формат"
 			}
 
 		}

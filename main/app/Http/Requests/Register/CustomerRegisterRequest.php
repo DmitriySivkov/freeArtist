@@ -18,7 +18,14 @@ class CustomerRegisterRequest extends FormRequest implements UserRegisterRequest
         return true;
     }
 
-    /**
+    public function prepareForValidation()
+	{
+		$this->merge([
+			'phone' => preg_replace('/\D/', '', $this->phone)
+		]);
+	}
+
+	/**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -27,7 +34,7 @@ class CustomerRegisterRequest extends FormRequest implements UserRegisterRequest
     {
         return [
           'name' => ['required', 'min:2', 'max:255'],
-          'email' => ['required', 'max:128', 'unique:users'],
+          'phone' => ['required', 'max:32', 'unique:users'],
           'password' => ['required', 'min:6', 'max:255'],
           'role_id' => ['required'],
         ];
@@ -53,7 +60,7 @@ class CustomerRegisterRequest extends FormRequest implements UserRegisterRequest
     public function messages()
     {
         return [
-            'email.unique' => 'Такая почта уже существует',
+            'phone.unique' => 'Пользователь с таким номером уже существует',
         ];
     }
 }

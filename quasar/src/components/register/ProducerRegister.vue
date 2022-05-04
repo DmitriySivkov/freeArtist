@@ -246,7 +246,8 @@ export default {
 						message: "На указанную почту отправлено письмо для подтверждения"
 					})
 				}).catch((error) => {
-					const errors = Object.values(error).reduce((accum, val) => accum.concat(...val), [])
+					const errors = Object.values(error.response.data.errors)
+						.reduce((accum, val) => accum.concat(...val), [])
 					for (var val of errors) {
 						$q.notify({
 							color: "red-5",

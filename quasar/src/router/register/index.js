@@ -8,7 +8,7 @@ export default [
 	},
 	{
 		path: "register/user",
-		component: () => import("components/register/UserRegister"),
+		component: () => import("components/register/CustomerRegister"),
 		meta: {
 			route_name: "Регистрация: пользователь",
 			role_id: 1

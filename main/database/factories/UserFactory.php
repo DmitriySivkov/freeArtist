@@ -33,8 +33,7 @@ class UserFactory extends Factory
 				->id;
         return [
             'name' => $this->faker->name,
-            'email' => $this->faker->unique()->email,
-            'email_verified_at' => now(),
+            'phone' => $this->faker->unique()->phoneNumber,
             'password' => 'test123',
             'role_id' => $roleId,
 			'producer_id' => $producerId,
