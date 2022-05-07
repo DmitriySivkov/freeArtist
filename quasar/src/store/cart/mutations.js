@@ -11,7 +11,11 @@ export const ADD_TO_CART = (state, payload) => {
 	let producerProductListFiltered = {[payload.producerId]: payload.producerProductList}
 
 	try {
-		state.data = {...state.data, ...producerProductListFiltered}
+		if (Object.keys(payload.producerProductList).length === 0 && state.data.hasOwnProperty(payload.producerId))
+			delete state.data[payload.producerId]
+		else
+			state.data = {...state.data, ...producerProductListFiltered}
+
 		LocalStorage.set("cart", state.data)
 	} catch (error) {
 		Notify.create({
