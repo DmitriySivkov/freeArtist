@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { reactive } from "vue"
+import { computed } from "vue"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 
@@ -81,7 +81,7 @@ export default {
 		const $store = useStore()
 		const $router = useRouter()
 		const producerId = $router.currentRoute.value.params.id
-		const orderList = reactive(
+		const orderList = computed(() =>
 			props.products.reduce(
 				(accum, product) => ({ ...accum, [product.id]:
 						$store.state.cart.data.hasOwnProperty(producerId) && $store.state.cart.data[producerId].hasOwnProperty(product.id) ?

@@ -2,6 +2,7 @@ import personal from "src/router/personal"
 import register from "src/router/register"
 import drawer from "src/router/drawer"
 import producer from "src/router/producer"
+import cart from "src/router/cart"
 
 const routes = [
 	{
@@ -11,7 +12,8 @@ const routes = [
 			...drawer,
 			...personal,
 			...register,
-			...producer
+			...producer,
+			...cart
 		]
 	},
 

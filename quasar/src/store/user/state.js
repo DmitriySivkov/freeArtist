@@ -17,6 +17,12 @@ export default {
 				link: "/personal"
 			},
 			{
+				title: "Корзина",
+				caption: "",
+				icon: "shopping_cart",
+				link: "/cart"
+			},
+			{
 				title: "Главная",
 				caption: "",
 				icon: "home",
@@ -38,16 +44,22 @@ export default {
 		],
 		unauth: [
 			{
+				title: "Авторизация",
+				caption: "Войдите или зарегистрируйтесь",
+				icon: "login",
+				link: "/auth"
+			},
+			{
 				title: "Главная",
 				caption: "",
 				icon: "home",
 				link: "/"
 			},
 			{
-				title: "Авторизация",
-				caption: "Войдите или зарегистрируйтесь",
-				icon: "login",
-				link: "/auth"
+				title: "Корзина",
+				caption: "",
+				icon: "shopping_cart",
+				link: "/cart"
 			},
 		],
 	}

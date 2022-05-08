@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Producer;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class ProducerController extends Controller
 {
@@ -12,10 +13,16 @@ class ProducerController extends Controller
 	 */
 	public function index()
 	{
-		$producers = Producer::orderBy('title', 'asc')
-			->with(['products'])
-			->get();
+		$producers = Cache::remember('producerList', 600, function() {
+			return Producer::orderBy('title', 'asc')
+				->get();
+		});
 
 		return response()->json($producers);
+	}
+
+	public function show(Producer $producer)
+	{
+		return response()->json($producer->load(['products']));
 	}
 }

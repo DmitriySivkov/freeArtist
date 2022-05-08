@@ -25,6 +25,17 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
+    	$products = Product::query()
+			->inRandomOrder()
+			->limit(4)
+			->pluck('id')
+			->map(function($productId) {
+				return [
+					'product_id' => $productId,
+					'amount' => $this->faker->numberBetween(1,10)
+				];
+			});
+
         return [
             'user_id' => User::query()
                 ->where('role_id', 1)
@@ -35,10 +46,7 @@ class OrderFactory extends Factory
                 ->inRandomOrder()
                 ->first()
                 ->id,
-            'products' => Product::query()
-				->inRandomOrder()
-				->limit(4)
-				->pluck('id'),
+            'products' => $products,
             'payment_method' => $this->faker->numberBetween(1,2),
             'status' => 1,
         ];

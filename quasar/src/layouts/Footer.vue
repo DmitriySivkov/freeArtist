@@ -1,11 +1,12 @@
 <template>
 	<q-footer elevated>
-		<q-toolbar class="q-mb-md q-mt-md">
+		<q-toolbar class="q-mb-md q-mt-md q-gutter-sm">
 			<q-btn
 				stretch
 				:label="cartCounter"
 				icon-right="shopping_cart"
 				class="text-right"
+				to="/cart"
 			/>
 		</q-toolbar>
 	</q-footer>

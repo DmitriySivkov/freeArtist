@@ -19,7 +19,10 @@
 	</div>
 	<div class="q-pa-md row">
 		<div class="col-xs-12 col-md-4">
-			<Showcase :products="producer.products" />
+			<Showcase
+				v-if="producer.products"
+				:products="producer.products"
+			/>
 		</div>
 	</div>
 </template>
@@ -36,13 +39,12 @@ export default {
 		const $store = useStore()
 		const $router = useRouter()
 
-		const producer = computed(
-			() => $store.state.producer.data.find(
-				(producer) => producer.id === parseInt($router.currentRoute.value.params.id)
-			))
+		$store.dispatch("producer/getProducer", parseInt($router.currentRoute.value.params.id))
+
+		const producer = computed(() => $store.state.producer.detail)
 
 		return {
-			producer,
+			producer
 		}
 	}
 }

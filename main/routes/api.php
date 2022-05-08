@@ -33,6 +33,7 @@ Route::group(['prefix' => 'roles'], function() {
 
 Route::group(['prefix' => 'producers'], function() {
 	Route::get('', [ProducerController::class, 'index']);
+	Route::get('{producer}', [ProducerController::class, 'show']);
 });
 
 /** auth requiring routes */
