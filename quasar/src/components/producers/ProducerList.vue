@@ -4,6 +4,7 @@
 		:key="index"
 		clickable
 		@click="show(producer.id)"
+		:class="{ 'bg-light-green-2': cart.hasOwnProperty(producer.id) }"
 	>
 		<q-item-section avatar>
 			<q-icon
@@ -26,9 +27,11 @@ export default ({
 		const $store = useStore()
 		const $router = useRouter()
 		const producers = computed(() => $store.state.producer.data)
+		const cart = computed(() => $store.state.cart.data)
 
 		return {
 			producers,
+			cart,
 			show(id) {
 				$router.push("/producers/" + id)
 			}

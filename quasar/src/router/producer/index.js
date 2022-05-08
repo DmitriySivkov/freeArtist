@@ -1,9 +1,9 @@
 export default [
 	{
 		path: "/producers/:id",
-		component: () => import("components/producers/Producer"),
+		component: () => import("components/producers/ProducerShowcase"),
 		meta: {
-			route_name: "Изготовитель"
+			route_name: "Витрина"
 		}
 	},
 ]
