@@ -19,10 +19,11 @@
 	</div>
 	<div class="q-pa-md row">
 		<div class="col-xs-12 col-md-4">
-			<q-markup-table
+			<q-table
 				dark
 				class="bg-indigo-8"
 				v-if="orderList.value"
+				:loading="isLoading"
 			>
 				<th
 					class="bg-indigo-10 text-body"
@@ -86,14 +87,14 @@
 						<hr v-if="index !== (producer.products.length - 1)"/>
 					</tr>
 				</tbody>
-			</q-markup-table>
+			</q-table>
 		</div>
 	</div>
 </template>
 
 <script>
 import { useStore } from "vuex"
-import { computed, reactive } from "vue"
+import { computed, reactive, ref } from "vue"
 import { useRouter } from "vue-router"
 
 export default {
@@ -102,6 +103,7 @@ export default {
 		const $router = useRouter()
 		const orderList = reactive({})
 		const producer = computed(() => $store.state.producer.detail)
+		const isLoading = ref(true)
 
 		$store.dispatch("producer/getProducer", parseInt($router.currentRoute.value.params.id)).then(() => {
 			orderList.value = producer.value.products.reduce(
@@ -112,6 +114,7 @@ export default {
 				}),
 				{}
 			)
+			isLoading.value = false
 		})
 
 		const increase = (product_id) => {
@@ -146,6 +149,7 @@ export default {
 		return {
 			producer,
 			orderList,
+			isLoading,
 			increase,
 			decrease,
 			orderAmountChanged
