@@ -1,5 +1,6 @@
 module.exports = function (ctx) {
 	return {
+		preFetch: true,
 		boot: [
 			"axios",
 			"hasTokenCookie"

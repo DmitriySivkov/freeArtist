@@ -1,13 +1,12 @@
 <template>
 	<div class="q-pa-md">
 		<q-table
-			v-if="Object.keys(producers).length > 0"
 			grid
-			title=""
 			:rows="producers"
 			:columns="columns"
 			row-key="id"
 			:filter="filter"
+			:pagination="{rowsPerPage:10}"
 			hide-header
 		>
 			<template v-slot:top-right>
@@ -16,7 +15,7 @@
 					dense
 					debounce="300"
 					v-model="filter"
-					placeholder="Search"
+					placeholder="Найти"
 				>
 					<template v-slot:append>
 						<q-icon name="search" />
@@ -49,7 +48,7 @@ export default ({
 			filter,
 			show(id) {
 				$router.push("/producers/" + id)
-			}
+			},
 		}
 	}
 })

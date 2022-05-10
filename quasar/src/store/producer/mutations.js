@@ -5,4 +5,3 @@ export const SET_PRODUCERS = (state, payload) => {
 export const SET_CURRENT_PRODUCER = (state, payload) => {
 	state.detail = payload
 }
-
