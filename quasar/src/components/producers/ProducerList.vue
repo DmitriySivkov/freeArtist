@@ -9,13 +9,27 @@
 			:pagination="{rowsPerPage:10}"
 			hide-header
 		>
-			<template v-slot:top-right>
+			<template v-slot:item="props">
+				<div class="q-table__grid-item col-xs-12 col-sm-6 col-md-4 col-lg-3">
+					<div
+						class="q-table__grid-item-card q-table__card cursor-pointer"
+						@click="show(props.row.id)"
+					>
+						<div class="q-table__grid-item-row">
+							<div class="q-table__grid-item-value">
+								{{ props.row.title }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</template>
+			<template v-slot:top-left>
 				<q-input
 					borderless
 					dense
 					debounce="300"
 					v-model="filter"
-					placeholder="Найти"
+					placeholder="Искать..."
 				>
 					<template v-slot:append>
 						<q-icon name="search" />
