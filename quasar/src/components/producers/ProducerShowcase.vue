@@ -52,11 +52,11 @@
 							</div>
 							<div class="col-xs-12 col-md-5">
 								<q-input
-									v-model.number="orderList[product.id]"
+									v-model.number="orderList[product.id].amount"
 									@change="this.orderAmountChanged($event, product.id)"
 									type="number"
-									:input-class="orderList[product.id] > 0 ? 'text-center text-white' : 'text-center'"
-									:bg-color="orderList[product.id] > 0 ? 'teal' : 'white'"
+									:input-class="orderList[product.id].amount > 0 ? 'text-center text-white' : 'text-center'"
+									:bg-color="orderList[product.id].amount > 0 ? 'teal' : 'white'"
 									standout="bg-teal text-white"
 									dense
 									class="q-ma-md"
@@ -92,7 +92,7 @@
 
 <script>
 import { useStore } from "vuex"
-import { computed, reactive } from "vue"
+import { computed } from "vue"
 import { Loading } from "quasar"
 
 export default {
@@ -107,42 +107,41 @@ export default {
 	setup() {
 		const $store = useStore()
 		const producer = computed(() => $store.state.producer.detail)
+		const cart = computed(() => $store.state.cart.data)
 
-		const orderList = reactive(producer.value.products.reduce(
-			(accum, product) => ({ ...accum, [product.id]:
-				$store.state.cart.data.hasOwnProperty(producer.value.id) && $store.state.cart.data[producer.value.id].hasOwnProperty(product.id) ?
-					$store.state.cart.data[producer.value.id][product.id] :
+		const orderList = computed(() => producer.value.products.reduce(
+			(accum, product) => ({ ...accum, [product.id]: {
+				product: product,
+				amount: cart.value.hasOwnProperty(producer.value.id) && cart.value[producer.value.id].hasOwnProperty(product.id) ?
+					cart.value[producer.value.id][product.id].amount :
 					0
+			}
 			}), {})
 		)
 
-
 		const increase = (product_id) => {
-			if (orderList[product_id] === 999) return
-			orderList[product_id]++
+			if (orderList.value[product_id].amount === 999) return
+			orderList.value[product_id].amount++
 
 			orderAmountChanged()
 		}
 		const decrease = (product_id) => {
-			if (orderList[product_id] === 0) return
-			orderList[product_id]--
+			if (orderList.value[product_id].amount === 0) return
+			orderList.value[product_id].amount--
 
 			orderAmountChanged()
 		}
 
 		const orderAmountChanged = (product_amount, product_id) => {
-			if (product_amount === "") {
-				orderList[product_id] = 0
-			}
+			if (product_amount === "")
+				orderList.value[product_id].amount = 0
 
 			if (parseInt(product_amount) >= 999)
-				orderList[product_id] = 999
-
-			let order =  Object.assign({}, orderList)
+				orderList.value[product_id].amount = 999
 
 			$store.dispatch("cart/addToCart", {
 				producerId: producer.value.id,
-				producerProductList: order
+				producerProductList: orderList.value
 			})
 		}
 
