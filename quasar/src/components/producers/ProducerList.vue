@@ -20,7 +20,7 @@
 							<div class="q-table__grid-item-value">
 								{{ props.row.title }}
 								<span v-if="cart.hasOwnProperty(props.row.id)">
-									{{ "(" + Object.keys(cart[props.row.id]).length + ")" }}
+									{{ "(" + cart[props.row.id].length + ")" }}
 								</span>
 							</div>
 						</div>

@@ -3,7 +3,8 @@ module.exports = function (ctx) {
 		preFetch: true,
 		boot: [
 			"axios",
-			"hasTokenCookie"
+			"hasTokenCookie",
+			"setCart"
 		],
 
 		css: [

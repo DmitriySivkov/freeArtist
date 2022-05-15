@@ -2,18 +2,21 @@ import { LocalStorage } from "quasar"
 import { Notify } from "quasar"
 
 export const ADD_TO_CART = (state, payload) => {
-	Object.keys(payload.producerProductList).forEach((productId) => {
-		if (payload.producerProductList[productId].amount === 0)
-			delete payload.producerProductList[productId]
-	})
 
-	let producerProductListFiltered = {[payload.producerId]: payload.producerProductList}
+	let products = payload.producer.products
+		.filter((product) => Object.keys(payload.products).includes(product.id.toString()) && payload.products[product.id] !== 0)
+		.map((product) =>
+			({
+				amount: payload.products[product.id],
+				data: product
+			})
+		)
 
 	try {
-		if (Object.keys(payload.producerProductList).length === 0 && state.data.hasOwnProperty(payload.producerId))
-			delete state.data[payload.producerId]
+		if (products.length === 0 && state.data.hasOwnProperty(payload.producer.id))
+			delete state.data[payload.producer.id]
 		else
-			state.data = {...state.data, ...producerProductListFiltered}
+			state.data[payload.producer.id] = products
 
 		LocalStorage.set("cart", state.data)
 	} catch (error) {
