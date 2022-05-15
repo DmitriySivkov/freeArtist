@@ -16,7 +16,7 @@ export const ADD_TO_CART = (state, payload) => {
 		if (products.length === 0 && state.data.hasOwnProperty(payload.producer.id))
 			delete state.data[payload.producer.id]
 		else
-			state.data[payload.producer.id] = products
+			state.data[payload.producer.id] = { producer: payload.producer, products }
 
 		LocalStorage.set("cart", state.data)
 	} catch (error) {

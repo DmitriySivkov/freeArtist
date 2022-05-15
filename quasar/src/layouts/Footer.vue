@@ -20,7 +20,7 @@ export default {
 		const $store = useStore()
 		const cartCounter = computed(
 			() => Object.values($store.state.cart.data)
-				.reduce((accum, products) => accum + products.length, 0)
+				.reduce((accum, cart_item) => accum + cart_item.products.length, 0)
 		)
 
 		return {
