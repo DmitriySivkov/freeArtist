@@ -52,11 +52,11 @@
 							</div>
 							<div class="col-xs-12 col-md-5">
 								<q-input
-									v-model.number="orderList[product.id]"
-									@change="this.orderAmountChanged($event, product.id)"
+									v-model.number="products[product.id]"
+									@change="orderAmountChanged(producer, product.id, $event)"
 									type="number"
-									:input-class="orderList[product.id] > 0 ? 'text-center text-white' : 'text-center'"
-									:bg-color="orderList[product.id] > 0 ? 'teal' : 'white'"
+									:input-class="products[product.id] > 0 ? 'text-center text-white' : 'text-center'"
+									:bg-color="products[product.id] > 0 ? 'teal' : 'white'"
 									standout="bg-teal text-white"
 									dense
 									class="q-ma-md"
@@ -66,7 +66,7 @@
 											icon="remove"
 											size="md"
 											color="primary"
-											@click="this.decrease(product.id)"
+											@click="decrease(producer, product.id)"
 											class="full-height"
 										/>
 									</template>
@@ -75,7 +75,7 @@
 											icon="add"
 											size="md"
 											color="primary"
-											@click="this.increase(product.id)"
+											@click="increase(producer, product.id)"
 											class="full-height"
 										/>
 									</template>
@@ -92,8 +92,9 @@
 
 <script>
 import { useStore } from "vuex"
-import { computed, reactive } from "vue"
+import { computed } from "vue"
 import { Loading } from "quasar"
+import { useCartManager } from "src/composables/cartManager"
 
 export default {
 	async preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
@@ -109,43 +110,20 @@ export default {
 		const producer = computed(() => $store.state.producer.detail)
 		const cart = computed(() => $store.state.cart.data)
 
-		const orderList = reactive(cart.value.hasOwnProperty(producer.value.id) ?
-			producer.value.products.reduce(function(accum, product) {
-				let cart_product = cart.value[producer.value.id].products.find((cart_product) => cart_product.data.id === product.id)
-				return {...accum, [product.id]: typeof cart_product !== "undefined" ? cart_product.amount : 0}
-			}, {}) :
-			producer.value.products.reduce(
-				(accum, product) => ({...accum, [product.id]:0}), {}
+		const { products, increase, decrease, orderAmountChanged } =
+			useCartManager(cart.value.hasOwnProperty(producer.value.id) ?
+				producer.value.products.reduce(function(accum, product) {
+					let cart_product = cart.value[producer.value.id].products.find((cart_product) => cart_product.data.id === product.id)
+					return {...accum, [product.id]: typeof cart_product !== "undefined" ? cart_product.amount : 0}
+				}, {}) :
+				producer.value.products.reduce(
+					(accum, product) => ({...accum, [product.id]:0}), {}
+				)
 			)
-		)
-
-		const increase = (product_id) => {
-			if (orderList[product_id] === 999) return
-			orderList[product_id]++
-
-			orderAmountChanged()
-		}
-
-		const decrease = (product_id) => {
-			if (orderList[product_id] === 0) return
-			orderList[product_id]--
-
-			orderAmountChanged()
-		}
-
-		const orderAmountChanged = (product_amount, product_id) => {
-			if (product_amount === "") orderList[product_id] = 0
-			if (product_amount > 999) orderList[product_id] = 999
-
-			$store.commit("cart/ADD_TO_CART", {
-				producer: producer.value,
-				products: orderList
-			})
-		}
 
 		return {
 			producer,
-			orderList,
+			products,
 			increase,
 			decrease,
 			orderAmountChanged

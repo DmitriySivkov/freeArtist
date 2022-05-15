@@ -4,7 +4,7 @@ module.exports = function (ctx) {
 		boot: [
 			"axios",
 			"hasTokenCookie",
-			"setCart"
+			"setCartFromLocalStorage"
 		],
 
 		css: [

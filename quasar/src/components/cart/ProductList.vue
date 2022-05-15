@@ -3,42 +3,34 @@
 		<q-table
 			grid
 			:rows="cart"
-			:columns="columns"
-			row-key="id"
-			:filter="filter"
-			:pagination="{rowsPerPage:10}"
+			:row-key="row => row.producer.id"
 			hide-header
 		>
 			<template v-slot:item="props">
-				<div class="q-table__grid-item col-xs-12 col-sm-6 col-md-4 col-lg-3">
-					<div
-						:class="{ 'bg-light-green-2': cart.hasOwnProperty(props.row.id) }"
-						class="q-table__grid-item-card q-table__card cursor-pointer"
-						@click="show(props.row.id)"
-					>
-						<div class="q-table__grid-item-row">
-							<div class="q-table__grid-item-value">
-								{{ props.row.title }}
-								<span v-if="cart.hasOwnProperty(props.row.id)">
-									{{ "(" + Object.keys(cart[props.row.id]).length + ")" }}
-								</span>
-							</div>
-						</div>
-					</div>
+				<div class="q-pa-xs col-xs-12">
+					<q-card>
+						<q-card-section>
+							{{ props.row.producer.title }}
+						</q-card-section>
+						<q-separator />
+						<q-card-section>
+							<q-item
+								v-for="(product, index) in props.row.products"
+								:key="index"
+							>
+								<q-item-section>
+									<q-item-label>{{ product.data.title }}</q-item-label>
+								</q-item-section>
+								<q-item-section side>
+									<q-item-label caption>{{ product.amount}}</q-item-label>
+								</q-item-section>
+							</q-item>
+						</q-card-section>
+					</q-card>
 				</div>
 			</template>
-			<template v-slot:top-left>
-				<q-input
-					borderless
-					dense
-					debounce="300"
-					v-model="filter"
-					placeholder="Искать..."
-				>
-					<template v-slot:append>
-						<q-icon name="search" />
-					</template>
-				</q-input>
+			<template v-slot:no-data>
+				Корзина пуста
 			</template>
 		</q-table>
 	</div>
@@ -50,7 +42,10 @@ import { computed } from "vue"
 export default {
 	setup() {
 		const $store = useStore()
-		const cart = computed(() => $store.state.cart.data)
+		const cart = computed(() => Object.values($store.state.cart.data))
+		// const columns = [
+		// 	{ name: "title", align: "center", label: "Название", field: "title", sortable: true },
+		// ]
 		return {
 			cart
 		}
