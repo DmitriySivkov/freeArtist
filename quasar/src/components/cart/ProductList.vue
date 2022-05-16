@@ -14,45 +14,49 @@
 						</q-card-section>
 						<q-separator />
 						<q-card-section>
-							<q-item
+							<q-list
 								v-for="(product, index) in props.row.products"
 								:key="index"
 							>
-								<q-item-section>
-									<q-item-label>{{ product.data.title }}</q-item-label>
-								</q-item-section>
-								<q-item-section side>
-									<q-input
-										v-model.number="products[product.data.id]"
-										@change="orderAmountChanged(props.row.producer, product.data.id, $event)"
-										type="number"
-										:input-class="products[product.data.id] > 0 ? 'text-center text-white' : 'text-center'"
-										:bg-color="products[product.data.id] > 0 ? 'teal' : 'white'"
-										standout="bg-teal text-white"
-										dense
-										class="q-ma-md"
-									>
-										<template v-slot:before>
-											<q-btn
-												icon="remove"
-												size="md"
-												color="primary"
-												@click="decrease(props.row.producer, product.data.id)"
-												class="full-height"
-											/>
-										</template>
-										<template v-slot:after>
-											<q-btn
-												icon="add"
-												size="md"
-												color="primary"
-												@click="increase(props.row.producer, product.data.id)"
-												class="full-height"
-											/>
-										</template>
-									</q-input>
-								</q-item-section>
-							</q-item>
+								<q-item>
+									<q-item-section>
+										<q-item-label>{{ product.data.title }}</q-item-label>
+									</q-item-section>
+								</q-item>
+								<q-item>
+									<q-item-section class="col-xs-12 col-md-3">
+										<q-input
+											v-model.number="products[product.data.id]"
+											@change="orderAmountChanged(props.row.producer, product.data.id, $event)"
+											type="number"
+											:input-class="products[product.data.id] > 0 ? 'text-center text-white' : 'text-center'"
+											:bg-color="products[product.data.id] > 0 ? 'teal' : 'white'"
+											standout="bg-teal text-white"
+											dense
+											class="q-ma-md"
+										>
+											<template v-slot:before>
+												<q-btn
+													icon="remove"
+													size="md"
+													color="primary"
+													@click="decrease(props.row.producer, product.data.id)"
+													class="full-height"
+												/>
+											</template>
+											<template v-slot:after>
+												<q-btn
+													icon="add"
+													size="md"
+													color="primary"
+													@click="increase(props.row.producer, product.data.id)"
+													class="full-height"
+												/>
+											</template>
+										</q-input>
+									</q-item-section>
+								</q-item>
+							</q-list>
 						</q-card-section>
 					</q-card>
 				</div>
