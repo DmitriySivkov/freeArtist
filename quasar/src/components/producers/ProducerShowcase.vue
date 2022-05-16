@@ -17,8 +17,8 @@
 			</q-markup-table>
 		</div>
 	</div>
-	<div class="q-pa-md row">
-		<div class="col-xs-12 col-md-4">
+	<div class="q-pa-md row q-col-gutter-sm">
+		<div class="col-xs-12 col-md-6">
 			<q-markup-table
 				dark
 				class="bg-indigo-8"
@@ -27,28 +27,20 @@
 					class="bg-indigo-10 text-body"
 					style="white-space: normal"
 				>
-					Нажмите / наведите на продукт чтобы увидеть состав</th>
+					Нажмите на продукт чтобы увидеть состав
+				</th>
 				<tbody>
 					<tr
 						v-for="(product, index) in producer.products"
 						:key="index"
 					>
 						<div class="row items-center">
-							<div class="col-xs-12 col-md-7 q-pa-md">
-								<div class="text-center cursor-pointer">{{ product.title }}</div>
-								<q-tooltip
-									anchor="bottom middle"
-									class="text-body2"
-								>
-									<div
-										v-for="(description, ingredient) in JSON.parse(product.composition)"
-										:key="ingredient"
-										class="text-center"
-									>
-										{{ ingredient }}<span v-if="description">: {{ description }}</span>
-									</div>
-								</q-tooltip>
-								<div class="text-center cursor-pointer">{{ product.price }} р.</div>
+							<div
+								class="col-xs-12 col-md-7 q-pa-md cursor-pointer"
+								@click="toggleComposition(JSON.parse(product.composition))"
+							>
+								<div class="text-center">{{ product.title }}</div>
+								<div class="text-center">{{ product.price }} р.</div>
 							</div>
 							<div class="col-xs-12 col-md-5">
 								<q-input
@@ -87,12 +79,40 @@
 				</tbody>
 			</q-markup-table>
 		</div>
+		<div
+			v-if="isCompositionVisible"
+			class="col-xs-12 col-md-6"
+		>
+			<q-card
+				class="full-height bg-indigo-8"
+				dark
+			>
+				<q-card-section>
+					<q-btn
+						icon="highlight_off"
+						@click="isCompositionVisible = false"
+					/>
+				</q-card-section>
+				<q-list>
+					<q-item
+						v-for="(description, ingredient) in product_composition"
+						:key="ingredient"
+						class="text-center"
+					>
+						<q-item-section>
+							<q-item-label>{{ ingredient }}</q-item-label>
+							<span v-if="description"> {{ description }}</span>
+						</q-item-section>
+					</q-item>
+				</q-list>
+			</q-card>
+		</div>
 	</div>
 </template>
 
 <script>
 import { useStore } from "vuex"
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import { Loading } from "quasar"
 import { useCartManager } from "src/composables/cartManager"
 
@@ -109,6 +129,8 @@ export default {
 		const $store = useStore()
 		const producer = computed(() => $store.state.producer.detail)
 		const cart = computed(() => $store.state.cart.data)
+		const product_composition = ref({})
+		const isCompositionVisible = ref(false)
 
 		const { products, increase, decrease, orderAmountChanged } =
 			useCartManager(cart.value.hasOwnProperty(producer.value.id) ?
@@ -121,9 +143,18 @@ export default {
 				)
 			)
 
+		const toggleComposition = (composition) => {
+			product_composition.value = composition
+			if (!isCompositionVisible.value)
+				isCompositionVisible.value = true
+		}
+
 		return {
 			producer,
 			products,
+			product_composition,
+			isCompositionVisible,
+			toggleComposition,
 			increase,
 			decrease,
 			orderAmountChanged
