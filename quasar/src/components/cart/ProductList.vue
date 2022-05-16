@@ -22,7 +22,35 @@
 									<q-item-label>{{ product.data.title }}</q-item-label>
 								</q-item-section>
 								<q-item-section side>
-									<q-item-label caption>{{ product.amount}}</q-item-label>
+									<q-input
+										v-model.number="products[product.data.id]"
+										@change="orderAmountChanged(props.row.producer, product.data.id, $event)"
+										type="number"
+										:input-class="products[product.data.id] > 0 ? 'text-center text-white' : 'text-center'"
+										:bg-color="products[product.data.id] > 0 ? 'teal' : 'white'"
+										standout="bg-teal text-white"
+										dense
+										class="q-ma-md"
+									>
+										<template v-slot:before>
+											<q-btn
+												icon="remove"
+												size="md"
+												color="primary"
+												@click="decrease(props.row.producer, product.data.id)"
+												class="full-height"
+											/>
+										</template>
+										<template v-slot:after>
+											<q-btn
+												icon="add"
+												size="md"
+												color="primary"
+												@click="increase(props.row.producer, product.data.id)"
+												class="full-height"
+											/>
+										</template>
+									</q-input>
 								</q-item-section>
 							</q-item>
 						</q-card-section>
@@ -39,15 +67,26 @@
 <script>
 import { useStore } from "vuex"
 import { computed } from "vue"
+import { useCartManager } from "src/composables/cartManager"
 export default {
 	setup() {
 		const $store = useStore()
 		const cart = computed(() => Object.values($store.state.cart.data))
-		// const columns = [
-		// 	{ name: "title", align: "center", label: "Название", field: "title", sortable: true },
-		// ]
+		const { products, increase, decrease, orderAmountChanged } = useCartManager(
+			cart.value.length > 0
+				? cart.value.reduce((accum, cart_item) => ({
+					...accum,
+					...cart_item.products.reduce((ac, product) => ({
+						...ac, [product.data.id]:product.amount
+					}), {})
+				}), {})
+				: {})
 		return {
-			cart
+			cart,
+			products,
+			increase,
+			decrease,
+			orderAmountChanged
 		}
 	}
 }
