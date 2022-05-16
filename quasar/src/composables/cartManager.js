@@ -1,6 +1,12 @@
 import { reactive } from "vue"
 import { useStore } from "vuex"
 
+/**
+ * чтобы использовать этот composable необходимо инициировать объект products
+ * локальный products должен выглядеть как объект типа: {'id продукта': 'кол-во продукта'}
+ * либо пустой объект - {}
+ * в products необязательно должны лежать продукты только одного продюсера
+ * */
 export const useCartManager = (productsInitObject) => {
 	const $store = useStore()
 	const products = reactive(productsInitObject)
