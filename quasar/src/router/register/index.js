@@ -1,5 +1,6 @@
 export default [
 	{
+		name: "register",
 		path: "register",
 		component: () => import("pages/Register"),
 		meta: {
@@ -7,6 +8,7 @@ export default [
 		},
 	},
 	{
+		name: "register_user",
 		path: "register/user",
 		component: () => import("components/register/CustomerRegister"),
 		meta: {
@@ -15,6 +17,7 @@ export default [
 		}
 	},
 	{
+		name: "register_producer",
 		path: "register/producer",
 		component: () => import("components/register/ProducerRegister"),
 		meta: {

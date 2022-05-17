@@ -4,20 +4,20 @@
 		@click="this.changeRoute"
 	>
 		<q-item-section
-			v-if="this.icon"
+			v-if="props.link.meta.icon"
 			avatar
 		>
 			<q-icon
-				:name="this.icon"
+				:name="props.link.meta.icon"
 				size="md"
 			/>
 		</q-item-section>
 		<q-item-section>
 			<q-item-label class="text-subtitle1">
-				{{ title }}
+				{{ props.link.meta.route_name }}
 			</q-item-label>
 			<q-item-label caption>
-				{{ caption }}
+				{{ props.link.meta.caption }}
 			</q-item-label>
 		</q-item-section>
 	</q-item>
@@ -30,45 +30,28 @@ import { Notify } from "quasar"
 
 export default {
 	props: {
-		title: {
-			type: String,
-			required: true
-		},
-		caption: {
-			type: String,
-			default: ""
-		},
 		link: {
-			type: String,
-			default: ""
-		},
-		icon: {
-			type: String,
-			default: ""
-		},
-		dispatch: {
-			type: String,
-			default: ""
-		},
-		notification: {
 			type: Object,
 			default: () => {}
-		}
+		},
 	},
 	setup(props) {
 		const $router = useRouter()
 		const $store = useStore()
-		return {
-			changeRoute() {
-				props.dispatch === "" ?
-					$router.push(props.link) :
-					$store.dispatch(props.dispatch).then(() => {
-						$router.push(props.link)
-						if (Object.keys(props.notification).length > 0)
-							Notify.create(props.notification)
-					})
-			},
+
+		const changeRoute = () => {
+			!props.link.meta.dispatch ?
+				$router.push({ name: props.link.name }) :
+				$store.dispatch(props.link.meta.dispatch).then(() => {
+					$router.push({ name: props.link.meta.redirect })
+					if (Object.keys(props.link.meta.notification))
+						Notify.create(props.link.meta.notification)
+				})
 		}
-	},
+		return {
+			props,
+			changeRoute
+		}
+	}
 }
 </script>

@@ -6,12 +6,8 @@
 				class="bg-indigo-8"
 			>
 				<tbody>
-					<tr
-						v-for="(value, key) in {title:producer.title}"
-						:key="key"
-					>
-						<td class="text-left">{{ key }}</td>
-						<td class="text-left">{{ value }}</td>
+					<tr>
+						<td class="text-left">{{ producer.title }}</td>
 					</tr>
 				</tbody>
 			</q-markup-table>

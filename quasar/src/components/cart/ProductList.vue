@@ -5,6 +5,7 @@
 			:rows="cart"
 			:row-key="row => row.producer.id"
 			hide-header
+			hide-pagination
 		>
 			<template v-slot:item="props">
 				<div class="q-pa-xs col-xs-12">
