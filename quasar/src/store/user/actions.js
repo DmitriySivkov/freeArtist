@@ -18,8 +18,12 @@ export const logout = async ({commit}, payload) => {
 	commit("SET_IS_LOGGED", false)
 }
 
-export const checkTokenCookie = async () => {
-	await api.post("hasTokenCookie")
+export const checkTokenCookie = async ({commit}) => {
+	const response = await api.post("hasTokenCookie")
+	if (response.data) {
+		commit("SET_USER", response.data)
+		commit("SET_IS_LOGGED", true)
+	}
 }
 
 export const verifyEmail = async ({commit}, payload) => {

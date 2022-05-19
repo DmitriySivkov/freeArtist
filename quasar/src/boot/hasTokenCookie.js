@@ -1,4 +1,3 @@
-import { api } from "./axios"
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
 // If any client changes this (global) instance, it might be a
@@ -8,11 +7,8 @@ import { api } from "./axios"
 
 /** seems like theres no need for asynchronous requests
  * as it loads before entire app anyways
+ * ... but that is not sure
  * */
 export default ({ store }) => {
-	api.post("hasTokenCookie")
-		.then((response) => {
-			if (response.data)
-				store.dispatch("user/login")
-		})
+	store.dispatch("user/checkTokenCookie")
 }

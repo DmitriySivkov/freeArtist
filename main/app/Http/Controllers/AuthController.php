@@ -49,9 +49,12 @@ class AuthController extends Controller
         return response('logged out', 200)->withCookie($cookie);
     }
 
-	public function hasTokenCookie(Request $request)
+	public function hasTokenCookie(Request $request, AuthService $authService)
 	{
-		return $request->hasCookie('token');
+		if (!$request->hasCookie('token'))
+			return false;
+
+		return $authService->loginWithToken($request);
 	}
 
     public function verifyEmail(Request $request)

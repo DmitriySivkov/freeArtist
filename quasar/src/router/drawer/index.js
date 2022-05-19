@@ -32,7 +32,7 @@ export default [
 			show_in_drawer: true,
 			requires_auth: true,
 			dispatch: "user/logout",
-			redirect: "login",
+			redirect: "home",
 			notification: {
 				color: "green-4",
 				textColor: "white",
