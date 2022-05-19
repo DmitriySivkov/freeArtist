@@ -40,13 +40,22 @@ export default {
 		const $store = useStore()
 
 		const changeRoute = () => {
-			!props.link.meta.dispatch ?
-				$router.push({ name: props.link.name }) :
+			if (props.link.name === "logout") {
+				$router.push({name: props.link.meta.redirect})
 				$store.dispatch(props.link.meta.dispatch).then(() => {
-					$router.push({ name: props.link.meta.redirect })
 					if (Object.keys(props.link.meta.notification))
 						Notify.create(props.link.meta.notification)
 				})
+			}
+			else {
+				!props.link.meta.dispatch ?
+					$router.push({name: props.link.name}) :
+					$store.dispatch(props.link.meta.dispatch).then(() => {
+						$router.push({name: props.link.meta.redirect})
+						if (Object.keys(props.link.meta.notification))
+							Notify.create(props.link.meta.notification)
+					})
+			}
 		}
 		return {
 			props,

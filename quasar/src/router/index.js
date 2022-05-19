@@ -13,7 +13,7 @@ import { Loading } from "quasar"
  */
 
 /** router inits before boot files -
- * 	because of that loading user here
+ * 	because of that, loading user here
  *  https://quasar.dev/quasar-cli-webpack/boot-files#quasar-app-flow
  */
 
@@ -21,6 +21,8 @@ export default route( async ({ store, ssrContext }) => {
 	Loading.show({
 		spinnerColor: "primary",
 	})
+
+	/** loads user by cookie */
 	await store.dispatch("user/checkTokenCookie")
 
 	const createHistory = process.env.SERVER
