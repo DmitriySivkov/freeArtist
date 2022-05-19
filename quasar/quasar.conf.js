@@ -3,7 +3,6 @@ module.exports = function (ctx) {
 		preFetch: true,
 		boot: [
 			"axios",
-			"hasTokenCookie",
 			"setCartFromLocalStorage"
 		],
 
