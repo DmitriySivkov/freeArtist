@@ -1,7 +1,7 @@
 import { route } from "quasar/wrappers"
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from "vue-router"
 import routes from "src/router/routes"
-import {Loading} from "quasar"
+import { Loading } from "quasar"
 
 /*
  * If not building with SSR mode, you can
@@ -10,6 +10,11 @@ import {Loading} from "quasar"
  * The function below can be async too; either use
  * async/await or return a Promise which resolves
  * with the Router instance.
+ */
+
+/** router inits before boot files -
+ * 	because of that loading user here
+ *  https://quasar.dev/quasar-cli-webpack/boot-files#quasar-app-flow
  */
 
 export default route( async ({ store, ssrContext }) => {
