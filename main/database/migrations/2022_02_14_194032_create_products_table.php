@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('title');
             $table->json('composition');
             $table->decimal('price', 9, 2);
+            $table->unsignedInteger('amount');
             $table->timestamps();
         });
     }
