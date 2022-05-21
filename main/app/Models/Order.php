@@ -6,9 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
+/** TODO uuid */
 class Order extends Model
 {
     use HasFactory, HasJsonRelationships;
+
+    const ORDER_STATUS_NEW = 1;
+
+    const ORDER_PAYMENT_METHOD_CARD = 1;
+
+    protected $guarded = [];
 
     protected $casts = [
     	'products' => 'json'

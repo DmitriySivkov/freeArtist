@@ -14,6 +14,7 @@
 					<q-btn
 						label="Оформить заказ"
 						color="primary"
+						@click="makeNewOrder"
 					/>
 				</q-card-actions>
 			</q-card>
@@ -27,16 +28,22 @@ import { computed } from "vue"
 export default {
 	setup() {
 		const $store = useStore()
-		const cart = computed(() => Object.values($store.state.cart.data))
+		const cart = computed(() => $store.state.cart.data)
 
 		const totalPrice = computed(() => {
-			return cart.value.reduce(
+			return Object.values(cart.value).reduce(
 				(accum, cart_item) =>
 					accum + cart_item.products.reduce((ac, product) => ac + product.data.price * product.amount, 0),
 				0).toFixed(2)
 		})
+
+		const makeNewOrder = () => {
+			$store.dispatch("order/create", cart.value)
+		}
+
 		return {
-			totalPrice
+			totalPrice,
+			makeNewOrder
 		}
 	}
 }

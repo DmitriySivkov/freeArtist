@@ -17,6 +17,7 @@ class CustomerRegisterService implements UserRegisterServiceContract
 	 * @param CustomerRegisterRequest $request
 	 * @return JsonResponse
 	 */
+	/** TODO - попробовать вынести валидацию реквеста выше - на контроллер, на контроллере уже ясно какой реквест */
 	public function run($request)
 	{
 		DB::beginTransaction();

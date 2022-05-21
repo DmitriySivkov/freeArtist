@@ -4,12 +4,11 @@
 namespace App\Services\Orders;
 
 
-use App\Contracts\Services\OrderServiceContract;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
-class ProducerOrderService implements OrderServiceContract
+class ProducerOrderService extends OrderService
 {
 	/**
 	 * @return \Illuminate\Database\Eloquent\Collection

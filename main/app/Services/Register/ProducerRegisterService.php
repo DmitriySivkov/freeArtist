@@ -18,6 +18,7 @@ class ProducerRegisterService implements UserRegisterServiceContract
 	 * @param ProducerRegisterRequest $request
 	 * @return JsonResponse
 	 */
+	/** TODO - попробовать вынести валидацию реквеста выше - на контроллер, на контроллере уже ясно какой реквест */
 	public function run($request)
 	{
 		DB::beginTransaction();

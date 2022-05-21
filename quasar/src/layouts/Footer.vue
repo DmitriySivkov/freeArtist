@@ -5,6 +5,7 @@
 				stretch
 				:label="cartCounter"
 				icon-right="shopping_cart"
+				:color="cartCounter > 0 ? 'secondary': 'primary'"
 				class="text-right"
 				to="/cart"
 			/>

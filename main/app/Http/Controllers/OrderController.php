@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Contracts\Requests\NewOrderRequestContract;
 use App\Contracts\Services\OrderServiceContract;
 
 class OrderController extends Controller
@@ -11,4 +12,11 @@ class OrderController extends Controller
     {
         return response()->json($orderService->getList());
     }
+
+    public function store(NewOrderRequestContract $request, OrderServiceContract $orderService)
+	{
+		$orderData = $request->validated();
+
+		$orderService->processOrder($orderData);
+	}
 }
