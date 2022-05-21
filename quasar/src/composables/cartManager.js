@@ -12,7 +12,8 @@ export const useCartManager = (productsInitObject) => {
 	const products = reactive(productsInitObject)
 
 	const increase = (producer, product_id) => {
-		if (products[product_id] === 999) return
+		let producerProduct = producer.products.find((product) => product.id === product_id)
+		if (products[product_id] === producerProduct.amount) return
 		products[product_id]++
 
 		$store.commit("cart/ADD_TO_CART", { producer, products })
@@ -26,8 +27,11 @@ export const useCartManager = (productsInitObject) => {
 	}
 
 	const orderAmountChanged = (producer, product_id, product_amount) => {
-		if (product_amount === "") products[product_id] = 0
-		if (product_amount > 999) products[product_id] = 999
+		let producerProduct = producer.products.find((product) => product.id === product_id)
+		if (product_amount === "")
+			products[product_id] = 0
+		if (product_amount > producerProduct.amount)
+			products[product_id] = producerProduct.amount
 
 		$store.commit("cart/ADD_TO_CART", { producer, products })
 	}
