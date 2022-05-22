@@ -1,14 +1,11 @@
 export default [
 	{
-		name: "home",
-		path: "",
-		component: () => import("pages/Producers"),
+		name: "register",
+		path: "register",
+		component: () => import("pages/Register"),
 		meta: {
-			route_name: "Главная",
-			caption: "",
-			icon: "home",
-			show_in_drawer: true,
-		}
+			route_name: "Регистрация"
+		},
 	},
 	{
 		name: "login",

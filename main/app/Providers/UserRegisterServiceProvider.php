@@ -21,23 +21,11 @@ class UserRegisterServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(UserRegisterRequestContract::class, function () {
-        	switch (request()->get('role_id')) {
-				case Role::CUSTOMER:
-					return new CustomerRegisterRequest();
-				case Role::PRODUCER:
-					return new ProducerRegisterRequest();
-			}
-			return false;
+			return new CustomerRegisterRequest();
 		});
 
 		$this->app->bind(UserRegisterServiceContract::class, function () {
-			switch (request()->get('role_id')) {
-				case Role::CUSTOMER:
-					return new CustomerRegisterService();
-				case Role::PRODUCER:
-					return new ProducerRegisterService();
-			}
-			return false;
+			return new CustomerRegisterService();
 		});
     }
 

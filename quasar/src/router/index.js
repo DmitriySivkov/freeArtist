@@ -41,6 +41,7 @@ export default route( async ({ store, ssrContext }) => {
 
 	Router.beforeEach((to, from, next) => {
 		if (to.meta.requires_auth && !store.state.user.isLogged) next({ name: "home" })
+		if (to.name === "login" && store.state.user.isLogged) next({name: "home"})
 		else next()
 	})
 

@@ -6,16 +6,6 @@
 				@reset="onReset"
 				class="q-gutter-md"
 			>
-				<q-input
-					filled
-					v-model="name"
-					label="Ваше имя *"
-					:lazy-rules="true"
-					:rules="[
-						val => !!val || 'Введите имя',
-						val => val.length > 1 || 'не менее 2 символов',
-					]"
-				/>
 
 				<q-input
 					filled
@@ -48,6 +38,17 @@
 					</template>
 				</q-input>
 
+				<q-input
+					v-model="confirm_password"
+					filled
+					type="password"
+					label="Введите пароль ещё раз *"
+					:lazy-rules="true"
+					:rules="[
+						val => val === password || 'Пароли не совпадают',
+					]"
+				/>
+
 				<div class="row q-mt-none">
 					<q-toggle
 						v-model="accept"
@@ -61,10 +62,10 @@
 				<div class="row q-col-gutter-sm">
 					<div class="col-6 q-pl-none">
 						<q-btn
-							label="Подтвердить"
+							label="Зарегистрироваться и войти"
 							type="submit"
 							color="primary"
-							class="q-pa-lg full-width"
+							class="q-pa-lg full-width full-height"
 						/>
 					</div>
 					<div class="col-6 q-pr-none">
@@ -72,7 +73,7 @@
 							label="Сбросить"
 							type="reset"
 							color="warning"
-							class="q-pa-lg full-width"
+							class="q-pa-lg full-width full-height"
 						/>
 					</div>
 				</div>
@@ -94,16 +95,16 @@ export default {
 		const $store = useStore()
 		const $router = useRouter()
 
-		const name = ref(null)
 		const phone = ref(null)
 		const accept = ref(false)
 		const password = ref("")
+		const confirm_password = ref("")
 		const is_pwd = ref(true)
 
 		return {
-			name,
 			phone,
 			password,
+			confirm_password,
 			is_pwd,
 			accept,
 
@@ -118,17 +119,15 @@ export default {
 				}
 				else {
 					$store.dispatch("user/signUp", {
-						name: name.value,
 						phone: phone.value,
 						password: password.value,
-						role_id: $router.currentRoute.value.meta.role_id,
 						consent: accept.value
 					}).then(() => {
 						$q.notify({
 							color: "green-4",
 							textColor: "white",
 							icon: "cloud_done",
-							message: "Добро пожаловать, " + name.value
+							message: "Добро пожаловать"
 						})
 						$router.push("/")
 					}).catch((error) => {
@@ -148,9 +147,9 @@ export default {
 			},
 
 			onReset () {
-				name.value = null
 				phone.value = null
 				password.value = null
+				confirm_password.value = null
 				accept.value = false
 			},
 

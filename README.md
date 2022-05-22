@@ -27,3 +27,6 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
 ### if localhost is not trusted again
 Go to api domen via browser and proceed with unsafe connection
+
+### errors format when returning from backend:
+["errors" => <br/> ["<error_bag_name>" => [*array_of_errors*]] <br/>]

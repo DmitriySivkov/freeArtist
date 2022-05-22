@@ -23,7 +23,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'phone' => $this->faker->unique()->phoneNumber,
+            'phone' => $this->faker->unique()->numerify('8##########'),
             'password' => 'test123',
             'remember_token' => null,
         ];

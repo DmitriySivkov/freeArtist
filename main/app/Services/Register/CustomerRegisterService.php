@@ -6,6 +6,7 @@ namespace App\Services\Register;
 use App\Contracts\Services\UserRegisterServiceContract;
 use App\Http\Requests\Register\CustomerRegisterRequest;
 use App\Jobs\SendEmailVerificationJob;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
@@ -14,22 +15,23 @@ use Illuminate\Support\Facades\DB;
 class CustomerRegisterService implements UserRegisterServiceContract
 {
 	/**
-	 * @param CustomerRegisterRequest $request
+	 * @param array $userData
 	 * @return JsonResponse
 	 */
-	/** TODO - попробовать вынести валидацию реквеста выше - на контроллер, на контроллере уже ясно какой реквест */
-	public function run($request)
+
+	public function run($userData)
 	{
 		DB::beginTransaction();
 		try {
-			User::query()->create($request->validated());
-			DB::commit();
+			/** @var User $user */
+			$user = User::create($userData);
+			$user->roles()->attach(Role::CUSTOMER);
+			$response = (new AuthService())->loginWithCredentials(['phone' => '89109667968', 'password' => 'ye11owstorm1196']);
 		} catch (\Throwable $e) {
 			DB::rollBack();
-			return response()->json("Произошла ошибка регистрации")
-				->setStatusCode(422);
+			throw new \LogicException("Ошибка сервера регистрации");
 		}
-
-		return (new AuthService())->loginWithCredentials($request->only(['phone', 'password']));
+		DB::commit();
+		return $response;
 	}
 }

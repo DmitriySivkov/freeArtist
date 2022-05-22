@@ -9,6 +9,13 @@ class RegisterController extends Controller
 {
     public function store(UserRegisterRequestContract $request, UserRegisterServiceContract $registration)
     {
-		return $registration->run($request);
+		try {
+			return $registration->run($request->validated());
+		} catch (\Throwable $e) {
+			return response()->json(["errors" =>
+				["registerService" => [$e->getMessage()]]
+			])
+				->setStatusCode(422);
+		}
     }
 }

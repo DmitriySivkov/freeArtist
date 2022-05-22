@@ -1,13 +1,13 @@
 import { api } from "src/boot/axios"
 
 export const login = async ({commit}, payload) => {
-	const response = await api.post("auth", payload, {headers: {"X-APP-TYPE":"web-app"}})
+	const response = await api.post("auth", payload)
 	commit("SET_USER", response.data)
 	commit("SET_IS_LOGGED", true)
 }
 
 export const signUp = async ({commit}, payload) => {
-	const response = await api.post("register", payload, {headers: {"X-APP-TYPE":"web-app"}})
+	const response = await api.post("register", payload)
 	commit("SET_USER", response.data)
 	commit("SET_IS_LOGGED", true)
 }

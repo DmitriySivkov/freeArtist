@@ -1,6 +1,6 @@
+import common from "src/router/common"
 import personal from "src/router/personal"
-import register from "src/router/register"
-import drawer from "src/router/drawer"
+import auth from "src/router/auth"
 import producer from "src/router/producer"
 import cart from "src/router/cart"
 
@@ -9,9 +9,9 @@ const routes = [
 		path: "/",
 		component: () => import("layouts/MainLayout.vue"),
 		children: [
-			...drawer,
+			...common,
+			...auth,
 			...personal,
-			...register,
 			...producer,
 			...cart
 		]
