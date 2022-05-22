@@ -14,6 +14,7 @@ class Order extends Model
     const ORDER_STATUS_NEW = 1;
 
     const ORDER_PAYMENT_METHOD_CARD = 1;
+	const ORDER_PAYMENT_METHOD_CASH = 2;
 
     protected $guarded = [];
 

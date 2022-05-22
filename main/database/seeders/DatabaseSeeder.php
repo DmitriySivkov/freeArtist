@@ -2,10 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Order;
-use App\Models\Producer;
-use App\Models\Product;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,9 +15,12 @@ class DatabaseSeeder extends Seeder
     {
     	$this->call(RoleSeeder::class);
 
-		Producer::factory(10)->create();
-		User::factory(10)->create();
-		Product::factory(70)->create();
-		Order::factory(10)->create();
+		$this->call(ProducerSeeder::class);
+		$this->call(UserSeeder::class);
+		$this->call(ProductSeeder::class);
+		$this->call(OrderSeeder::class);
+
+		$this->call(UserRoleSeeder::class);
+		$this->call(ProducerUserSeeder::class);
     }
 }

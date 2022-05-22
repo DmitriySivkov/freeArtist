@@ -38,7 +38,6 @@ class OrderFactory extends Factory
 
         return [
             'user_id' => User::query()
-                ->where('role_id', 1)
                 ->inRandomOrder()
                 ->first()
                 ->id,
@@ -47,7 +46,10 @@ class OrderFactory extends Factory
                 ->first()
                 ->id,
             'products' => $products,
-            'payment_method' => $this->faker->numberBetween(1,2),
+            'payment_method' => $this->faker->numberBetween(
+            	Order::ORDER_PAYMENT_METHOD_CARD,
+				Order::ORDER_PAYMENT_METHOD_CASH
+			),
             'status' => 1,
         ];
 

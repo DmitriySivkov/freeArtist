@@ -12,6 +12,11 @@ class Role extends Model
 	const CUSTOMER = 1;
 	const PRODUCER = 2;
 
+	const ROLES = [
+		self::CUSTOMER => 'customer',
+		self::PRODUCER => 'producer'
+	];
+
     public function users()
     {
         return $this->belongsToMany(User::class);

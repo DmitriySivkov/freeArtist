@@ -18,7 +18,8 @@ class Producer extends Model
 
     public function users()
 	{
-		return $this->hasMany(User::class);
+		return $this->belongsToMany(User::class)
+			->withTimestamps();
 	}
 
 	public function products()

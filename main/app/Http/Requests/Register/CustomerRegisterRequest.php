@@ -36,7 +36,6 @@ class CustomerRegisterRequest extends FormRequest implements UserRegisterRequest
           'name' => ['required', 'min:2', 'max:255'],
           'phone' => ['required', 'max:32', 'unique:users'],
           'password' => ['required', 'min:6', 'max:255'],
-          'role_id' => ['required'],
         ];
     }
 
