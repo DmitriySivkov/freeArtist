@@ -16,8 +16,17 @@ import CustomerOrderCalendarList from "src/components/orders/Customer/CustomerOr
 import ProducerOrderCalendarList from "src/components/orders/Producer/ProducerOrderCalendarList"
 import { computed } from "vue"
 import { useStore } from "vuex"
+import { date, Loading } from "quasar"
 
 export default {
+	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+		Loading.show({
+			spinnerColor: "primary",
+		})
+		return store.dispatch("order/getList", {
+			filter: { date: date.formatDate(Date.now(), "DD.MM.YYYY") }
+		}).then(() => Loading.hide())
+	},
 	components: {
 		OrderCalendar,
 		CustomerOrderCalendarList,

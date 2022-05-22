@@ -5,6 +5,7 @@ namespace App\Services\Orders;
 
 
 use App\Models\Order;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
@@ -15,17 +16,18 @@ class CustomerOrderService extends OrderService
 	 */
 	public function getList()
 	{
-		$query = Order::query();
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		$query = Order::query()->where('user_id', $user->id)
+			->withCasts([
+				'created_at' => 'datetime:Y-m-d H:i:s',
+				'updated_at' => 'datetime:Y-m-d H:i:s'
+			]);
 
 		if (request()->has('filter')) {
 
 			$filter = json_decode(request()->get('filter'), true);
-
-			$query->where('user_id', $filter['user']['id'])
-				->withCasts([
-					'created_at' => 'datetime:Y-m-d H:i:s',
-					'updated_at' => 'datetime:Y-m-d H:i:s'
-				]);
 
 			if (Arr::has($filter, 'date')) {
 				$filter['date'] = Carbon::parse($filter['date'])->format('Y-m-d');
