@@ -36,7 +36,7 @@ class Order extends Model
 
     public function products()
 	{
-		return $this->belongsToJson(Product::class, 'products->product_id');
+		return $this->belongsToJson(Product::class, 'products[]->product_id');
 	}
 
 }
