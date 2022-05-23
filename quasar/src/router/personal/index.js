@@ -2,7 +2,7 @@ export default [
 	{
 		name: "personal",
 		path: "personal",
-		component: () => import("pages/Personal"),
+		component: () => import("pages/personal/Navigation"),
 		meta: {
 			route_name: "Личный кабинет",
 			caption: "",
@@ -14,7 +14,7 @@ export default [
 	{
 		name: "personal_orders",
 		path: "personal/orders",
-		component: () => import("pages/Orders"),
+		component: () => import("pages/personal/Orders"),
 		meta: {
 			route_name: "Список заказов",
 			requires_auth: true,
@@ -23,10 +23,19 @@ export default [
 	{
 		name: "personal_user",
 		path: "personal/user",
-		component: () => import("pages/User"),
+		component: () => import("pages/personal/User"),
 		meta: {
 			route_name: "Персональные данные",
 			requires_auth: true
 		}
 	},
+	// {
+	// 	name: "personal_becomeProducer",
+	// path: "personal/user",
+	// component: () => import("pages/User"),
+	// meta: {
+	// 	route_name: "Персональные данные",
+	// 	requires_auth: true
+	// }
+	// }
 ]

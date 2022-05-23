@@ -4,8 +4,8 @@
 			<OrderCalendar />
 		</div>
 		<div class="col-xs-12 col-md-6">
-			<CustomerOrderCalendarList v-if="user.data.role_id === user.roles.customer"/>
-			<ProducerOrderCalendarList v-if="user.data.role_id === user.roles.producer"/>
+			<CustomerOrderCalendarList v-if="isCustomer"/>
+			<ProducerOrderCalendarList v-if="isProducer"/>
 		</div>
 	</div>
 </template>
@@ -14,9 +14,9 @@
 import OrderCalendar from "src/components/orders/OrderCalendar"
 import CustomerOrderCalendarList from "src/components/orders/Customer/CustomerOrderCalendarList"
 import ProducerOrderCalendarList from "src/components/orders/Producer/ProducerOrderCalendarList"
-import { computed } from "vue"
-import { useStore } from "vuex"
+import { useUserRole } from "src/composables/userRole"
 import { date, Loading } from "quasar"
+import { computed } from "vue"
 
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
@@ -33,11 +33,14 @@ export default {
 		ProducerOrderCalendarList
 	},
 	setup() {
-		const $store = useStore()
-		const user = computed(() => $store.state.user)
+		const { user, hasUserRole } = useUserRole()
+
+		const isCustomer = computed(() => hasUserRole(user.value.roles.customer))
+		const isProducer = computed(() => hasUserRole(user.value.roles.producer))
 
 		return {
-			user
+			isCustomer,
+			isProducer
 		}
 	}
 }
