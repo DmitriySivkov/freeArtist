@@ -7,7 +7,7 @@
 			>
 				<tbody>
 					<tr
-						v-for="(value, key) in {name:user.name, phone:user.phone, email:user.email, status:user.role.title}"
+						v-for="(value, key) in userDataToShow"
 						:key="key"
 					>
 						<td class="text-left">{{ key }}</td>
@@ -27,8 +27,14 @@ export default {
 	setup() {
 		const $store = useStore()
 		const user = computed(() => $store.state.user.data)
+
+		const userDataToShow = computed(() => ({
+			phone: user.value.phone ?? "",
+			name: user.value.name ?? "",
+			email: user.value.email ?? "",
+		}))
 		return {
-			user
+			userDataToShow
 		}
 	},
 }

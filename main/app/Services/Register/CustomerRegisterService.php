@@ -4,13 +4,12 @@
 namespace App\Services\Register;
 
 use App\Contracts\Services\UserRegisterServiceContract;
-use App\Http\Requests\Register\CustomerRegisterRequest;
-use App\Jobs\SendEmailVerificationJob;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerRegisterService implements UserRegisterServiceContract
 {
@@ -23,10 +22,17 @@ class CustomerRegisterService implements UserRegisterServiceContract
 	{
 		DB::beginTransaction();
 		try {
+			$unhashedPassword = $userData['password'];
+			$userData['password'] = Hash::make($unhashedPassword);
 			/** @var User $user */
 			$user = User::create($userData);
 			$user->roles()->attach(Role::CUSTOMER);
-			$response = (new AuthService())->loginWithCredentials(['phone' => '89109667968', 'password' => 'ye11owstorm1196']);
+			$response = (new AuthService())->loginWithCredentials(
+				[
+					'phone' => $userData['phone'],
+					'password' => $unhashedPassword
+				]
+			);
 		} catch (\Throwable $e) {
 			DB::rollBack();
 			throw new \LogicException("Ошибка сервера регистрации");

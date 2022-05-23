@@ -12,6 +12,7 @@
 					v-model="phone"
 					label="Телефон *"
 					mask="8 (###) ###-##-##"
+					fill-mask=""
 					:lazy-rules="true"
 					:rules="[
 						val => !!val || 'Введите номер телефона'
@@ -119,7 +120,7 @@ export default {
 				}
 				else {
 					$store.dispatch("user/signUp", {
-						phone: phone.value,
+						phone: "8" + phone.value,
 						password: password.value,
 						consent: accept.value
 					}).then(() => {

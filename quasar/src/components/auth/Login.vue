@@ -11,6 +11,7 @@
 					v-model="phone"
 					label="Телефон *"
 					mask="8 (###) ###-##-##"
+					fill-mask=""
 					:unmasked-value="true"
 					:lazy-rules="true"
 					:rules="[
@@ -107,7 +108,7 @@ export default {
 
 			onSubmit() {
 				$store.dispatch("user/login", {
-					phone: phone.value,
+					phone: "8" + phone.value,
 					password: password.value,
 				}).then(() => {
 					$q.notify({

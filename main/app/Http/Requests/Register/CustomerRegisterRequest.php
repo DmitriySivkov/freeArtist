@@ -4,7 +4,6 @@ namespace App\Http\Requests\Register;
 
 use App\Contracts\Requests\UserRegisterRequestContract;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Hash;
 
 class CustomerRegisterRequest extends FormRequest implements UserRegisterRequestContract
 {
@@ -36,18 +35,6 @@ class CustomerRegisterRequest extends FormRequest implements UserRegisterRequest
           'phone' => ['required', 'max:32', 'unique:users'],
           'password' => ['required', 'min:6', 'max:255'],
         ];
-    }
-
-    /** method "passedValidation" does not merge values for some reason,
-     * so this one is used
-     */
-    public function validated()
-    {
-        $request = $this->validator->validated();
-
-        $request['password'] = Hash::make($this->password);
-
-        return $request;
     }
 
     /**
