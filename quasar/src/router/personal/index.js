@@ -29,13 +29,13 @@ export default [
 			requires_auth: true
 		}
 	},
-	// {
-	// 	name: "personal_becomeProducer",
-	// path: "personal/user",
-	// component: () => import("pages/User"),
-	// meta: {
-	// 	route_name: "Персональные данные",
-	// 	requires_auth: true
-	// }
-	// }
+	{
+		name: "personal_becomeProducer",
+		path: "personal/become-producer",
+		component: () => import("pages/personal/BecomeProducer"),
+		meta: {
+			route_name: "Стать изготовителем",
+			requires_auth: true
+		}
+	}
 ]

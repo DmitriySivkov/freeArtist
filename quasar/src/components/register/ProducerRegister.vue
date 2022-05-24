@@ -1,251 +1,132 @@
 <template>
-	<q-page class="flex flex-center">
-		<q-form
-			@submit="onSubmit"
-			@reset="onReset"
-			class="q-gutter-md q-pa-md"
-		>
-			<q-input
-				filled
-				v-model="name"
-				label="Ваше имя *"
-				:lazy-rules="true"
-				:rules="[
-					val => !!val || 'Введите имя',
-					val => val.length > 1 || 'не менее 2 символов',
-				]"
-			/>
-
-			<q-input
-				filled
-				v-model="email"
-				label="Адрес электронной почты *"
-				:lazy-rules="true"
-				:rules="[
-					val => !!val || 'Введите адрес электронной почты',
-					isValidEmail
-				]"
-			/>
-
-			<q-input
-				v-model="password"
-				filled
-				:type="is_pwd ? 'password' : 'text'"
-				label="Пароль *"
-				:lazy-rules="true"
-				:rules="[
-					val => !!val || 'Введите пароль',
-					val => val.length > 6 || 'не менее 6 символов',
-				]"
+	<div class="q-pa-md row justify-center">
+		<div class="col-xs-12 col-md-6 col-lg-4">
+			<q-form
+				@submit="onSubmit"
+				@reset="onReset"
 			>
-				<template v-slot:append>
-					<q-icon
-						:name="is_pwd ? 'visibility_off' : 'visibility'"
-						class="cursor-pointer"
-						@click="is_pwd = !is_pwd"
-					/>
-				</template>
-			</q-input>
-
-
-			<div class="row q-col-gutter-sm q-mt-none">
-				<div
-					class="col-6"
-					:class="{'q-pl-none': item.value % 2}"
-					v-for="item in producer_radio"
-					:key="item.value"
-				>
-					<q-card
-						class="bg-primary "
-						dark
+				<div class="row q-col-gutter-sm">
+					<div
+						class="col-xs-12 col-md-6"
+						v-for="item in producer_radio"
+						:key="item.value"
 					>
-						<q-radio
-							v-model="producer_radio_model"
-							:val="item.value"
+						<q-card
+							class="bg-primary"
 							dark
-							color="white"
-							class="q-pt-lg q-pb-lg q-pl-sm full-width"
-							@update:model-value="this.producerRadioSwitched"
 						>
-							<template v-slot:default>
-								<div class="q-pr-sm q-pl-xs">
+							<q-card-section>
+								<q-radio
+									v-model="producer_radio_model"
+									:val="item.value"
+									dark
+									color="white"
+									@update:model-value="this.producerRadioSwitched"
+								>
 									{{ item.label }}
-								</div>
-							</template>
-						</q-radio>
-					</q-card>
+								</q-radio>
+							</q-card-section>
+						</q-card>
+					</div>
 				</div>
-			</div>
 
-
-			<div v-if="producer_radio_model === 1">
-				<div class="row">
-					<q-badge
-						color="secondary"
-						class="col-xs-12 text-center justify-center no-border-radius"
-					>
-						Выберите фирму
-					</q-badge>
-				</div>
-				<q-select
-					filled
-					class="q-mt-none q-pb-none"
-					v-model="producer"
-					use-input
-					input-debounce="0"
-					label="Выбрать фирму *"
-					:options="producerList"
-					@filter="this.filterSelect"
-					behavior="dialog"
-					:rules="[
-						val => !!val || 'Выберите фирму'
-					]"
+				<div
+					v-if="producer_radio_model === 1"
+					class="q-mt-lg"
 				>
-					<template v-slot:no-option>
-						<q-item>
-							<q-item-section class="text-grey">
-								Фирма не найдена
-							</q-item-section>
-						</q-item>
-					</template>
-				</q-select>
-			</div>
-			<div v-if="producer_radio_model === 2">
-				<div class="row">
-					<q-badge
-						color="secondary"
-						class="col-xs-12 text-center justify-center no-border-radius"
+					<q-select
+						filled
+						v-model="producer"
+						use-input
+						input-debounce="1000"
+						label="Найти изготовителя *"
+						:options="producerList"
+						@filter="loadProducerList"
+						behavior="dialog"
+						emit-value
 					>
-						Создайте свою фирму
-					</q-badge>
-				</div>
-				<q-input
-					filled
-					class="q-mt-none q-pb-none"
-					v-model="new_producer_title"
-					label="Название фирмы *"
-					:lazy-rules="true"
-					:rules="[
-						val => !!val || 'Введите название своей фирмы',
-					]"
-				/>
-			</div>
 
-			<div class="row q-mt-none">
-				<q-toggle
-					v-model="accept"
-					label="Я принимаю условия пользования сервисом"
-					size="lg"
-					class="col-xs-12 q-mt-md"
-					color="secondary"
-				/>
-			</div>
-			<div class="row q-col-gutter-sm">
-				<div class="col-6 q-pl-none">
-					<q-btn
-						label="Подтвердить"
-						type="submit"
-						color="primary"
-						class="q-pa-lg full-width"
+					</q-select>
+				</div>
+				<div
+					v-if="producer_radio_model === 2"
+					class="q-mt-lg"
+				>
+					<q-input
+						filled
+						class="q-mt-none q-pb-none"
+						v-model="new_producer_title"
+						label="Название изготовителя *"
+						:lazy-rules="true"
+						:rules="[
+							val => !!val || 'Введите название',
+						]"
 					/>
 				</div>
-				<div class="col-6 q-pr-none">
-					<q-btn
-						label="Сбросить"
-						type="reset"
-						color="warning"
-						class="q-pa-lg full-width"
-					/>
+
+				<div class="row q-col-gutter-sm q-mt-lg">
+					<div class="col-xs-6">
+						<q-btn
+							label="Подтвердить"
+							type="submit"
+							color="primary"
+							class="q-pa-lg full-width"
+						/>
+					</div>
+					<div class="col-xs-6">
+						<q-btn
+							label="Сбросить"
+							type="reset"
+							color="warning"
+							class="q-pa-lg full-width"
+						/>
+					</div>
 				</div>
-			</div>
-		</q-form>
-	</q-page>
+			</q-form>
+		</div>
+	</div>
 </template>
 
 <script>
 import { useQuasar } from "quasar"
-import { ref, onMounted } from "vue"
+import { ref } from "vue"
 import { useStore } from "vuex"
-import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 
 export default {
 	setup() {
 		const $q = useQuasar()
 		const $store = useStore()
-		const $router = useRouter()
 
-		const name = ref(null)
-		const email = ref(null)
-		const accept = ref(false)
-		const password = ref("")
-		const is_pwd = ref(true)
 		const producer = ref(null)
 
 		const new_producer_title = ref("")
 
 		const producer_radio_model = ref(null)
-		const producer_radio = [{label:"Выбрать из списка фирм", value:1},{label:"Создать свою фирму", value:2}]
+		const producer_radio = [
+			{label:"Присоединиться к изготовителю", value:1},
+			{label:"Создать нового изготовителя", value:2}
+		]
 
 		const producerList = ref([])
-		let producerListDefault = []
 
-		onMounted(async () =>
-			await api.get("producers").then((response) => {
-				producerList.value = response.data.producers.map((item) => {
-					return {
-						label: item.title,
-						value: item.id
-					}
+		const onSubmit = () => {
+			if (!producer_radio_model.value) {
+				$q.notify({
+					color: "red-5",
+					textColor: "white",
+					icon: "warning",
+					message: "Выберите одну из опций"
 				})
-				producerListDefault = producerList.value
-			}))
+				return
+			}
+			$store.dispatch("user/signUp", {
+				new_producer_title: new_producer_title.value,
+				producer: producer.value,
+			}).then(() => {
 
-		return {
-			name,
-			email,
-			password,
-			is_pwd,
-			producer,
-			producerList,
-			accept,
-			producer_radio,
-			producer_radio_model,
-			new_producer_title,
-
-			onSubmit () {
-				if (!producer_radio_model.value) {
-					$q.notify({
-						color: "red-5",
-						textColor: "white",
-						icon: "warning",
-						message: "Выберите фирму или создайте собственную"
-					})
-					return
-				}
-				if (accept.value !== true) {
-					$q.notify({
-						color: "red-5",
-						textColor: "white",
-						icon: "warning",
-						message: "Необходимо принять условия пользования сервисом"
-					})
-					return
-				}
-				$store.dispatch("user/signUp", {
-					name: name.value,
-					email: email.value,
-					password: password.value,
-					role_id: $router.currentRoute.value.meta.role_id,
-					new_producer_title: new_producer_title.value,
-					producer: producer.value,
-					consent: accept.value
-				}).then(() => {
-					$q.notify({color: "green-4", textColor: "white",
-						icon: "cloud_done",
-						message: "На указанную почту отправлено письмо для подтверждения"
-					})
-				}).catch((error) => {
+			})
+				.catch((error) => {
 					const errors = Object.values(error.response.data.errors)
 						.reduce((accum, val) => accum.concat(...val), [])
 					for (var val of errors) {
@@ -258,37 +139,43 @@ export default {
 						})
 					}
 				})
-			},
+		}
 
-			onReset () {
-				name.value = null
-				email.value = null
-				password.value = null
-				accept.value = false
-				producer.value = null
-				producer_radio_model.value = null
-			},
+		const onReset = () => {
+			producer.value = null
+			producer_radio_model.value = null
+		}
 
-			isValidEmail (val) {
-				return /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/.test(val)
-            || "Неверный формат"
-			},
+		const loadProducerList = async (text, update) => {
+			if (text.length < 1) return
 
-			filterSelect (val, update) {
-				if (val === "") {
-					update(() => producerList.value = producerListDefault)
-					return
-				}
-				update(() => {
-					producerList.value = producerList.value.filter(v => v.label.toLowerCase().indexOf(val.toLowerCase()) > -1)
+			const response = await api.get("producers")
+
+			update(() => {
+				producerList.value = response.data.map((producer) => {
+					return {
+						label: producer.title,
+						value: producer.id
+					}
 				})
-			},
+			})
+		}
 
-			producerRadioSwitched() {
-				producer.value = null
-				new_producer_title.value = ""
-			}
+		const producerRadioSwitched = () => {
+			producer.value = null
+			new_producer_title.value = ""
+		}
 
+		return {
+			producer,
+			producerList,
+			producer_radio,
+			producer_radio_model,
+			new_producer_title,
+			onSubmit,
+			onReset,
+			loadProducerList,
+			producerRadioSwitched
 		}
 	},
 }

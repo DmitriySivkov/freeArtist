@@ -27,7 +27,7 @@ export default {
 		const menu = [
 			{ title: "Персональные данные", link: "/personal/user" },
 			{ title: "Ваши заказы", link: "/personal/orders" },
-			{ title: "Стать изготовителем", link: "/personal/becomeProducer" }
+			{ title: "Стать изготовителем", link: "/personal/become-producer" }
 		]
 
 		return {
