@@ -120,7 +120,7 @@ export default {
 				}
 				else {
 					$store.dispatch("user/signUp", {
-						phone: "8" + phone.value,
+						phone: phone.value,
 						password: password.value,
 						consent: accept.value
 					}).then(() => {
