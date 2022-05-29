@@ -19,7 +19,7 @@ class CustomerOrderService extends OrderService
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		$query = Order::query()->where('user_id', $user->id)
+		$query = Order::where('user_id', $user->id)
 			->withCasts([
 				'created_at' => 'datetime:Y-m-d H:i:s',
 				'updated_at' => 'datetime:Y-m-d H:i:s'

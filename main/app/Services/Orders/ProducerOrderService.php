@@ -19,7 +19,7 @@ class ProducerOrderService extends OrderService
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		$query = Order::query()->where('producer_id', $user->producer_id);;
+		$query = Order::where('producer_id', $user->producer_id);;
 
 		if (request()->has('filter')) {
 

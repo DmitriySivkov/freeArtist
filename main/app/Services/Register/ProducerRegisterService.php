@@ -27,16 +27,14 @@ class ProducerRegisterService implements UserRegisterServiceContract
 
 			/** @var Producer $producer */
 			if (!$validated->get('producer'))
-				$producer = Producer::query()
-					->create([
+				$producer = Producer::create([
 						'title' => $validated->get('new_producer_title')
 					]);
 			else
-				$producer = Producer::query()
-					->find($validated->get('producer')['value']);
+				$producer = Producer::find($validated->get('producer')['value']);
 
 			/** @var User $user */
-			$user = User::query()->create([
+			$user = User::create([
 				'name' => $validated->get('name'),
 				'email' => $validated->get('email'),
 				'password' => $validated->get('password'),
