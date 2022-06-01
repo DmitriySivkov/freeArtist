@@ -1,14 +1,16 @@
 <template>
-	<q-page class="column">
-		<div class="q-pa-md row q-col-gutter-sm">
+	<div class="q-ma-sm">
+		<div class="row q-col-gutter-sm">
 			<div
 				v-for="(item, index) in menu"
 				:key="index"
-				class="col-xs-12 col-md-6 col-lg-3 q-mb-sm"
+				class="col-xs-12 col-md-6 col-lg-3 flex"
 			>
-				<q-card class="bg-indigo-10 text-white">
+				<q-card
+					class="bg-indigo-10 text-white fit"
+				>
 					<q-item
-						class="q-pa-xl"
+						class="q-pa-xl fit"
 						:to="item.link"
 					>
 						<q-item-section class="text-center text-h5">
@@ -18,7 +20,7 @@
 				</q-card>
 			</div>
 		</div>
-	</q-page>
+	</div>
 </template>
 
 <script>
@@ -27,7 +29,8 @@ export default {
 		const menu = [
 			{ title: "Персональные данные", link: "/personal/user" },
 			{ title: "Ваши заказы", link: "/personal/orders" },
-			{ title: "Стать изготовителем", link: "/personal/become-producer" }
+			{ title: "Зарегистрировать изготовителя", link: "/personal/register-producer" },
+			{ title: "Присоединиться к изготовителю", link: "/personal/join-producer" }
 		]
 
 		return {
