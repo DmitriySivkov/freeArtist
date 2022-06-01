@@ -32,3 +32,13 @@ export const verifyEmail = async ({commit}, payload) => {
 		email: payload.email
 	})
 }
+
+export const registerProducer = async ({commit}, payload) => {
+	const response = await api.post("register", {...payload, case: 1})
+	commit("SET_USER_PRODUCER", response.data)
+}
+
+export const joinProducer = async ({commit}, payload) => {
+	const response = await api.post("register", {...payload, case: 1})
+	commit("SET_USER_PRODUCER", response.data)
+}

@@ -9,23 +9,27 @@
 					<q-card-section
 						class="text-center bg-primary text-white"
 					>
-						Получите доступ к личному кабинету изготовителя.<br/>
-						Вы по-прежнему сможете присоединиться к другому изготовителю
+						Присоединиться к существующему изготовителю.<br/>
+						Вы по-прежнему сможете зарегистрировать собственное название изготовителя
 					</q-card-section>
 				</q-card>
 
-				<q-input
+				<q-select
+					class="q-pb-none"
 					filled
-					class="q-mt-none q-pb-none q-mb-lg"
 					v-model="producer"
-					label="Введите название *"
-					:lazy-rules="true"
+					use-input
+					input-debounce="1000"
+					label="Начните вводить название изготовителя *"
+					:options="producerList"
+					@filter="loadProducerList"
+					behavior="dialog"
 					:rules="[
 						val => !!val,
 					]"
 				/>
 
-				<div class="row q-col-gutter-sm">
+				<div class="row q-col-gutter-sm q-mt-lg">
 					<div class="col-xs-6">
 						<q-btn
 							label="Подтвердить"
@@ -52,6 +56,7 @@
 import { useQuasar } from "quasar"
 import { ref } from "vue"
 import { useStore } from "vuex"
+import { api } from "src/boot/axios"
 
 export default {
 	setup() {
@@ -60,8 +65,10 @@ export default {
 
 		const producer = ref(null)
 
+		const producerList = ref([])
+
 		const onSubmit = () => {
-			$store.dispatch("user/registerProducer", {
+			$store.dispatch("user/joinProducer", {
 				producer: producer.value,
 			}).then(() => {
 
@@ -84,10 +91,27 @@ export default {
 		const onReset = () =>
 			producer.value = null
 
+		const loadProducerList = async (text, update) => {
+			if (text.length < 1) return
+
+			const response = await api.get("producers")
+
+			update(() => {
+				producerList.value = response.data.map((producer) => {
+					return {
+						label: producer.title,
+						value: producer.id
+					}
+				})
+			})
+		}
+
 		return {
 			producer,
+			producerList,
 			onSubmit,
-			onReset
+			onReset,
+			loadProducerList
 		}
 	},
 }

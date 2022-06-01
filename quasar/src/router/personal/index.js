@@ -30,11 +30,20 @@ export default [
 		}
 	},
 	{
-		name: "personal_becomeProducer",
-		path: "personal/become-producer",
-		component: () => import("pages/personal/BecomeProducer"),
+		name: "personal_register_producer",
+		path: "personal/register-producer",
+		component: () => import("pages/personal/RegisterProducer"),
 		meta: {
-			route_name: "Стать изготовителем",
+			route_name: "Зарегистрировать изготовителя",
+			requires_auth: true
+		}
+	},
+	{
+		name: "personal_join_producer",
+		path: "personal/join-producer",
+		component: () => import("pages/personal/JoinProducer"),
+		meta: {
+			route_name: "Присоединиться к изготовителю",
 			requires_auth: true
 		}
 	}

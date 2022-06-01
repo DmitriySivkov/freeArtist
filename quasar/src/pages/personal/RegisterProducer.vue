@@ -7,9 +7,6 @@
 <script>
 import ProducerRegister from "src/components/register/ProducerRegister"
 export default {
-	components: { ProducerRegister },
-	setup() {
-
-	}
+	components: { ProducerRegister }
 }
 </script>
