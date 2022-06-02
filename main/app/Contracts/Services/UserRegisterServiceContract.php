@@ -8,5 +8,5 @@ use App\Contracts\Requests\UserRegisterRequestContract;
 
 interface UserRegisterServiceContract
 {
-	public function run(UserRegisterRequestContract $request);
+	public function register(UserRegisterRequestContract $request);
 }

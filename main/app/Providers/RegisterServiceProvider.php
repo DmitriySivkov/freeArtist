@@ -4,15 +4,16 @@ namespace App\Providers;
 
 use App\Contracts\Requests\UserRegisterRequestContract;
 use App\Contracts\Services\UserRegisterServiceContract;
-use App\Http\Requests\Register\ProducerRegisterRequest;
 use App\Http\Requests\Register\CustomerRegisterRequest;
-use App\Models\Role;
-use App\Services\Register\ProducerRegisterService;
+use App\Http\Requests\Register\ProducerRegisterRequest;
 use App\Services\Register\CustomerRegisterService;
+use App\Services\Register\ProducerRegisterService;
 use Illuminate\Support\ServiceProvider;
 
-class UserRegisterServiceProvider extends ServiceProvider
+class RegisterServiceProvider extends ServiceProvider
 {
+	const CASE_PRODUCER_REGISTER = 1;
+
     /**
      * Register services.
      *
@@ -21,11 +22,22 @@ class UserRegisterServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(UserRegisterRequestContract::class, function () {
-			return new CustomerRegisterRequest();
+			switch (request()->get('case')) {
+				case self::CASE_PRODUCER_REGISTER:
+					return new ProducerRegisterRequest();
+				default:
+					return new CustomerRegisterRequest();
+			}
+
 		});
 
 		$this->app->bind(UserRegisterServiceContract::class, function () {
-			return new CustomerRegisterService();
+			switch (request()->get('case')) {
+				case self::CASE_PRODUCER_REGISTER:
+					return new ProducerRegisterService();
+				default:
+					return new CustomerRegisterService();
+			}
 		});
     }
 

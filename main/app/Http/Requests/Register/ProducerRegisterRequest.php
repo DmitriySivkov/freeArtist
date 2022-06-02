@@ -5,9 +5,11 @@ namespace App\Http\Requests\Register;
 use App\Contracts\Requests\UserRegisterRequestContract;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class ProducerRegisterRequest extends FormRequest implements UserRegisterRequestContract
 {
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -18,7 +20,7 @@ class ProducerRegisterRequest extends FormRequest implements UserRegisterRequest
         return true;
     }
 
-    /**
+	/**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -26,25 +28,8 @@ class ProducerRegisterRequest extends FormRequest implements UserRegisterRequest
     public function rules()
     {
         return [
-			'name' => ['required', 'min:2', 'max:255'],
-			'email' => ['required', 'max:128', 'unique:users'],
-			'password' => ['required', 'min:6', 'max:255'],
-			'role_id' => ['required'],
-			'new_producer_title' => ['required_without:producer'],
-			'producer' => ['required_without:new_producer_title']
+			'producer' => ['required', 'unique:producers,title']
         ];
-    }
-
-    /** method "passedValidation" does not merge values for some reason,
-     * so this one is used
-     */
-    public function validated()
-    {
-        $request = $this->validator->validated();
-
-        $request['password'] = Hash::make($this->password);
-
-        return $request;
     }
 
     /**
@@ -55,7 +40,7 @@ class ProducerRegisterRequest extends FormRequest implements UserRegisterRequest
     public function messages()
     {
         return [
-            'email.unique' => 'Такая почта уже существует',
+            'producer.unique' => 'Такой изготовитель уже существует',
         ];
     }
 }

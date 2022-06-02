@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Producer;
+use App\Models\ProducerUser;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,16 +18,24 @@ class ProducerUserSeeder extends Seeder
      */
     public function run()
     {
+    	$producers = [];
 		User::whereHas('roles', function (Builder $query) {
 			$query->where('roles.id', Role::PRODUCER);
 		})
-			->each(function (User $user) {
-				$user->producers()->attach(
-					\Faker\Factory::create()->numberBetween(
-						Producer::first()->id,
-						Producer::OrderBy('id', 'desc')->first()->id,
-						)
+			->each(function (User $user) use (&$producers) {
+				$randomProducerId = \Faker\Factory::create()->numberBetween(
+					Producer::first()->id,
+					Producer::OrderBy('id', 'desc')->first()->id,
 				);
+
+				if (!in_array($randomProducerId, $producers)) {
+					$user->producers()
+						->attach($randomProducerId);
+					$user->roles()
+						->attach(Role::PRODUCER_OWNER);
+				}
+
+				$producers[] = $randomProducerId;
 			});
     }
 }

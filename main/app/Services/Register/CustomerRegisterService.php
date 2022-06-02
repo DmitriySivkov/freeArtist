@@ -16,9 +16,10 @@ class CustomerRegisterService implements UserRegisterServiceContract
 	/**
 	 * @param array $userData
 	 * @return JsonResponse
+	 * @throws \Throwable
 	 */
 
-	public function run($userData)
+	public function register($userData)
 	{
 		DB::beginTransaction();
 		try {
@@ -33,11 +34,12 @@ class CustomerRegisterService implements UserRegisterServiceContract
 					'password' => $unhashedPassword
 				]
 			);
+			DB::commit();
 		} catch (\Throwable $e) {
 			DB::rollBack();
 			throw new \LogicException("Ошибка сервера регистрации");
 		}
-		DB::commit();
+
 		return $response;
 	}
 }

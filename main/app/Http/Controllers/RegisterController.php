@@ -10,7 +10,7 @@ class RegisterController extends Controller
     public function store(UserRegisterRequestContract $request, UserRegisterServiceContract $registration)
     {
 		try {
-			return $registration->run($request->validated());
+			return $registration->register($request->validated());
 		} catch (\Throwable $e) {
 			return response()->json(["errors" =>
 				["registerService" => [$e->getMessage()]]
