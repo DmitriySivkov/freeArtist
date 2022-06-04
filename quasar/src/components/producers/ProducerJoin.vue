@@ -10,12 +10,11 @@
 						class="text-center bg-primary text-white"
 					>
 						Присоединиться к существующему изготовителю.<br/>
-						Вы по-прежнему сможете зарегистрировать собственное название изготовителя
+						Вы по-прежнему сможете зарегистрироваться как самостоятельный изготовитель
 					</q-card-section>
 				</q-card>
 
 				<q-select
-					class="q-pb-none"
 					filled
 					v-model="producer"
 					use-input
@@ -27,6 +26,13 @@
 					:rules="[
 						val => !!val,
 					]"
+				/>
+
+				<q-input
+					v-model="message"
+					filled
+					type="textarea"
+					label="Добавьте текст заявки (необязательно)"
 				/>
 
 				<div class="row q-col-gutter-sm q-mt-lg">
@@ -64,12 +70,14 @@ export default {
 		const $store = useStore()
 
 		const producer = ref(null)
+		const message = ref("")
 
 		const producerList = ref([])
 
 		const onSubmit = () => {
 			$store.dispatch("user/joinProducer", {
-				producer: producer.value,
+				producer: producer.value.value,
+				message: message.value
 			}).then(() => {
 
 			})
@@ -94,7 +102,9 @@ export default {
 		const loadProducerList = async (query, update) => {
 			if (query.length < 1) return
 
-			const response = await api.get("personal/producers/producersToAttach", { params: { query } })
+			const response = await api.get("personal/producers/producersToAttach",{
+				params: { query }
+			})
 
 			update(() => {
 				producerList.value = response.data.map((producer) => {
@@ -108,6 +118,7 @@ export default {
 
 		return {
 			producer,
+			message,
 			producerList,
 			onSubmit,
 			onReset,

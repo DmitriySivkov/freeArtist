@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\ProducerUserRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class UserController extends Controller
+{
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function joinProducer(Request $request)
+	{
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+		try {
+			$joinRequest = ProducerUserRequest::create([
+				'from' => $user->id,
+				'to' => $request->get('producer'),
+				'type' => ProducerUserRequest::TYPE_USER_TO_PRODUCER,
+				'status' => ProducerUserRequest::STATUS_PENDING,
+				'message' => $request->get('message')
+			]);
+		} catch (\Throwable $e) {
+			return response()->json(["errors" =>
+				["joinProducerRequest" => ['Ошибка сервера']]
+			])
+				->setStatusCode(422);
+		}
+
+		return response()->json($joinRequest);
+	}
+}

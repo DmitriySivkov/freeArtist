@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests\Register;
 
-use App\Contracts\Requests\UserRegisterRequestContract;
+use App\Contracts\Requests\RegisterRequestContract;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
-class ProducerRegisterRequest extends FormRequest implements UserRegisterRequestContract
+class ProducerRegisterRequest extends FormRequest implements RegisterRequestContract
 {
 
     /**

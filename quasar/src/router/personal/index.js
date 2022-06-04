@@ -43,7 +43,7 @@ export default [
 		path: "personal/join-producer",
 		component: () => import("pages/personal/JoinProducer"),
 		meta: {
-			route_name: "Присоединиться к изготовителю",
+			route_name: "Заявка: присоединиться к изготовителю",
 			requires_auth: true
 		}
 	}

@@ -24,21 +24,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|ProducerUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProducerUser whereUserRoles($value)
  * @mixin \Eloquent
+ * @property int $user_active
+ * @method static \Illuminate\Database\Eloquent\Builder|ProducerUser whereUserActive($value)
  */
 class ProducerUser extends Model
 {
     use HasFactory;
 
     protected $table = 'producer_user';
-
-	protected $casts = [
-		'user_roles' => 'array',
-	];
-
-	protected $attributes = [
-		'user_roles' => [],
-	];
-
-    const ROLE_USER_OWNER = 1;
-    const ROLE_USER_COWORKER = 2;
 }

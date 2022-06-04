@@ -6,6 +6,7 @@ namespace App\Services\Register;
 
 use App\Contracts\Services\RegisterServiceContract;
 use App\Models\Producer;
+use App\Models\ProducerUser;
 use App\Models\Role;
 use App\Traits\WithAuthUser;
 use Illuminate\Http\JsonResponse;

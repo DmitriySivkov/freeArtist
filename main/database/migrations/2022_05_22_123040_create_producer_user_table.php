@@ -15,8 +15,14 @@ class CreateProducerUserTable extends Migration
     {
         Schema::create('producer_user', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('producer_id');
-            $table->unsignedInteger('user_id');
+            $table->foreignId('producer_id')
+				->constrained('producers')
+				->onDelete('cascade');
+            $table->foreignId('user_id')
+				->constrained('users')
+				->onDelete('cascade');
+            $table->unsignedTinyInteger('user_active')
+				->default(1);
             $table->timestamps();
             $table->unique(['producer_id', 'user_id']);
         });

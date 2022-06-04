@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,5 +54,6 @@ Route::group([
 
 	Route::group(['prefix' => 'producers'], function() {
 		Route::get('producersToAttach', [ProducerController::class, 'getProducersToAttach']);
+		Route::post('join', [UserController::class, 'joinProducer']);
 	});
 });
