@@ -1,7 +1,7 @@
 import { api } from "src/boot/axios"
 
 export const getList = async ({commit}, payload) => {
-	const response = await api.get("orders", {
+	const response = await api.get("personal/orders", {
 		params: payload
 	})
 
@@ -9,7 +9,7 @@ export const getList = async ({commit}, payload) => {
 }
 
 export const create = async ({commit}, payload) => {
-	const response = await api.post("orders", {
+	const response = await api.post("personal/orders", {
 		cart: payload
 	})
 }

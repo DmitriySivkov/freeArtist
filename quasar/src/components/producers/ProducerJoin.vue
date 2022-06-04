@@ -91,10 +91,10 @@ export default {
 		const onReset = () =>
 			producer.value = null
 
-		const loadProducerList = async (text, update) => {
-			if (text.length < 1) return
+		const loadProducerList = async (query, update) => {
+			if (query.length < 1) return
 
-			const response = await api.get("producers")
+			const response = await api.get("personal/producers/producersToAttach", { params: { query } })
 
 			update(() => {
 				producerList.value = response.data.map((producer) => {

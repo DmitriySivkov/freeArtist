@@ -13,7 +13,7 @@ export const signUp = async ({commit}, payload) => {
 }
 
 export const logout = async ({commit}, payload) => {
-	await api.post("logout", payload)
+	await api.post("personal/logout", payload)
 	commit("SET_USER", {})
 	commit("SET_IS_LOGGED", false)
 }

@@ -41,7 +41,8 @@ Route::group([
 	'middleware' => [
 		'appendAuthorizationHeader',
 		'auth:sanctum'
-	]
+	],
+	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);
 
@@ -49,4 +50,8 @@ Route::group([
     	Route::get('', [OrderController::class, 'index']);
     	Route::post('', [OrderController::class, 'store']);
     });
+
+	Route::group(['prefix' => 'producers'], function() {
+		Route::get('producersToAttach', [ProducerController::class, 'getProducersToAttach']);
+	});
 });

@@ -69,12 +69,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function roles()
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function roles()
     {
         return $this->belongsToMany(Role::class);
     }
 
-    public function producers()
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function producers()
 	{
 		return $this->belongsToMany(Producer::class)
 			->withTimestamps();

@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Register;
 
-use App\Contracts\Requests\UserRegisterRequestContract;
+use App\Contracts\Requests\RegisterRequestContract;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CustomerRegisterRequest extends FormRequest implements UserRegisterRequestContract
+class CustomerRegisterRequest extends FormRequest implements RegisterRequestContract
 {
     /**
      * Determine if the user is authorized to make this request.

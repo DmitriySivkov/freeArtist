@@ -3,7 +3,7 @@
 
 namespace App\Services\Register;
 
-use App\Contracts\Services\UserRegisterServiceContract;
+use App\Contracts\Services\RegisterServiceContract;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\AuthService;
@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class CustomerRegisterService implements UserRegisterServiceContract
+class CustomerRegisterService implements RegisterServiceContract
 {
 	/**
 	 * @param array $userData

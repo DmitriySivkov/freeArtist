@@ -4,7 +4,7 @@
 namespace App\Contracts\Requests;
 
 
-interface UserRegisterRequestContract
+interface RegisterRequestContract
 {
 	public function validated();
 }

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\Requests\UserRegisterRequestContract;
-use App\Contracts\Services\UserRegisterServiceContract;
+use App\Contracts\Requests\RegisterRequestContract;
+use App\Contracts\Services\RegisterServiceContract;
 
 class RegisterController extends Controller
 {
-    public function store(UserRegisterRequestContract $request, UserRegisterServiceContract $registration)
+    public function store(RegisterRequestContract $request, RegisterServiceContract $registration)
     {
 		try {
 			return $registration->register($request->validated());

@@ -4,16 +4,16 @@
 namespace App\Services\Register;
 
 
-use App\Contracts\Services\UserRegisterServiceContract;
+use App\Contracts\Services\RegisterServiceContract;
 use App\Models\Producer;
 use App\Models\Role;
-use App\Models\User;
+use App\Traits\WithAuthUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Laravel\Sanctum\PersonalAccessToken;
 
-class ProducerRegisterService implements UserRegisterServiceContract
+class ProducerRegisterService implements RegisterServiceContract
 {
+	use WithAuthUser;
 
 	/**
 	 * @param array $producerData
@@ -22,13 +22,10 @@ class ProducerRegisterService implements UserRegisterServiceContract
 	 */
 	public function register($producerData)
 	{
-		$PAtoken = PersonalAccessToken::findToken(request()->cookie('token'));
-
-		/** @var User $user */
-		$user = $PAtoken->tokenable;
-
 		DB::beginTransaction();
 		try {
+			$user = $this->resolveUserByAuthCookie();
+
 			$producer = Producer::create([
 					'title' => $producerData['producer']
 				]);
