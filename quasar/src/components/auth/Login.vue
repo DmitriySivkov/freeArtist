@@ -114,7 +114,7 @@ export default {
 					password: password.value,
 				}).then(() => {
 					notifySuccess("Будь как дома, путник!")
-					$router.replace("personal")
+					$router.push({name: "personal"})
 				}).catch((error) => {
 					const errors = Object.values(error.response.data.errors)
 						.reduce((accum, val) => accum.concat(...val), [])

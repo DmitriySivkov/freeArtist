@@ -65,7 +65,7 @@ export default ({
 			cart,
 			filter,
 			show(id) {
-				$router.push("/producers/" + id)
+				$router.push({name:"producer_detail", params: { id }})
 			},
 		}
 	}

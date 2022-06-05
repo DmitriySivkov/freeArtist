@@ -66,8 +66,8 @@ export default {
 			$store.dispatch("user/registerProducer", {
 				producer: producer.value,
 			}).then(() => {
-				notifySuccess("Заявка успешно отправлена")
-				$router.push("personal_user")
+				notifySuccess("Успешно")
+				$router.push({name:"personal_user"})
 			})
 				.catch((error) => {
 					const errors = Object.values(error.response.data.errors)

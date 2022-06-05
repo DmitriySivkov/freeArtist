@@ -120,7 +120,7 @@ export default {
 						consent: accept.value
 					}).then(() => {
 						notifySuccess("Добро пожаловать")
-						$router.push("personal")
+						$router.push({name:"personal"})
 					}).catch((error) => {
 						const errors = Object.values(error.response.data.errors)
 							.reduce((accum, val) => accum.concat(...val), [])
