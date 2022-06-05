@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
 {
@@ -16,8 +17,17 @@ class AuthService
 
         /** @var User $user */
         $user = auth()->user();
+        $abilities = ['*'];
 
-		$token = $user->createToken($user->phone)
+		$loginToken = PersonalAccessToken::query()->where('tokenable_id', $user->id)
+			->where('tokenable_type', User::class)->first();
+
+		if ($loginToken) {
+			$abilities = $loginToken->abilities;
+			$loginToken->delete();
+		}
+
+		$token = $user->createToken($user->phone, $abilities)
 			->plainTextToken;
 
         return response()->json($user->load(['roles', 'producers']))
