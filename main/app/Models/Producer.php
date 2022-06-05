@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $joinRequests
+ * @property-read int|null $join_requests_count
  */
 class Producer extends Model
 {
@@ -42,6 +44,8 @@ class Producer extends Model
     public function users()
 	{
 		return $this->belongsToMany(User::class)
+			->using(ProducerUser::class)
+			->withPivot(['rights', 'user_active'])
 			->withTimestamps();
 	}
 

@@ -32,16 +32,20 @@ class ProducerRegisterService implements RegisterServiceContract
 				]);
 
 			$user->producers()
-				->attach($producer->id);
+				->attach($producer->id, ['rights' => [ProducerUser::RIGHT_OWNER]]);
 
 			$user->roles()
-				->attach([Role::PRODUCER, Role::PRODUCER_OWNER]);
+				->attach([Role::PRODUCER]);
 
 			DB::commit();
 		} catch (\Throwable $e) {
 			DB::rollBack();
-			throw new \LogicException('Ошибка сервера регистрации');
+			throw new \LogicException($e->getMessage());
 		}
+
+		$producer->pivot = ProducerUser::where('user_id', $user->id)
+			->whereJsonContains('rights', ProducerUser::RIGHT_OWNER)
+			->first();
 
 		return response()->json($producer);
 	}

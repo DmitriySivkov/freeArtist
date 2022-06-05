@@ -83,6 +83,8 @@ class User extends Authenticatable
 	public function producers()
 	{
 		return $this->belongsToMany(Producer::class)
+			->using(ProducerUser::class)
+			->withPivot(['rights', 'user_active'])
 			->withTimestamps();
 	}
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * App\Models\ProducerUser
@@ -26,10 +27,19 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property int $user_active
  * @method static \Illuminate\Database\Eloquent\Builder|ProducerUser whereUserActive($value)
+ * @property array $rights
+ * @method static \Illuminate\Database\Eloquent\Builder|ProducerUser whereRights($value)
  */
-class ProducerUser extends Model
+class ProducerUser extends Pivot
 {
     use HasFactory;
 
+    const RIGHT_OWNER = 1;
+    const RIGHT_COWORKER = 2;
+
     protected $table = 'producer_user';
+
+	protected $casts = [
+		'rights' => 'array',
+	];
 }

@@ -29,12 +29,10 @@ class Role extends Model
 
 	const CUSTOMER = 1;
 	const PRODUCER = 2;
-	const PRODUCER_OWNER = 3;
 
 	const ROLES = [
 		self::CUSTOMER => 'customer',
 		self::PRODUCER => 'producer',
-		self::PRODUCER_OWNER => 'producer owner'
 	];
 
     public function users()

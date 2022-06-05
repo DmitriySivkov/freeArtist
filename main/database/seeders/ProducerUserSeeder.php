@@ -30,9 +30,7 @@ class ProducerUserSeeder extends Seeder
 
 				if (!in_array($randomProducerId, $producers)) {
 					$user->producers()
-						->attach($randomProducerId);
-					$user->roles()
-						->attach(Role::PRODUCER_OWNER);
+						->attach($randomProducerId, ['rights' => collect([ProducerUser::RIGHT_OWNER])->toJson()]);
 				}
 
 				$producers[] = $randomProducerId;
