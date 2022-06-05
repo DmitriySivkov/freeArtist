@@ -75,6 +75,7 @@
 import { useRouter } from "vue-router"
 import { useStore } from "vuex"
 import { useQuasar } from "quasar"
+import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
 
 export default {
@@ -83,6 +84,7 @@ export default {
 		// const $currentRoute = useRoute()
 		const $store = useStore()
 		const $q = useQuasar()
+		const { notifySuccess, notifyError } = useNotification()
 
 		const phone = ref(null)
 		const password = ref("")
@@ -111,23 +113,12 @@ export default {
 					phone: "8" + phone.value,
 					password: password.value,
 				}).then(() => {
-					$q.notify({
-						color: "green-4",
-						textColor: "white",
-						icon: "cloud_done",
-						message: "Будь как дома, путник!"
-					})
+					notifySuccess("Будь как дома, путник!")
 					$router.replace("personal")
 				}).catch((error) => {
-					const errors = Object.values(error.response.data.errors).reduce((accum, val) => accum.concat(...val), [])
-					for (var val of errors) {
-						$q.notify({
-							color: "red-5",
-							textColor: "white",
-							icon: "warning",
-							message: val
-						})
-					}
+					const errors = Object.values(error.response.data.errors)
+						.reduce((accum, val) => accum.concat(...val), [])
+					notifyError(errors)
 				})
 			},
 

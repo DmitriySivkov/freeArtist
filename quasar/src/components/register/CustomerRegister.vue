@@ -85,16 +85,16 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar"
 import { ref } from "vue"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
+import { useNotification } from "src/composables/notification"
 
 export default {
 	setup() {
-		const $q = useQuasar()
 		const $store = useStore()
 		const $router = useRouter()
+		const { notifySuccess, notifyError } = useNotification()
 
 		const phone = ref(null)
 		const accept = ref(false)
@@ -111,12 +111,7 @@ export default {
 
 			onSubmit () {
 				if (accept.value !== true) {
-					$q.notify({
-						color: "red-5",
-						textColor: "white",
-						icon: "warning",
-						message: "Необходимо принять условия пользования сервисом"
-					})
+					notifyError("Необходимо принять условия пользования сервисом")
 				}
 				else {
 					$store.dispatch("user/signUp", {
@@ -124,25 +119,12 @@ export default {
 						password: password.value,
 						consent: accept.value
 					}).then(() => {
-						$q.notify({
-							color: "green-4",
-							textColor: "white",
-							icon: "cloud_done",
-							message: "Добро пожаловать"
-						})
-						$router.push("/")
+						notifySuccess("Добро пожаловать")
+						$router.push("personal")
 					}).catch((error) => {
 						const errors = Object.values(error.response.data.errors)
 							.reduce((accum, val) => accum.concat(...val), [])
-						for (var val of errors) {
-							$q.notify({
-								color: "red-5",
-								textColor: "white",
-								multiline: true,
-								icon: "warning",
-								message: val
-							})
-						}
+						notifyError(errors)
 					})
 				}
 			},

@@ -59,15 +59,17 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar"
+import { useRouter } from "vue-router"
 import { ref } from "vue"
 import { useStore } from "vuex"
+import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
 
 export default {
 	setup() {
-		const $q = useQuasar()
+		const $router = useRouter()
 		const $store = useStore()
+		const { notifySuccess, notifyError } = useNotification()
 
 		const producer = ref(null)
 		const message = ref("")
@@ -79,20 +81,12 @@ export default {
 				producer: producer.value.value,
 				message: message.value
 			}).then(() => {
-
+				notifySuccess("Заявка успешно отправлена")
 			})
 				.catch((error) => {
 					const errors = Object.values(error.response.data.errors)
 						.reduce((accum, val) => accum.concat(...val), [])
-					for (var val of errors) {
-						$q.notify({
-							color: "red-5",
-							textColor: "white",
-							multiline: true,
-							icon: "warning",
-							message: val
-						})
-					}
+					notifyError(errors)
 				})
 		}
 
