@@ -1,4 +1,8 @@
 export default {
 	data: {},
-	detail: {}
+	detail: {},
+	user_rights: {
+		owner: 1,
+		coworker: 2
+	}
 }

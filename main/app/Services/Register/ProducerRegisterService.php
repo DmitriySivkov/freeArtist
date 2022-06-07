@@ -27,6 +27,13 @@ class ProducerRegisterService implements RegisterServiceContract
 		try {
 			$user = $this->resolveUserByAuthCookie();
 
+			$isUserOwner = ProducerUser::where('user_id', $user->id)
+				->whereJsonContains('rights', ProducerUser::RIGHT_OWNER)
+				->exists();
+
+			if ($isUserOwner)
+				throw new \LogicException('Вы уже являетесь владельцем');
+
 			$producer = Producer::create([
 					'title' => $producerData['producer']
 				]);
