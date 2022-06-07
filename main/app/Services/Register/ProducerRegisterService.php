@@ -43,10 +43,6 @@ class ProducerRegisterService implements RegisterServiceContract
 			throw new \LogicException($e->getMessage());
 		}
 
-		$producer->pivot = ProducerUser::where('user_id', $user->id)
-			->whereJsonContains('rights', ProducerUser::RIGHT_OWNER)
-			->first();
-
-		return response()->json($producer);
+		return response()->json($user->load(['producers']));
 	}
 }
