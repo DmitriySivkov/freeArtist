@@ -17,6 +17,18 @@ class UserController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 		try {
+			$producerUserRequest = ProducerUserRequest::where('from', $user->id)
+				->where('to', $request->get('producer'))
+				->first();
+			if ($producerUserRequest) {
+				switch ($producerUserRequest->status) {
+					case ProducerUserRequest::STATUS_PENDING:
+						throw new \LogicException('Запрос обрабатывается изготовителем');
+					case ProducerUserRequest::STATUS_ACCEPTED:
+						throw new \LogicException('Вы уже являетесь партнёром этого изготовителя');
+				}
+			}
+
 			$joinRequest = ProducerUserRequest::create([
 				'from' => $user->id,
 				'to' => $request->get('producer'),
@@ -26,7 +38,7 @@ class UserController extends Controller
 			]);
 		} catch (\Throwable $e) {
 			return response()->json(["errors" =>
-				["joinProducerRequest" => ['Ошибка сервера']]
+				["joinProducerRequest" => [$e->getMessage()]]
 			])
 				->setStatusCode(422);
 		}
