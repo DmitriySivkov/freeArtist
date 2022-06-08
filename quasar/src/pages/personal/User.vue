@@ -27,7 +27,17 @@
 						:key="index"
 					>
 						<td class="text-left">title: {{ producer.title }}</td>
-						<td class="text-left">rights: {{ producer.pivot.rights }}</td>
+						<td class="text-left">
+							<ul>
+								rights:
+								<li
+									v-for="(rightId, index) in producer.pivot.rights"
+									:key="index"
+								>
+									{{ producerUserRights.find((right) => right.id === rightId).label }}
+								</li>
+							</ul>
+						</td>
 					</tr>
 				</tbody>
 			</q-markup-table>
@@ -43,7 +53,9 @@ export default {
 	setup() {
 		const $store = useStore()
 		const user = computed(() => $store.state.user.data)
-
+		const producerUserRights = computed(
+			() => $store.state.producer.user_rights
+		)
 		const userCommon = Object.entries(user.value)
 			.filter(([prop]) => ["phone", "name", "email"].includes(prop))
 
@@ -51,7 +63,8 @@ export default {
 
 		return {
 			userCommon,
-			userProducers
+			userProducers,
+			producerUserRights
 		}
 	},
 }
