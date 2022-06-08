@@ -43,6 +43,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $producerJoinRequests
+ * @property-read int|null $producer_join_requests_count
  */
 class User extends Authenticatable
 {
@@ -86,6 +88,12 @@ class User extends Authenticatable
 			->using(ProducerUser::class)
 			->withPivot(['rights', 'user_active'])
 			->withTimestamps();
+	}
+
+	public function producerJoinRequests()
+	{
+		return $this->hasMany(ProducerUserRequest::class, 'from', 'id')
+			->where('type', ProducerUserRequest::TYPE_USER_TO_PRODUCER);;
 	}
 
     /**

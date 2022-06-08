@@ -34,7 +34,7 @@ export default {
 		const producerUserRights = computed(
 			() => $store.state.producer.user_rights
 		)
-		const { isUserHavingProducerRight } = useUserProducer()
+		const { getUserProducerListByRight } = useUserProducer()
 
 		const items = [
 			{ title: "Персональные данные", link: "/personal/user" },
@@ -42,8 +42,8 @@ export default {
 			{
 				title: "Зарегистрировать изготовителя",
 				link: "/personal/register-producer",
-				conditional: !isUserHavingProducerRight(
-					producerUserRights.value.find((right) => right.title === "owner").id
+				conditional: !getUserProducerListByRight(
+					producerUserRights.value.find((right) => right.title === "coworker").id
 				)
 			},
 			{ title: "Присоединиться к изготовителю", link: "/personal/join-producer" }

@@ -29,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $joinRequests
  * @property-read int|null $join_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $joinInvitations
+ * @property-read int|null $join_invitations_count
  */
 class Producer extends Model
 {
@@ -58,5 +60,11 @@ class Producer extends Model
 	{
 		return $this->hasMany(ProducerUserRequest::class, 'to', 'id')
 			->where('type', ProducerUserRequest::TYPE_USER_TO_PRODUCER);
+	}
+
+	public function joinInvitations()
+	{
+		return $this->hasMany(ProducerUserRequest::class, 'to', 'id')
+			->where('type', ProducerUserRequest::TYPE_PRODUCER_TO_USER);
 	}
 }

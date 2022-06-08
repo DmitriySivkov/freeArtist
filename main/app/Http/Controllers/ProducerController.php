@@ -35,6 +35,7 @@ class ProducerController extends Controller
 	}
 
 	/**
+	 * @param Request $request
 	 * @return JsonResponse
 	 */
 	public function getProducersToAttach(Request $request)
@@ -55,5 +56,15 @@ class ProducerController extends Controller
 			->get();
 
 		return response()->json($producers);
+	}
+
+	/**
+	 * @param Producer $producer
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	public function getJoinRequests(Producer $producer)
+	{
+		return $producer->joinRequests()
+			->get();
 	}
 }

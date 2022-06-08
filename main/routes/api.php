@@ -55,5 +55,6 @@ Route::group([
 	Route::group(['prefix' => 'producers'], function() {
 		Route::get('producersToAttach', [ProducerController::class, 'getProducersToAttach']);
 		Route::post('join', [UserController::class, 'joinProducer']);
+		Route::get('{producer}/joinRequests', [ProducerController::class, 'getJoinRequests']);
 	});
 });
