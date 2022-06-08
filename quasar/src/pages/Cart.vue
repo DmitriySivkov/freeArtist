@@ -23,7 +23,8 @@ export default {
 		const cartPageMargin = ref(0)
 
 		onMounted(() => {
-			cartPageMargin.value = cartOrderSummaryComponent.value.$el.clientHeight
+			if (cartOrderSummaryComponent.value)
+				cartPageMargin.value = cartOrderSummaryComponent.value.$el.clientHeight
 		})
 
 
