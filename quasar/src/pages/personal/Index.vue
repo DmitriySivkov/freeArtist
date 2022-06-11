@@ -5,7 +5,7 @@
 		dense
 		inline-label
 		narrow-indicator
-		class="text-white bg-indigo-10 q-pa-md"
+		class="text-white bg-indigo-10 q-pa-sm"
 	>
 		<q-tab
 			v-for="(tab, index) in tabs"
@@ -13,7 +13,7 @@
 			:name="tab.name"
 			:icon="tab.icon"
 			:label="tab.label"
-			class=""
+			class="q-pa-md"
 		/>
 	</q-tabs>
 	<NavigationCustomer v-if="selectedTab === user.roles.customer"/>

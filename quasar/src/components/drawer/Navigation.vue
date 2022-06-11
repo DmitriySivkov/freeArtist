@@ -65,7 +65,7 @@ export default {
 					(!route.meta.hasOwnProperty("requires_auth") || route.meta.requires_auth === true)
 			)
 		)
-
+		console.log(authLinkList.value)
 		return {
 			user,
 			authLinkList,
