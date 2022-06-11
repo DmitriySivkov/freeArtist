@@ -5,13 +5,13 @@ export const useUserRole = () => {
 	const $store = useStore()
 	const user = computed(() => $store.state.user)
 
-	const userRoles = computed(() =>
-		user.value.data.roles.reduce((accum, role) => [...accum, role.id], [])
-	)
+	const hasUserRole = (roleId) =>
+		user.value.data.roles
+			.reduce((accum, role) => [...accum, role.id], [])
+			.includes(roleId)
 
-	const hasUserRole = (roleId) => {
-		return userRoles.value.includes(roleId)
-	}
+	const getUserRoles = () =>
+		user.value.data.roles
 
-	return { user, hasUserRole }
+	return { user, hasUserRole, getUserRoles }
 }
