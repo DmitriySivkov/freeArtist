@@ -8,13 +8,12 @@ use App\Contracts\Services\RegisterServiceContract;
 use App\Models\Producer;
 use App\Models\ProducerUser;
 use App\Models\Role;
-use App\Traits\WithAuthUser;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class ProducerRegisterService implements RegisterServiceContract
 {
-	use WithAuthUser;
 
 	/**
 	 * @param array $producerData
@@ -25,7 +24,8 @@ class ProducerRegisterService implements RegisterServiceContract
 	{
 		DB::beginTransaction();
 		try {
-			$user = $this->resolveUserByAuthCookie();
+			/** @var User $user */
+			$user = auth('sanctum')->user();
 
 			$isUserOwner = ProducerUser::where('user_id', $user->id)
 				->whereJsonContains('rights', ProducerUser::RIGHT_OWNER)

@@ -42,9 +42,9 @@ export default {
 			{
 				title: "Зарегистрировать изготовителя",
 				link: "/personal/register-producer",
-				conditional: !getUserProducerListByRight(
-					producerUserRights.value.find((right) => right.title === "coworker").id
-				)
+				conditional: getUserProducerListByRight(
+					producerUserRights.value.find((right) => right.title === "owner").id
+				).length < 1
 			},
 			{ title: "Присоединиться к изготовителю", link: "/personal/join-producer" }
 		]

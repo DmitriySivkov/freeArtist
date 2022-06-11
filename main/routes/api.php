@@ -46,6 +46,7 @@ Route::group([
 	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);
+	Route::post('register', [RegisterController::class, 'store']);
 
     Route::group(['prefix' => 'orders'], function () {
     	Route::get('', [OrderController::class, 'index']);
