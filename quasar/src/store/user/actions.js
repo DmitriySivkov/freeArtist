@@ -42,3 +42,8 @@ export const joinProducer = async ({commit}, payload) => {
 	const response = await api.post("personal/producers/join", { ...payload })
 	commit("SET_USER_PRODUCER_JOIN_REQUESTS", response.data)
 }
+
+export const getJoinRequestList = async ({commit}, payload) => {
+	const response = await api.get("personal/getJoinRequestList")
+	commit("SET_USER_PRODUCER_JOIN_REQUESTS", response.data)
+}

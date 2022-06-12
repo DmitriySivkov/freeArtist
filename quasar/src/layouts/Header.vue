@@ -10,7 +10,7 @@
 				size="lg"
 			/>
 			<q-toolbar-title class="text-h5">
-				{{ this.route.meta.route_name || ''}}
+				{{ route.meta.route_name || ''}}
 			</q-toolbar-title>
 		</q-toolbar>
 	</q-header>

@@ -30,7 +30,14 @@ class AuthService
 		$token = $user->createToken($user->phone, $abilities)
 			->plainTextToken;
 
-        return response()->json($user->load(['roles', 'producers']))
+        return response()->json($user->load(
+        	[
+        		'roles',
+				'producers',
+				'incomingJoinRequests',
+				'outgoingJoinRequests'
+			]
+		))
 			->withCookie(cookie('token', $token, 0, null, null, true, true, false, 'none'));
     }
 
@@ -42,6 +49,13 @@ class AuthService
         /** @var User $user */
         $user = auth("sanctum")->user();
 
-        return response()->json($user->load(['roles', 'producers']));
+        return response()->json($user->load(
+        	[
+        		'roles',
+				'producers',
+				'incomingJoinRequests',
+				'outgoingJoinRequests'
+			]
+		));
     }
 }

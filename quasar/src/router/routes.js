@@ -1,7 +1,5 @@
 import common from "src/router/common"
 import personal from "src/router/personal"
-import personalCustomer from "src/router/personal/customer"
-import personalProducer from "src/router/personal/producer"
 import auth from "src/router/auth"
 import producer from "src/router/producer"
 import cart from "src/router/cart"
@@ -14,8 +12,6 @@ const routes = [
 			...common,
 			...auth,
 			...personal,
-			...personalCustomer,
-			...personalProducer,
 			...producer,
 			...cart
 		]

@@ -38,7 +38,7 @@ export default {
 
 		const items = [
 			{ title: "Персональные данные", link: "/personal/user" },
-			{ title: "Ваши заказы", link: "/personal/orders" },
+			{ title: "Заказы", link: "/personal/user/orders" },
 			{
 				title: "Зарегистрировать изготовителя",
 				link: "/personal/register-producer",
@@ -46,7 +46,8 @@ export default {
 					producerUserRights.value.find((right) => right.title === "owner").id
 				).length < 1
 			},
-			{ title: "Присоединиться к изготовителю", link: "/personal/join-producer" }
+			{ title: "Присоединиться к изготовителю", link: "/personal/join-producer" },
+			{ title: "Заявки", link: "/personal/requests" }
 		]
 
 		const menu = computed(() =>

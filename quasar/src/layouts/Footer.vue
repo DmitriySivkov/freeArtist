@@ -5,9 +5,16 @@
 				stretch
 				:label="cartCounter"
 				icon-right="shopping_cart"
-				:color="cartCounter > 0 ? 'secondary': 'primary'"
-				class="text-right"
+				:color="cartCounter > 0 || route.name === 'cart' ? 'secondary': 'primary'"
+				class="col-xs-auto"
 				to="/cart"
+			/>
+			<q-btn
+				stretch
+				icon-right="account_circle"
+				:color="route.name.includes('personal') ? 'secondary': 'primary'"
+				class="col-xs-3 col-md-shrink"
+				to="/personal"
 			/>
 		</q-toolbar>
 	</q-footer>
@@ -16,8 +23,10 @@
 <script>
 import { useStore } from "vuex"
 import { computed } from "vue"
+import { useRoute } from "vue-router"
 export default {
 	setup() {
+		const route = useRoute()
 		const $store = useStore()
 		const cartCounter = computed(
 			() => Object.values($store.state.cart.data)
@@ -25,7 +34,8 @@ export default {
 		)
 
 		return {
-			cartCounter
+			cartCounter,
+			route
 		}
 	}
 }

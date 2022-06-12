@@ -34,11 +34,12 @@ class ProducerUserRequest extends Model
     use HasFactory;
 
     const TYPE_USER_TO_PRODUCER = 1;
-    const TYPE_PRODUCER_TO_USER = 2;
+	const TYPE_PRODUCER_TO_PRODUCER = 2;
 
 	const STATUS_PENDING = 1;
 	const STATUS_ACCEPTED = 2;
-	const STATUS_REJECTED = 3;
+	const STATUS_REJECTED_BY_RECIPIENT = 3;
+	const STATUS_REJECTED_BY_CONTRIBUTOR = 4;
 
     protected $guarded = [];
 }

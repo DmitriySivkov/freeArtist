@@ -45,9 +45,6 @@ class ProducerController extends Controller
 		$user->load(['roles', 'producers']);
 
 		$producers = Producer::where('title', 'ilike', '%' . $request->get('query') . '%')
-			->whereDoesntHave('joinRequests', function(Builder $query) use ($user) {
-				$query->where('from', $user->id);
-			})
 			->when($user->roles->contains(Role::PRODUCER), function(Builder $query) use ($user) {
 				return $query->whereNotIn('id', $user->producers->pluck('id'));
 			})

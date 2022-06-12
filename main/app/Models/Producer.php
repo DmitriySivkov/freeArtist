@@ -55,16 +55,4 @@ class Producer extends Model
 	{
 		return $this->hasMany(Product::class);
 	}
-
-	public function joinRequests()
-	{
-		return $this->hasMany(ProducerUserRequest::class, 'to', 'id')
-			->where('type', ProducerUserRequest::TYPE_USER_TO_PRODUCER);
-	}
-
-	public function joinInvitations()
-	{
-		return $this->hasMany(ProducerUserRequest::class, 'to', 'id')
-			->where('type', ProducerUserRequest::TYPE_PRODUCER_TO_USER);
-	}
 }

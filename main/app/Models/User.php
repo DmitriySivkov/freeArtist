@@ -45,6 +45,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $producerJoinRequests
  * @property-read int|null $producer_join_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $incomingJoinRequests
+ * @property-read int|null $incoming_join_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $outgoingJoinRequests
+ * @property-read int|null $outgoing_join_requests_count
  */
 class User extends Authenticatable
 {
@@ -90,10 +94,20 @@ class User extends Authenticatable
 			->withTimestamps();
 	}
 
-	public function producerJoinRequests()
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function incomingJoinRequests()
 	{
-		return $this->hasMany(ProducerUserRequest::class, 'from', 'id')
-			->where('type', ProducerUserRequest::TYPE_USER_TO_PRODUCER);;
+		return $this->hasMany(ProducerUserRequest::class, 'to', 'id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function outgoingJoinRequests()
+	{
+		return $this->hasMany(ProducerUserRequest::class, 'from', 'id');
 	}
 
     /**

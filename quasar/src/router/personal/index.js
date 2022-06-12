@@ -1,4 +1,9 @@
+import customerRoutes from "src/router/personal/customer"
+import producerRoutes from "src/router/personal/producer"
+
 export default [
+	...customerRoutes,
+	...producerRoutes,
 	{
 		name: "personal",
 		path: "personal",
@@ -19,5 +24,14 @@ export default [
 			route_name: "Персональные данные",
 			requires_auth: true
 		}
-	}
+	},
+	{
+		name: "personal_requests",
+		path: "personal/requests",
+		component: () => import("pages/personal/Requests"),
+		meta: {
+			route_name: "Заявки",
+			requires_auth: true
+		}
+	},
 ]

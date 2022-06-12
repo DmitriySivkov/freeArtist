@@ -23,6 +23,7 @@ class CreateProducerUserJoinRequests extends Migration
 			$table->text('message')
 				->nullable();
             $table->timestamps();
+            $table->unique(['from', 'to', 'type']);
         });
     }
 

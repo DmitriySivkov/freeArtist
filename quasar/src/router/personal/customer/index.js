@@ -26,13 +26,4 @@ export default [
 			requires_auth: true
 		}
 	},
-	{
-		name: "personal_requests",
-		path: "personal/requests",
-		component: () => import("pages/personal/Requests"),
-		meta: {
-			route_name: "Заявки",
-			requires_auth: true
-		}
-	},
 ]

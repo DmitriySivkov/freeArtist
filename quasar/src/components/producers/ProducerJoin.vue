@@ -82,6 +82,7 @@ export default {
 				message: message.value
 			}).then(() => {
 				notifySuccess("Заявка успешно отправлена")
+				$router.push({name: "personal_requests"})
 			})
 				.catch((error) => {
 					const errors = Object.values(error.response.data.errors)

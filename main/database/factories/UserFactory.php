@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 class UserFactory extends Factory
 {
@@ -24,7 +25,7 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name,
             'phone' => $this->faker->unique()->numerify('8##########'),
-            'password' => 'test123',
+            'password' => Hash::make('test123'),
             'remember_token' => null,
         ];
     }
