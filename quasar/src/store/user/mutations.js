@@ -13,7 +13,7 @@ export const SET_USER_PRODUCER = (state, producer) => {
 		state.data.producers = [producer]
 }
 
-export const SET_USER_PRODUCER_JOIN_REQUESTS = (state, request) => {
+export const SET_USER_OUTGOING_JOIN_REQUESTS = (state, request) => {
 	if (state.data.hasOwnProperty("outgoing_join_requests"))
 		state.data.outgoing_join_requests = [...state.data.outgoing_join_requests, request]
 	else
