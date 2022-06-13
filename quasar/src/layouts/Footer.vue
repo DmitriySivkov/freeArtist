@@ -1,21 +1,34 @@
 <template>
 	<q-footer elevated>
 		<q-toolbar class="q-mb-md q-mt-md q-gutter-sm">
-			<q-btn
-				stretch
-				:label="cartCounter"
-				icon-right="shopping_cart"
-				:color="cartCounter > 0 || route.name === 'cart' ? 'secondary': 'primary'"
-				class="col-xs-auto"
-				to="/cart"
-			/>
-			<q-btn
-				stretch
-				icon-right="account_circle"
-				:color="route.name.includes('personal') ? 'secondary': 'primary'"
-				class="col-xs-3 col-md-shrink"
-				to="/personal"
-			/>
+			<div class="col-xs-shrink">
+				<q-btn
+					class="q-pa-md"
+					icon-right="home"
+					:color="route.name === 'home' ? 'secondary': 'primary'"
+					to="/"
+				/>
+			</div>
+			<div
+				v-if="user.isLogged"
+				class="col-xs-shrink"
+			>
+				<q-btn
+					class="q-pa-md"
+					icon-right="account_circle"
+					:color="route.name.includes('personal') ? 'secondary': 'primary'"
+					to="/personal"
+				/>
+			</div>
+			<div class="col-xs-shrink">
+				<q-btn
+					class="q-pa-md"
+					:label="cartCounter"
+					icon-right="shopping_cart"
+					:color="cartCounter > 0 || route.name === 'cart' ? 'secondary': 'primary'"
+					to="/cart"
+				/>
+			</div>
 		</q-toolbar>
 	</q-footer>
 </template>
@@ -28,6 +41,7 @@ export default {
 	setup() {
 		const route = useRoute()
 		const $store = useStore()
+		const user = computed(() => $store.state.user)
 		const cartCounter = computed(
 			() => Object.values($store.state.cart.data)
 				.reduce((accum, cart_item) => accum + cart_item.products.length, 0)
@@ -35,7 +49,8 @@ export default {
 
 		return {
 			cartCounter,
-			route
+			route,
+			user
 		}
 	}
 }

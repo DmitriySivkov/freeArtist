@@ -43,12 +43,16 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $producerJoinRequests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $producerJoinRequests
  * @property-read int|null $producer_join_requests_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $incomingJoinRequests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingJoinRequests
  * @property-read int|null $incoming_join_requests_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $outgoingJoinRequests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingJoinRequests
  * @property-read int|null $outgoing_join_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingJoinProducerRequests
+ * @property-read int|null $incoming_join_producer_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingJoinProducerRequests
+ * @property-read int|null $outgoing_join_producer_requests_count
  */
 class User extends Authenticatable
 {
@@ -97,17 +101,19 @@ class User extends Authenticatable
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function incomingJoinRequests()
+	public function incomingCoworkingProducerRequests()
 	{
-		return $this->hasMany(ProducerUserRequest::class, 'to', 'id');
+		return $this->hasMany(RelationRequest::class, 'to', 'id')
+			->where('type', RelationRequest::TYPE_COWORKING);
 	}
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function outgoingJoinRequests()
+	public function outgoingCoworkingProducerRequests()
 	{
-		return $this->hasMany(ProducerUserRequest::class, 'from', 'id');
+		return $this->hasMany(RelationRequest::class, 'from', 'id')
+			->where('type', RelationRequest::TYPE_COWORKING);;
 	}
 
     /**

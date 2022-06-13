@@ -34,8 +34,8 @@ class AuthService
         	[
         		'roles',
 				'producers',
-				'incomingJoinRequests',
-				'outgoingJoinRequests'
+				'incomingCoworkingProducerRequests',
+				'outgoingCoworkingProducerRequests'
 			]
 		))
 			->withCookie(cookie('token', $token, 0, null, null, true, true, false, 'none'));
@@ -53,8 +53,8 @@ class AuthService
         	[
         		'roles',
 				'producers',
-				'incomingJoinRequests',
-				'outgoingJoinRequests'
+				'incomingCoworkingProducerRequests',
+				'outgoingCoworkingProducerRequests'
 			]
 		));
     }

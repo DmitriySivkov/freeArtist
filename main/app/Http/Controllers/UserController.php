@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProducerUserRequest;
+use App\Models\RelationRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -17,23 +17,23 @@ class UserController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 		try {
-			$producerUserRequest = ProducerUserRequest::where('from', $user->id)
+			$producerUserRequest = Request::where('from', $user->id)
 				->where('to', $request->get('producer'))
 				->first();
 			if ($producerUserRequest) {
 				switch ($producerUserRequest->status) {
-					case ProducerUserRequest::STATUS_PENDING:
+					case Request::STATUS_PENDING:
 						throw new \LogicException('Запрос обрабатывается изготовителем');
-					case ProducerUserRequest::STATUS_ACCEPTED:
+					case Request::STATUS_ACCEPTED:
 						throw new \LogicException('Вы уже являетесь партнёром этого изготовителя');
 				}
 			}
 
-			$joinRequest = ProducerUserRequest::create([
+			$joinRequest = Request::create([
 				'from' => $user->id,
 				'to' => $request->get('producer'),
-				'type' => ProducerUserRequest::TYPE_USER_TO_PRODUCER,
-				'status' => ProducerUserRequest::STATUS_PENDING,
+				'type' => Request::TYPE_COWORKING,
+				'status' => Request::STATUS_PENDING,
 				'message' => $request->get('message')
 			]);
 		} catch (\Throwable $e) {

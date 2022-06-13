@@ -27,9 +27,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $joinRequests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $joinRequests
  * @property-read int|null $join_requests_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerUserRequest[] $joinInvitations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $joinInvitations
  * @property-read int|null $join_invitations_count
  */
 class Producer extends Model
@@ -54,5 +54,23 @@ class Producer extends Model
 	public function products()
 	{
 		return $this->hasMany(Product::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function incomingPartnershipProducerRequests()
+	{
+		return $this->hasMany(RelationRequest::class, 'to', 'id')
+			->where('type', RelationRequest::TYPE_PRODUCER_PARTNERSHIP);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function outgoingPartnershipProducerRequests()
+	{
+		return $this->hasMany(RelationRequest::class, 'from', 'id')
+			->where('type', RelationRequest::TYPE_PRODUCER_PARTNERSHIP);
 	}
 }

@@ -26,4 +26,13 @@ export default [
 			requires_auth: true
 		}
 	},
+	{
+		name: "personal_producer_requests",
+		path: "personal/producer/requests",
+		component: () => import("pages/personal/producer/Requests"),
+		meta: {
+			route_name: "Заявки",
+			requires_auth: true
+		}
+	},
 ]

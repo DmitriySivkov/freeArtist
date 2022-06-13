@@ -47,7 +47,7 @@ export default {
 				).length < 1
 			},
 			{ title: "Присоединиться к изготовителю", link: "/personal/join-producer" },
-			{ title: "Заявки", link: "/personal/requests" }
+			{ title: "Заявки", link: "/personal/user/requests" }
 		]
 
 		const menu = computed(() =>
