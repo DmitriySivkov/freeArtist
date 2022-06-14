@@ -1,3 +1,4 @@
+/** move partnership to another component */
 <template>
 	<q-table
 		grid
@@ -111,7 +112,7 @@
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
-		title="Исходящие на приглашение пользователя в команду"
+		title="Исходящие приглашения в команду"
 	>
 		<template v-slot:item="props">
 			<div class="q-pa-xs col-xs-12">
@@ -164,7 +165,7 @@
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
-		title="Входящие от пользователей на вступление в команду"
+		title="Входящие заявки на вступление в команду"
 	>
 		<template v-slot:item="props">
 			<div class="q-pa-xs col-xs-12">

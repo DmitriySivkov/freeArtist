@@ -4,10 +4,11 @@
 namespace App\Services;
 
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
-
+/** TODO - move repeating code on user load */
 class AuthService
 {
     public function loginWithCredentials($credentials)
@@ -30,14 +31,16 @@ class AuthService
 		$token = $user->createToken($user->phone, $abilities)
 			->plainTextToken;
 
-        return response()->json($user->load(
-        	[
-        		'roles',
-				'producers',
-				'incomingCoworkingProducerRequests',
-				'outgoingCoworkingProducerRequests'
-			]
-		))
+		$load = [
+			'roles',
+			'producers',
+			'outgoingCoworkingProducerRequests'
+		];
+
+		if ($user->roles()->pluck('role_id')->contains(Role::PRODUCER))
+			$load[] = 'incomingCoworkingProducerRequests';
+
+        return response()->json($user->load($load))
 			->withCookie(cookie('token', $token, 0, null, null, true, true, false, 'none'));
     }
 
@@ -49,13 +52,15 @@ class AuthService
         /** @var User $user */
         $user = auth("sanctum")->user();
 
-        return response()->json($user->load(
-        	[
-        		'roles',
-				'producers',
-				'incomingCoworkingProducerRequests',
-				'outgoingCoworkingProducerRequests'
-			]
-		));
+		$load = [
+			'roles',
+			'producers',
+			'outgoingCoworkingProducerRequests'
+		];
+
+		if ($user->roles()->pluck('role_id')->contains(Role::PRODUCER))
+			$load[] = 'incomingCoworkingProducerRequests';
+
+        return response()->json($user->load($load));
     }
 }
