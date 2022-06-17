@@ -13,9 +13,15 @@ export const SET_USER_PRODUCER = (state, producer) => {
 		state.data.producers = [producer]
 }
 
-export const SET_USER_OUTGOING_JOIN_REQUESTS = (state, request) => {
-	if (state.data.hasOwnProperty("outgoing_join_requests"))
-		state.data.outgoing_join_requests = [...state.data.outgoing_join_requests, request]
+export const SET_USER_OUTGOING_COWORKING_REQUESTS = (state, request) => {
+	if (state.data.hasOwnProperty("outgoing_coworking_requests"))
+		state.data.outgoing_coworking_requests = [...state.data.outgoing_coworking_requests, request]
 	else
-		state.data.outgoing_join_requests = [request]
+		state.data.outgoing_coworking_requests = [request]
+}
+
+export const CANCEL_USER_OUTGOING_COWORKING_REQUEST = (state, canceledRequest) => {
+	state.data.outgoing_coworking_requests
+		.find((request) => request.id === canceledRequest.id)
+		.status = 4
 }

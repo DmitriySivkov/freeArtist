@@ -34,11 +34,11 @@ class AuthService
 		$load = [
 			'roles',
 			'producers',
-			'outgoingCoworkingProducerRequests'
+			'outgoingCoworkingRequests'
 		];
 
 		if ($user->roles()->pluck('role_id')->contains(Role::PRODUCER))
-			$load[] = 'incomingCoworkingProducerRequests';
+			$load[] = 'incomingCoworkingRequests';
 
         return response()->json($user->load($load))
 			->withCookie(cookie('token', $token, 0, null, null, true, true, false, 'none'));
@@ -55,11 +55,11 @@ class AuthService
 		$load = [
 			'roles',
 			'producers',
-			'outgoingCoworkingProducerRequests'
+			'outgoingCoworkingRequests'
 		];
 
 		if ($user->roles()->pluck('role_id')->contains(Role::PRODUCER))
-			$load[] = 'incomingCoworkingProducerRequests';
+			$load[] = 'incomingCoworkingRequests';
 
         return response()->json($user->load($load));
     }

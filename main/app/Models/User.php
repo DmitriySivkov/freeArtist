@@ -53,6 +53,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read int|null $incoming_join_producer_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingJoinProducerRequests
  * @property-read int|null $outgoing_join_producer_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingCoworkingRequests
+ * @property-read int|null $incoming_coworking_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingCoworkingRequests
+ * @property-read int|null $outgoing_coworking_requests_count
  */
 class User extends Authenticatable
 {
@@ -101,7 +105,7 @@ class User extends Authenticatable
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function incomingCoworkingProducerRequests()
+	public function incomingCoworkingRequests()
 	{
 		return $this->hasMany(RelationRequest::class, 'to', 'id')
 			->where('type', RelationRequest::TYPE_COWORKING);
@@ -110,10 +114,10 @@ class User extends Authenticatable
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function outgoingCoworkingProducerRequests()
+	public function outgoingCoworkingRequests()
 	{
 		return $this->hasMany(RelationRequest::class, 'from', 'id')
-			->where('type', RelationRequest::TYPE_COWORKING);;
+			->where('type', RelationRequest::TYPE_COWORKING);
 	}
 
     /**

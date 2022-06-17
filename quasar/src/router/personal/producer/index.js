@@ -18,9 +18,9 @@ export default [
 		}
 	},
 	{
-		name: "personal_join_producer",
-		path: "personal/join-producer",
-		component: () => import("pages/personal/JoinProducer"),
+		name: "personal_coworking_request",
+		path: "personal/coworking-request",
+		component: () => import("pages/personal/CoworkingRequest"),
 		meta: {
 			route_name: "Заявка: присоединиться к изготовителю",
 			requires_auth: true

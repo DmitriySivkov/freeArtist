@@ -1,7 +1,7 @@
 <template>
 	<q-table
 		grid
-		:rows="outgoingRequests"
+		:rows="outgoingCoworkingRequests"
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
@@ -23,7 +23,7 @@
 								/>
 							</div>
 							<div class="col-xs-7 col-md-5">
-								from: {{ props.row.from }}
+								to: {{ props.row.to }}
 								status: {{ props.row.status }}
 							</div>
 							<div class="col-xs-3 col-md-5">
@@ -33,6 +33,7 @@
 										size="md"
 										color="warning"
 										class="full-height q-ma-xs col-xs-12 col-md-2"
+										@click="cancelCowRequest(props.row.id)"
 									/>
 								</div>
 							</div>
@@ -55,16 +56,30 @@
 </template>
 
 <script>
-import { computed } from "vue"
-import { useStore } from "vuex"
+import { useRelationRequestManager} from "src/composables/relationRequestManager"
+import { useNotification } from "src/composables/notification"
 
 export default {
 	setup() {
-		const $store = useStore()
-		const user = computed(() => $store.state.user)
-		const outgoingRequests = user.value.data.outgoing_coworking_producer_requests
+		const
+			{
+				outgoingCoworkingRequests,
+				cancelCoworkingRequest
+			} = useRelationRequestManager()
+		const { notifySuccess, notifyError } = useNotification()
+		const cancelCowRequest = (requestId) => {
+			cancelCoworkingRequest(requestId)
+				.then(() => {
+					notifySuccess("Заявка отменена")
+				})
+				.catch((error) => {
+					notifyError(error)
+				})
+		}
+
 		return {
-			outgoingRequests
+			outgoingCoworkingRequests,
+			cancelCowRequest,
 		}
 	}
 }

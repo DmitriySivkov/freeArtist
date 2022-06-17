@@ -56,9 +56,15 @@ Route::group([
 	Route::group(['prefix' => 'producers'], function() {
 		Route::get('producersToAttach', [ProducerController::class, 'getProducersToAttach']);
 
-		Route::group(['prefix' => 'relation-requests'], function() {
-			Route::post('join', [UserController::class, 'joinProducer']);
+		Route::group(['prefix' => 'relationRequests'], function() {
 			Route::get('{producer}/joinRequests', [ProducerController::class, 'getJoinRequests']);
+		});
+	});
+
+	Route::group(['prefix' => 'users'], function() {
+		Route::group(['prefix' => 'relationRequests'], function() {
+			Route::post('sendCoworkingRequest', [UserController::class, 'sendCoworkingRequest']);
+			Route::post('cancelCoworkingRequest/{relationRequest}', [UserController::class, 'cancelCoworkingRequest']);
 		});
 	});
 

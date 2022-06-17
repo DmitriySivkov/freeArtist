@@ -12,28 +12,29 @@ class UserController extends Controller
 	 * @param Request $request
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function joinProducer(Request $request)
+	public function sendCoworkingRequest(Request $request)
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 		try {
-			$producerUserRequest = Request::where('from', $user->id)
+			$relationRequest = RelationRequest::where('from', $user->id)
 				->where('to', $request->get('producer'))
 				->first();
-			if ($producerUserRequest) {
-				switch ($producerUserRequest->status) {
-					case Request::STATUS_PENDING:
+
+			if ($relationRequest) {
+				switch ($relationRequest->status) {
+					case RelationRequest::STATUS_PENDING:
 						throw new \LogicException('Запрос обрабатывается изготовителем');
-					case Request::STATUS_ACCEPTED:
+					case RelationRequest::STATUS_ACCEPTED:
 						throw new \LogicException('Вы уже являетесь партнёром этого изготовителя');
 				}
 			}
 
-			$joinRequest = Request::create([
+			$joinRequest = RelationRequest::create([
 				'from' => $user->id,
 				'to' => $request->get('producer'),
-				'type' => Request::TYPE_COWORKING,
-				'status' => Request::STATUS_PENDING,
+				'type' => RelationRequest::TYPE_COWORKING,
+				'status' => RelationRequest::STATUS_PENDING,
 				'message' => $request->get('message')
 			]);
 		} catch (\Throwable $e) {
@@ -44,5 +45,12 @@ class UserController extends Controller
 		}
 
 		return response()->json($joinRequest);
+	}
+
+	public function cancelCoworkingRequest(RelationRequest $relationRequest)
+	{
+		$relationRequest->status = RelationRequest::STATUS_REJECTED_BY_CONTRIBUTOR;
+		$relationRequest->save();
+		return $relationRequest;
 	}
 }

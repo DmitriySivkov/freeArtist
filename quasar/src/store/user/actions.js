@@ -38,12 +38,17 @@ export const registerProducer = async ({commit}, payload) => {
 	commit("SET_USER_PRODUCER", ...response.data.producers)
 }
 
-export const joinProducer = async ({commit}, payload) => {
-	const response = await api.post("personal/producers/join", { ...payload })
-	commit("SET_USER_OUTGOING_JOIN_REQUESTS", response.data)
+export const sendCoworkingRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/users/relationRequests/sendCoworkingRequest", { ...payload })
+	commit("SET_USER_OUTGOING_COWORKING_REQUESTS", response.data)
 }
 
-export const getJoinRequestList = async ({commit}, payload) => {
-	const response = await api.get("personal/getJoinRequestList")
-	commit("SET_USER_OUTGOING_JOIN_REQUESTS", response.data)
+export const getCoworkingRequests = async ({commit}, payload) => {
+	const response = await api.get("personal/getCoworkingRequests")
+	commit("SET_USER_OUTGOING_COWORKING_REQUESTS", response.data)
+}
+
+export const cancelCoworkingRequest = async ({commit}, requestId) => {
+	const response = await api.post("personal/users/relationRequests/cancelCoworkingRequest/" + requestId)
+	commit("CANCEL_USER_OUTGOING_COWORKING_REQUEST", response.data)
 }

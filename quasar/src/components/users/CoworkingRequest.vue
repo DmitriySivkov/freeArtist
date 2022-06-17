@@ -61,15 +61,15 @@
 <script>
 import { useRouter } from "vue-router"
 import { ref } from "vue"
-import { useStore } from "vuex"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
+import { useRelationRequestManager } from "src/composables/relationRequestManager"
 
 export default {
 	setup() {
 		const $router = useRouter()
-		const $store = useStore()
 		const { notifySuccess, notifyError } = useNotification()
+		const { sendCoworkingRequest } = useRelationRequestManager()
 
 		const producer = ref(null)
 		const message = ref("")
@@ -77,13 +77,11 @@ export default {
 		const producerList = ref([])
 
 		const onSubmit = () => {
-			$store.dispatch("user/joinProducer", {
-				producer: producer.value.value,
-				message: message.value
-			}).then(() => {
-				notifySuccess("Заявка успешно отправлена")
-				$router.push({name: "personal_requests"})
-			})
+			sendCoworkingRequest(producer.value.value, message.value)
+				.then(() => {
+					notifySuccess("Заявка успешно отправлена")
+					$router.push({name: "personal_user_requests"})
+				})
 				.catch((error) => {
 					const errors = Object.values(error.response.data.errors)
 						.reduce((accum, val) => accum.concat(...val), [])
