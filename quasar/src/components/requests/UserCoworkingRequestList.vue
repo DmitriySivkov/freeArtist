@@ -23,8 +23,8 @@
 								/>
 							</div>
 							<div class="col-xs-7 col-md-5">
-								to: {{ props.row.to }}
-								status: {{ props.row.status }}
+								Получатель: {{ props.row.to.name }}<br/>
+								Статус: "{{ props.row.status.label }}"
 							</div>
 							<div class="col-xs-3 col-md-5">
 								<div class="row justify-center">

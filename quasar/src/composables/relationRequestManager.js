@@ -4,6 +4,7 @@ import { useStore } from "vuex"
 export const useRelationRequestManager = () => {
 	const $store = useStore()
 	const user = computed(() => $store.state.user)
+	const relationRequest = computed(() => $store.state.relationRequest)
 
 	const sendCoworkingRequest = (producer, message) =>
 		$store.dispatch("user/sendCoworkingRequest",{ producer, message })
@@ -12,7 +13,7 @@ export const useRelationRequestManager = () => {
 		if (
 			user.value.data.outgoing_coworking_requests
 				.find((request) => request.id === requestId)
-				.status === 4
+				.status === relationRequest.value.statuses.rejected_by_contributor.id
 		)
 			return Promise.reject("Заявка уже отменена")
 
