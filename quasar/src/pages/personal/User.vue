@@ -17,6 +17,7 @@
 			</q-markup-table>
 
 			<q-markup-table
+				v-if="hasUserRole(user.roles.producer)"
 				dark
 				class="bg-indigo-8"
 				separator="vertical"
@@ -49,23 +50,27 @@
 <script>
 import { computed } from "vue"
 import { useStore } from "vuex"
+import { useUserRole } from "src/composables/userRole"
 
 export default {
 	setup() {
 		const $store = useStore()
-		const user = computed(() => $store.state.user.data)
+		const { user, hasUserRole } = useUserRole()
+
 		const producerUserRights = computed(
 			() => $store.state.producer.user_rights
 		)
-		const userCommon = Object.entries(user.value)
+		const userCommon = Object.entries(user.value.data)
 			.filter(([prop]) => ["phone", "name", "email"].includes(prop))
 
-		const userProducers = user.value.producers
+		const userProducers = user.value.data.producers
 
 		return {
 			userCommon,
 			userProducers,
-			producerUserRights
+			producerUserRights,
+			user,
+			hasUserRole
 		}
 	},
 }

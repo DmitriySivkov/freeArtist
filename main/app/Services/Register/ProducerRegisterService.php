@@ -50,6 +50,16 @@ class ProducerRegisterService implements RegisterServiceContract
 			throw new \LogicException($e->getMessage());
 		}
 
-		return response()->json($user->load(['producers']));
+		return response()->json([
+			'producer' => [
+					'pivot' => ProducerUser::where('user_id', $user->id)
+						->where('producer_id', $producer->id)
+						->first()
+						->makeHidden('id')
+				] + $producer->toArray(),
+			'role' => $user->roles()
+				->where('role_id', Role::PRODUCER)
+				->first()
+		]);
 	}
 }

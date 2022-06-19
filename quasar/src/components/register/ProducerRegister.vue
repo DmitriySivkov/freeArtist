@@ -52,7 +52,7 @@
 import { useRouter } from "vue-router"
 import { ref } from "vue"
 import { useStore } from "vuex"
-import {useNotification} from "src/composables/notification"
+import { useNotification } from "src/composables/notification"
 
 export default {
 	setup() {

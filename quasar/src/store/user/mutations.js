@@ -13,6 +13,13 @@ export const SET_USER_PRODUCER = (state, producer) => {
 		state.data.producers = [producer]
 }
 
+export const SET_PRODUCER_ROLE = (state, producerRole) => {
+	if (state.data.roles.find((role) => role.id === producerRole.id))
+		return
+
+	state.data.roles = [...state.data.roles, producerRole]
+}
+
 export const SET_USER_OUTGOING_COWORKING_REQUESTS = (state, request) => {
 	if (state.data.hasOwnProperty("outgoing_coworking_requests"))
 		state.data.outgoing_coworking_requests = [...state.data.outgoing_coworking_requests, request]
