@@ -21,15 +21,16 @@
 				class="bg-indigo-8"
 				separator="vertical"
 			>
+				<th>Изготовитель</th>
+				<th>Привилегии</th>
 				<tbody>
 					<tr
 						v-for="(producer, index) in userProducers"
 						:key="index"
 					>
-						<td class="text-left">title: {{ producer.title }}</td>
+						<td class="text-left">{{ producer.title }}</td>
 						<td class="text-left">
 							<ul>
-								rights:
 								<li
 									v-for="(rightId, index) in producer.pivot.rights"
 									:key="index"
