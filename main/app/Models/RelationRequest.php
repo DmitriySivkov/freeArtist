@@ -32,13 +32,21 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @method static Builder|RelationRequest coworkingRequests()
  * @method static Builder|RelationRequest partnershipRequests()
+ * @property int $from_id
+ * @property string $from_type
+ * @property int $to_id
+ * @property string $to_type
+ * @method static Builder|RelationRequest whereFromId($value)
+ * @method static Builder|RelationRequest whereFromType($value)
+ * @method static Builder|RelationRequest whereToId($value)
+ * @method static Builder|RelationRequest whereToType($value)
  */
 class RelationRequest extends Model
 {
     use HasFactory;
 
-    const TYPE_COWORKING = 1;
-	const TYPE_PRODUCER_PARTNERSHIP = 2;
+    const TYPE_COWORKING = 1; // from user to producer
+	const TYPE_PRODUCER_PARTNERSHIP = 2; // from producer to producer
 
 	const STATUS_PENDING = [
 		'id' => 1,
@@ -66,7 +74,7 @@ class RelationRequest extends Model
 
     protected $guarded = [];
 
-    protected $with = ['from', 'to'];
+//    protected $with = ['from', 'to'];
 
 	protected $appends = ['status'];
 
@@ -87,12 +95,12 @@ class RelationRequest extends Model
 
 	public function from()
 	{
-		return $this->belongsTo(User::class, 'from', 'id');
+		return $this->morphTo();
 	}
 
 	public function to()
 	{
-		return $this->belongsTo(User::class, 'to', 'id');
+		return $this->morphTo();
 	}
 
 	public function scopeCoworkingRequests(Builder $query)

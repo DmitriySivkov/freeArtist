@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,8 +18,10 @@ class UserController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 		try {
-			$relationRequest = RelationRequest::where('from', $user->id)
-				->where('to', $request->get('producer'))
+			$relationRequest = RelationRequest::where('from_id', $user->id)
+				->where('from_type', User::class)
+				->where('to_id', $request->get('producer'))
+				->where('to_type', Producer::class)
 				->first();
 
 			if ($relationRequest) {
@@ -31,9 +34,10 @@ class UserController extends Controller
 			}
 
 			$joinRequest = RelationRequest::create([
-				'from' => $user->id,
-				'to' => $request->get('producer'),
-				'type' => RelationRequest::TYPE_COWORKING,
+				'from_id' => $user->id,
+				'from_type' => User::class,
+				'to_id' => $request->get('producer'),
+				'to_type' => Producer::class,
 				'status' => RelationRequest::STATUS_PENDING['id'],
 				'message' => $request->get('message')
 			]);

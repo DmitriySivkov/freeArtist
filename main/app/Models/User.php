@@ -102,22 +102,22 @@ class User extends Authenticatable
 			->withTimestamps();
 	}
 
+
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
 	public function incomingCoworkingRequests()
 	{
-		return $this->hasMany(RelationRequest::class, 'to', 'id')
-			->where('type', RelationRequest::TYPE_COWORKING);
+		return $this->morphMany(RelationRequest::class, 'to');
 	}
 
+
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
 	public function outgoingCoworkingRequests()
 	{
-		return $this->hasMany(RelationRequest::class, 'from', 'id')
-			->where('type', RelationRequest::TYPE_COWORKING);
+		return $this->morphMany(RelationRequest::class, 'from');
 	}
 
     /**

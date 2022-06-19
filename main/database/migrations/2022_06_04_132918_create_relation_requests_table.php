@@ -15,15 +15,15 @@ class CreateRelationRequestsTable extends Migration
     {
         Schema::create('relation_requests', function (Blueprint $table) {
             $table->id();
-			$table->unsignedBigInteger('from');
-			$table->unsignedBigInteger('to');
-			$table->unsignedTinyInteger('type');
+			$table->unsignedBigInteger('from_id');
+			$table->string('from_type');
+			$table->unsignedBigInteger('to_id');
+			$table->string('to_type');
 			$table->unsignedTinyInteger('status')
-				->default(\App\Models\RelationRequest::STATUS_PENDING);
+				->default(\App\Models\RelationRequest::STATUS_PENDING['id']);
 			$table->text('message')
 				->nullable();
             $table->timestamps();
-            $table->unique(['from', 'to', 'type']);
         });
     }
 
@@ -34,6 +34,6 @@ class CreateRelationRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('producer_user_join_requests');
+        Schema::dropIfExists('relation_requests');
     }
 }
