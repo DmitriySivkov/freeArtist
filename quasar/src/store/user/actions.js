@@ -48,7 +48,18 @@ export const getCoworkingRequests = async ({commit}, payload) => {
 	commit("SET_USER_OUTGOING_COWORKING_REQUESTS", response.data)
 }
 
-export const cancelCoworkingRequest = async ({commit}, requestId) => {
-	const response = await api.post("personal/users/relationRequests/cancelCoworkingRequest/" + requestId)
-	commit("CANCEL_USER_OUTGOING_COWORKING_REQUEST", response.data)
+export const cancelCoworkingRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/users/relationRequests/cancelCoworkingRequest/" + payload.requestId)
+	commit("CANCEL_USER_OUTGOING_COWORKING_REQUEST", {
+		canceledRequest: response.data,
+		canceledStatus: payload.status
+	})
+}
+
+export const restoreCoworkingRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/users/relationRequests/restoreCoworkingRequest/" + payload.requestId)
+	commit("RESTORE_USER_OUTGOING_COWORKING_REQUEST", {
+		restoredRequest: response.data,
+		restoredStatus: payload.status
+	})
 }

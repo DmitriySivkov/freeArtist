@@ -10,17 +10,25 @@ export const useRelationRequestManager = () => {
 		$store.dispatch("user/sendCoworkingRequest",{ producer, message })
 
 	const cancelCoworkingRequest = (requestId) => {
-		if (
-			user.value.data.outgoing_coworking_requests
-				.find((request) => request.id === requestId)
-				.status === relationRequest.value.statuses.rejected_by_contributor.id
-		)
-			return Promise.reject("Заявка уже отменена")
+		return $store.dispatch("user/cancelCoworkingRequest", {
+			requestId,
+			status: relationRequest.value.statuses.rejected_by_contributor
+		})
+	}
 
-		return $store.dispatch("user/cancelCoworkingRequest", requestId)
+	const restoreCoworkingRequest = (requestId) => {
+		return $store.dispatch("user/restoreCoworkingRequest", {
+			requestId,
+			status: relationRequest.value.statuses.pending
+		})
 	}
 
 	const outgoingCoworkingRequests = user.value.data.outgoing_coworking_requests
 
-	return { outgoingCoworkingRequests, cancelCoworkingRequest, sendCoworkingRequest }
+	return {
+		outgoingCoworkingRequests,
+		cancelCoworkingRequest,
+		sendCoworkingRequest,
+		restoreCoworkingRequest
+	}
 }

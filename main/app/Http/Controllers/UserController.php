@@ -22,10 +22,10 @@ class UserController extends Controller
 				->first();
 
 			if ($relationRequest) {
-				switch ($relationRequest->status) {
-					case RelationRequest::STATUS_PENDING:
+				switch ($relationRequest->status['id']) {
+					case RelationRequest::STATUS_PENDING['id']:
 						throw new \LogicException('Запрос обрабатывается изготовителем');
-					case RelationRequest::STATUS_ACCEPTED:
+					case RelationRequest::STATUS_ACCEPTED['id']:
 						throw new \LogicException('Вы уже являетесь партнёром этого изготовителя');
 				}
 			}
@@ -34,7 +34,7 @@ class UserController extends Controller
 				'from' => $user->id,
 				'to' => $request->get('producer'),
 				'type' => RelationRequest::TYPE_COWORKING,
-				'status' => RelationRequest::STATUS_PENDING,
+				'status' => RelationRequest::STATUS_PENDING['id'],
 				'message' => $request->get('message')
 			]);
 		} catch (\Throwable $e) {
@@ -49,7 +49,14 @@ class UserController extends Controller
 
 	public function cancelCoworkingRequest(RelationRequest $relationRequest)
 	{
-		$relationRequest->status = RelationRequest::STATUS_REJECTED_BY_CONTRIBUTOR;
+		$relationRequest->status = RelationRequest::STATUS_REJECTED_BY_CONTRIBUTOR['id'];
+		$relationRequest->save();
+		return $relationRequest;
+	}
+
+	public function restoreCoworkingRequest(RelationRequest $relationRequest)
+	{
+		$relationRequest->status = RelationRequest::STATUS_PENDING['id'];
 		$relationRequest->save();
 		return $relationRequest;
 	}

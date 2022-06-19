@@ -29,11 +29,20 @@
 							<div class="col-xs-3 col-md-5">
 								<div class="row justify-center">
 									<q-btn
-										icon="block"
+										v-if="props.row.status.id === 1"
+										icon="delete"
 										size="md"
 										color="warning"
 										class="full-height q-ma-xs col-xs-12 col-md-2"
 										@click="cancelCowRequest(props.row.id)"
+									/>
+									<q-btn
+										v-if="props.row.status.id === 4"
+										icon="restore"
+										size="md"
+										color="secondary"
+										class="full-height q-ma-xs col-xs-12 col-md-2"
+										@click="restoreCowRequest(props.row.id)"
 									/>
 								</div>
 							</div>
@@ -64,7 +73,8 @@ export default {
 		const
 			{
 				outgoingCoworkingRequests,
-				cancelCoworkingRequest
+				cancelCoworkingRequest,
+				restoreCoworkingRequest
 			} = useRelationRequestManager()
 		const { notifySuccess, notifyError } = useNotification()
 		const cancelCowRequest = (requestId) => {
@@ -76,10 +86,20 @@ export default {
 					notifyError(error)
 				})
 		}
+		const restoreCowRequest = (requestId) => {
+			restoreCoworkingRequest(requestId)
+				.then(() => {
+					notifySuccess("Заявка восстановлена")
+				})
+				.catch((error) => {
+					notifyError(error)
+				})
+		}
 
 		return {
 			outgoingCoworkingRequests,
 			cancelCowRequest,
+			restoreCowRequest
 		}
 	}
 }

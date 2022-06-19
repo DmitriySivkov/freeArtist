@@ -65,8 +65,8 @@ Route::group([
 		Route::group(['prefix' => 'relationRequests'], function() {
 			Route::post('sendCoworkingRequest', [UserController::class, 'sendCoworkingRequest']);
 			Route::post('cancelCoworkingRequest/{relationRequest}', [UserController::class, 'cancelCoworkingRequest']);
+			Route::post('restoreCoworkingRequest/{relationRequest}', [UserController::class, 'restoreCoworkingRequest']);
 		});
 	});
-
 
 });

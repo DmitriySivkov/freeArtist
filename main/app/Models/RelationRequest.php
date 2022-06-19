@@ -81,7 +81,7 @@ class RelationRequest extends Model
 				'label' => collect(self::STATUSES)
 					->filter(fn($status) => $status['id'] === $statusId)
 					->first()['label']
-			])
+			]),
         );
     }
 

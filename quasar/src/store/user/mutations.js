@@ -20,8 +20,14 @@ export const SET_USER_OUTGOING_COWORKING_REQUESTS = (state, request) => {
 		state.data.outgoing_coworking_requests = [request]
 }
 
-export const CANCEL_USER_OUTGOING_COWORKING_REQUEST = (state, canceledRequest) => {
+export const CANCEL_USER_OUTGOING_COWORKING_REQUEST = (state, payload) => {
 	state.data.outgoing_coworking_requests
-		.find((request) => request.id === canceledRequest.id)
-		.status = 4
+		.find((request) => request.id === payload.canceledRequest.id)
+		.status = payload.canceledStatus
+}
+
+export const RESTORE_USER_OUTGOING_COWORKING_REQUEST = (state, payload) => {
+	state.data.outgoing_coworking_requests
+		.find((request) => request.id === payload.restoredRequest.id)
+		.status = payload.restoredStatus
 }
