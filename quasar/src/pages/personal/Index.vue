@@ -6,6 +6,7 @@
 		inline-label
 		narrow-indicator
 		class="text-white bg-indigo-10 q-pa-sm"
+		@update:model-value="switchPersonal"
 	>
 		<q-tab
 			v-for="(tab, index) in tabs"
@@ -25,21 +26,32 @@ import NavigationCustomer from "src/pages/personal/customer/Navigation"
 import NavigationProducer from "src/pages/personal/producer/Navigation"
 import { useUserRole } from "src/composables/userRole"
 import { ref } from "vue"
+import { useStore } from "vuex"
 export default {
 	components: { NavigationCustomer, NavigationProducer },
 	setup() {
+		const $store = useStore()
 		const { user, getUserRoles } = useUserRole()
-		const selectedTab = ref(user.value.roles.customer)
+		const selectedTab = ref(user.value.roles[user.value.personalTab])
 		const tabs = [
 			{name: user.value.roles.customer, icon: "account_box", label: "Пользователь"},
 			{name: user.value.roles.producer, icon: "work_outline", label: "Производитель"}
 		]
 
+		const switchPersonal = (personalTab) =>
+			$store.dispatch(
+				"user/switchPersonal",
+				Object.keys(user.value.roles).find(
+					(roleName) => user.value.roles[roleName] === personalTab
+				)
+			)
+
 		return {
 			user,
 			tabs,
 			selectedTab,
-			getUserRoles
+			getUserRoles,
+			switchPersonal
 		}
 	}
 }

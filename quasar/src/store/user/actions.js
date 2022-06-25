@@ -39,6 +39,10 @@ export const registerProducer = async ({commit}, payload) => {
 	commit("SET_PRODUCER_ROLE", response.data.role)
 }
 
+export const switchPersonal = async ({commit}, personal_tab) => {
+	commit("SWITCH_PERSONAL", personal_tab)
+}
+
 export const sendCoworkingRequest = async ({commit}, payload) => {
 	const response = await api.post("personal/users/relationRequests/sendCoworkingRequest", { ...payload })
 	commit("SET_USER_OUTGOING_COWORKING_REQUESTS", response.data)

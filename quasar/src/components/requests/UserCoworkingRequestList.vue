@@ -23,8 +23,9 @@
 								/>
 							</div>
 							<div class="col-xs-7 col-md-5">
-								Получатель: {{ props.row.to.name }}<br/>
-								Статус: "{{ props.row.status.label }}"
+								Статус: {{ props.row.status.label }}<br/>
+								Получатель: {{ props.row.to.title }}<br/>
+								Тип: {{ relationRequest.types.coworking.label }}
 							</div>
 							<div class="col-xs-3 col-md-5">
 								<div class="row justify-center">
@@ -72,6 +73,7 @@ export default {
 	setup() {
 		const
 			{
+				relationRequest,
 				outgoingCoworkingRequests,
 				cancelCoworkingRequest,
 				restoreCoworkingRequest
@@ -97,6 +99,7 @@ export default {
 		}
 
 		return {
+			relationRequest,
 			outgoingCoworkingRequests,
 			cancelCowRequest,
 			restoreCowRequest

@@ -1,5 +1,6 @@
 export default {
 	isLogged: false,
+	personalTab: "customer",
 	data: {},
 	roles: {
 		customer: 1,

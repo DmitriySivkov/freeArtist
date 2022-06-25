@@ -26,6 +26,7 @@ export const useRelationRequestManager = () => {
 	const outgoingCoworkingRequests = user.value.data.outgoing_coworking_requests
 
 	return {
+		relationRequest,
 		outgoingCoworkingRequests,
 		cancelCoworkingRequest,
 		sendCoworkingRequest,
