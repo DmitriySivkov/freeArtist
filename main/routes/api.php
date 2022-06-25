@@ -57,7 +57,7 @@ Route::group([
 		Route::get('producersToAttach', [ProducerController::class, 'getProducersToAttach']);
 
 		Route::group(['prefix' => 'relationRequests'], function() {
-			Route::get('{producer}/joinRequests', [ProducerController::class, 'getJoinRequests']);
+			Route::post('{producer}/sendProducerPartnershipRequest', [ProducerController::class, 'sendProducerPartnershipRequest']);
 		});
 	});
 

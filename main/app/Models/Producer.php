@@ -35,6 +35,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $incoming_partnership_producer_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingPartnershipProducerRequests
  * @property-read int|null $outgoing_partnership_producer_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingProducerPartnershipRequests
+ * @property-read int|null $incoming_producer_partnership_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingProducerPartnershipRequests
+ * @property-read int|null $outgoing_producer_partnership_requests_count
  */
 class Producer extends Model
 {
@@ -42,12 +46,18 @@ class Producer extends Model
 
     protected $guarded = [];
 
-    public function orders()
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function orders()
     {
         return $this->hasMany(Order::class);
     }
 
-    public function users()
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function users()
 	{
 		return $this->belongsToMany(User::class)
 			->using(ProducerUser::class)
@@ -55,26 +65,38 @@ class Producer extends Model
 			->withTimestamps();
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
 	public function products()
 	{
 		return $this->hasMany(Product::class);
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
-	public function incomingPartnershipProducerRequests()
+	public function outgoingProducerPartnershipRequests()
 	{
-		return $this->hasMany(RelationRequest::class, 'to', 'id')
-			->where('type', RelationRequest::TYPE_PRODUCER_PARTNERSHIP);
+		return $this->morphMany(RelationRequest::class, 'from')
+			->where('to_type', Producer::class);
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
-	public function outgoingPartnershipProducerRequests()
+	public function incomingProducerPartnershipRequests()
 	{
-		return $this->hasMany(RelationRequest::class, 'from', 'id')
-			->where('type', RelationRequest::TYPE_PRODUCER_PARTNERSHIP);
+		return $this->morphMany(RelationRequest::class, 'to')
+			->where('from_type', Producer::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+	 */
+	public function incomingCoworkingRequests()
+	{
+		return $this->morphMany(RelationRequest::class, 'to')
+			->where('from_type', User::class);
 	}
 }

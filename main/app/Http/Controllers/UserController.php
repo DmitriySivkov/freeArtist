@@ -28,7 +28,7 @@ class UserController extends Controller
 					case RelationRequest::STATUS_PENDING['id']:
 						throw new \LogicException('Запрос обрабатывается изготовителем');
 					case RelationRequest::STATUS_ACCEPTED['id']:
-						throw new \LogicException('Вы уже являетесь партнёром этого изготовителя');
+						throw new \LogicException('Вы уже состоите в команде этого изготовителя');
 				}
 			}
 

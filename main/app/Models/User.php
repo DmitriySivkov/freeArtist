@@ -57,6 +57,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read int|null $incoming_coworking_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingCoworkingRequests
  * @property-read int|null $outgoing_coworking_requests_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User ownProducer()
  */
 class User extends Authenticatable
 {
@@ -102,22 +103,22 @@ class User extends Authenticatable
 			->withTimestamps();
 	}
 
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-	 */
-	public function incomingCoworkingRequests()
-	{
-		return $this->morphMany(RelationRequest::class, 'to');
-	}
-
-
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
 	public function outgoingCoworkingRequests()
 	{
 		return $this->morphMany(RelationRequest::class, 'from');
+	}
+
+	/**
+	 * @return Producer|null
+	 */
+	public function scopeOwnProducer()
+	{
+		return $this->producers()
+			->whereJsonContains('rights', ProducerUser::RIGHT_OWNER)
+			->first();
 	}
 
     /**

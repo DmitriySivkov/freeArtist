@@ -1,9 +1,9 @@
 <template>
-	<UserCoworkingRequestList />
+	<UserRequestList />
 </template>
 
 <script>
-import UserCoworkingRequestList from "src/components/requests/UserCoworkingRequestList"
+import UserRequestList from "components/requests/UserRequestList"
 import { Loading } from "quasar"
 
 export default {
@@ -13,6 +13,6 @@ export default {
 	// 	})
 	// 	return store.dispatch("user/getJoinRequestList").then(() => Loading.hide())
 	// },
-	components: { UserCoworkingRequestList },
+	components: { UserRequestList },
 }
 </script>

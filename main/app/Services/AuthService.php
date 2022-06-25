@@ -34,14 +34,16 @@ class AuthService
 		$load = [
 			'roles',
 			'producers',
-			'outgoingCoworkingRequests'
+			'outgoingCoworkingRequests',
+			'producers.outgoingProducerPartnershipRequests',
+			'producers.incomingProducerPartnershipRequests',
+			'producers.incomingCoworkingRequests',
 		];
 
-		if ($user->roles()->pluck('role_id')->contains(Role::PRODUCER))
-			$load[] = 'incomingCoworkingRequests';
-
         return response()->json($user->load($load))
-			->withCookie(cookie('token', $token, 0, null, null, true, true, false, 'none'));
+			->withCookie(
+				cookie('token', $token, 0, null, null, true, true, false, 'none')
+			);
     }
 
     public function loginWithToken(Request $request)
@@ -55,11 +57,11 @@ class AuthService
 		$load = [
 			'roles',
 			'producers',
-			'outgoingCoworkingRequests'
+			'outgoingCoworkingRequests',
+			'producers.outgoingProducerPartnershipRequests',
+			'producers.incomingProducerPartnershipRequests',
+			'producers.incomingCoworkingRequests',
 		];
-
-		if ($user->roles()->pluck('role_id')->contains(Role::PRODUCER))
-			$load[] = 'incomingCoworkingRequests';
 
         return response()->json($user->load($load));
     }
