@@ -18,8 +18,7 @@ class UserController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 		try {
-			$relationRequest = RelationRequest::where('from_id', $user->id)
-				->where('from_type', User::class)
+			$relationRequest = $user->outgoingCoworkingRequests()
 				->where('to_id', $request->get('producer'))
 				->where('to_type', Producer::class)
 				->first();
@@ -48,7 +47,7 @@ class UserController extends Controller
 				->setStatusCode(422);
 		}
 
-		return response()->json($joinRequest);
+		return response()->json($joinRequest->load(['from', 'to']));
 	}
 
 	public function cancelCoworkingRequest(RelationRequest $relationRequest)

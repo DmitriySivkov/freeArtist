@@ -45,8 +45,8 @@ class RelationRequest extends Model
 {
     use HasFactory;
 
-    const TYPE_COWORKING = 1; // from user to producer
-	const TYPE_PRODUCER_PARTNERSHIP = 2; // from producer to producer
+    const TYPE_COWORKING = 1;
+	const TYPE_PRODUCER_PARTNERSHIP = 2;
 
 	const STATUS_PENDING = [
 		'id' => 1,
@@ -74,7 +74,7 @@ class RelationRequest extends Model
 
     protected $guarded = [];
 
-//    protected $with = ['from', 'to'];
+    protected $with = ['from', 'to'];
 
 	protected $appends = ['status'];
 
