@@ -26,8 +26,8 @@
 				<div class="col-xs-12">
 					<q-card class="q-ml-md q-mb-md q-mr-md">
 						<q-card-section>
-							<div class="row items-center justify-between text-center">
-								<div class="col-xs-auto">
+							<div class="row items-center text-center">
+								<div class="col-xs-2 col-md-1">
 									<q-btn
 										size="md"
 										color="primary"
@@ -37,12 +37,12 @@
 										:icon="props.expand ? 'expand_less' : 'expand_more'"
 									/>
 								</div>
-								<div class="col-xs-7 col-md-5">
+								<div class="col-xs-7 col-md-10">
 									Статус: {{ props.row.status.label }}<br/>
 									Получатель: {{ props.row.to.title }}<br/>
 									Тип: {{ relationRequest.types.producer_partnership.label }}
 								</div>
-								<div class="col-xs-3 col-md-5">
+								<div class="col-xs-3 col-md-1">
 								</div>
 							</div>
 						</q-card-section>
@@ -82,8 +82,8 @@
 				<div class="col-xs-12">
 					<q-card class="q-ml-md q-mb-md q-mr-md">
 						<q-card-section>
-							<div class="row items-center justify-between text-center">
-								<div class="col-xs-auto">
+							<div class="row items-center text-center">
+								<div class="col-xs-2 col-md-1">
 									<q-btn
 										size="md"
 										color="primary"
@@ -93,12 +93,12 @@
 										:icon="props.expand ? 'expand_less' : 'expand_more'"
 									/>
 								</div>
-								<div class="col-xs-7 col-md-5">
+								<div class="col-xs-7 col-md-10">
 									Статус: {{ props.row.status.label }}<br/>
 									Отправитель: {{ props.row.from.title }}<br/>
 									Тип: {{ relationRequest.types.producer_partnership.label }}
 								</div>
-								<div class="col-xs-3 col-md-5">
+								<div class="col-xs-3 col-md-1">
 								</div>
 							</div>
 						</q-card-section>
@@ -143,8 +143,8 @@
 				<div class="col-xs-12">
 					<q-card class="q-ml-md q-mb-md q-mr-md">
 						<q-card-section>
-							<div class="row items-center justify-between text-center">
-								<div class="col-xs-auto">
+							<div class="row items-center text-center">
+								<div class="col-xs-2 col-md-1">
 									<q-btn
 										size="md"
 										color="primary"
@@ -154,11 +154,11 @@
 										:icon="props.expand ? 'expand_less' : 'expand_more'"
 									/>
 								</div>
-								<div class="col-xs-7 col-md-5">
+								<div class="col-xs-7 col-md-10">
 									to: {{ props.row.to }}
 									status: {{ props.row.status }}
 								</div>
-								<div class="col-xs-3 col-md-5">
+								<div class="col-xs-3 col-md-1">
 									<div class="row justify-center">
 										<q-btn
 											icon="block"
@@ -207,8 +207,8 @@
 				<div class="col-xs-12">
 					<q-card class="q-ml-md q-mb-md q-mr-md">
 						<q-card-section>
-							<div class="row items-center justify-between text-center">
-								<div class="col-xs-auto">
+							<div class="row items-center text-center">
+								<div class="col-xs-2 col-md-1">
 									<q-btn
 										size="md"
 										color="primary"
@@ -218,12 +218,12 @@
 										:icon="props.expand ? 'expand_less' : 'expand_more'"
 									/>
 								</div>
-								<div class="col-xs-7 col-md-5">
+								<div class="col-xs-7 col-md-10">
 									Статус: {{ props.row.status.label }}<br/>
 									Отправитель: {{ props.row.from.name }}<br/>
 									Тип: {{ relationRequest.types.coworking.label }}
 								</div>
-								<div class="col-xs-3 col-md-5">
+								<div class="col-xs-3 col-md-1">
 								</div>
 							</div>
 						</q-card-section>
