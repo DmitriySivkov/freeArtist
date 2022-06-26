@@ -46,7 +46,6 @@ export default {
 					producerUserRights.value.find((right) => right.title === "owner").id
 				).length < 1
 			},
-			{ title: "Присоединиться к изготовителю", link: "/personal/coworking-request" },
 			{ title: "Заявки", link: "/personal/user/requests" }
 		]
 

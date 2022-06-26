@@ -5,14 +5,25 @@
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
-		title="Исходящие на вступление в команду"
 	>
+		<template v-slot:top>
+			<div class="col-xs-12 col-md-10 q-mb-sm">
+				<span class="text-h6">Исходящие на вступление в команду </span>
+			</div>
+			<q-btn
+				:to="{ name: 'personal_coworking_request'}"
+				size="md"
+				color="secondary"
+				label="Создать"
+				class="full-height col-xs-12 col-md-2"
+			/>
+		</template>
 		<template v-slot:item="props">
-			<div class="q-pa-xs col-xs-12">
-				<q-card>
+			<div class="col-xs-12">
+				<q-card class="q-ml-md q-mb-md q-mr-md">
 					<q-card-section>
-						<div class="row items-center justify-between text-center">
-							<div class="col-xs-auto">
+						<div class="row items-center text-center">
+							<div class="col-xs-2 col-md-1">
 								<q-btn
 									size="md"
 									color="primary"
@@ -22,31 +33,27 @@
 									:icon="props.expand ? 'expand_less' : 'expand_more'"
 								/>
 							</div>
-							<div class="col-xs-7 col-md-5">
+							<div class="col-xs-7 col-md-10">
 								Статус: {{ props.row.status.label }}<br/>
 								Получатель: {{ props.row.to.title }}<br/>
 								Тип: {{ relationRequest.types.coworking.label }}
 							</div>
-							<div class="col-xs-3 col-md-5">
-								<div class="row justify-center">
-									<q-btn
-										v-if="props.row.status.id === 1"
-										icon="delete"
-										size="md"
-										color="warning"
-										class="full-height q-ma-xs col-xs-12 col-md-2"
-										@click="cancelCowRequest(props.row.id)"
-									/>
-									<q-btn
-										v-if="props.row.status.id === 4"
-										icon="restore"
-										size="md"
-										color="secondary"
-										class="full-height q-ma-xs col-xs-12 col-md-2"
-										@click="restoreCowRequest(props.row.id)"
-									/>
-								</div>
-							</div>
+							<q-btn
+								v-if="props.row.status.id === 1"
+								icon="delete"
+								size="md"
+								color="warning"
+								class="full-height col-xs-3 col-md-1"
+								@click="cancelCowRequest(props.row.id)"
+							/>
+							<q-btn
+								v-if="props.row.status.id === 4"
+								icon="restore"
+								size="md"
+								color="secondary"
+								class="full-height col-xs-3 col-md-1"
+								@click="restoreCowRequest(props.row.id)"
+							/>
 						</div>
 					</q-card-section>
 					<q-separator v-show="props.expand" />
@@ -60,7 +67,13 @@
 			</div>
 		</template>
 		<template v-slot:no-data>
-			Заявки отсутствуют
+			<div class="col-xs-12">
+				<q-card>
+					<q-card-section>
+						Заявки отсутствуют
+					</q-card-section>
+				</q-card>
+			</div>
 		</template>
 	</q-table>
 </template>
