@@ -115,6 +115,6 @@ services:
 networks:
   net:
     ipam:
-      driver: bridge
+      driver: default
       config:
         - subnet: "172.21.1.0/24"

@@ -15,11 +15,12 @@ class UserRoleSeeder extends Seeder
      */
     public function run()
     {
-
 		User::all()->each(function (User $user) {
-			$user->roles()->attach(
-				\Faker\Factory::create()->numberBetween(Role::CUSTOMER, Role::PRODUCER)
-			);
+			$role = \Faker\Factory::create()->numberBetween(Role::CUSTOMER, Role::PRODUCER);
+			if ($role === Role::CUSTOMER)
+				$user->roles()->attach(Role::CUSTOMER);
+			if ($role === Role::PRODUCER)
+				$user->roles()->attach([Role::CUSTOMER, Role::PRODUCER]);
 		});
     }
 }
