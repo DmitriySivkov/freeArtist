@@ -57,7 +57,7 @@
 				</div>
 			</template>
 			<template v-slot:no-data>
-				<div class="col-xs-12">
+				<div class="col-xs-12 col-lg-4">
 					<q-card>
 						<q-card-section>
 							Заявки отсутствуют
@@ -113,11 +113,13 @@
 				</div>
 			</template>
 			<template v-slot:no-data>
-				<q-card>
-					<q-card-section>
-						Заявки отсутствуют
-					</q-card-section>
-				</q-card>
+				<div class="col-xs-12 col-lg-4">
+					<q-card>
+						<q-card-section>
+							Заявки отсутствуют
+						</q-card-section>
+					</q-card>
+				</div>
 			</template>
 		</q-table>
 		<q-table
@@ -181,13 +183,12 @@
 				</div>
 			</template>
 			<template v-slot:no-data>
-				<div class="col-xs-12">
-					<q-card>
-						<q-card-section class="row">
-							Заявки отсутствуют
-						</q-card-section>
-					</q-card>
-				</div>
+				<q-card class="col-xs-12 col-lg-4">
+					<q-card-section>
+						Заявки отсутствуют
+					</q-card-section>
+				</q-card>
+
 			</template>
 		</q-table>
 		<q-table
@@ -199,50 +200,72 @@
 			:title="'Входящие заявки на вступление в команду ' + '&quot' + producer.title + '&quot'"
 		>
 			<template v-slot:top>
-				<div class="col-xs-12 col-md-10 q-mb-sm">
-					<span class="text-h6">Входящие заявки на вступление в команду "{{producer.title}}" </span>
+				<div class="col-xs-12 col-lg-4 text-center">
+					<span class="text-h6">Входящие заявки на вступление в команду <br/>"{{ producer.title }}" </span>
 				</div>
 			</template>
 			<template v-slot:item="props">
-				<div class="col-xs-12">
-					<q-card class="q-ml-md q-mb-md q-mr-md">
-						<q-card-section>
-							<div class="row items-center text-center">
-								<div class="col-xs-2 col-md-1">
-									<q-btn
-										size="md"
-										color="primary"
-										round
-										dense
-										@click="props.expand = !props.expand"
-										:icon="props.expand ? 'expand_less' : 'expand_more'"
-									/>
-								</div>
-								<div class="col-xs-7 col-md-10">
-									Статус: {{ props.row.status.label }}<br/>
-									Отправитель: {{ props.row.from.name }}<br/>
-									Тип: {{ relationRequest.types.coworking.label }}
-								</div>
-								<div class="col-xs-3 col-md-1">
-								</div>
+				<q-card
+					class="col-xs-12 col-lg-4"
+					square
+				>
+					<q-card-section class="row items-center">
+						<div class="col-xs-12 col-md-8">
+							Статус: {{ props.row.status.label }}<br/>
+							Отправитель: {{ props.row.from.name }}<br/>
+							Тип: {{ relationRequest.types.coworking.label }}
+						</div>
+						<div class="col-xs-12 col-md-4">
+							<div class="row q-gutter-sm">
+								<q-btn
+									label="Принять"
+									size="md"
+									color="secondary"
+									class="full-height col-xs-12"
+									@click="restoreCowRequest(props.row.id)"
+								/>
+								<q-btn
+									label="Отказать"
+									size="md"
+									color="warning"
+									class="full-height col-xs-12"
+									@click="cancelCowRequest(props.row.id)"
+								/>
 							</div>
-						</q-card-section>
-						<q-separator v-show="props.expand" />
-						<q-card-section
-							v-show="props.expand"
-							:props="props"
-						>
-							<div class="text-left">{{ props.row.message ?? "Сообщение отсутствует" }}</div>
+						</div>
+
+					</q-card-section>
+					<q-separator />
+					<q-card-section>
+						<div class="row items-center text-center">
+							<div class="col-xs-12">
+								<q-btn
+									size="md"
+									color="primary"
+									round
+									dense
+									@click="props.expand = !props.expand"
+									:icon="props.expand ? 'expand_less' : 'expand_more'"
+								/>
+							</div>
+						</div>
+					</q-card-section>
+					<q-card-section
+						v-show="props.expand"
+						:props="props"
+					>
+						<div class="text-left">{{ props.row.message ?? "Сообщение отсутствует" }}</div>
+					</q-card-section>
+				</q-card>
+			</template>
+			<template v-slot:no-data>
+				<div class="col-xs-12 col-lg-4">
+					<q-card>
+						<q-card-section>
+							Заявки отсутствуют
 						</q-card-section>
 					</q-card>
 				</div>
-			</template>
-			<template v-slot:no-data>
-				<q-card>
-					<q-card-section>
-						Заявки отсутствуют
-					</q-card-section>
-				</q-card>
 			</template>
 		</q-table>
 	</div>
