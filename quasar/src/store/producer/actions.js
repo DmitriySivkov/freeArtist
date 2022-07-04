@@ -17,3 +17,13 @@ export const sendProducerPartnershipRequest = async ({commit}, payload) => {
 	)
 	commit("SET_PRODUCER_OUTGOING_PRODUCER_PARTNERSHIP_REQUESTS", response.data)
 }
+
+export const acceptCoworkingRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/producers/relationRequests/acceptCoworkingRequest/" + payload.requestId)
+	// commit("SET_PRODUCER_OUTGOING_PRODUCER_PARTNERSHIP_REQUESTS", response.data)
+}
+
+export const rejectCoworkingRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/producers/relationRequests/rejectCoworkingRequest/" + payload.requestId)
+	// commit("SET_PRODUCER_OUTGOING_PRODUCER_PARTNERSHIP_REQUESTS", response.data)
+}

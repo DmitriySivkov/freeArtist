@@ -222,14 +222,14 @@
 									size="md"
 									color="secondary"
 									class="full-height col-xs-12"
-									@click="restoreCowRequest(props.row.id)"
+									@click="acceptCowRequest(props.row.id)"
 								/>
 								<q-btn
 									label="Отказать"
 									size="md"
 									color="warning"
 									class="full-height col-xs-12"
-									@click="cancelCowRequest(props.row.id)"
+									@click="rejectCowRequest(props.row.id)"
 								/>
 							</div>
 						</div>
@@ -287,8 +287,22 @@ export default {
 				outgoingProducerPartnershipRequests,
 				incomingProducerPartnershipRequests,
 				incomingCoworkingRequests,
+				acceptCoworkingRequest,
+				rejectCoworkingRequest,
 			} = useRelationRequestManager()
 		const { notifySuccess, notifyError } = useNotification()
+
+		const acceptCowRequest = (requestId) => {
+			acceptCoworkingRequest(requestId)
+				.then(() => { notifySuccess("Заявка принята") })
+				.catch((error) => { notifyError(error.response.data) })
+		}
+
+		const rejectCowRequest = (requestId) => {
+			rejectCoworkingRequest(requestId)
+				.then(() => { notifySuccess("В заявке отказано") })
+				.catch((error) => { notifyError(error.response.data) })
+		}
 
 		return {
 			user,
@@ -296,6 +310,8 @@ export default {
 			outgoingProducerPartnershipRequests,
 			incomingProducerPartnershipRequests,
 			incomingCoworkingRequests,
+			acceptCowRequest,
+			rejectCowRequest
 		}
 	}
 }

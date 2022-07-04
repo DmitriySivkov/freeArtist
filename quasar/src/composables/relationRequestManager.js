@@ -10,19 +10,17 @@ export const useRelationRequestManager = () => {
 	const sendCoworkingRequest = (producer, message) =>
 		$store.dispatch("user/sendCoworkingRequest",{ producer, message })
 
-	const cancelCoworkingRequest = (requestId) => {
-		return $store.dispatch("user/cancelCoworkingRequest", {
+	const cancelCoworkingRequest = (requestId) =>
+		$store.dispatch("user/cancelCoworkingRequest", {
 			requestId,
 			status: relationRequest.value.statuses.rejected_by_contributor
 		})
-	}
 
-	const restoreCoworkingRequest = (requestId) => {
-		return $store.dispatch("user/restoreCoworkingRequest", {
+	const restoreCoworkingRequest = (requestId) =>
+		$store.dispatch("user/restoreCoworkingRequest", {
 			requestId,
 			status: relationRequest.value.statuses.pending
 		})
-	}
 
 	const outgoingCoworkingRequests = user.value.data.outgoing_coworking_requests
 
@@ -39,6 +37,18 @@ export const useRelationRequestManager = () => {
 		user.value.data.producers.find((producer) => producer.id === producerId)
 			.incoming_coworking_requests
 
+	const acceptCoworkingRequest = (requestId) =>
+		$store.dispatch("producer/acceptCoworkingRequest", {
+			requestId,
+			status: relationRequest.value.statuses.accepted
+		})
+
+	const rejectCoworkingRequest = (requestId) =>
+		$store.dispatch("producer/rejectCoworkingRequest", {
+			requestId,
+			status: relationRequest.value.statuses.rejected_by_recipient
+		})
+
 	return {
 		relationRequest,
 		outgoingCoworkingRequests,
@@ -47,6 +57,8 @@ export const useRelationRequestManager = () => {
 		restoreCoworkingRequest,
 		outgoingProducerPartnershipRequests,
 		incomingProducerPartnershipRequests,
-		incomingCoworkingRequests
+		incomingCoworkingRequests,
+		acceptCoworkingRequest,
+		rejectCoworkingRequest
 	}
 }
