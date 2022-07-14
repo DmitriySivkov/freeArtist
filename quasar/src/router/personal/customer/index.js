@@ -1,8 +1,8 @@
 export default [
 	{
-		name: "personal_orders",
-		path: "personal/orders",
-		component: () => import("pages/personal/Orders"),
+		name: "personal_user_orders",
+		path: "personal/user/orders",
+		component: () => import("pages/personal/customer/Orders"),
 		meta: {
 			route_name: "Список заказов",
 			requires_auth: true,

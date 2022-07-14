@@ -292,12 +292,14 @@ export default {
 			} = useRelationRequestManager()
 		const { notifySuccess, notifyError } = useNotification()
 
+		//todo commit acceptCoworkingRequest
 		const acceptCowRequest = (requestId) => {
 			acceptCoworkingRequest(requestId)
 				.then(() => { notifySuccess("Заявка принята") })
 				.catch((error) => { notifyError(error.response.data) })
 		}
 
+		//todo commit rejectCoworkingRequest
 		const rejectCowRequest = (requestId) => {
 			rejectCoworkingRequest(requestId)
 				.then(() => { notifySuccess("В заявке отказано") })
