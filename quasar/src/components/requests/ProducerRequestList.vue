@@ -13,17 +13,16 @@
 				:class="{'q-mb-xs': user.data.producers.length-1 !== props.rowIndex }"
 			>
 				<q-card-section>
-					{{ props.row.title }}
+					<span class="text-h6">{{ props.row.title }}</span>
 				</q-card-section>
 				<q-separator />
-				<q-card-section>
+				<q-card-section @click="props.expand = !props.expand">
 					<q-btn
 						size="md"
 						color="primary"
 						round
 						dense
 						:icon="props.expand ? 'expand_less' : 'expand_more'"
-						@click="props.expand = !props.expand"
 					/>
 				</q-card-section>
 				<q-card-section

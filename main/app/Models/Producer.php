@@ -39,6 +39,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $incoming_producer_partnership_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingProducerPartnershipRequests
  * @property-read int|null $outgoing_producer_partnership_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingCoworkingRequests
+ * @property-read int|null $incoming_coworking_requests_count
  */
 class Producer extends Model
 {

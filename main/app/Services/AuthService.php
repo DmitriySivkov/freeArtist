@@ -4,14 +4,18 @@
 namespace App\Services;
 
 
-use App\Models\Role;
+use App\Models\RelationRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 /** TODO - move repeating code on user load */
 class AuthService
 {
-    public function loginWithCredentials($credentials)
+	/**
+	 * @param $credentials
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function loginWithCredentials($credentials)
     {
         if (!auth()->attempt($credentials))
             return response()->json(['errors' => ['total' => ['Неверный телефон или пароль']]], 422);
@@ -31,22 +35,19 @@ class AuthService
 		$token = $user->createToken($user->phone, $abilities)
 			->plainTextToken;
 
-		$load = [
-			'roles',
-			'producers',
-			'outgoingCoworkingRequests',
-			'producers.outgoingProducerPartnershipRequests',
-			'producers.incomingProducerPartnershipRequests',
-			'producers.incomingCoworkingRequests',
-		];
-
-        return response()->json($user->load($load))
+        return response()->json($user->load(
+			$this->getUserLoadRelations()
+		))
 			->withCookie(
 				cookie('token', $token, 0, null, null, true, true, false, 'none')
 			);
     }
 
-    public function loginWithToken(Request $request)
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function loginWithToken(Request $request)
     {
         if (!$request->hasHeader('Authorization') || $request->header('Authorization') !== 'Bearer ' . $request->cookie('token'))
             $request->headers->set('Authorization', 'Bearer ' . $request->cookie('token'));
@@ -54,15 +55,31 @@ class AuthService
         /** @var User $user */
         $user = auth("sanctum")->user();
 
-		$load = [
+        return response()->json($user->load(
+			$this->getUserLoadRelations()
+		));
+    }
+
+	/**
+	 * @return array
+	 */
+	private function getUserLoadRelations()
+	{
+		return [
 			'roles',
 			'producers',
-			'outgoingCoworkingRequests',
-			'producers.outgoingProducerPartnershipRequests',
-			'producers.incomingProducerPartnershipRequests',
-			'producers.incomingCoworkingRequests',
+			'outgoingCoworkingRequests' => function($query) {
+				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
+			},
+			'producers.outgoingProducerPartnershipRequests' => function($query) {
+				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
+			},
+			'producers.incomingProducerPartnershipRequests' => function($query) {
+				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
+			},
+			'producers.incomingCoworkingRequests' => function($query) {
+				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
+			},
 		];
-
-        return response()->json($user->load($load));
-    }
+	}
 }

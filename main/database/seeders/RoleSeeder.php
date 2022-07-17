@@ -19,8 +19,8 @@ class RoleSeeder extends Seeder
 		DB::statement("ALTER SEQUENCE roles_id_seq RESTART WITH 1");
 
 		foreach (Role::ROLES as $role) {
-			Role::query()->create([
-				'title' => $role
+			Role::create([
+				'name' => $role,
 			]);
 		}
     }

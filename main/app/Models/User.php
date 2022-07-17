@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laratrust\Traits\LaratrustUserTrait;
 
 /**
  * App\Models\User
@@ -58,9 +59,22 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingCoworkingRequests
  * @property-read int|null $outgoing_coworking_requests_count
  * @method static \Illuminate\Database\Eloquent\Builder|User ownProducer()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Permission[] $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team[] $permissionsTeams
+ * @property-read int|null $permissions_teams_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team[] $rolesTeams
+ * @property-read int|null $roles_teams_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User orWherePermissionIs($permission = '')
+ * @method static \Illuminate\Database\Eloquent\Builder|User orWhereRoleIs($role = '', $team = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDoesntHavePermission()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDoesntHaveRole()
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePermissionIs($permission = '', $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRoleIs($role = '', $team = null, $boolean = 'and')
  */
 class User extends Authenticatable
 {
+    use LaratrustUserTrait;
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $guarded = [];

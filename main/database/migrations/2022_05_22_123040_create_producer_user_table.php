@@ -21,7 +21,6 @@ class CreateProducerUserTable extends Migration
             $table->foreignId('user_id')
 				->constrained('users')
 				->onDelete('cascade');
-            $table->json('rights');
             $table->unsignedTinyInteger('user_active')
 				->default(1);
             $table->timestamps();
