@@ -30,19 +30,19 @@ class Permission extends LaratrustPermission
 {
     public $guarded = [];
 
-	const PERMISSIONS = [
-		self::PERMISSION_PRODUCER_OWNER,
-		self::PERMISSION_PRODUCER_COWORKER
+	const PERMISSIONS_PRODUCER = [
+		self::PERMISSION_PRODUCER_ALL,
+		self::PERMISSION_PRODUCER_RELATION_REQUESTS
 	];
 
-	const PERMISSION_PRODUCER_OWNER = [
-		'name' => 'producer_owner',
-		'display_name' => 'Владелец изготовителя',
-		'description' => 'Полномочия владельца изготовителя'
+	const PERMISSION_PRODUCER_ALL = [
+		'name' => 'permission_producer_all',
+		'display_name' => 'Полные полномочия',
+		'description' => ''
 	];
-	const PERMISSION_PRODUCER_COWORKER = [
-		'name' => 'producer_coworker',
-		'display_name' => 'Сотрудник изготовителя',
-		'description' => 'Полномочия сотрудника изготовителя'
+	const PERMISSION_PRODUCER_RELATION_REQUESTS = [
+		'name' => 'permission_producer_relation_requests',
+		'display_name' => 'Управление запросами',
+		'description' => ''
 	];
 }

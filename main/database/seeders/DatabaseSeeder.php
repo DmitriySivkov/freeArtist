@@ -13,14 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+		$this->call(UserSeeder::class);
+
     	$this->call(RoleSeeder::class);
 
-		$this->call(UserSeeder::class);
 		$this->call(ProducerSeeder::class);
-		$this->call(ProductSeeder::class);
-		$this->call(OrderSeeder::class);
 
-		$this->call(UserRoleSeeder::class);
-		$this->call(ProducerUserSeeder::class);
+		$this->call(ProductSeeder::class);
+
+		$this->call(OrderSeeder::class);
     }
 }

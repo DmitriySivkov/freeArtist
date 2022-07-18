@@ -34,12 +34,7 @@ class ProducerUser extends Pivot
 {
     use HasFactory;
 
-    const RIGHT_OWNER = 1;
-    const RIGHT_COWORKER = 2;
+	const PRODUCER_USER_ACTIVE = 1;
 
     protected $table = 'producer_user';
-
-	protected $casts = [
-		'rights' => 'array',
-	];
 }
