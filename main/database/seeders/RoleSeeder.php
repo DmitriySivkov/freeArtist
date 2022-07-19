@@ -18,7 +18,7 @@ class RoleSeeder extends Seeder
     	/** postgres specific command */
 		DB::statement("ALTER SEQUENCE roles_id_seq RESTART WITH 1");
 
-		foreach (Role::ROLES_PRODUCER as $role) {
+		foreach (Role::ROLES as $role) {
 			Role::create([
 				'name' => $role['name'],
 				'display_name' => $role['display_name'],

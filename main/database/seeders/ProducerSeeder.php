@@ -22,20 +22,20 @@ class ProducerSeeder extends Seeder
 		/** postgres specific command */
 		DB::statement("ALTER SEQUENCE teams_id_seq RESTART WITH 1");
 
-		$producerOwnerRole = Role::where('name', '=', 'producer_owner')
+		$producerRole = Role::where('name', '=', 'producer')
 			->first();
 
 		User::inRandomOrder()
 			->limit(3)
 			->get()
-			->each(function (User $user) use ($producerOwnerRole) {
+			->each(function (User $user) use ($producerRole) {
 				$team = Team::create([
 					'name' => $user->id . '_user_producer',
 					'display_name' => \Faker\Factory::create()->unique()->firstName . ' Company',
 					'description' => ''
 				]);
 
-				$user->attachRole($producerOwnerRole, $team);
+				$user->attachRole($producerRole, $team);
 
 				$producer = Producer::create([
 					'team_id' => $team->id

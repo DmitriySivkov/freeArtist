@@ -31,18 +31,24 @@ class Permission extends LaratrustPermission
     public $guarded = [];
 
 	const PERMISSIONS_PRODUCER = [
-		self::PERMISSION_PRODUCER_ALL,
-		self::PERMISSION_PRODUCER_RELATION_REQUESTS
+		self::PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS,
+		self::PERMISSION_PRODUCER_INCOMING_PARTNERSHIP_REQUESTS,
+		self::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS
 	];
 
-	const PERMISSION_PRODUCER_ALL = [
-		'name' => 'permission_producer_all',
-		'display_name' => 'Полные полномочия',
+	const PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS = [
+		'name' => 'permission_producer_outgoing_partnership_requests',
+		'display_name' => 'Управление исходящими запросами на партнерство между изготовителями',
 		'description' => ''
 	];
-	const PERMISSION_PRODUCER_RELATION_REQUESTS = [
-		'name' => 'permission_producer_relation_requests',
-		'display_name' => 'Управление запросами',
+	const PERMISSION_PRODUCER_INCOMING_PARTNERSHIP_REQUESTS = [
+		'name' => 'permission_producer_incoming_producer_partnership_requests',
+		'display_name' => 'Управление входящими запросами на партнерство между изготовителями',
+		'description' => ''
+	];
+	const PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS = [
+		'name' => 'permission_producer_incoming_coworking_requests',
+		'display_name' => 'Управление входящими запросами на сотрудничество между изготовителем и пользователем',
 		'description' => ''
 	];
 }

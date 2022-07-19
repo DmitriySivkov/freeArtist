@@ -13,7 +13,7 @@ class LaratrustSetupTables extends Migration
      */
     public function up()
     {
-        // Create table for storing roles
+        /** entities: producer, advertiser, guarantor etc... */
         Schema::create('roles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();
@@ -22,7 +22,7 @@ class LaratrustSetupTables extends Migration
             $table->timestamps();
         });
 
-        // Create table for storing permissions
+        /** all possible permissions */
         Schema::create('permissions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();
@@ -31,7 +31,7 @@ class LaratrustSetupTables extends Migration
             $table->timestamps();
         });
 
-        // Create table for storing teams
+        /** all teams from all entities */
         Schema::create('teams', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();
@@ -40,6 +40,7 @@ class LaratrustSetupTables extends Migration
             $table->timestamps();
         });
 
+		/** show that: user related to entity and belongs to specific team */
         // Create table for associating roles to users and teams (Many To Many Polymorphic)
         Schema::create('role_user', function (Blueprint $table) {
             $table->unsignedBigInteger('role_id');
@@ -56,6 +57,7 @@ class LaratrustSetupTables extends Migration
             $table->unique(['user_id', 'role_id', 'user_type', 'team_id']);
         });
 
+		/** user permissions inside a team */
         // Create table for associating permissions to users (Many To Many Polymorphic)
         Schema::create('permission_user', function (Blueprint $table) {
             $table->unsignedBigInteger('permission_id');
@@ -71,6 +73,7 @@ class LaratrustSetupTables extends Migration
             $table->unique(['user_id', 'permission_id', 'user_type', 'team_id']);
         });
 
+		/** all possible permissions for specific role */
         // Create table for associating permissions to roles (Many-to-Many)
         Schema::create('permission_role', function (Blueprint $table) {
             $table->unsignedBigInteger('permission_id');
