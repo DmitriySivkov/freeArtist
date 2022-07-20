@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 /**
- * TODO uuid
+ * TODO - uuid
  *
  * @property int $id
  * @property int $user_id

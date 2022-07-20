@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\Producer;
-use App\Models\ProducerUser;
 use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
@@ -24,27 +24,24 @@ class ProducerSeeder extends Seeder
 
 		$producerRole = Role::where('name', '=', 'producer')
 			->first();
+		$permissionOwner = Permission::where('name', '=', 'owner')
+			->first();
 
 		User::inRandomOrder()
 			->limit(3)
 			->get()
-			->each(function (User $user) use ($producerRole) {
+			->each(function (User $user) use ($producerRole, $permissionOwner) {
 				$team = Team::create([
-					'name' => $user->id . '_user_producer',
+					'name' => 'producer_' . $user->id . '_owner',
 					'display_name' => \Faker\Factory::create()->unique()->firstName . ' Company',
 					'description' => ''
 				]);
 
 				$user->attachRole($producerRole, $team);
+				$user->attachPermission($permissionOwner, $team);
 
-				$producer = Producer::create([
+				Producer::create([
 					'team_id' => $team->id
-				]);
-
-				ProducerUser::create([
-					'producer_id' => $producer->id,
-					'user_id' => $user->id,
-					'user_active' => ProducerUser::PRODUCER_USER_ACTIVE
 				]);
 		});
 

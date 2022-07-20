@@ -7,7 +7,7 @@
 			>
 				<tbody>
 					<tr>
-						<td class="text-left">{{ producer.title }}</td>
+						<td class="text-left">{{ producer.team.display_name }}</td>
 					</tr>
 				</tbody>
 			</q-markup-table>

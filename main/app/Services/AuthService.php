@@ -8,7 +8,7 @@ use App\Models\RelationRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
-/** TODO - move repeating code on user load */
+
 class AuthService
 {
 	/**
@@ -67,7 +67,7 @@ class AuthService
 	{
 		return [
 			'roles',
-			'producers',
+			'producers.team',
 			'outgoingCoworkingRequests' => function($query) {
 				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
 			},

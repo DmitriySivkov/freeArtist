@@ -20,10 +20,8 @@ class ProducerController extends Controller
 	 */
 	public function index()
 	{
-		$producers = Cache::remember('producerList', 300, function() {
-			return Producer::orderBy('title', 'asc')
-				->get();
-		});
+		$producers = Producer::with(['team'])
+			->get();
 
 		return response()->json($producers);
 	}
@@ -34,7 +32,7 @@ class ProducerController extends Controller
 	 */
 	public function show(Producer $producer)
 	{
-		return response()->json($producer->load(['products']));
+		return response()->json($producer->load(['products', 'team']));
 	}
 
 	/**

@@ -30,6 +30,13 @@ class Permission extends LaratrustPermission
 {
     public $guarded = [];
 
+	const PERMISSION_OWNER = [
+		'name' => 'owner',
+		'display_name' => 'Полные права владельца',
+		'description' => ''
+	];
+
+	/** producer permissions */
 	const PERMISSIONS_PRODUCER = [
 		self::PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS,
 		self::PERMISSION_PRODUCER_INCOMING_PARTNERSHIP_REQUESTS,
@@ -37,18 +44,19 @@ class Permission extends LaratrustPermission
 	];
 
 	const PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS = [
-		'name' => 'permission_producer_outgoing_partnership_requests',
+		'name' => 'producer_outgoing_partnership_requests',
 		'display_name' => 'Управление исходящими запросами на партнерство между изготовителями',
 		'description' => ''
 	];
 	const PERMISSION_PRODUCER_INCOMING_PARTNERSHIP_REQUESTS = [
-		'name' => 'permission_producer_incoming_producer_partnership_requests',
+		'name' => 'producer_incoming_producer_partnership_requests',
 		'display_name' => 'Управление входящими запросами на партнерство между изготовителями',
 		'description' => ''
 	];
 	const PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS = [
-		'name' => 'permission_producer_incoming_coworking_requests',
+		'name' => 'producer_incoming_coworking_requests',
 		'display_name' => 'Управление входящими запросами на сотрудничество между изготовителем и пользователем',
 		'description' => ''
 	];
+	/** end producer permissions */
 }

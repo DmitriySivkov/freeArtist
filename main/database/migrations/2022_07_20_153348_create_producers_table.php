@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProducersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,7 @@ class CreateProducersTable extends Migration
     {
         Schema::create('producers', function (Blueprint $table) {
             $table->id();
-			$table->unsignedInteger('team_id')
-				->unique();
+			$table->unsignedInteger('team_id');
             $table->timestamps();
         });
     }
@@ -30,4 +29,4 @@ class CreateProducersTable extends Migration
     {
         Schema::dropIfExists('producers');
     }
-}
+};
