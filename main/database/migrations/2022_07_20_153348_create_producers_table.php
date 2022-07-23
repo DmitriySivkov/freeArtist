@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('producers', function (Blueprint $table) {
             $table->id();
-			$table->unsignedInteger('team_id');
             $table->timestamps();
         });
     }

@@ -53,12 +53,9 @@ class Producer extends Model
         return $this->hasMany(Order::class);
     }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
 	public function team()
 	{
-		return $this->belongsTo(Team::class);
+		return $this->morphOne(Team::class, 'detailed');
 	}
 
 	/**

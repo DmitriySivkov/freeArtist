@@ -31,18 +31,20 @@ class ProducerSeeder extends Seeder
 			->limit(3)
 			->get()
 			->each(function (User $user) use ($producerRole, $permissionOwner) {
+				$producer = Producer::create();
+
 				$team = Team::create([
 					'name' => 'producer_' . $user->id . '_owner',
 					'display_name' => \Faker\Factory::create()->unique()->firstName . ' Company',
-					'description' => ''
+					'description' => '',
+					'detailed_id' => $producer->id,
+					'detailed_type' => Producer::class
 				]);
 
 				$user->attachRole($producerRole, $team);
 				$user->attachPermission($permissionOwner, $team);
 
-				Producer::create([
-					'team_id' => $team->id
-				]);
+
 		});
 
     }

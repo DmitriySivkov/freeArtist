@@ -28,6 +28,8 @@ class Team extends LaratrustTeam
 {
     public $guarded = [];
 
+	protected $with = ['detailed'];
+
 	const TEAMS = [
 		self::TEAM_PRODUCER_OWNERS,
 		self::TEAM_PRODUCER_COWORKERS
@@ -43,4 +45,12 @@ class Team extends LaratrustTeam
 		'display_name' => 'Сотрудник изготовителя',
 		'description' => 'Полномочия сотрудника изготовителя'
 	];
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+	 */
+	public function detailed()
+	{
+		return $this->morphTo();
+	}
 }
