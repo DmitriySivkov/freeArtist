@@ -25,16 +25,10 @@
 
 <script>
 import { computed } from "vue"
-import { useStore } from "vuex"
 import { useUserProducer } from "src/composables/userProducer"
 export default {
 	setup() {
-		const $store = useStore()
-
-		const producerUserRights = computed(
-			() => $store.state.producer.user_rights
-		)
-		const { getUserProducerListByRight } = useUserProducer()
+		const { userOwnProducer } = useUserProducer()
 
 		const items = [
 			{ title: "Персональные данные", link: "/personal/user" },
@@ -42,9 +36,7 @@ export default {
 			{
 				title: "Зарегистрировать изготовителя",
 				link: "/personal/register-producer",
-				conditional: getUserProducerListByRight(
-					producerUserRights.value.find((right) => right.title === "owner").id
-				).length < 1
+				conditional: userOwnProducer().length < 1
 			},
 			{ title: "Заявки", link: "/personal/user/requests" }
 		]

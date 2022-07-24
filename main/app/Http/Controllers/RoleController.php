@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Cache;
 
 class RoleController extends Controller
 {
-    public function index()
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function index()
     {
     	$roles = Cache::remember('roles', 60, function() {
-    		return Role::orderBy('id', 'asc')->get();
+    		return Role::all();
     	});
-    	return response()->json([
-    		'roles' => $roles
-		]);
+    	return response()->json($roles);
     }
 }

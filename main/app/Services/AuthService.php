@@ -67,19 +67,20 @@ class AuthService
 	{
 		return [
 			'roles',
-			'producers.team',
+			'teams',
+			'permissions',
 			'outgoingCoworkingRequests' => function($query) {
 				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
 			},
-			'producers.outgoingProducerPartnershipRequests' => function($query) {
-				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
-			},
-			'producers.incomingProducerPartnershipRequests' => function($query) {
-				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
-			},
-			'producers.incomingCoworkingRequests' => function($query) {
-				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
-			},
+//			'producers.outgoingProducerPartnershipRequests' => function($query) {
+//				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
+//			},
+//			'producers.incomingProducerPartnershipRequests' => function($query) {
+//				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
+//			},
+//			'producers.incomingCoworkingRequests' => function($query) {
+//				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
+//			},
 		];
 	}
 }

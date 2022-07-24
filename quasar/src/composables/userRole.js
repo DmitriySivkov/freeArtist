@@ -4,14 +4,16 @@ import { useStore } from "vuex"
 export const useUserRole = () => {
 	const $store = useStore()
 	const user = computed(() => $store.state.user)
+	const roles = computed(() => $store.state.role)
 
-	const hasUserRole = (roleId) =>
+	const hasUserRole = (roleName) =>
 		user.value.data.roles
-			.reduce((accum, role) => [...accum, role.id], [])
-			.includes(roleId)
+			.reduce((accum, role) => [...accum, role.name], [])
+			.includes(roleName)
 
-	const getUserRoles = () =>
-		user.value.data.roles
+	const userRoles = () => user.value.data.roles
 
-	return { user, hasUserRole, getUserRoles }
+	const allRoles = () => roles.value.data
+
+	return { user, hasUserRole, userRoles }
 }

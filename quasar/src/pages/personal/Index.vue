@@ -1,6 +1,6 @@
 <template>
 	<q-tabs
-		v-if="getUserRoles().length > 1"
+		v-if="userRoles().length > 0"
 		v-model="selectedTab"
 		dense
 		inline-label
@@ -17,8 +17,8 @@
 			class="q-pa-md"
 		/>
 	</q-tabs>
-	<NavigationCustomer v-if="selectedTab === user.roles.customer"/>
-	<NavigationProducer v-if="selectedTab === user.roles.producer"/>
+	<NavigationCustomer v-if="selectedTab === 'customer'" />
+	<NavigationProducer v-if="selectedTab === 'producer'" />
 </template>
 
 <script>
@@ -31,26 +31,24 @@ export default {
 	components: { NavigationCustomer, NavigationProducer },
 	setup() {
 		const $store = useStore()
-		const { user, getUserRoles } = useUserRole()
-		const selectedTab = ref(user.value.roles[user.value.personalTab])
+		const { user, userRoles } = useUserRole()
+		const selectedTab = ref(user.value.personalTab)
 		const tabs = [
-			{name: user.value.roles.customer, icon: "account_box", label: "Пользователь"},
-			{name: user.value.roles.producer, icon: "work_outline", label: "Производитель"}
+			{name: "customer", icon: "account_box", label: "Пользователь"},
+			{name: "producer", icon: "work_outline", label: "Производитель"}
 		]
 
 		const switchPersonal = (personalTab) =>
 			$store.dispatch(
 				"user/switchPersonal",
-				Object.keys(user.value.roles).find(
-					(roleName) => user.value.roles[roleName] === personalTab
-				)
+				personalTab
 			)
 
 		return {
 			user,
 			tabs,
 			selectedTab,
-			getUserRoles,
+			userRoles,
 			switchPersonal
 		}
 	}

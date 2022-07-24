@@ -37,6 +37,7 @@ class ProducerSeeder extends Seeder
 					'name' => 'producer_' . $user->id . '_owner',
 					'display_name' => \Faker\Factory::create()->unique()->firstName . ' Company',
 					'description' => '',
+					'user_id' => $user->id,
 					'detailed_id' => $producer->id,
 					'detailed_type' => Producer::class
 				]);

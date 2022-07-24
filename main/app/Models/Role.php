@@ -37,18 +37,21 @@ class Role extends LaratrustRole
 	];
 
 	const ROLE_PRODUCER = [
+		'id' => 1,
 		'name' => 'producer',
 		'display_name' => 'Изготовитель',
 		'description' => ''
 	];
 
 	const ROLE_ADVERTISER = [
+		'id' => 2,
 		'name' => 'advertiser',
 		'display_name' => 'Рекламодатель',
 		'description' => ''
 	];
 
 	const ROLE_GUARANTOR = [
+		'id' => 3,
 		'name' => 'guarantor',
 		'display_name' => 'Гарант',
 		'description' => ''

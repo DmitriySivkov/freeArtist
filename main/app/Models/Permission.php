@@ -30,12 +30,6 @@ class Permission extends LaratrustPermission
 {
     public $guarded = [];
 
-	const PERMISSION_OWNER = [
-		'name' => 'owner',
-		'display_name' => 'Полные права владельца',
-		'description' => ''
-	];
-
 	/** producer permissions */
 	const PERMISSIONS_PRODUCER = [
 		self::PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS,

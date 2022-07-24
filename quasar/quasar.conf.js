@@ -3,7 +3,9 @@ module.exports = function (ctx) {
 		preFetch: true,
 		boot: [
 			"axios",
-			"setCartFromLocalStorage"
+			"setCartFromLocalStorage",
+			"browseProducers",
+			"browseRoles"
 		],
 
 		css: [

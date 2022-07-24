@@ -4,13 +4,14 @@ import { useStore } from "vuex"
 export const useUserProducer = () => {
 	const $store = useStore()
 	const user = computed(() => $store.state.user.data)
+	const roleTypes = computed(() => $store.state.role.types)
 
-	const getUserProducerListByRight = (rightId) => {
-		return user.value.producers.filter(
-			(producer) => producer.pivot.user_id === user.value.id &&
-				producer.pivot.rights.includes(rightId)
-		)
-	}
+	const producerTeams = computed(
+		() => user.value.teams.filter((team) => team.detailed_type === roleTypes.value.producer)
+	)
 
-	return { getUserProducerListByRight }
+	const userOwnProducer = () =>
+		producerTeams.value.find((team) => team.user_id === user.value.id)
+
+	return { userOwnProducer }
 }
