@@ -17,7 +17,7 @@
 			</q-markup-table>
 
 			<q-markup-table
-				v-if="hasUserRole(user.roles.producer)"
+				v-if="hasUserRole('producer')"
 				dark
 				class="bg-indigo-8"
 				separator="vertical"
@@ -26,18 +26,22 @@
 				<th>Привилегии</th>
 				<tbody>
 					<tr
-						v-for="(producer, index) in userProducers"
+						v-for="(team, index) in producerTeams"
 						:key="index"
 					>
-						<td class="text-left">{{ producer.title }}</td>
+						<td class="text-left">{{ team.display_name }}</td>
 						<td class="text-left">
 							<ul>
-								<li
-									v-for="(rightId, index) in producer.pivot.rights"
-									:key="index"
-								>
-									{{ producerUserRights.find((right) => right.id === rightId).label }}
+								<li v-if="userOwnProducer && userOwnProducer.id === team.id">
+									Владелец
 								</li>
+								<!--								<li-->
+								<!--									v-else-->
+								<!--									v-for="(rightId, index) in producer.pivot.rights"-->
+								<!--									:key="index"-->
+								<!--								>-->
+								<!--									{{ producerUserRights.find((right) => right.id === rightId).label }}-->
+								<!--								</li>-->
 							</ul>
 						</td>
 					</tr>
@@ -48,27 +52,21 @@
 </template>
 
 <script>
-import { computed } from "vue"
-import { useStore } from "vuex"
 import { useUserRole } from "src/composables/userRole"
+import { useUserProducer } from "src/composables/userProducer"
 
 export default {
 	setup() {
-		const $store = useStore()
 		const { user, hasUserRole } = useUserRole()
+		const { producerTeams, userOwnProducer } = useUserProducer()
 
-		const producerUserRights = computed(
-			() => $store.state.producer.user_rights
-		)
 		const userCommon = Object.entries(user.value.data)
 			.filter(([prop]) => ["phone", "name", "email"].includes(prop))
 
-		const userProducers = user.value.data.producers
-
 		return {
 			userCommon,
-			userProducers,
-			producerUserRights,
+			producerTeams,
+			userOwnProducer,
 			user,
 			hasUserRole
 		}
