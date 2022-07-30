@@ -27,10 +27,10 @@ class CustomerRegisterService implements RegisterServiceContract
 			$userData['password'] = Hash::make($unhashedPassword);
 			/** @var User $user */
 			$user = User::create($userData);
-			$user->roles()->attach(Role::CUSTOMER);
+
 			$response = (new AuthService())->loginWithCredentials(
 				[
-					'phone' => $userData['phone'],
+					'phone' => $user->phone,
 					'password' => $unhashedPassword
 				]
 			);
