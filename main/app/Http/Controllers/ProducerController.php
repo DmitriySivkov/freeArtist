@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\User;
+use App\Services\ProducerService;
 use App\Services\RelationRequests\ProducerRelationRequestService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -39,21 +40,9 @@ class ProducerController extends Controller
 	 * @param Request $request
 	 * @return JsonResponse
 	 */
-	public function getProducersToAttach(Request $request)
+	public function getProducersToAttach(Request $request, ProducerService $producerService)
 	{
-		/** @var User $user */
-		$user = auth('sanctum')->user();
-		$user->load(['roles', 'producers']);
-
-		$producers = Producer::where('title', 'ilike', '%' . $request->get('query') . '%')
-			->when($user->roles->contains(Role::PRODUCER), function(Builder $query) use ($user) {
-				return $query->whereNotIn('id', $user->producers->pluck('id'));
-			})
-			->limit(25)
-			->orderBy('title', 'asc')
-			->get();
-
-		return response()->json($producers);
+		return $producerService->getProducersToAttach($request);
 	}
 
 	/**

@@ -67,13 +67,14 @@
 			</div>
 		</template>
 		<template v-slot:no-data>
-			<div class="col-xs-12">
-				<q-card>
-					<q-card-section>
-						Заявки отсутствуют
-					</q-card-section>
-				</q-card>
-			</div>
+			<q-card
+				square
+				class="col-xs-12"
+			>
+				<q-card-section class="text-center">
+					Заявки отсутствуют
+				</q-card-section>
+			</q-card>
 		</template>
 	</q-table>
 </template>
