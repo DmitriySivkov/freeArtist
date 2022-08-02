@@ -16,12 +16,12 @@
 
 				<q-select
 					filled
-					v-model="producer"
+					v-model="producerTeam"
 					use-input
 					input-debounce="1000"
 					label="Начните вводить название изготовителя *"
-					:options="producerList"
-					@filter="loadProducerList"
+					:options="producerTeamList"
+					@filter="loadProducerTeamList"
 					behavior="dialog"
 					:rules="[
 						val => !!val,
@@ -71,13 +71,13 @@ export default {
 		const { notifySuccess, notifyError } = useNotification()
 		const { sendCoworkingRequest } = useRelationRequestManager()
 
-		const producer = ref(null)
+		const producerTeam = ref(null)
 		const message = ref("")
 
-		const producerList = ref([])
+		const producerTeamList = ref([])
 
 		const onSubmit = () => {
-			sendCoworkingRequest(producer.value.value, message.value)
+			sendCoworkingRequest(producerTeam.value.value, message.value)
 				.then(() => {
 					notifySuccess("Заявка успешно отправлена")
 					$router.push({name: "personal_user_requests"})
@@ -90,32 +90,32 @@ export default {
 		}
 
 		const onReset = () =>
-			producer.value = null
+			producerTeam.value = null
 
-		const loadProducerList = async (query, update) => {
+		const loadProducerTeamList = async (query, update) => {
 			if (query.length < 1) return
 
-			const response = await api.get("personal/producers/producersToAttach",{
+			const response = await api.get("personal/users/nonOwnProducers",{
 				params: { query }
 			})
 
 			update(() => {
-				producerList.value = response.data.map((producer) => {
+				producerTeamList.value = response.data.map((producerTeam) => {
 					return {
-						label: producer.title,
-						value: producer.id
+						label: producerTeam.display_name,
+						value: producerTeam.id
 					}
 				})
 			})
 		}
 
 		return {
-			producer,
+			producerTeam,
 			message,
-			producerList,
+			producerTeamList,
 			onSubmit,
 			onReset,
-			loadProducerList
+			loadProducerTeamList
 		}
 	},
 }

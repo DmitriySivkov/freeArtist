@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\EmailVerificationNotification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -55,6 +56,7 @@ use Laratrust\Traits\LaratrustUserTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRoleIs($role = '', $team = null, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static Builder|User nonOwnProducers()
  */
 class User extends Authenticatable
 {
@@ -72,6 +74,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphToMany|null
+	 */
 	public function teams()
 	{
 		return $this->rolesTeams();
@@ -80,9 +85,22 @@ class User extends Authenticatable
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
-	public function outgoingCoworkingRequests()
+	public function relationRequests()
 	{
 		return $this->morphMany(RelationRequest::class, 'from');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Query\Builder
+	 */
+	public function scopeNonOwnProducers()
+	{
+		return Team::whereNotIn(
+			'id',
+			$this->teams
+				->where('detailed_type', Producer::class)
+				->pluck('pivot.team_id')
+		);
 	}
 
     /**

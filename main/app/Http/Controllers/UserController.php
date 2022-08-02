@@ -50,6 +50,10 @@ class UserController extends Controller
 		return response()->json($joinRequest->load(['from', 'to']));
 	}
 
+	/**
+	 * @param RelationRequest $relationRequest
+	 * @return RelationRequest
+	 */
 	public function cancelCoworkingRequest(RelationRequest $relationRequest)
 	{
 		$relationRequest->status = RelationRequest::STATUS_REJECTED_BY_CONTRIBUTOR['id'];
@@ -57,10 +61,29 @@ class UserController extends Controller
 		return $relationRequest;
 	}
 
+	/**
+	 * @param RelationRequest $relationRequest
+	 * @return RelationRequest
+	 */
 	public function restoreCoworkingRequest(RelationRequest $relationRequest)
 	{
 		$relationRequest->status = RelationRequest::STATUS_PENDING['id'];
 		$relationRequest->save();
 		return $relationRequest;
+	}
+
+	/**
+	 * @param Request $request
+	 * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
+	 */
+	public function getNonOwnProducers(Request $request)
+	{
+		return User::nonOwnProducers()
+			->when($request->has('query'), function($query) use ($request) {
+				return $query->where('display_name', 'ilike', '%' . $request->get('query') . '%');
+			})
+			->limit(25)
+			->orderBy('display_name', 'asc')
+			->get();
 	}
 }

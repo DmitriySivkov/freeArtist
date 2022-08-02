@@ -3,9 +3,10 @@
 
 namespace App\Services;
 
-
+use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\User;
+use App\Services\RelationRequests\UserRelationRequestService;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -35,9 +36,7 @@ class AuthService
 		$token = $user->createToken($user->phone, $abilities)
 			->plainTextToken;
 
-        return response()->json($user->load(
-			$this->getUserLoadRelations()
-		))
+        return response()->json($user->load($this->getUserLoadRelations()))
 			->withCookie(
 				cookie('token', $token, 0, null, null, true, true, false, 'none')
 			);
@@ -55,9 +54,10 @@ class AuthService
         /** @var User $user */
         $user = auth("sanctum")->user();
 
-        return response()->json($user->load(
-			$this->getUserLoadRelations()
-		));
+		$user->requests = (new UserRelationRequestService)->getOutgoingCoworkingRequests();
+		// WORK WITH COMMITS ? SORT OUT BY WHOM TO WHOM
+
+        return response()->json($user->load($this->getUserLoadRelations()));
     }
 
 	/**
@@ -69,9 +69,9 @@ class AuthService
 			'roles',
 			'teams',
 			'permissions',
-			'outgoingCoworkingRequests' => function($query) {
-				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
-			},
+//			'outgoingCoworkingRequests' => function($query) {
+//				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id'])
+//			},
 //			'producers.outgoingProducerPartnershipRequests' => function($query) {
 //				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
 //			},

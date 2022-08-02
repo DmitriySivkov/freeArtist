@@ -38,15 +38,6 @@ class ProducerController extends Controller
 
 	/**
 	 * @param Request $request
-	 * @return JsonResponse
-	 */
-	public function getProducersToAttach(Request $request, ProducerService $producerService)
-	{
-		return $producerService->getProducersToAttach($request);
-	}
-
-	/**
-	 * @param Request $request
 	 * @param Producer $producer
 	 * @return JsonResponse
 	 */

@@ -54,8 +54,6 @@ Route::group([
     });
 
 	Route::group(['prefix' => 'producers'], function() {
-		Route::get('producersToAttach', [ProducerController::class, 'getProducersToAttach']);
-
 		Route::group(['prefix' => 'relationRequests'], function() {
 			Route::post('{producer}/sendProducerPartnershipRequest', [ProducerController::class, 'sendProducerPartnershipRequest']);
 			Route::post('acceptCoworkingRequest/{relationRequest}', [ProducerController::class, 'acceptCoworkingRequest']);
@@ -64,6 +62,8 @@ Route::group([
 	});
 
 	Route::group(['prefix' => 'users'], function() {
+		Route::get('nonOwnProducers', [UserController::class, 'getNonOwnProducers']);
+
 		Route::group(['prefix' => 'relationRequests'], function() {
 			Route::post('sendCoworkingRequest', [UserController::class, 'sendCoworkingRequest']);
 			Route::post('cancelCoworkingRequest/{relationRequest}', [UserController::class, 'cancelCoworkingRequest']);
