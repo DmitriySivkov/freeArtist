@@ -35,7 +35,7 @@
 							</div>
 							<div class="col-xs-7 col-md-10">
 								Статус: {{ props.row.status.label }}<br/>
-								Получатель: {{ props.row.to.title }}<br/>
+								Получатель: {{ props.row.to.team.display_name }}<br/>
 								Тип: {{ relationRequest.types.coworking.label }}
 							</div>
 							<q-btn

@@ -3,8 +3,7 @@
 
 namespace App\Services;
 
-use App\Models\Producer;
-use App\Models\RelationRequest;
+
 use App\Models\User;
 use App\Services\RelationRequests\UserRelationRequestService;
 use Illuminate\Http\Request;
@@ -12,6 +11,8 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
 {
+	protected ?User $user;
+
 	/**
 	 * @param $credentials
 	 * @return \Illuminate\Http\JsonResponse
@@ -21,11 +22,10 @@ class AuthService
         if (!auth()->attempt($credentials))
             return response()->json(['errors' => ['total' => ['Неверный телефон или пароль']]], 422);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $this->user = auth()->user();
         $abilities = ['*'];
 
-		$loginToken = PersonalAccessToken::query()->where('tokenable_id', $user->id)
+		$loginToken = PersonalAccessToken::query()->where('tokenable_id', $this->user->id)
 			->where('tokenable_type', User::class)->first();
 
 		if ($loginToken) {
@@ -33,10 +33,12 @@ class AuthService
 			$loginToken->delete();
 		}
 
-		$token = $user->createToken($user->phone, $abilities)
+		$token = $this->user->createToken($this->user->phone, $abilities)
 			->plainTextToken;
 
-        return response()->json($user->load($this->getUserLoadRelations()))
+		$this->getUserPayload();
+
+        return response()->json($this->user)
 			->withCookie(
 				cookie('token', $token, 0, null, null, true, true, false, 'none')
 			);
@@ -48,39 +50,32 @@ class AuthService
 	 */
 	public function loginWithToken(Request $request)
     {
-        if (!$request->hasHeader('Authorization') || $request->header('Authorization') !== 'Bearer ' . $request->cookie('token'))
+        if (
+			!$request->hasHeader('Authorization') ||
+			$request->header('Authorization') !== 'Bearer ' . $request->cookie('token')
+		)
             $request->headers->set('Authorization', 'Bearer ' . $request->cookie('token'));
 
-        /** @var User $user */
-        $user = auth("sanctum")->user();
+        $this->user = auth("sanctum")->user();
 
-		$user->requests = (new UserRelationRequestService)->getOutgoingCoworkingRequests();
-		// WORK WITH COMMITS ? SORT OUT BY WHOM TO WHOM
+		$this->getUserPayload();
 
-        return response()->json($user->load($this->getUserLoadRelations()));
+        return response()->json($this->user);
     }
 
 	/**
-	 * @return array
+	 * @return void
 	 */
-	private function getUserLoadRelations()
+	private function getUserPayload()
 	{
-		return [
+		$this->user->load([
 			'roles',
-			'teams',
-			'permissions',
-//			'outgoingCoworkingRequests' => function($query) {
-//				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id'])
-//			},
-//			'producers.outgoingProducerPartnershipRequests' => function($query) {
-//				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
-//			},
-//			'producers.incomingProducerPartnershipRequests' => function($query) {
-//				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
-//			},
-//			'producers.incomingCoworkingRequests' => function($query) {
-//				$query->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id']);
-//			},
-		];
+		]);
+		$this->user->teams = $this->user->allTeams();
+		$this->user->outgoing_coworking_requests = (new UserRelationRequestService($this->user))
+			->getOutgoingCoworkingRequests();
 	}
+	// all permissions and roles are inside teams. Now in frontend show all producers.
+	// On producer page (requests, detail, etc...) load - consider permissions and sections
+
 }

@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class ProducerRelationRequestService
 {
+	public function getIncomingCoworkingRequests()
+	{
+
+	}
 
 	/**
 	 * @param RelationRequest $relationRequest

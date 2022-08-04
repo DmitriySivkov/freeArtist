@@ -18,7 +18,7 @@ class UserController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 		try {
-			$relationRequest = $user->outgoingCoworkingRequests()
+			$relationRequest = $user->outgoingRelationRequests()
 				->where('to_id', $request->get('producer'))
 				->where('to_type', Producer::class)
 				->first();
