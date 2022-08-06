@@ -48,6 +48,7 @@ import { useStore } from "vuex"
 import { computed } from "vue"
 
 export default {
+
 	components: {
 		OutgoingProducerPartnershipRequests,
 		IncomingProducerPartnershipRequests,

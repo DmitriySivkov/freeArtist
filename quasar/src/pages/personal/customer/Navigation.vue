@@ -36,7 +36,7 @@ export default {
 			{
 				title: "Зарегистрировать изготовителя",
 				link: "/personal/register-producer",
-				conditional: !!userOwnProducer.value
+				conditional: userOwnProducer.value.length < 1
 			},
 			{ title: "Заявки", link: "/personal/user/requests" }
 		]

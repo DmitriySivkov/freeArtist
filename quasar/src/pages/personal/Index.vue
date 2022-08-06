@@ -35,7 +35,7 @@ export default {
 		const selectedTab = ref(user.value.personalTab)
 		const tabs = [
 			{name: "customer", icon: "account_box", label: "Пользователь"},
-			{name: "producer", icon: "work_outline", label: "Производитель"}
+			{name: "producer", icon: "work_outline", label: "Изготовитель"}
 		]
 
 		const switchPersonal = (personalTab) =>

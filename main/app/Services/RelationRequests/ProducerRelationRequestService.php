@@ -2,6 +2,7 @@
 
 namespace App\Services\RelationRequests;
 
+use App\Models\Producer;
 use App\Models\ProducerUser;
 use App\Models\RelationRequest;
 use App\Models\Role;
@@ -10,9 +11,21 @@ use Illuminate\Support\Facades\DB;
 
 class ProducerRelationRequestService
 {
+	protected User $user;
+
+	public function __construct(User $user)
+	{
+		$this->user = $user;
+	}
+
 	public function getIncomingCoworkingRequests()
 	{
-
+		return $this->user->outgoingRelationRequests()
+			->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id'])
+			->get()
+			->loadMorph('to', [
+				Producer::class => ['team']
+			]);
 	}
 
 	/**

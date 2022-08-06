@@ -6,5 +6,5 @@ export default [
 		meta: {
 			route_name: "Витрина"
 		}
-	},
+	}
 ]

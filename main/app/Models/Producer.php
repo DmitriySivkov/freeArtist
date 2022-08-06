@@ -69,28 +69,9 @@ class Producer extends Model
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
-	public function outgoingProducerPartnershipRequests()
+	public function incomingRelationRequests()
 	{
-		return $this->morphMany(RelationRequest::class, 'from')
-			->where('to_type', Producer::class);
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-	 */
-	public function incomingProducerPartnershipRequests()
-	{
-		return $this->morphMany(RelationRequest::class, 'to')
-			->where('from_type', Producer::class);
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-	 */
-	public function incomingCoworkingRequests()
-	{
-		return $this->morphMany(RelationRequest::class, 'to')
-			->where('from_type', User::class);
+		return $this->morphMany(RelationRequest::class, 'to');
 	}
 
 }

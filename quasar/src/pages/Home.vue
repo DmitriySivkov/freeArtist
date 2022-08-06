@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import ProducerList from "src/components/producers/ProducerList"
+import ProducerList from "src/components/home/ProducerList"
 export default {
 	components: { ProducerList },
 }

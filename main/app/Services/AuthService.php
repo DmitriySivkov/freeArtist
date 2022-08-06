@@ -75,7 +75,5 @@ class AuthService
 		$this->user->outgoing_coworking_requests = (new UserRelationRequestService($this->user))
 			->getOutgoingCoworkingRequests();
 	}
-	// all permissions and roles are inside teams. Now in frontend show all producers.
-	// On producer page (requests, detail, etc...) load - consider permissions and sections
-
+	//figure how to load team's relation requests (just check on component load ?)
 }
