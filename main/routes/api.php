@@ -55,6 +55,7 @@ Route::group([
 
 	Route::group(['prefix' => 'producers'], function() {
 		Route::group(['prefix' => 'relationRequests'], function() {
+			Route::get('/incoming/{producer}', [ProducerController::class, 'getIncomingRelationRequests']);
 			Route::post('{producer}/sendProducerPartnershipRequest', [ProducerController::class, 'sendProducerPartnershipRequest']);
 			Route::post('acceptCoworkingRequest/{relationRequest}', [ProducerController::class, 'acceptCoworkingRequest']);
 			Route::post('rejectCoworkingRequest/{relationRequest}', [ProducerController::class, 'rejectCoworkingRequest']);

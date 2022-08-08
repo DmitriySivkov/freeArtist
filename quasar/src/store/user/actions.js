@@ -63,3 +63,10 @@ export const restoreCoworkingRequest = async ({commit}, payload) => {
 		restoredStatus: payload.status
 	})
 }
+
+export const getProducerIncomingRequests = async ({commit}, producerId) => {
+	const response = await api.get(
+		"personal/producers/relationRequests/incoming/" + producerId
+	)
+	commit("SET_PRODUCER_INCOMING_RELATION_REQUESTS", { ...response.data, producer_id: parseInt(producerId) })
+}

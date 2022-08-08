@@ -9,10 +9,13 @@
 				:key="index"
 				clickable
 				v-ripple
-				@click="goToRoute(routeName, team.id)"
+				@click="goToTeamRequests(team.id)"
 			>
 				<q-item-section>
 					{{ team.display_name }}
+				</q-item-section>
+				<q-item-section side>
+					{{ team.requests.total_request_count }}
 				</q-item-section>
 			</q-item>
 		</q-list>
@@ -26,20 +29,22 @@ import { useRouter } from "vue-router"
 import { useUserProducer } from "src/composables/userProducer"
 
 export default ({
-	props: {
-		routeName: String,
-	},
 	setup() {
 		const $router = useRouter()
 		const { producerTeams } = useUserProducer()
 		const producerTeamsSorted = computed(() => _.orderBy(
 			producerTeams.value, team => team.display_name, "asc"
 		))
-		const goToRoute = (route_name, team_id) => $router.push({name:route_name, params: { id:team_id } })
+		const goToTeamRequests = (team_id) => $router.push({
+			name:"personal_producer_team_requests",
+			params: {
+				id:team_id
+			}
+		})
 
 		return {
 			producerTeamsSorted,
-			goToRoute
+			goToTeamRequests
 		}
 	}
 })

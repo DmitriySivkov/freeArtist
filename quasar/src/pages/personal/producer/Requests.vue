@@ -1,13 +1,11 @@
 <template>
-	<ProducerCommonList
-		:route-name="'personal_producer_team_requests'"
-	/>
+	<ProducerRequestTeamList />
 </template>
 
 <script>
-import ProducerCommonList from "src/components/producers/ProducerCommonList"
+import ProducerRequestTeamList from "src/components/producers/ProducerRequestTeamList"
 
 export default {
-	components: { ProducerCommonList },
+	components: { ProducerRequestTeamList },
 }
 </script>

@@ -37,6 +37,20 @@ class ProducerController extends Controller
 	}
 
 	/**
+	 * @param Producer $producer
+	 * @return JsonResponse
+	 */
+	public function getIncomingRelationRequests(Producer $producer)
+	{
+		$prrService = new ProducerRelationRequestService;
+		$prrService->setProducer($producer);
+
+		return response()->json([
+			'incoming_coworking_requests' => $prrService->getIncomingCoworkingRequests()
+		]);
+	}
+
+	/**
 	 * @param Request $request
 	 * @param Producer $producer
 	 * @return JsonResponse

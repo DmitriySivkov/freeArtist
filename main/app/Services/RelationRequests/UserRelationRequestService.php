@@ -10,11 +10,6 @@ class UserRelationRequestService
 {
 	protected User $user;
 
-	public function __construct(User $user)
-	{
-		$this->user = $user;
-	}
-
 	/**
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
@@ -26,5 +21,10 @@ class UserRelationRequestService
 			->loadMorph('to', [
 				Producer::class => ['team']
 			]);
+	}
+
+	public function setUser(User $user)
+	{
+		$this->user = $user;
 	}
 }

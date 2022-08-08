@@ -4,7 +4,11 @@
 namespace App\Services;
 
 
+use App\Models\Producer;
+use App\Models\Role;
+use App\Models\Team;
 use App\Models\User;
+use App\Services\RelationRequests\ProducerRelationRequestService;
 use App\Services\RelationRequests\UserRelationRequestService;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -72,8 +76,27 @@ class AuthService
 			'roles',
 		]);
 		$this->user->teams = $this->user->allTeams();
-		$this->user->outgoing_coworking_requests = (new UserRelationRequestService($this->user))
-			->getOutgoingCoworkingRequests();
+
+		$urrService = new UserRelationRequestService;
+		$urrService->setUser($this->user);
+		$this->user->outgoing_coworking_requests = $urrService->getOutgoingCoworkingRequests();
+
+		$prrService = new ProducerRelationRequestService;
+		$this->user->teams->map(function(Team $team) use ($prrService) {
+			if ($team->detailed_type === Producer::class) {
+				$prrService->setProducer($team->detailed);
+				$team->requests = collect(['total_request_count' => 0]);
+				if (
+					$this->user->owns($team) ||
+					$this->user->hasPermission("producer_incoming_coworking_requests", $team->name)
+				) {
+					$team->requests['incoming_coworking_requests'] = $prrService->getIncomingCoworkingRequests();
+					$team->requests['total_request_count'] =
+						$team['total_request_count'] + count($team->requests['incoming_coworking_requests']);
+				}
+			}
+			return $team;
+		});
 	}
-	//figure how to load team's relation requests (just check on component load ?)
+
 }

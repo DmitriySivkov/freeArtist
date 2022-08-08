@@ -11,21 +11,17 @@ use Illuminate\Support\Facades\DB;
 
 class ProducerRelationRequestService
 {
-	protected User $user;
+	protected Producer $producer;
 
-	public function __construct(User $user)
-	{
-		$this->user = $user;
-	}
-
+	/**
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
 	public function getIncomingCoworkingRequests()
 	{
-		return $this->user->outgoingRelationRequests()
+		return $this->producer->incomingRelationRequests()
 			->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id'])
-			->get()
-			->loadMorph('to', [
-				Producer::class => ['team']
-			]);
+			->where('from_type', User::class)
+			->get();
 	}
 
 	/**
@@ -91,5 +87,14 @@ class ProducerRelationRequestService
 		}
 
 		return $relationRequest;
+	}
+
+	/**
+	 * @param Producer $producer
+	 * @return void
+	 */
+	public function setProducer(Producer $producer)
+	{
+		$this->producer = $producer;
 	}
 }
