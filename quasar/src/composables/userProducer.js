@@ -7,10 +7,12 @@ export const useUserProducer = () => {
 	const roleTypes = computed(() => $store.state.role.types)
 
 	const producerTeams = computed(() =>
-		user.value.teams.filter((team) => team.detailed_id === roleTypes.value.producer))
+		user.value.teams.filter((team) => team.detailed_id === roleTypes.value.producer)
+	)
 
 	const userOwnProducer = computed(() =>
-		producerTeams.value.find((team) => team.user_id === user.value.id))
+		producerTeams.value.find((team) => team.user_id === user.value.id)
+	)
 
 	return { producerTeams, userOwnProducer }
 }

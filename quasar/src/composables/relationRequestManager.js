@@ -26,15 +26,18 @@ export const useRelationRequestManager = () => {
 
 	/** producer requests */
 	const outgoingProducerPartnershipRequests = (producerId) =>
-		user.value.data.producers.find((producer) => producer.id === producerId)
+		user.value.data.teams.find((team) => team.id === producerId)
+			.requests
 			.outgoing_producer_partnership_requests
 
 	const incomingProducerPartnershipRequests = (producerId) =>
-		user.value.data.producers.find((producer) => producer.id === producerId)
+		user.value.data.teams.find((team) => team.id === producerId)
+			.requests
 			.incoming_producer_partnership_requests
 
 	const incomingCoworkingRequests = (producerId) =>
-		user.value.data.producers.find((producer) => producer.id === producerId)
+		user.value.data.teams.find((team) => team.id === producerId)
+			.requests
 			.incoming_coworking_requests
 
 	const acceptCoworkingRequest = (requestId) =>

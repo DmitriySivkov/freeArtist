@@ -5,11 +5,10 @@
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
-		:title="'Входящие заявки на вступление в команду ' + '&quot' + producer.title + '&quot'"
 	>
 		<template v-slot:top>
 			<div class="col-xs-12 text-center">
-				<span class="text-h6">Входящие заявки на вступление в команду <br/>"{{ producer.title }}" </span>
+				<span class="text-h6">Входящие заявки на вступление в команду <br/>"{{ producer.display_name }}" </span>
 			</div>
 		</template>
 		<template v-slot:item="props">
@@ -20,7 +19,7 @@
 				<q-card-section class="row items-center">
 					<div class="col-xs-12 col-md-8">
 						Статус: {{ props.row.status.label }}<br/>
-						Отправитель: {{ props.row.from.name }}<br/>
+						Отправитель: {{ props.row.from.name ?? props.row.from.phone }}<br/>
 						Тип: {{ relationRequest.types.coworking.label }}
 					</div>
 					<div class="col-xs-12 col-md-4">

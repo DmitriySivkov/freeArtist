@@ -35,6 +35,7 @@ export default ({
 		const producerTeamsSorted = computed(() => _.orderBy(
 			producerTeams.value, team => team.display_name, "asc"
 		))
+
 		const goToTeamRequests = (team_id) => $router.push({
 			name:"personal_producer_team_requests",
 			params: {
