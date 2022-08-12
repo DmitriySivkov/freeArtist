@@ -5,14 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\User;
-use App\Services\ProducerService;
 use App\Services\RelationRequests\ProducerRelationRequestService;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Cache;
-use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ProducerController extends Controller
 {
@@ -38,11 +33,11 @@ class ProducerController extends Controller
 
 	/**
 	 * @param Producer $producer
+	 * @param ProducerRelationRequestService $prrService
 	 * @return JsonResponse
 	 */
-	public function getIncomingRelationRequests(Producer $producer)
+	public function getIncomingRelationRequests(Producer $producer, ProducerRelationRequestService $prrService)
 	{
-		$prrService = new ProducerRelationRequestService;
 		$prrService->setProducer($producer);
 
 		return response()->json([
@@ -98,13 +93,16 @@ class ProducerController extends Controller
 
 	/**
 	 * @param RelationRequest $relationRequest
-	 * @param ProducerRelationRequestService $PRRService
+	 * @param ProducerRelationRequestService $prrService
 	 * @return RelationRequest|JsonResponse
 	 */
-	public function acceptCoworkingRequest(RelationRequest $relationRequest, ProducerRelationRequestService $PRRService)
+	public function acceptCoworkingRequest(RelationRequest $relationRequest, ProducerRelationRequestService $prrService)
 	{
 		try {
-			return $PRRService->acceptCoworkingRequest($relationRequest);
+			/** @var Producer $producer */
+			$producer = $relationRequest->to;
+			$prrService->setProducer($producer);
+			return $prrService->acceptCoworkingRequest($relationRequest);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);

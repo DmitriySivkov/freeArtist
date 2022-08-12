@@ -1,7 +1,7 @@
 <template>
 	<q-table
 		grid
-		:rows="incomingCoworkingRequests(producer.id)"
+		:rows="incomingCowRequests"
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
@@ -96,7 +96,7 @@ export default {
 			default: () => {}
 		}
 	},
-	setup() {
+	setup(props) {
 		const $store = useStore()
 		const user = computed(() => $store.state.user)
 		const
@@ -122,10 +122,13 @@ export default {
 				.catch((error) => { notifyError(error.response.data) })
 		}
 
+		const incomingCowRequests = incomingCoworkingRequests(props.producer.id)
+			.filter((request) => request.status.id === $store.state.relationRequest.statuses.pending.id)
+
 		return {
 			user,
 			relationRequest,
-			incomingCoworkingRequests,
+			incomingCowRequests,
 			acceptCowRequest,
 			rejectCowRequest
 		}

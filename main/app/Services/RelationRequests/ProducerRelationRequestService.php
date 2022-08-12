@@ -2,12 +2,12 @@
 
 namespace App\Services\RelationRequests;
 
+use App\Models\Permission;
 use App\Models\Producer;
-use App\Models\ProducerUser;
 use App\Models\RelationRequest;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class ProducerRelationRequestService
 {
@@ -18,6 +18,9 @@ class ProducerRelationRequestService
 	 */
 	public function getIncomingCoworkingRequests()
 	{
+		if (!$this->producer)
+			throw new \LogicException('Изготовитель не задан');
+
 		return $this->producer->incomingRelationRequests()
 			->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id'])
 			->where('from_type', User::class)
@@ -31,37 +34,38 @@ class ProducerRelationRequestService
 	 */
 	public function acceptCoworkingRequest(RelationRequest $relationRequest)
 	{
-		$producerUser = ProducerUser::where('producer_id', $relationRequest->to_id)
-			->where('user_id', $relationRequest->from_id);
+		if (!$this->producer)
+			throw new \LogicException('Изготовитель не задан');
 
-		$from = User::find($relationRequest->to_id);
+		/** @var array $relationRequestStatus */
+		$relationRequestStatus = $relationRequest->status;
 
-		DB::beginTransaction();
+		if ($relationRequestStatus['id'] !== RelationRequest::STATUS_PENDING['id'])
+			throw new \LogicException('Заявка уже обработана');
+
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		if (
+			!$user->owns($this->producer->team) ||
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'], $this->producer->team->name)
+		)
+			throw new \LogicException('Доступ закрыт');
+
+		/** @var User $userToAttach */
+		$userToAttach = $relationRequest->from;
+		if (!$userToAttach)
+			throw new \LogicException('Пользователь заблокирован или удалён');
+
+		\DB::beginTransaction();
 		try {
-			if (!$producerUser->exists()) {
-				ProducerUser::create([
-					'producer_id' => $relationRequest->to_id,
-					'user_id' => $relationRequest->from_id,
-					'rights' => [ProducerUser::RIGHT_COWORKER],
-					'user_active' => 1
-				]);
-			}
-			else
-				$producerUser->update([
-					'rights' => collect($producerUser->rights)
-						->push(ProducerUser::RIGHT_COWORKER)
-				]);
-
-			if (!$from->roles->contains(Role::PRODUCER))
-				$from->roles()->attach(Role::PRODUCER);
-
+			$userToAttach->attachRole(Role::ROLE_PRODUCER['name'], $this->producer->team);
 			$relationRequest->update([
 				'status' => RelationRequest::STATUS_ACCEPTED['id']
 			]);
-
-			DB::commit();
+			\DB::commit();
 		} catch (\Throwable $e) {
-			DB::rollBack();
+			\DB::rollBack();
 			throw new \LogicException('Ошибка сервера запросов');
 		}
 
@@ -75,16 +79,15 @@ class ProducerRelationRequestService
 	 */
 	public function rejectCoworkingRequest(RelationRequest $relationRequest)
 	{
-		DB::beginTransaction();
-		try {
-			$relationRequest->update([
-				'status' => RelationRequest::STATUS_REJECTED_BY_RECIPIENT['id']
-			]);
-			DB::commit();
-		} catch (\Throwable $e) {
-			DB::rollBack();
-			throw new \LogicException('Ошибка сервера запросов');
-		}
+		/** @var array $relationRequestStatus */
+		$relationRequestStatus = $relationRequest->status;
+
+		if ($relationRequestStatus['id'] !== RelationRequest::STATUS_PENDING['id'])
+			throw new \LogicException('Заявка уже обработана');
+
+		$relationRequest->update([
+			'status' => RelationRequest::STATUS_REJECTED_BY_RECIPIENT['id']
+		]);
 
 		return $relationRequest;
 	}

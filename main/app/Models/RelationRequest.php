@@ -80,7 +80,7 @@ class RelationRequest extends Model
 	 */
 	protected function status(): Attribute
 	{
-		return new Attribute(
+		return Attribute::make(
 			get: fn ($statusId) => collect([
 				'id' => $statusId,
 				'label' => collect(self::STATUSES)
