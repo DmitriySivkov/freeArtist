@@ -13,3 +13,7 @@ export const SET_PRODUCER_INCOMING_RELATION_REQUESTS = (state, payload) => {
 		producer.incoming_coworking_requests = payload.incoming_coworking_requests
 	}
 }
+
+export const EMPTY_USER_PRODUCER = (state) => {
+	state.producers = []
+}
