@@ -6,6 +6,7 @@ import order from "src/store/order"
 import producer from "src/store/producer"
 import cart from "src/store/cart"
 import relationRequest from "src/store/relationRequest"
+import userProducer from "src/store/userProducer"
 
 // import example from './module-example'
 
@@ -26,7 +27,8 @@ export default store(function (/* { ssrContext } */) {
 			order,
 			producer,
 			cart,
-			relationRequest
+			relationRequest,
+			userProducer
 		},
 
 		// enable strict mode (adds overhead!)

@@ -2,26 +2,30 @@ import { api } from "src/boot/axios"
 
 export const login = async ({commit}, payload) => {
 	const response = await api.post("auth", payload)
-	commit("SET_USER", response.data)
+	commit("SET_USER", response.data.user)
+	commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
 	commit("SET_IS_LOGGED", true)
 }
 
 export const signUp = async ({commit}, payload) => {
 	const response = await api.post("register", payload)
-	commit("SET_USER", response.data)
+	commit("SET_USER", response.data.user)
+	commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
 	commit("SET_IS_LOGGED", true)
 }
 
 export const logout = async ({commit}, payload) => {
 	await api.post("personal/logout", payload)
 	commit("SET_USER", {})
+	commit("userProducer/SET_USER_PRODUCER", {}, { root:true })
 	commit("SET_IS_LOGGED", false)
 }
 
 export const checkTokenCookie = async ({commit}) => {
 	const response = await api.post("hasTokenCookie")
 	if (response.data) {
-		commit("SET_USER", response.data)
+		commit("SET_USER", response.data.user)
+		commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
 		commit("SET_IS_LOGGED", true)
 	}
 }
@@ -35,7 +39,7 @@ export const verifyEmail = async ({commit}, payload) => {
 
 export const registerProducer = async ({commit}, payload) => {
 	const response = await api.post("personal/register", {...payload, case: 1})
-	commit("SET_USER_PRODUCER", response.data.producer)
+	commit("userProducer/SET_USER_PRODUCER", response.data.producer, { root:true })
 	commit("SET_PRODUCER_ROLE", response.data.role)
 }
 
@@ -62,11 +66,4 @@ export const restoreCoworkingRequest = async ({commit}, payload) => {
 		restoredRequest: response.data,
 		restoredStatus: payload.status
 	})
-}
-
-export const getProducerIncomingRequests = async ({commit}, producerId) => {
-	const response = await api.get(
-		"personal/producers/relationRequests/incoming/" + producerId
-	)
-	commit("SET_PRODUCER_INCOMING_RELATION_REQUESTS", { ...response.data, producer_id: parseInt(producerId) })
 }

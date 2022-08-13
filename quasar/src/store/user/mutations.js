@@ -10,27 +10,11 @@ export const SWITCH_PERSONAL = (state, personal_tab) => {
 	state.personalTab = personal_tab
 }
 
-export const SET_USER_PRODUCER = (state, producer) => {
-	if (state.data.hasOwnProperty("producers"))
-		state.data.producers = [...state.data.producers, producer]
-	else
-		state.data.producers = [producer]
-}
-
 export const SET_PRODUCER_ROLE = (state, producerRole) => {
 	if (state.data.roles.find((role) => role.id === producerRole.id))
 		return
 
 	state.data.roles = [...state.data.roles, producerRole]
-}
-
-export const SET_PRODUCER_INCOMING_RELATION_REQUESTS = (state, payload) => {
-	let producer = state.data.teams.find((team) => team.id === payload.producer_id)
-	if (producer.hasOwnProperty("incoming_coworking_requests")) {
-		producer.incoming_coworking_requests = [...payload.incoming_coworking_requests, producer.incoming_coworking_requests]
-	} else {
-		producer.incoming_coworking_requests = payload.incoming_coworking_requests
-	}
 }
 
 export const CANCEL_USER_OUTGOING_COWORKING_REQUEST = (state, payload) => {

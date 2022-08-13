@@ -74,34 +74,18 @@
 <script>
 import { useRouter } from "vue-router"
 import { useStore } from "vuex"
-import { useQuasar } from "quasar"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
 
 export default {
 	setup() {
 		const $router = useRouter()
-		// const $currentRoute = useRoute()
 		const $store = useStore()
-		const $q = useQuasar()
 		const { notifySuccess, notifyError } = useNotification()
 
 		const phone = ref(null)
 		const password = ref("")
 		const is_pwd = ref(true)
-
-		// if ($currentRoute.query["verify-email"] && $currentRoute.query["verify-email"] === "1")
-		// 	$store.dispatch("user/verifyEmail", {
-		// 		hash: $currentRoute.query["hash"],
-		// 		email: $currentRoute.query["email"]
-		// 	}).then(() => {
-		// 		$q.notify({
-		// 			color: "green-4",
-		// 			textColor: "white",
-		// 			icon: "cloud_done",
-		// 			message: "Почта успешно верифицирована!"
-		// 		})
-		// 	})
 
 		return {
 			phone,
