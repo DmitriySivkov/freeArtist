@@ -15,7 +15,7 @@
 					{{ team.display_name }}
 				</q-item-section>
 				<q-item-section side>
-					{{ team.requests.total_request_count }}
+					{{ team.requests.total_pending_request_count }}
 				</q-item-section>
 			</q-item>
 		</q-list>

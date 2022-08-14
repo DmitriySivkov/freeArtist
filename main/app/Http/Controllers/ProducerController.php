@@ -111,13 +111,16 @@ class ProducerController extends Controller
 
 	/**
 	 * @param RelationRequest $relationRequest
-	 * @param ProducerRelationRequestService $PRRService
+	 * @param ProducerRelationRequestService $prrService
 	 * @return RelationRequest|JsonResponse
 	 */
-	public function rejectCoworkingRequest(RelationRequest $relationRequest, ProducerRelationRequestService $PRRService)
+	public function rejectCoworkingRequest(RelationRequest $relationRequest, ProducerRelationRequestService $prrService)
 	{
 		try {
-			return $PRRService->rejectCoworkingRequest($relationRequest);
+			/** @var Producer $producer */
+			$producer = $relationRequest->to;
+			$prrService->setProducer($producer);
+			return $prrService->rejectCoworkingRequest($relationRequest);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);

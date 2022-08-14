@@ -98,7 +98,6 @@ export default {
 	},
 	setup(props) {
 		const $store = useStore()
-		const user = computed(() => $store.state.user)
 		const
 			{
 				relationRequest,
@@ -108,16 +107,14 @@ export default {
 			} = useRelationRequestManager()
 		const { notifySuccess, notifyError } = useNotification()
 
-		//todo commit acceptCoworkingRequest
 		const acceptCowRequest = (requestId) => {
-			acceptCoworkingRequest(requestId)
+			acceptCoworkingRequest(props.producer.id, requestId)
 				.then(() => { notifySuccess("Заявка принята") })
 				.catch((error) => { notifyError(error.response.data) })
 		}
 
-		//todo commit rejectCoworkingRequest
 		const rejectCowRequest = (requestId) => {
-			rejectCoworkingRequest(requestId)
+			rejectCoworkingRequest(props.producer.id, requestId)
 				.then(() => { notifySuccess("В заявке отказано") })
 				.catch((error) => { notifyError(error.response.data) })
 		}
@@ -126,7 +123,6 @@ export default {
 			.filter((request) => request.status.id === $store.state.relationRequest.statuses.pending.id)
 
 		return {
-			user,
 			relationRequest,
 			incomingCowRequests,
 			acceptCowRequest,

@@ -102,14 +102,14 @@ class AuthService
 		return $this->userTeams->map(function(Team $team) use ($prrService) {
 			if ($team->detailed_type === Producer::class) {
 				$prrService->setProducer($team->detailed);
-				$team->requests = collect(['total_request_count' => 0]);
+				$team->requests = collect(['total_pending_request_count' => 0]);
 				if (
 					$this->user->owns($team) ||
 					$this->user->hasPermission("producer_incoming_coworking_requests", $team->name)
 				) {
 					$team->requests['incoming_coworking_requests'] = $prrService->getIncomingCoworkingRequests();
-					$team->requests['total_request_count'] =
-						$team['total_request_count'] + count($team->requests['incoming_coworking_requests']);
+					$team->requests['total_pending_request_count'] =
+						$team['total_pending_request_count'] + count($team->requests['incoming_coworking_requests']);
 				}
 			}
 			return $team;

@@ -17,3 +17,15 @@ export const SET_PRODUCER_INCOMING_RELATION_REQUESTS = (state, payload) => {
 export const EMPTY_USER_PRODUCER = (state) => {
 	state.producers = []
 }
+
+export const SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS = (state, {producer_id, request_id, status}) => {
+	const requests = state.producers.find((producer) => producer.id === producer_id)
+		.requests
+
+	requests
+		.incoming_coworking_requests
+		.find((request) => request.id === request_id)
+		.status = status
+
+	requests.total_pending_request_count--
+}
