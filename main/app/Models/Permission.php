@@ -34,7 +34,8 @@ class Permission extends LaratrustPermission
 	const PERMISSIONS_PRODUCER = [
 		self::PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS,
 		self::PERMISSION_PRODUCER_INCOMING_PARTNERSHIP_REQUESTS,
-		self::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS
+		self::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS,
+		self::PERMISSION_PRODUCER_MANAGE_PERMISSIONS
 	];
 
 	const PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS = [
@@ -50,6 +51,11 @@ class Permission extends LaratrustPermission
 	const PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS = [
 		'name' => 'producer_incoming_coworking_requests',
 		'display_name' => 'Управление входящими запросами на сотрудничество между изготовителем и пользователем',
+		'description' => ''
+	];
+	const PERMISSION_PRODUCER_MANAGE_PERMISSIONS = [
+		'name' => 'producer_manage_permissions',
+		'display_name' => 'Управление разрешениями пользователей изготовителя',
 		'description' => ''
 	];
 	/** end producer permissions */

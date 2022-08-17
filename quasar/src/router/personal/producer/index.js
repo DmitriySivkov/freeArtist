@@ -38,9 +38,27 @@ export default [
 	{
 		name: "personal_producer_team_requests",
 		path: "personal/producer/:id/requests",
-		component: () => import("pages/personal/producer/TeamRequests"),
+		component: () => import("pages/personal/producer/RequestsDetail"),
 		meta: {
 			route_name: "Заявки",
+			requires_auth: true
+		}
+	},
+	{
+		name: "personal_producer_permissions",
+		path: "personal/producer/permissions",
+		component: () => import("pages/personal/producer/Permissions"),
+		meta: {
+			route_name: "Разрешения",
+			requires_auth: true
+		}
+	},
+	{
+		name: "personal_producer_team_permissions",
+		path: "personal/producer/:id/permissions",
+		component: () => import("pages/personal/producer/PermissionsDetail"),
+		meta: {
+			route_name: "Разрешения",
 			requires_auth: true
 		}
 	},

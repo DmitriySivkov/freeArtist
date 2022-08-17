@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
@@ -30,6 +31,10 @@ Route::group(['prefix' => 'auth'], function() {
 
 Route::group(['prefix' => 'roles'], function() {
   Route::get('', [RoleController::class, 'index']);
+});
+
+Route::group(['prefix' => 'permissions'], function() {
+	Route::get('', [PermissionController::class, 'index']);
 });
 
 Route::group(['prefix' => 'producers'], function() {

@@ -5,7 +5,8 @@ module.exports = function (ctx) {
 			"axios",
 			"setCartFromLocalStorage",
 			"browseProducers",
-			"browseRoles"
+			"browseRoles",
+			"browsePermissions",
 		],
 
 		css: [

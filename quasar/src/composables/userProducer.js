@@ -12,5 +12,8 @@ export const useUserProducer = () => {
 		producerTeams.value.find((team) => team.user_id === user.value.data.id)
 	)
 
-	return { producerTeams, userOwnProducer }
+	return {
+		producerTeams,
+		userOwnProducer,
+	}
 }

@@ -38,7 +38,8 @@ export default {
 				link: "/personal/register-producer",
 				conditional: userOwnProducer.value.length < 1
 			},
-			{ title: "Заявки", link: "/personal/producer/requests" }
+			{ title: "Заявки", link: "/personal/producer/requests" },
+			{ title: "Разрешения", link: "/personal/producer/permissions" }
 		]
 
 		const menu = computed(() =>

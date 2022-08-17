@@ -29,17 +29,27 @@ export const useRelationRequestManager = () => {
 	const outgoingProducerPartnershipRequests = (producerId) =>
 		userProducer.value.producers.find((team) => team.id === producerId)
 			.requests
+			.data
 			.outgoing_producer_partnership_requests
 
 	const incomingProducerPartnershipRequests = (producerId) =>
 		userProducer.value.producers.find((team) => team.id === producerId)
 			.requests
+			.data
 			.incoming_producer_partnership_requests
 
 	const incomingCoworkingRequests = (producerId) =>
 		userProducer.value.producers.find((team) => team.id === producerId)
 			.requests
+			.data
 			.incoming_coworking_requests
+
+	const producerPendingRequestCount = (team) =>
+		Object.keys(team.requests.data).reduce((carry, requestType) =>
+			carry + team.requests.data[requestType].filter(
+				(request) => request.status.id === relationRequest.value.statuses.pending.id
+			).length, 0
+		)
 
 	const acceptCoworkingRequest = (producer_id, request_id) =>
 		$store.dispatch("userProducer/acceptCoworkingRequest", { producer_id, request_id })
@@ -57,6 +67,7 @@ export const useRelationRequestManager = () => {
 		incomingProducerPartnershipRequests,
 		incomingCoworkingRequests,
 		acceptCoworkingRequest,
-		rejectCoworkingRequest
+		rejectCoworkingRequest,
+		producerPendingRequestCount
 	}
 }

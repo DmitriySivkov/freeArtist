@@ -7,6 +7,7 @@ import producer from "src/store/producer"
 import cart from "src/store/cart"
 import relationRequest from "src/store/relationRequest"
 import userProducer from "src/store/userProducer"
+import permission from "src/store/permission"
 
 // import example from './module-example'
 
@@ -24,6 +25,7 @@ export default store(function (/* { ssrContext } */) {
 		modules: {
 			user,
 			role,
+			permission,
 			order,
 			producer,
 			cart,

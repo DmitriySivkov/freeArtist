@@ -23,6 +23,7 @@ export const SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS = (state, {producer_
 		.requests
 
 	requests
+		.data
 		.incoming_coworking_requests
 		.find((request) => request.id === request_id)
 		.status = status
