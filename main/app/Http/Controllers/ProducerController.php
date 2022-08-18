@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Producer;
 use App\Models\RelationRequest;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\RelationRequests\ProducerRelationRequestService;
 use Illuminate\Http\JsonResponse;
@@ -125,5 +126,14 @@ class ProducerController extends Controller
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
 		}
+	}
+
+	/**
+	 * @param Producer $producer
+	 * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+	 */
+	public function getProducerUsers(Producer $producer)
+	{
+		return User::whereRoleIs(Role::ROLE_PRODUCER['name'], $producer->team)->get();
 	}
 }

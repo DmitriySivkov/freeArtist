@@ -24,3 +24,11 @@ export const rejectCoworkingRequest = async ({commit}, {producer_id, request_id}
 		status: response.data.status
 	})
 }
+
+export const getProducerUserList = async ({commit}, producer_id) => {
+	const response = await api.get("personal/producers/" + producer_id + "/users")
+	commit("SET_PRODUCER_USERS", {
+		producer_id,
+		users: response.data
+	})
+}

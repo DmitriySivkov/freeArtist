@@ -55,7 +55,7 @@ class Permission extends LaratrustPermission
 	];
 	const PERMISSION_PRODUCER_MANAGE_PERMISSIONS = [
 		'name' => 'producer_manage_permissions',
-		'display_name' => 'Управление разрешениями пользователей изготовителя',
+		'display_name' => 'Управление разрешениями изготовителя',
 		'description' => ''
 	];
 	/** end producer permissions */
