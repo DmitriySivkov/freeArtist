@@ -14,7 +14,8 @@
 				top
 			>
 				<q-radio
-					v-model="selected_user"
+					:model-value="modelValue"
+					@update:model-value="userChanged"
 					:val="user.id"
 				/>
 			</q-item-section>
@@ -27,23 +28,20 @@
 </template>
 
 <script>
-import { useStore } from "vuex"
-import { computed, ref } from "vue"
 export default {
 	props: {
+		modelValue: Number,
 		users: {
 			type: Array,
 			default: () => []
 		}
 	},
-	setup(props) {
-		const $store = useStore()
-		const user = computed(() => $store.state.user)
-		const selected_user = ref(
-			props.users.find((u) => u.id === user.value.data.id).id
-		)
+	setup(props, context) {
+		const userChanged = (user_id) => {
+			context.emit("update:modelValue", user_id)
+		}
 		return {
-			selected_user
+			userChanged
 		}
 	}
 }
