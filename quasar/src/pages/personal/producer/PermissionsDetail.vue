@@ -1,10 +1,17 @@
 <template>
-	<ProducerUserList
-		v-model="selected_user"
-		:users="team.users"
-	/>
+	<q-scroll-area style="height: 250px;">
+		<ProducerUserList
+			v-model="selected_user"
+			:users="team.users"
+		/>
+	</q-scroll-area>
 	<q-separator />
-	<ProducerPermissionList :producer="team"/>
+	<q-scroll-area style="height: 400px;">
+		<ProducerPermissionList
+			:user-id="selected_user"
+			:producer="team"
+		/>
+	</q-scroll-area>
 </template>
 
 <script>

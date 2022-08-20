@@ -14,9 +14,9 @@
 				top
 			>
 				<q-checkbox
-					v-model="permission_model"
+					v-model="selected_permissions"
 					:val="permission.id"
-					disable
+					:disable="isUnableToEditUserPermissions"
 				/>
 			</q-item-section>
 
@@ -25,14 +25,32 @@
 			</q-item-section>
 		</q-item>
 	</q-list>
+	<q-page-sticky
+		expand
+		position="bottom"
+		class="row q-pa-xs"
+	>
+		<div class="col-xs-12 col-md-6">
+			<q-btn
+				label="Сохранить"
+				type="submit"
+				color="primary"
+				class="q-pa-lg full-width"
+				@click="setUserPermissions(producer.id, userId, selected_permissions)"
+				:disable="isUnableToEditUserPermissions"
+			/>
+		</div>
+	</q-page-sticky>
 </template>
 
 <script>
 import { useStore } from "vuex"
-import { computed, ref } from "vue"
+import { computed, ref, watch } from "vue"
 import { useUserProducer } from "src/composables/userProducer"
+import { useNotification } from "src/composables/notification"
 export default {
 	props: {
+		userId: Number,
 		producer: {
 			type: Object,
 			default: () => {}
@@ -40,16 +58,49 @@ export default {
 	},
 	setup(props) {
 		const $store = useStore()
-		const { userOwnProducer } = useUserProducer()
+		const { getProducerUser, syncUserPermissions } = useUserProducer()
+		const { notifySuccess, notifyError } = useNotification()
 		const all_producer_permissions = computed(() => $store.state.permission.producer)
-		const permission_model = ref(
-			userOwnProducer.value.id === props.producer.id ?
+
+		const selected_permissions = ref(
+			props.userId === props.producer.user_id ?
 				all_producer_permissions.value.map((p) => p.id) :
-				[]
+				getProducerUser(props.producer.id, props.userId).permissions.map((p) => p.id)
 		)
+
+		const selected_user = computed(() => props.producer.users.find((u) => u.id === props.userId))
+
+		const isUnableToEditUserPermissions = computed(() =>
+			props.userId === props.producer.user_id ||
+			selected_user.value.permissions.includes(
+				all_producer_permissions.value.map((p) => p.id).find((p) => p.name === "producer_manage_permissions")
+			)
+		)
+
+		const setUserPermissions = (producer_id, user_id, permissions) => {
+			syncUserPermissions(producer_id, user_id, permissions)
+				.then(() => {
+					notifySuccess(
+						"Права пользователя: '" +
+						(selected_user.value.name ?? selected_user.value.phone) +
+						"' успешно изменены"
+					)
+				}).catch((error) => {
+					notifyError(error.response.data)
+				})
+		}
+
+		watch(() => props.userId, (selected_user_id) => {
+			selected_permissions.value = selected_user_id === props.producer.user_id ?
+				all_producer_permissions.value.map((p) => p.id) :
+				getProducerUser(props.producer.id, selected_user_id).permissions.map((p) => p.id)
+		})
+
 		return {
 			all_producer_permissions,
-			permission_model
+			selected_permissions,
+			isUnableToEditUserPermissions,
+			setUserPermissions
 		}
 	}
 }

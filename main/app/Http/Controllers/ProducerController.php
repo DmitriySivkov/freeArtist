@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Permissions\ProducerPermissionService;
 use App\Services\RelationRequests\ProducerRelationRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -134,6 +136,22 @@ class ProducerController extends Controller
 	 */
 	public function getProducerUsers(Producer $producer)
 	{
-		return User::whereRoleIs(Role::ROLE_PRODUCER['name'], $producer->team)->get();
+		return User::whereRoleIs(Role::ROLE_PRODUCER['name'], $producer->team)
+			->with([
+				'permissions' => function($query) use ($producer) {
+					$query->where('team_id', $producer->team->id);
+				}
+			])
+			->get();
+	}
+
+	public function syncUserPermissions(Request $request, Producer $producer, User $user, ProducerPermissionService $ppService)
+	{
+		try {
+			return $ppService->syncUserPermissions($request->all(), $producer, $user);
+		} catch (\Throwable $e) {
+			return response()->json($e->getMessage())
+				->setStatusCode(422);
+		}
 	}
 }

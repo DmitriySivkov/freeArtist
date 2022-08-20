@@ -32,3 +32,15 @@ export const getProducerUserList = async ({commit}, producer_id) => {
 		users: response.data
 	})
 }
+
+export const syncProducerUserPermissions = async ({commit}, { producer_id, user_id, permissions }) => {
+	const response = await api.post(
+		"personal/producers/permissions/" + producer_id + "/sync/" + user_id,
+		permissions
+	)
+	commit("SYNC_PRODUCER_USER_PERMISSIONS", {
+		producer_id,
+		user_id,
+		permissions:response.data
+	})
+}

@@ -33,3 +33,10 @@ export const SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS = (state, {producer_
 export const SET_PRODUCER_USERS = (state, {producer_id, users}) => {
 	state.producers.find((producer) => producer.id === producer_id).users = users
 }
+
+export const SYNC_PRODUCER_USER_PERMISSIONS = (state, {producer_id, user_id, permissions}) => {
+	state.producers.find((producer) => producer.id === producer_id)
+		.users
+		.find((user) => user.id === user_id)
+		.permissions = permissions
+}

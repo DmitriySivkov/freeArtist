@@ -60,6 +60,9 @@ Route::group([
 
 	Route::group(['prefix' => 'producers'], function() {
 		Route::get('{producer}/users', [ProducerController::class, 'getProducerUsers']);
+		Route::group(['prefix' => 'permissions'], function() {
+			Route::post('{producer}/sync/{user}', [ProducerController::class, 'syncUserPermissions']);
+		});
 		Route::group(['prefix' => 'relationRequests'], function() {
 			Route::get('incoming/{producer}', [ProducerController::class, 'getIncomingRelationRequests']);
 			Route::post('{producer}/sendProducerPartnershipRequest', [ProducerController::class, 'sendProducerPartnershipRequest']);
