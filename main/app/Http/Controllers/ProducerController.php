@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\Role;

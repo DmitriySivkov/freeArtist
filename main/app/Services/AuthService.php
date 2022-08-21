@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Models\Producer;
+use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
 use App\Services\RelationRequests\ProducerRelationRequestService;
@@ -41,7 +42,6 @@ class AuthService
 		$token = $this->user->createToken($this->user->phone, $abilities)
 			->plainTextToken;
 
-		$this->setUserTeams();
 		$this->getUserPayload();
 
         return response()->json([
@@ -67,7 +67,6 @@ class AuthService
 
         $this->user = auth("sanctum")->user();
 
-		$this->setUserTeams();
 		$this->getUserPayload();
 
         return response()->json([
@@ -95,42 +94,36 @@ class AuthService
 	 */
 	private function getUserProducerTeams()
 	{
-		if ($this->userTeams->isEmpty())
+		$userProducerTeams = $this->user->rolesTeams()
+			->where('role_id', Role::ROLE_PRODUCER['id'])
+			->get();
+
+		if ($userProducerTeams->isEmpty())
 			return [];
 
 		$prrService = new ProducerRelationRequestService;
-		return $this->userTeams->map(function(Team $team) use ($prrService) {
-			if ($team->detailed_type === Producer::class) {
-				$prrService->setProducer($team->detailed);
+		return $userProducerTeams->map(function(Team $team) use ($prrService) {
+			$prrService->setProducer($team->detailed);
 
-				if (
-					$this->user->owns($team) ||
-					$this->user->hasPermission("producer_incoming_coworking_requests", $team->name)
-				) {
-					$requests = [
-						'data' => [
-							'incoming_coworking_requests' => $prrService->getIncomingCoworkingRequests()
-						],
-					];
-					$requests['total_pending_request_count'] = collect($requests['data'])
-						->reduce(function($carry, $requestList) {
-							$carry += count($requestList);
-							return $carry;
-						}, 0);
+			if (
+				$this->user->owns($team) ||
+				$this->user->hasPermission("producer_incoming_coworking_requests", $team->name)
+			) {
+				$requests = [
+					'data' => [
+						'incoming_coworking_requests' => $prrService->getIncomingCoworkingRequests()
+					],
+				];
+				$requests['total_pending_request_count'] = collect($requests['data'])
+					->reduce(function($carry, $requestList) {
+						$carry += count($requestList);
+						return $carry;
+					}, 0);
 
-					$team->requests = $requests;
-				}
+				$team->requests = $requests;
 			}
 			return $team;
 		});
-	}
-
-	/**
-	 * @return void
-	 */
-	private function setUserTeams()
-	{
-		$this->userTeams = $this->user->allTeams();
 	}
 
 }
