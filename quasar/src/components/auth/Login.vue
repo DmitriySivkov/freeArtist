@@ -10,8 +10,7 @@
 					filled
 					v-model="phone"
 					label="Телефон *"
-					mask="8 (###) ###-##-##"
-					fill-mask=""
+					mask="# (###) ###-##-##"
 					:unmasked-value="true"
 					:lazy-rules="true"
 					:rules="[
@@ -94,7 +93,7 @@ export default {
 
 			onSubmit() {
 				$store.dispatch("user/login", {
-					phone: "8" + phone.value,
+					phone: phone.value,
 					password: password.value,
 				}).then(() => {
 					notifySuccess("Будь как дома, путник!")

@@ -16,9 +16,8 @@ class PermissionController extends Controller
     {
     	$permissions = Cache::remember('permissions', 60, function() {
     		return [
-				'producer' => Permission::whereHas('roles', function ($query) {
-					$query->where('id', Role::ROLE_PRODUCER['id']);
-				})->get(),
+				'producer' => Permission::where('role_id', Role::ROLE_PRODUCER['id'])
+					->get(),
 				'advertiser' => [],
 				'guarantor' => []
 			];

@@ -17,6 +17,13 @@ export const SET_PRODUCER_ROLE = (state, producerRole) => {
 	state.data.roles = [...state.data.roles, producerRole]
 }
 
+export const SET_USER_OUTGOING_COWORKING_REQUESTS = (state, request) => {
+	if (state.data.hasOwnProperty("outgoing_coworking_requests"))
+		state.data.outgoing_coworking_requests = [...state.data.outgoing_coworking_requests, request]
+	else
+		state.data.outgoing_coworking_requests = [request]
+}
+
 export const CANCEL_USER_OUTGOING_COWORKING_REQUEST = (state, payload) => {
 	state.data.outgoing_coworking_requests
 		.find((request) => request.id === payload.canceledRequest.id)

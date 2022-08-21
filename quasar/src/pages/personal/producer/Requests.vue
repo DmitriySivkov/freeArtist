@@ -3,6 +3,7 @@
 		detail-route-name="personal_producer_team_requests"
 		:teams="producerTeamsSorted"
 		:counter="producerPendingRequestCount"
+		:use-counter="true"
 	/>
 </template>
 

@@ -40,7 +40,6 @@ use Laratrust\Traits\LaratrustUserTrait;
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
- * @method static Builder|User nonOwnProducers()
  * @method static Builder|User orWherePermissionIs($permission = '')
  * @method static Builder|User orWhereRoleIs($role = '', $team = null)
  * @method static Builder|User query()
@@ -58,6 +57,8 @@ use Laratrust\Traits\LaratrustUserTrait;
  * @method static Builder|User whereRoleIs($role = '', $team = null, $boolean = 'and')
  * @method static Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Team|null $ownProducer
+ * @method static Builder|User nonRelatedProducers()
  */
 class User extends Authenticatable
 {
@@ -83,16 +84,21 @@ class User extends Authenticatable
 		return $this->morphMany(RelationRequest::class, 'from');
 	}
 
+	public function ownProducer()
+	{
+		return $this->hasOne(Team::class)
+			->where('detailed_type', Producer::class)
+			->where('user_id', $this->id);
+	}
+
 	/**
 	 * @return \Illuminate\Database\Query\Builder
 	 */
-	public function scopeNonOwnProducers()
+	public function scopeNonRelatedProducers()
 	{
 		return Team::whereNotIn(
 			'id',
-			$this->teams
-				->where('detailed_type', Producer::class)
-				->pluck('pivot.team_id')
+			$this->rolesTeams->where('detailed_type', Producer::class)->pluck('id')
 		);
 	}
 

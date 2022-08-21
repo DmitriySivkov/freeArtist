@@ -32,6 +32,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereTeamId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingRelationRequests
+ * @property-read int|null $incoming_relation_requests_count
  */
 class Producer extends Model
 {

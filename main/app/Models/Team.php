@@ -23,6 +23,13 @@ use Laratrust\Models\LaratrustTeam;
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $user_id
+ * @property int $detailed_id
+ * @property string $detailed_type
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $detailed
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereDetailedId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereDetailedType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Team whereUserId($value)
  */
 class Team extends LaratrustTeam
 {

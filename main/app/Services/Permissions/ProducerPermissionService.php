@@ -20,12 +20,12 @@ class ProducerPermissionService
 		$authUser = auth('sanctum')->user();
 
 		if (
-			!$authUser->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PERMISSIONS['name'], $producer->team->name) &&
+			!$authUser->hasPermission('producer_manage_permissions', $producer->team) &&
 			!$authUser->owns($producer->team)
 		)
 			throw new \LogicException("Доступ закрыт");
 
-		if ($authUser->id === $user->id)
+		if ($authUser->id === $user->id && $authUser->owns($producer->team))
 			throw new \LogicException("Вы уже имеете все разрешения");
 
 		if ($user->owns($producer->team))

@@ -40,7 +40,7 @@ class ProducerRelationRequestService
 		$user = auth('sanctum')->user();
 
 		if (
-			!$user->owns($this->producer->team) ||
+			!$user->owns($this->producer->team) &&
 			!$user->hasPermission(Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'], $this->producer->team->name)
 		)
 			throw new \LogicException('Доступ закрыт');
@@ -86,7 +86,7 @@ class ProducerRelationRequestService
 		$user = auth('sanctum')->user();
 
 		if (
-			!$user->owns($this->producer->team) ||
+			!$user->owns($this->producer->team) &&
 			!$user->hasPermission(Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'], $this->producer->team->name)
 		)
 			throw new \LogicException('Доступ закрыт');

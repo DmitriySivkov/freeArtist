@@ -72,7 +72,7 @@ Route::group([
 	});
 
 	Route::group(['prefix' => 'users'], function() {
-		Route::get('nonOwnProducers', [UserController::class, 'getNonOwnProducers']);
+		Route::get('nonRelatedProducers', [UserController::class, 'getNonRelatedProducers']);
 
 		Route::group(['prefix' => 'relationRequests'], function() {
 			Route::post('sendCoworkingRequest', [UserController::class, 'sendCoworkingRequest']);

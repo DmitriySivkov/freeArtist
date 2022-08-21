@@ -47,7 +47,11 @@ class UserController extends Controller
 				->setStatusCode(422);
 		}
 
-		return response()->json($joinRequest->load(['from', 'to']));
+		return response()->json(
+			$joinRequest->load(['from'])->loadMorph('to', [
+				Producer::class => ['team']
+			])
+		);
 	}
 
 	/**
@@ -76,9 +80,9 @@ class UserController extends Controller
 	 * @param Request $request
 	 * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
 	 */
-	public function getNonOwnProducers(Request $request)
+	public function getNonRelatedProducers(Request $request)
 	{
-		return User::nonOwnProducers()
+		return User::nonRelatedProducers()
 			->when($request->has('query'), function($query) use ($request) {
 				return $query->where('display_name', 'ilike', '%' . $request->get('query') . '%');
 			})

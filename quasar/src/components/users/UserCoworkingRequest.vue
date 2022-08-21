@@ -95,7 +95,7 @@ export default {
 		const loadProducerTeamList = async (query, update) => {
 			if (query.length < 1) return
 
-			const response = await api.get("personal/users/nonOwnProducers",{
+			const response = await api.get("personal/users/nonRelatedProducers",{
 				params: { query }
 			})
 

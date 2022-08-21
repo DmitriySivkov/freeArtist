@@ -25,6 +25,9 @@ use Laratrust\Models\LaratrustPermission;
  * @method static \Illuminate\Database\Eloquent\Builder|Permission whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Permission whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $role_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereRoleId($value)
+ * @property-read \App\Models\Role|null $relatedRoles
  */
 class Permission extends LaratrustPermission
 {
@@ -59,4 +62,10 @@ class Permission extends LaratrustPermission
 		'description' => ''
 	];
 	/** end producer permissions */
+
+	/** use this instead of laratrust's 'roles' */
+	public function relatedRoles()
+	{
+		return $this->belongsTo(Role::class);
+	}
 }

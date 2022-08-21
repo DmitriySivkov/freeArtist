@@ -72,7 +72,7 @@ export default {
 
 		const isUnableToEditUserPermissions = computed(() =>
 			props.userId === props.producer.user_id ||
-			selected_user.value.permissions.includes(
+			!selected_user.value.permissions.includes(
 				all_producer_permissions.value.map((p) => p.id).find((p) => p.name === "producer_manage_permissions")
 			)
 		)

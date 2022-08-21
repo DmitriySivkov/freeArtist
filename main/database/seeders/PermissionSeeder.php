@@ -19,14 +19,14 @@ class PermissionSeeder extends Seeder
 		/** postgres specific command */
 		DB::statement("ALTER SEQUENCE permissions_id_seq RESTART WITH 1");
 
-		$roleProducer = Role::where('name', '=', 'producer')->first();
+		$roleProducer = Role::where('name', '=', 'producer')->first('id');
 		foreach (Permission::PERMISSIONS_PRODUCER as $permission) {
-			$permission = Permission::create([
+			Permission::create([
 				'name' => $permission['name'],
+				'role_id' => $roleProducer->id,
 				'display_name' => $permission['display_name'],
 				'description' => $permission['description']
 			]);
-			$roleProducer->attachPermission($permission);
 		}
     }
 }

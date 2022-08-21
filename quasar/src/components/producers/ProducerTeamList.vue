@@ -14,8 +14,9 @@
 				<q-item-section>
 					{{ team.display_name }}
 				</q-item-section>
+
 				<q-item-section
-					v-if="counter() !== false"
+					v-if="useCounter"
 					side
 				>
 					{{ counter(team) }}
@@ -34,9 +35,10 @@ export default ({
 			type: Array,
 			default: () => []
 		},
-		counter: {
-			type: Function,
-			default: () => false
+		counter: Function,
+		useCounter: {
+			type: Boolean,
+			default: false
 		}
 	},
 	setup(props) {
