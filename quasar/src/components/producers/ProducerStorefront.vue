@@ -109,18 +109,8 @@
 <script>
 import { useStore } from "vuex"
 import { computed, ref } from "vue"
-import { Loading } from "quasar"
 import { useCartManager } from "src/composables/cartManager"
-
 export default {
-	async preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-		Loading.show({
-			spinnerColor: "primary",
-		})
-		await store.dispatch("producer/getProducer", parseInt(currentRoute.params.id)).then(() =>
-			Loading.hide()
-		)
-	},
 	setup() {
 		const $store = useStore()
 		const producer = computed(() => $store.state.producer.detail)

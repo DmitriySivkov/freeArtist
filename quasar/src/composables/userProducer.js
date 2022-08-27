@@ -17,7 +17,7 @@ export const useUserProducer = () => {
 			.users
 			.find((user) => user.id === user_id)
 
-	const syncUserPermissions = (producer_id, user_id, permissions) =>
+	const syncProducerUserPermissions = (producer_id, user_id, permissions) =>
 		$store.dispatch(
 			"userProducer/syncProducerUserPermissions",
 			{ producer_id, user_id, permissions }
@@ -27,6 +27,6 @@ export const useUserProducer = () => {
 		producerTeams,
 		userOwnProducer,
 		getProducerUser,
-		syncUserPermissions
+		syncProducerUserPermissions
 	}
 }

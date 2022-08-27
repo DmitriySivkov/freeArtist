@@ -58,7 +58,7 @@ export default {
 	},
 	setup(props) {
 		const $store = useStore()
-		const { getProducerUser, syncUserPermissions } = useUserProducer()
+		const { getProducerUser, syncProducerUserPermissions } = useUserProducer()
 		const { notifySuccess, notifyError } = useNotification()
 		const all_producer_permissions = computed(() => $store.state.permission.producer)
 
@@ -78,7 +78,7 @@ export default {
 		)
 
 		const setUserPermissions = (producer_id, user_id, permissions) => {
-			syncUserPermissions(producer_id, user_id, permissions)
+			syncProducerUserPermissions(producer_id, user_id, permissions)
 				.then(() => {
 					notifySuccess(
 						"Права пользователя: '" +

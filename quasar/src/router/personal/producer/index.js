@@ -62,4 +62,22 @@ export default [
 			requires_auth: true
 		}
 	},
+	{
+		name: "personal_producer_storefront_settings",
+		path: "personal/producer/storefront/settings",
+		component: () => import("pages/personal/producer/StorefrontSettings"),
+		meta: {
+			route_name: "Витрина: список настроек",
+			requires_auth: true
+		}
+	},
+	{
+		name: "personal_producer_storefront_settings_products",
+		path: "personal/producer/storefront/settings/products",
+		component: () => import("pages/personal/producer/StorefrontSettingsProducts"),
+		meta: {
+			route_name: "Витрина: настройки продуктов",
+			requires_auth: true
+		}
+	},
 ]

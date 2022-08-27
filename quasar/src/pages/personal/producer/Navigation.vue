@@ -39,7 +39,8 @@ export default {
 				conditional: !userOwnProducer.value
 			},
 			{ title: "Заявки", link: "/personal/producer/requests" },
-			{ title: "Разрешения", link: "/personal/producer/permissions" }
+			{ title: "Разрешения", link: "/personal/producer/permissions" },
+			{ title: "Настройки", link: "/personal/producer/storefront/settings" }
 		]
 
 		const menu = computed(() =>
