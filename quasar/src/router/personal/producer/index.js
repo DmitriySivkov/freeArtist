@@ -63,20 +63,20 @@ export default [
 		}
 	},
 	{
-		name: "personal_producer_storefront_settings",
-		path: "personal/producer/storefront/settings",
-		component: () => import("pages/personal/producer/StorefrontSettings"),
+		name: "personal_producer_products",
+		path: "personal/producer/products",
+		component: () => import("pages/personal/producer/Products"),
 		meta: {
-			route_name: "Витрина: список настроек",
+			route_name: "Настройки продуктов",
 			requires_auth: true
 		}
 	},
 	{
-		name: "personal_producer_storefront_settings_products",
-		path: "personal/producer/storefront/settings/products",
-		component: () => import("pages/personal/producer/StorefrontSettingsProducts"),
+		name: "personal_producer_team_products",
+		path: "personal/producer/:id/products",
+		component: () => import("pages/personal/producer/ProductsDetail"),
 		meta: {
-			route_name: "Витрина: настройки продуктов",
+			route_name: "Настройки продуктов",
 			requires_auth: true
 		}
 	},

@@ -8,7 +8,6 @@
 				v-for="(team, index) in teams"
 				:key="index"
 				clickable
-				v-ripple
 				@click="goToDetail(team.id)"
 			>
 				<q-item-section>

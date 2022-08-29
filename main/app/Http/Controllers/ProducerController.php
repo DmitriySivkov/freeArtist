@@ -144,6 +144,13 @@ class ProducerController extends Controller
 			->get();
 	}
 
+	/**
+	 * @param Request $request
+	 * @param Producer $producer
+	 * @param User $user
+	 * @param ProducerPermissionService $ppService
+	 * @return JsonResponse|\Illuminate\Support\Collection
+	 */
 	public function syncUserPermissions(Request $request, Producer $producer, User $user, ProducerPermissionService $ppService)
 	{
 		try {
@@ -152,5 +159,14 @@ class ProducerController extends Controller
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
 		}
+	}
+
+	/**
+	 * @param Producer $producer
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	public function getProducerProducts(Producer $producer)
+	{
+		return $producer->products()->limit(10)->get();
 	}
 }

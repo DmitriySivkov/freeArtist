@@ -5,7 +5,6 @@
 		</q-item-label>
 		<q-item
 			tag="label"
-			v-ripple
 			v-for="(permission, index) in all_producer_permissions"
 			:key="index"
 		>

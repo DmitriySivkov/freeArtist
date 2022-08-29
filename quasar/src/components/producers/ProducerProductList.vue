@@ -5,14 +5,12 @@
 			separator
 		>
 			<q-item
-				v-for="(setting, index) in settings"
+				v-for="(product, index) in products"
 				:key="index"
 				clickable
-				v-ripple
-				@click="goToSettingDetail(setting.route_name)"
 			>
 				<q-item-section>
-					{{ setting.title }}
+					{{ product.title }}
 				</q-item-section>
 			</q-item>
 		</q-list>
@@ -23,7 +21,7 @@
 import { useRouter } from "vue-router"
 export default ({
 	props: {
-		settings: {
+		products: {
 			type: Array,
 			default: () => []
 		}
@@ -31,12 +29,7 @@ export default ({
 	setup() {
 		const $router = useRouter()
 
-		const goToSettingDetail = (route_name) => $router.push({
-			name: route_name,
-		})
-
 		return {
-			goToSettingDetail
 		}
 	}
 })

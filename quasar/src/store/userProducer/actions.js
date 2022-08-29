@@ -44,3 +44,11 @@ export const syncProducerUserPermissions = async ({commit}, { producer_id, user_
 		permissions:response.data
 	})
 }
+
+export const getProducerProductList = async ({commit}, producer_id) => {
+	const response = await api.get("personal/producers/" + producer_id + "/products")
+	commit("SET_PRODUCER_PRODUCTS", {
+		producer_id,
+		products: response.data
+	})
+}

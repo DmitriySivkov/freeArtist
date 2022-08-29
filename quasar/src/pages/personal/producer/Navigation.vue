@@ -40,7 +40,7 @@ export default {
 			},
 			{ title: "Заявки", link: "/personal/producer/requests" },
 			{ title: "Разрешения", link: "/personal/producer/permissions" },
-			{ title: "Настройки", link: "/personal/producer/storefront/settings" }
+			{ title: "Управлять продуктами", link: "/personal/producer/products" }
 		]
 
 		const menu = computed(() =>

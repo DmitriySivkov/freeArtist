@@ -5,6 +5,10 @@ export const SET_USER_PRODUCER = (state, producer) => {
 		state.producers = producer
 }
 
+export const SET_PRODUCER_PRODUCTS = (state, {products, producer_id}) => {
+	state.producers.find((producer) => producer.id === producer_id).products = products
+}
+
 export const SET_PRODUCER_INCOMING_RELATION_REQUESTS = (state, payload) => {
 	let producer = state.producers.find((team) => team.id === payload.producer_id)
 	if (producer.hasOwnProperty("incoming_coworking_requests")) {

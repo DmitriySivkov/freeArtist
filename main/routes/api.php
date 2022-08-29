@@ -60,6 +60,7 @@ Route::group([
 
 	Route::group(['prefix' => 'producers'], function() {
 		Route::get('{producer}/users', [ProducerController::class, 'getProducerUsers']);
+		Route::get('{producer}/products', [ProducerController::class, 'getProducerProducts']);
 		Route::group(['prefix' => 'permissions'], function() {
 			Route::post('{producer}/sync/{user}', [ProducerController::class, 'syncUserPermissions']);
 		});

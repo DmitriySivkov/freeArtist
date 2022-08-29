@@ -5,7 +5,6 @@
 		</q-item-label>
 		<q-item
 			tag="label"
-			v-ripple
 			v-for="(user, index) in users"
 			:key="index"
 		>
