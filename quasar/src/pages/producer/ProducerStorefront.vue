@@ -10,7 +10,7 @@ export default {
 		Loading.show({
 			spinnerColor: "primary",
 		})
-		return store.dispatch("producer/getProducer", parseInt(currentRoute.params.id)).then(() =>
+		return store.dispatch("producer/getProducer", parseInt(currentRoute.params.producer_id)).then(() =>
 			Loading.hide()
 		)
 	},

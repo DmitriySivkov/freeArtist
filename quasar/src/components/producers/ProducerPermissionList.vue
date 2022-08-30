@@ -15,7 +15,7 @@
 				<q-checkbox
 					v-model="selected_permissions"
 					:val="permission.id"
-					:disable="isUnableToEditUserPermissions"
+					:disable="!isAbleToEditUserPermissions"
 				/>
 			</q-item-section>
 
@@ -36,7 +36,7 @@
 				color="primary"
 				class="q-pa-lg full-width"
 				@click="setUserPermissions(producer.id, userId, selected_permissions)"
-				:disable="isUnableToEditUserPermissions"
+				:disable="!isAbleToEditUserPermissions"
 			/>
 		</div>
 	</q-page-sticky>
@@ -66,13 +66,17 @@ export default {
 				all_producer_permissions.value.map((p) => p.id) :
 				getProducerUser(props.producer.id, props.userId).permissions.map((p) => p.id)
 		)
-
+		const auth_user = computed(() => $store.state.user)
 		const selected_user = computed(() => props.producer.users.find((u) => u.id === props.userId))
 
-		const isUnableToEditUserPermissions = computed(() =>
-			props.userId === props.producer.user_id ||
-			!selected_user.value.permissions.includes(
-				all_producer_permissions.value.map((p) => p.id).find((p) => p.name === "producer_manage_permissions")
+		const isAbleToEditUserPermissions = computed(() =>
+			props.userId !== props.producer.user_id &&
+			(
+				auth_user.value.data.id === props.producer.user_id ||
+				props.producer.users.find((u) => u.id === auth_user.value.data.id)
+					.permissions
+					.map((p) => p.name)
+					.includes("producer_manage_permissions")
 			)
 		)
 
@@ -98,7 +102,7 @@ export default {
 		return {
 			all_producer_permissions,
 			selected_permissions,
-			isUnableToEditUserPermissions,
+			isAbleToEditUserPermissions,
 			setUserPermissions
 		}
 	}

@@ -1,36 +1,47 @@
 <template>
-	<div class="q-pa-md">
-		<q-list
-			bordered
-			separator
+	<q-list>
+		<q-item-label header>
+			Выберите продукт
+		</q-item-label>
+		<q-item
+			tag="label"
+			v-for="(product, index) in products"
+			:key="index"
 		>
-			<q-item
-				v-for="(product, index) in products"
-				:key="index"
-				clickable
+			<q-item-section
+				side
+				top
 			>
-				<q-item-section>
-					{{ product.title }}
-				</q-item-section>
-			</q-item>
-		</q-list>
-	</div>
+				<q-radio
+					:model-value="modelValue"
+					@update:model-value="productChanged"
+					:val="product.id"
+				/>
+			</q-item-section>
+
+			<q-item-section>
+				<q-item-label>{{ product.title }}</q-item-label>
+			</q-item-section>
+		</q-item>
+	</q-list>
 </template>
 
 <script>
-import { useRouter } from "vue-router"
-export default ({
+export default {
 	props: {
+		modelValue: Number,
 		products: {
 			type: Array,
 			default: () => []
 		}
 	},
-	setup() {
-		const $router = useRouter()
-
+	setup(props, context) {
+		const productChanged = (product_id) => {
+			context.emit("update:modelValue", product_id)
+		}
 		return {
+			productChanged
 		}
 	}
-})
+}
 </script>

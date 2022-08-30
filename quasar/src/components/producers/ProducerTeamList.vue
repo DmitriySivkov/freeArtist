@@ -45,9 +45,7 @@ export default ({
 
 		const goToDetail = (team_id) => $router.push({
 			name: props.detailRouteName,
-			params: {
-				id:team_id
-			}
+			params: { team_id }
 		})
 
 		return {

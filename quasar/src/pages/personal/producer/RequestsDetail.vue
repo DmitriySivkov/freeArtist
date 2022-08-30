@@ -14,7 +14,7 @@ export default {
 		const $route = useRoute()
 		const { producerTeams } = useUserProducer()
 		const team = computed(() =>
-			producerTeams.value.find((team) => team.id === parseInt($route.params.id))
+			producerTeams.value.find((team) => team.id === parseInt($route.params.team_id))
 		)
 
 		return {
