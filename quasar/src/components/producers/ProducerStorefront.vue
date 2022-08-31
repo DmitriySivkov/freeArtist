@@ -33,7 +33,7 @@
 						<div class="row items-center">
 							<div
 								class="col-xs-12 col-md-7 q-pa-md cursor-pointer"
-								@click="toggleComposition(JSON.parse(product.composition))"
+								@click="toggleComposition(product.composition)"
 							>
 								<div class="text-center">{{ product.title }}</div>
 								<div class="text-center">{{ product.price }} р.</div>

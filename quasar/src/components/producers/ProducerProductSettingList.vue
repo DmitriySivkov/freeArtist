@@ -49,7 +49,7 @@
 
 <script>
 import { useStore } from "vuex"
-import { computed, toRef, watch } from "vue"
+import { computed, ref } from "vue"
 import { useUserProducer } from "src/composables/userProducer"
 import { useNotification } from "src/composables/notification"
 export default {
@@ -60,7 +60,7 @@ export default {
 		}
 	},
 	setup(props) {
-		const product = toRef(props, "selectedProduct")
+		const product = ref(Object.assign({}, props.selectedProduct))
 
 		const onSubmit = () => 123
 		const onReset = () => 123

@@ -37,7 +37,7 @@ class ProductFactory extends Factory
 				->first()
 				->id,
 			'title' => $this->faker->text(10) . 'Product',
-			'composition' => $composition->toJson(),
+			'composition' => $composition,
 			'price' => $this->faker->numerify('##.##'),
 			'amount' => $this->faker->numberBetween(2, 50)
 		];

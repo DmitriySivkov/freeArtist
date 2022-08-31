@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producer;
+use App\Models\Product;
 use App\Models\RelationRequest;
 use App\Models\Role;
 use App\Models\User;

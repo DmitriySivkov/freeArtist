@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
@@ -40,8 +41,23 @@ class Product extends Model
     	'composition' => 'array'
 	];
 
-    public function producer()
+	protected $appends = ['composition'];
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function producer()
 	{
 		return $this->belongsTo(Producer::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Casts\Attribute
+	 */
+	protected function composition(): Attribute
+	{
+		return Attribute::make(
+			get: fn ($composition) => json_decode($composition, true)
+		);
 	}
 }

@@ -67,8 +67,8 @@ export default ({
 			columns,
 			cart,
 			filter,
-			show(id) {
-				$router.push({name:"producer_detail", params: { id }})
+			show(producer_id) {
+				$router.push({name:"producer_detail", params: { producer_id }})
 			},
 		}
 	}

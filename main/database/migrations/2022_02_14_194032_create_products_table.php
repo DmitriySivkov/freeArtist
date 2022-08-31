@@ -20,6 +20,8 @@ class CreateProductsTable extends Migration
             $table->json('composition');
             $table->decimal('price', 9, 2);
             $table->unsignedInteger('amount');
+			$table->unsignedTinyInteger('is_active')
+				->default(1);
             $table->timestamps();
         });
     }
