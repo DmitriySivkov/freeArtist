@@ -1,7 +1,4 @@
 <template>
-	<q-item-label header>
-		Выберите настройки
-	</q-item-label>
 	<q-form
 		@submit="onSubmit"
 		@reset="onReset"
@@ -32,21 +29,22 @@
 			label="Доступное количество"
 			v-model="product.amount"
 		/>
-		<q-page-sticky
-			expand
-			position="bottom"
-			class="row q-pa-xs"
-		>
-			<div class="col-xs-12 col-md-6">
-				<q-btn
-					label="Сохранить"
-					type="submit"
-					color="primary"
-					class="q-pa-lg full-width"
-				/>
-			</div>
-		</q-page-sticky>
 	</q-form>
+	<q-page-sticky
+		v-if="Object.keys(selectedProduct).length > 0"
+		expand
+		position="bottom"
+		class="row q-pa-xs"
+	>
+		<div class="col-xs-12 col-md-6">
+			<q-btn
+				label="Сохранить"
+				type="submit"
+				color="primary"
+				class="q-pa-lg full-width"
+			/>
+		</div>
+	</q-page-sticky>
 </template>
 
 <script>

@@ -1,16 +1,36 @@
 <template>
-	<q-scroll-area style="height: 250px;">
+	<div>
+		<q-item v-if="!selected_product_id">
+			<q-item-section>
+				Выберите продукт
+			</q-item-section>
+		</q-item>
 		<ProducerProductList
 			v-model="selected_product_id"
 			:products="team.products"
 		/>
-	</q-scroll-area>
-	<q-separator />
-	<q-scroll-area style="height: 400px;">
+	</div>
+	<div v-if="selected_product_id">
+		<q-item>
+			<q-item-section class="col-xs-6 col-md-8">
+				Выберите настройки
+			</q-item-section>
+			<q-item-section
+				class="col-xs-6 col-md-4"
+				style="margin-left:0"
+			>
+				<q-btn
+					v-if="selected_product_id"
+					label="Выбрать другой продукт"
+					color="primary"
+					@click="unselectProduct"
+				/>
+			</q-item-section>
+		</q-item>
 		<ProducerProductSettingList
 			:selected-product="selected_product"
 		/>
-	</q-scroll-area>
+	</div>
 </template>
 
 <script>
@@ -42,10 +62,18 @@ export default {
 				{}
 		)
 
+		const unselectProduct = () => selected_product_id.value = null
+
+		const productListHeight = computed(() => selected_product_id.value ? "10" : "70")
+		const settingListHeight = computed(() => selected_product_id.value ? "70" : "40")
+
 		return {
 			team,
 			selected_product_id,
-			selected_product
+			selected_product,
+			unselectProduct,
+			productListHeight,
+			settingListHeight
 		}
 	}
 }

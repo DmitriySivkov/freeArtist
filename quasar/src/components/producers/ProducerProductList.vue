@@ -1,11 +1,8 @@
 <template>
 	<q-list>
-		<q-item-label header>
-			Выберите продукт
-		</q-item-label>
 		<q-item
 			tag="label"
-			v-for="(product, index) in products"
+			v-for="(product, index) in dynamicProducts"
 			:key="index"
 		>
 			<q-item-section
@@ -27,6 +24,7 @@
 </template>
 
 <script>
+import { computed } from "vue"
 export default {
 	props: {
 		modelValue: Number,
@@ -36,11 +34,18 @@ export default {
 		}
 	},
 	setup(props, context) {
+		const dynamicProducts = computed(
+			() => props.modelValue ?
+				props.products.filter((p) => p.id === props.modelValue) :
+				props.products
+		)
+
 		const productChanged = (product_id) => {
 			context.emit("update:modelValue", product_id)
 		}
 		return {
-			productChanged
+			productChanged,
+			dynamicProducts
 		}
 	}
 }
