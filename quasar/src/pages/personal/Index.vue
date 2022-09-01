@@ -4,8 +4,11 @@
 		v-model="selectedTab"
 		dense
 		inline-label
-		narrow-indicator
-		class="text-white bg-indigo-10 q-pa-sm"
+		active-color="white"
+		active-bg-color="secondary"
+		indicator-color="transparent"
+		align="justify"
+		class="text-white bg-indigo-10"
 		@update:model-value="switchPersonal"
 	>
 		<q-tab
@@ -17,8 +20,22 @@
 			class="q-pa-md"
 		/>
 	</q-tabs>
-	<NavigationCustomer v-if="selectedTab === 'customer'" />
-	<NavigationProducer v-if="selectedTab === 'producer'" />
+
+	<q-separator />
+
+	<q-tab-panels
+		v-model="selectedTab"
+		animated
+	>
+		<q-tab-panel
+			v-for="(tab, index) in tabs"
+			:key="index"
+			:name="tab.name"
+		>
+			<NavigationCustomer v-if="selectedTab === 'customer'" />
+			<NavigationProducer v-if="selectedTab === 'producer'" />
+		</q-tab-panel>
+	</q-tab-panels>
 </template>
 
 <script>
