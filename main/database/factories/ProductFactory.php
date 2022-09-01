@@ -26,11 +26,11 @@ class ProductFactory extends Factory
     	$ingredient1 = $this->faker->text(5);
 		$ingredient2 = $this->faker->text(5);
 		$ingredient3 = $this->faker->text(5);
-    	$composition = collect([
+    	$composition = [
 			$ingredient1 . 'Ingr' => $ingredient1 . 'IngrDescription',
 			$ingredient2 . 'Ingr' => $ingredient2 . 'IngrDescription',
 			$ingredient3 . 'Ingr' => $ingredient3 . 'IngrDescription',
-		]);
+		];
 		return [
 			'producer_id' => Producer::query()
 				->inRandomOrder()

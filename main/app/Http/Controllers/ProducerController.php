@@ -168,6 +168,6 @@ class ProducerController extends Controller
 	 */
 	public function getProducerProducts(Producer $producer)
 	{
-		return $producer->products()->limit(10)->get();
+		return $producer->products()->get();
 	}
 }

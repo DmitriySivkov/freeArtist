@@ -37,10 +37,6 @@ class Product extends Model
 {
     use HasFactory, HasJsonRelationships;
 
-    protected $casts = [
-    	'composition' => 'array'
-	];
-
 	protected $appends = ['composition'];
 
 	/**
@@ -57,7 +53,8 @@ class Product extends Model
 	protected function composition(): Attribute
 	{
 		return Attribute::make(
-			get: fn ($composition) => json_decode($composition, true)
+			get: fn ($composition) => json_decode($composition),
+			set: fn ($composition) => json_encode($composition)
 		);
 	}
 }
