@@ -91,13 +91,13 @@
 				</q-card-section>
 				<q-list>
 					<q-item
-						v-for="(description, ingredient) in product_composition"
-						:key="ingredient"
+						v-for="(ingredient, index) in product_composition"
+						:key="index"
 						class="text-center"
 					>
 						<q-item-section>
-							<q-item-label>{{ ingredient }}</q-item-label>
-							<span v-if="description"> {{ description }}</span>
+							<q-item-label>{{ ingredient.name }}</q-item-label>
+							<span v-if="ingredient.description"> {{ ingredient.description }}</span>
 						</q-item-section>
 					</q-item>
 				</q-list>

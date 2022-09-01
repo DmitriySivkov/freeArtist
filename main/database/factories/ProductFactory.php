@@ -27,9 +27,9 @@ class ProductFactory extends Factory
 		$ingredient2 = $this->faker->text(5);
 		$ingredient3 = $this->faker->text(5);
     	$composition = [
-			$ingredient1 . 'Ingr' => $ingredient1 . 'IngrDescription',
-			$ingredient2 . 'Ingr' => $ingredient2 . 'IngrDescription',
-			$ingredient3 . 'Ingr' => $ingredient3 . 'IngrDescription',
+			['name' => $ingredient1 . 'Ingr', 'description' => $ingredient1 . 'IngrDescription'],
+			['name' => $ingredient2 . 'Ingr', 'description' => $ingredient2 . 'IngrDescription'],
+			['name' => $ingredient3 . 'Ingr', 'description' => $ingredient3 . 'IngrDescription']
 		];
 		return [
 			'producer_id' => Producer::query()

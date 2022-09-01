@@ -37,7 +37,9 @@ class Product extends Model
 {
     use HasFactory, HasJsonRelationships;
 
-	protected $appends = ['composition'];
+	protected $casts = [
+		'composition' => 'array'
+	];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -47,14 +49,4 @@ class Product extends Model
 		return $this->belongsTo(Producer::class);
 	}
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Casts\Attribute
-	 */
-	protected function composition(): Attribute
-	{
-		return Attribute::make(
-			get: fn ($composition) => json_decode($composition),
-			set: fn ($composition) => json_encode($composition)
-		);
-	}
 }
