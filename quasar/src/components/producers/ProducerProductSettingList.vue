@@ -71,7 +71,7 @@
 						label="Добавить ингридиент"
 						color="primary"
 						class="q-mb-md"
-						@click="addIngridient"
+						@click="addIngredient"
 					/>
 					<q-card
 						v-for="(ingredient, index) in product.composition"
@@ -144,7 +144,7 @@ export default {
 		const onSubmit = () => 123
 		const onReset = () => 123
 
-		const addIngridient = () =>
+		const addIngredient = () =>
 			product.value.composition.unshift({name:"", description:""})
 
 
@@ -153,7 +153,7 @@ export default {
 			tab,
 			onSubmit,
 			onReset,
-			addIngridient
+			addIngredient
 		}
 	}
 }
