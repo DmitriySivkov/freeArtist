@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Producer;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\RelationRequest;
 use App\Models\Role;
 use App\Models\User;
@@ -11,6 +12,7 @@ use App\Services\Permissions\ProducerPermissionService;
 use App\Services\RelationRequests\ProducerRelationRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProducerController extends Controller
 {
@@ -168,6 +170,25 @@ class ProducerController extends Controller
 	 */
 	public function getProducerProducts(Producer $producer)
 	{
-		return $producer->products()->get();
+		return $producer->products()->with('images')->get();
+	}
+
+	/**
+	 * @param Producer $producer
+	 * @param Product $product
+	 * @param Request $request
+	 * @return false|string
+	 */
+	public function syncProducerProductImages(Producer $producer, Product $product, Request $request)
+	{
+		$path = Storage::disk('public')->putFile(
+			'product_pictures',
+			$request->file('product_pictures')
+		);
+		ProductImage::create([
+			'product_id' => $product->id,
+			'path' => $path
+		]);
+		return $path;
 	}
 }

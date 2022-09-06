@@ -32,10 +32,16 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $is_active
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductImage[] $pictures
+ * @property-read int|null $pictures_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereIsActive($value)
  */
 class Product extends Model
 {
     use HasFactory, HasJsonRelationships;
+
+	protected $guarded = [];
 
 	protected $casts = [
 		'composition' => 'array'
@@ -47,6 +53,14 @@ class Product extends Model
 	public function producer()
 	{
 		return $this->belongsTo(Producer::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function images()
+	{
+		return $this->hasMany(ProductImage::class);
 	}
 
 }

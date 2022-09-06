@@ -60,7 +60,12 @@ Route::group([
 
 	Route::group(['prefix' => 'producers'], function() {
 		Route::get('{producer}/users', [ProducerController::class, 'getProducerUsers']);
-		Route::get('{producer}/products', [ProducerController::class, 'getProducerProducts']);
+
+		Route::group(['prefix' => '{producer}/products'], function () {
+			Route::get('', [ProducerController::class, 'getProducerProducts']);
+			Route::post('{product}/syncImages', [ProducerController::class, 'syncProducerProductImages']);
+		});
+
 		Route::group(['prefix' => 'permissions'], function() {
 			Route::post('{producer}/sync/{user}', [ProducerController::class, 'syncUserPermissions']);
 		});

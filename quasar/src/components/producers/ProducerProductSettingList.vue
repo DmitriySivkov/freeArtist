@@ -123,8 +123,9 @@
 			>
 				<q-uploader
 					multiple
-					accept="image/*"
-					url="https://freeartist.loc"
+					accept=".jpg, image/*"
+					:factory="syncImages"
+					@rejected="onImagesRejected"
 					class="full-width"
 					style="max-height:100%"
 					flat
@@ -167,10 +168,10 @@
 											icon="delete"
 											@click="scope.removeFile(file)"
 										/>
-									<!--										<q-btn-->
-									<!--											icon="cloud_upload"-->
-									<!--											@click="scope.upload"-->
-									<!--										/>-->
+										<q-btn
+											icon="cloud_upload"
+											@click="scope.upload"
+										/>
 									</div>
 								</q-img>
 							</div>
@@ -183,11 +184,12 @@
 </template>
 
 <script>
-import { useStore } from "vuex"
 import { computed, ref } from "vue"
-import { useUserProducer } from "src/composables/userProducer"
 import { useNotification } from "src/composables/notification"
 import _ from "lodash"
+import { useRouter } from "vue-router"
+import { api } from "boot/axios"
+import { Loading } from "quasar"
 export default {
 	props: {
 		selectedProduct: {
@@ -196,8 +198,13 @@ export default {
 		}
 	},
 	setup(props) {
+		const $router = useRouter()
+		const { notifySuccess, notifyError } = useNotification()
+
 		const product = ref(_.cloneDeep(props.selectedProduct))
+
 		const tab = ref("images")
+		const product_pictures = ref(null)
 
 		const onSubmit = () => 123
 		const onReset = () => 123
@@ -216,6 +223,31 @@ export default {
 		const restoreIngredient = (item_index) =>
 			product.value.composition.find((i, index) => index === item_index).to_delete = false
 
+		const syncImages = async (files) => {
+			product_pictures.value = files[0]
+
+			const fileData = new FormData()
+			fileData.append("product_pictures", product_pictures.value)
+
+
+			await api.post(
+				"/personal/producers/" + $router.currentRoute.value.params.team_id + "/products/" + product.value.id +"/syncImages",
+				fileData,
+				{
+					headers: {
+						"Content-Type": "multipart/form-data"
+					}
+				}).then(() => {
+				notifySuccess("Изображение успешно загружено")
+			}).catch(() => {
+				Loading.hide()
+			})
+
+		}
+
+		const onImagesRejected  = (rejectedEntries) =>
+			notifyError(rejectedEntries.length + " изображений не прошло валидацию")
+
 		return {
 			product,
 			tab,
@@ -223,7 +255,9 @@ export default {
 			onReset,
 			addIngredient,
 			deleteIngredient,
-			restoreIngredient
+			restoreIngredient,
+			onImagesRejected,
+			syncImages
 		}
 	}
 }
