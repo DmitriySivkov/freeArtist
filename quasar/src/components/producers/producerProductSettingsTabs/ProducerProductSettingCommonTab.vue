@@ -13,10 +13,10 @@
 
 		<q-field
 			filled
-			v-model.number="product.price"
+			v-model="product.price"
 			label="Стоимость *"
 			class="q-pb-lg"
-			:rules="[ val => val > 0 || 'Нужно указать стоимость']"
+			:rules="[ val => parseFloat(val) > 0 || 'Нужно указать стоимость']"
 		>
 			<template v-slot:control="{ floatingLabel, modelValue, emitValue }">
 				<input
@@ -59,7 +59,8 @@
 <script>
 import { ref } from "vue"
 import _ from "lodash"
-
+import { useStore } from "vuex"
+import { useRouter } from "vue-router"
 export default {
 	props: {
 		selectedProduct: {
@@ -68,18 +69,37 @@ export default {
 		}
 	},
 	setup(props) {
+		const $store = useStore()
+		const $router = useRouter()
+
 		const product = ref(_.clone(props.selectedProduct))
+
 		const moneyConfig = {
 			decimal: ".",
 			thousands: ",",
-			prefix: "",
 			suffix: " ₽",
 			precision: 2,
 			masked: false
 		}
 
 		const submit = () => {
+			if (
+				product.value.title.trim() === props.selectedProduct.title &&
+				parseFloat(product.value.price) === parseFloat(props.selectedProduct.price) &&
+				product.value.amount === props.selectedProduct.amount
+			) {
+				return
+			}
 
+			$store.dispatch("userProducer/syncProducerProductCommonSettings", {
+				producer_id: parseInt($router.currentRoute.value.params.team_id),
+				product_id: props.selectedProduct.id,
+				settings: {
+					title: product.value.title,
+					price: parseFloat(product.value.price).toFixed(2),
+					amount: product.value.amount
+				}
+			})
 		}
 
 		const reset = () => {

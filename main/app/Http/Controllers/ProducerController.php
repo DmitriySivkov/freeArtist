@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SyncProducerProductCommonSettingsRequest;
+use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -170,7 +172,9 @@ class ProducerController extends Controller
 	 */
 	public function getProducerProducts(Producer $producer)
 	{
-		return $producer->products()->with('images')->get();
+		return $producer->products()->with('images')
+			->orderByDesc('title')
+			->get();
 	}
 
 	/**
@@ -190,5 +194,22 @@ class ProducerController extends Controller
 			'path' => $path
 		]);
 		return $path;
+	}
+
+	/**
+	 * @param Product $product
+	 * @param SyncProducerProductCommonSettingsRequest $request
+	 * @return void
+	 */
+	public function syncProducerProductCommonSettings(Producer $producer, Product $product, SyncProducerProductCommonSettingsRequest $request)
+	{
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		// TODO - add permissions
+		if (!$user->owns($producer->team))
+			throw new \LogicException('Доступ закрыт');
+
+		$product->update($request->validated());
 	}
 }

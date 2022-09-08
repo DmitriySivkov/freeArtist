@@ -64,6 +64,7 @@ Route::group([
 		Route::group(['prefix' => '{producer}/products'], function () {
 			Route::get('', [ProducerController::class, 'getProducerProducts']);
 			Route::post('{product}/syncImages', [ProducerController::class, 'syncProducerProductImages']);
+			Route::post('{product}/syncCommonSettings', [ProducerController::class, 'syncProducerProductCommonSettings']);
 		});
 
 		Route::group(['prefix' => 'permissions'], function() {

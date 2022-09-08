@@ -52,3 +52,15 @@ export const getProducerProductList = async ({commit}, producer_id) => {
 		products: response.data
 	})
 }
+//todo - rollback on error
+export const syncProducerProductCommonSettings = async({commit}, {producer_id, product_id, settings}) => {
+	await api.post(
+		"personal/producers/" + producer_id + "/products/" + product_id + "/syncCommonSettings",
+		settings
+	)
+	commit("SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS", {
+		producer_id,
+		product_id,
+		settings
+	})
+}

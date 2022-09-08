@@ -44,3 +44,11 @@ export const SYNC_PRODUCER_USER_PERMISSIONS = (state, {producer_id, user_id, per
 		.find((user) => user.id === user_id)
 		.permissions = permissions
 }
+
+export const SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS = (state, {producer_id, product_id, settings}) => {
+	const product = state.producers.find((producer) => producer.id === producer_id)
+		.products
+		.find((product) => product.id === product_id)
+
+	Object.assign(product, settings)
+}
