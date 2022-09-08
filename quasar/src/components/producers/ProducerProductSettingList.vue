@@ -60,7 +60,7 @@ export default {
 		}
 	},
 	setup() {
-		const tab = ref("images")
+		const tab = ref("common")
 
 		return {
 			tab

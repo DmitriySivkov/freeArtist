@@ -7,6 +7,7 @@ module.exports = function (ctx) {
 			"browseProducers",
 			"browseRoles",
 			"browsePermissions",
+			"money"
 		],
 
 		css: [
@@ -16,7 +17,7 @@ module.exports = function (ctx) {
 		extras: [
 			"fontawesome-v5",
 			"roboto-font",
-			"material-icons"
+			"material-icons",
 		],
 
 		framework: {
