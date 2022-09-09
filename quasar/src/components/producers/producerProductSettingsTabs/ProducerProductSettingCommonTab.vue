@@ -23,7 +23,7 @@
 					class="q-field__input"
 					:value="modelValue"
 					@change="e => emitValue(e.target.value.replaceAll(',',''))"
-					v-money="moneyConfig"
+					v-money="money_config"
 					v-show="floatingLabel"
 				>
 			</template>
@@ -38,6 +38,7 @@
 		<div class="row q-col-gutter-sm q-mt-md">
 			<div class="col-xs-12 col-md-6">
 				<q-btn
+					:disable="disable_submit"
 					label="Подтвердить"
 					type="submit"
 					color="primary"
@@ -61,6 +62,7 @@ import { ref } from "vue"
 import _ from "lodash"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
+import { useNotification } from "src/composables/notification"
 export default {
 	props: {
 		selectedProduct: {
@@ -73,8 +75,10 @@ export default {
 		const $router = useRouter()
 
 		const product = ref(_.clone(props.selectedProduct))
+		const { notifySuccess, notifyError } = useNotification()
+		const disable_submit = ref(false)
 
-		const moneyConfig = {
+		const money_config = {
 			decimal: ".",
 			thousands: ",",
 			suffix: " ₽",
@@ -90,7 +94,7 @@ export default {
 			) {
 				return
 			}
-
+			disable_submit.value = true
 			$store.dispatch("userProducer/syncProducerProductCommonSettings", {
 				producer_id: parseInt($router.currentRoute.value.params.team_id),
 				product_id: props.selectedProduct.id,
@@ -99,6 +103,12 @@ export default {
 					price: parseFloat(product.value.price).toFixed(2),
 					amount: product.value.amount
 				}
+			}).then(() => {
+				notifySuccess("Данные продукта " + product.value.title + " успешно изменены")
+				disable_submit.value = false
+			}).catch((error) => {
+				notifyError(error.response.data)
+				disable_submit.value = false
 			})
 		}
 
@@ -110,9 +120,10 @@ export default {
 
 		return {
 			product,
-			moneyConfig,
+			money_config,
 			reset,
-			submit
+			submit,
+			disable_submit
 		}
 	}
 }
