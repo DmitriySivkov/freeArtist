@@ -39,7 +39,7 @@
 			<div class="col-xs-12 col-md-6">
 				<q-btn
 					:disable="disable_submit"
-					label="Подтвердить"
+					label="Сохранить"
 					type="submit"
 					color="primary"
 					class="q-pa-lg full-width"
@@ -91,9 +91,9 @@ export default {
 				product.value.title.trim() === props.selectedProduct.title &&
 				parseFloat(product.value.price) === parseFloat(props.selectedProduct.price) &&
 				product.value.amount === props.selectedProduct.amount
-			) {
+			)
 				return
-			}
+
 			disable_submit.value = true
 			$store.dispatch("userProducer/syncProducerProductCommonSettings", {
 				producer_id: parseInt($router.currentRoute.value.params.team_id),
@@ -104,7 +104,7 @@ export default {
 					amount: product.value.amount
 				}
 			}).then(() => {
-				notifySuccess("Данные продукта " + product.value.title + " успешно изменены")
+				notifySuccess("Настройки продукта " + product.value.title + " успешно изменены")
 				disable_submit.value = false
 			}).catch((error) => {
 				notifyError(error.response.data)

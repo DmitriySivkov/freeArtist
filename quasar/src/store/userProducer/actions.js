@@ -56,11 +56,27 @@ export const getProducerProductList = async ({commit}, producer_id) => {
 export const syncProducerProductCommonSettings = async({commit}, {producer_id, product_id, settings}) => {
 	await api.post(
 		"personal/producers/" + producer_id + "/products/" + product_id + "/syncCommonSettings",
-		settings
+		{
+			settings: settings
+		}
 	)
 	commit("SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS", {
 		producer_id,
 		product_id,
 		settings
+	})
+}
+
+export const syncProducerProductCompositionSettings = async({commit}, {producer_id, product_id, composition}) => {
+	const response = await api.post(
+		"personal/producers/" + producer_id + "/products/" + product_id + "/syncCompositionSettings",
+		{
+			composition: composition
+		}
+	)
+	commit("SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS", {
+		producer_id,
+		product_id,
+		composition: response.data
 	})
 }

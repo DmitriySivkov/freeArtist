@@ -52,3 +52,10 @@ export const SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS = (state, {producer_id, produ
 
 	Object.assign(product, settings)
 }
+
+export const SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS = (state, {producer_id, product_id, composition}) => {
+	state.producers.find((producer) => producer.id === producer_id)
+		.products
+		.find((product) => product.id === product_id)
+		.composition = composition
+}

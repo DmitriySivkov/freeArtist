@@ -14,6 +14,7 @@ use App\Services\Permissions\ProducerPermissionService;
 use App\Services\RelationRequests\ProducerRelationRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class ProducerController extends Controller
@@ -154,7 +155,7 @@ class ProducerController extends Controller
 	 * @param Producer $producer
 	 * @param User $user
 	 * @param ProducerPermissionService $ppService
-	 * @return JsonResponse|\Illuminate\Support\Collection
+	 * @return JsonResponse|Collection
 	 */
 	public function syncUserPermissions(Request $request, Producer $producer, User $user, ProducerPermissionService $ppService)
 	{
@@ -198,10 +199,10 @@ class ProducerController extends Controller
 
 	/**
 	 * @param Product $product
-	 * @param SyncProducerProductCommonSettingsRequest $request
+	 * @param Request $request
 	 * @return void
 	 */
-	public function syncProducerProductCommonSettings(Producer $producer, Product $product, SyncProducerProductCommonSettingsRequest $request)
+	public function syncProducerProductCommonSettings(Producer $producer, Product $product, Request $request)
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
@@ -210,6 +211,47 @@ class ProducerController extends Controller
 		if (!$user->owns($producer->team))
 			throw new \LogicException('Доступ закрыт');
 
-		$product->update($request->validated());
+		$product->update([
+			'title' => $request->input('settings.title'),
+			'price' => $request->input('settings.price'),
+			'amount' => $request->input('settings.amount')
+		]);
+	}
+
+
+	/**
+	 * @param Producer $producer
+	 * @param Product $product
+	 * @param Request $request
+	 * @return array
+	 */
+	public function syncProducerProductCompositionSettings(Producer $producer, Product $product, Request $request)
+	{
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		// TODO - add permissions
+		if (!$user->owns($producer->team))
+			throw new \LogicException('Доступ закрыт');
+
+		$composition = array_values(
+			collect($request->get('composition'))
+				->filter(function($ingredient) {
+					return !array_key_exists("to_delete", $ingredient);
+				})
+				->map(function($ingredient) {
+					return [
+						"name" => $ingredient["name"],
+						"description" => $ingredient["description"]
+					];
+				})
+				->toArray()
+		);
+
+		$product->update([
+			'composition' => $composition
+		]);
+
+		return $composition;
 	}
 }
