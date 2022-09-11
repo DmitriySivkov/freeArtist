@@ -37,7 +37,7 @@
 		</q-tab-panel>
 
 		<q-tab-panel name="images">
-			<ProducerProductSettingImagesTab />
+			<ProducerProductSettingImagesTab :selected-product="selectedProduct"/>
 		</q-tab-panel>
 	</q-tab-panels>
 </template>

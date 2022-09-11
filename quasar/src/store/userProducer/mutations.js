@@ -59,3 +59,11 @@ export const SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS = (state, {producer_id, 
 		.find((product) => product.id === product_id)
 		.composition = composition
 }
+
+export const ADD_PRODUCER_PRODUCT_IMAGE = (state, {producer_id, product_id, image}) => {
+	state.producers.find((producer) => producer.id === producer_id)
+		.products
+		.find((product) => product.id === product_id)
+		.images
+		.unshift(image)
+}

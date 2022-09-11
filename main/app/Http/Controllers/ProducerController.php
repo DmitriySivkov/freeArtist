@@ -178,17 +178,18 @@ class ProducerController extends Controller
 			->get();
 	}
 
+	//todo - put product actions somewhere else & request validation ?
 	/**
 	 * @param Producer $producer
 	 * @param Product $product
 	 * @param Request $request
 	 * @return false|string
 	 */
-	public function syncProducerProductImages(Producer $producer, Product $product, Request $request)
+	public function addProducerProductImage(Producer $producer, Product $product, Request $request)
 	{
 		$path = Storage::disk('public')->putFile(
-			'product_pictures',
-			$request->file('product_pictures')
+			'product_images',
+			$request->file('image')
 		);
 		ProductImage::create([
 			'product_id' => $product->id,

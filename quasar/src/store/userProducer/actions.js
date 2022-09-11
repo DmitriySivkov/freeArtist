@@ -70,13 +70,27 @@ export const syncProducerProductCommonSettings = async({commit}, {producer_id, p
 export const syncProducerProductCompositionSettings = async({commit}, {producer_id, product_id, composition}) => {
 	const response = await api.post(
 		"personal/producers/" + producer_id + "/products/" + product_id + "/syncCompositionSettings",
-		{
-			composition: composition
-		}
+		{ composition }
 	)
 	commit("SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS", {
 		producer_id,
 		product_id,
 		composition: response.data
+	})
+}
+
+export const addProducerProductImage = async({commit}, {producer_id, product_id, image}) => {
+	const response = await api.post(
+		"/personal/producers/" + producer_id + "/products/" + product_id + "/addImage",
+		image,
+		{
+			headers: {
+				"Content-Type": "multipart/form-data"
+			}
+		})
+	commit("ADD_PRODUCER_PRODUCT_IMAGE", {
+		producer_id,
+		product_id,
+		image: response.data
 	})
 }

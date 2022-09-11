@@ -4,7 +4,7 @@
 		accept=".jpg, image/*"
 		:factory="syncImages"
 		@rejected="onImagesRejected"
-		class="full-width"
+		class="full-width q-pa-md"
 		style="max-height:100%"
 		flat
 	>
@@ -24,34 +24,50 @@
 				v-if="scope.canAddFiles"
 				type="a"
 				label="Добавить изображение"
-				class="full-width"
+				class="full-width q-pa-md"
 			>
 				<q-uploader-add-trigger />
 			</q-btn>
 		</template>
 		<template v-slot:list="scope">
-			<div class="q-col-gutter-md row items-start">
+			<div class="row q-col-gutter-md q-mt-sm">
 				<div
-					class="col-xs-12 col-md-6 col-lg-4"
+					class="col-xs-12 col-md-6 col-lg-3"
 					v-for="file in scope.files"
 					:key="file.__key"
 				>
-					<q-img
-						:src="file.__img.src"
-						fit="contain"
-						style="height: 250px;"
-					>
-						<div class="absolute-right">
-							<q-btn
-								icon="delete"
-								@click="scope.removeFile(file)"
-							/>
-							<q-btn
-								icon="cloud_upload"
-								@click="scope.upload"
-							/>
-						</div>
-					</q-img>
+					<q-card>
+						<q-img
+							:src="file.__img.src"
+							fit="scale-down"
+							style="max-height: 250px;"
+							class="q-mt-sm"
+						/>
+						<q-separator class="q-mt-sm q-mb-sm"/>
+						<q-card-section
+							horizontal
+							class="q-col-gutter-xs"
+						>
+							<div class="col-6">
+								<q-btn
+									flat
+									square
+									icon="cloud_upload"
+									class="bg-secondary text-white full-width q-pa-lg"
+									@click="scope.upload"
+								/>
+							</div>
+							<div class="col-6">
+								<q-btn
+									flat
+									square
+									icon="clear"
+									class="bg-red text-white full-width q-pa-lg"
+									@click="scope.removeFile(file)"
+								/>
+							</div>
+						</q-card-section>
+					</q-card>
 				</div>
 			</div>
 		</template>
@@ -62,40 +78,42 @@
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
-import { api } from "boot/axios"
-import { Loading } from "quasar"
+import { useStore } from "vuex"
 
 export default {
-	setup() {
+	props: {
+		selectedProduct: {
+			type: Object,
+			default: () => {}
+		}
+	},
+	setup(props) {
+		const $store = useStore()
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
 
-		const product_pictures = ref(null)
+		const image = ref(null)
 
 		const syncImages = async (files) => {
-			product_pictures.value = files[0]
+			image.value = files[0]
 
 			const fileData = new FormData()
-			fileData.append("product_pictures", product_pictures.value)
+			fileData.append("image", image.value)
 
-
-			await api.post(
-				"/personal/producers/" + $router.currentRoute.value.params.team_id + "/products/" + product.value.id +"/syncImages",
-				fileData,
-				{
-					headers: {
-						"Content-Type": "multipart/form-data"
-					}
-				}).then(() => {
-				notifySuccess("Изображение успешно загружено")
-			}).catch(() => {
-				Loading.hide()
+			$store.dispatch("userProducer/addProducerProductImage", {
+				producer_id: parseInt($router.currentRoute.value.params.team_id),
+				product_id: props.selectedProduct.id,
+				image: fileData
+			}).then(() => {
+				notifySuccess("Изображения продукта " + props.selectedProduct.title + " успешно добавлено")
+			}).catch((error) => {
+				notifyError(error.response.data)
 			})
 
 		}
 
 		const onImagesRejected  = (rejectedEntries) =>
-			notifyError(rejectedEntries.length + " изображений не прошло валидацию")
+			notifyError("Не получилось загрузить " + rejectedEntries.length + " изображений")
 
 		return {
 			onImagesRejected,
