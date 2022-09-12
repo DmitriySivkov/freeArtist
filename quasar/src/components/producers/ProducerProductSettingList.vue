@@ -10,17 +10,17 @@
 		<q-tab
 			name="common"
 			label="Общие"
-			class="q-pa-sm"
+			class="q-pa-md"
 		/>
 		<q-tab
 			name="composition"
 			label="Состав"
-			class="q-pa-sm"
+			class="q-pa-md"
 		/>
 		<q-tab
 			name="images"
 			label="Изображения"
-			class="q-pa-sm"
+			class="q-pa-md"
 		/>
 	</q-tabs>
 
@@ -60,7 +60,7 @@ export default {
 		}
 	},
 	setup() {
-		const tab = ref("common")
+		const tab = ref("images")
 
 		return {
 			tab

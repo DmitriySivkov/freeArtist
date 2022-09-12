@@ -179,23 +179,24 @@ class ProducerController extends Controller
 	}
 
 	//todo - put product actions somewhere else & request validation ?
+
 	/**
 	 * @param Producer $producer
 	 * @param Product $product
 	 * @param Request $request
-	 * @return false|string
+	 * @return ProductImage|\Illuminate\Database\Eloquent\Model
 	 */
-	public function addProducerProductImage(Producer $producer, Product $product, Request $request)
+	public function syncProducerProductImagesSettings(Producer $producer, Product $product, Request $request)
 	{
 		$path = Storage::disk('public')->putFile(
 			'product_images',
 			$request->file('image')
 		);
-		ProductImage::create([
+		$productImage = ProductImage::create([
 			'product_id' => $product->id,
 			'path' => $path
 		]);
-		return $path;
+		return $productImage;
 	}
 
 	/**
