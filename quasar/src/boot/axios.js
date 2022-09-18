@@ -8,7 +8,7 @@ import axios from "axios"
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-	baseURL: "https://freeartist.loc/api",
+	baseURL: "https://192.168.1.3/api", // use local PC IP for development cordova app or chrome dev forwarding
 	withCredentials: true
 })
 

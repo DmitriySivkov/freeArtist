@@ -66,5 +66,5 @@ export const SYNC_PRODUCER_PRODUCT_IMAGES_SETTINGS = (state, {producer_id, produ
 		.products
 		.find((product) => product.id === product_id)
 		.images
-		.push(image)
+		.unshift(image)
 }

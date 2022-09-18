@@ -62,7 +62,7 @@ module.exports = function (ctx) {
 		},
 
 		devServer: {
-			https: false,
+			https: true,
 			port: ctx.mode.spa ? 8081
 				: (ctx.mode.pwa ? 9090 : 9000),
 			open: true
