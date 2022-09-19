@@ -22,6 +22,10 @@ npm run lint
 quasar build
 ```
 
+### quasar workflow
+https://quasar.dev/quasar-cli-webpack/boot-files#quasar-app-flow
+
+
 ### Customize the configuration
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 

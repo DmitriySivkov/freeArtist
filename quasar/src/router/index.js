@@ -12,19 +12,7 @@ import { Loading } from "quasar"
  * with the Router instance.
  */
 
-/** router inits before boot files -
- * 	because of that, loading user here
- *  https://quasar.dev/quasar-cli-webpack/boot-files#quasar-app-flow
- */
-
 export default route( async ({ store, ssrContext }) => {
-	Loading.show({
-		spinnerColor: "primary",
-	})
-
-	/** loads user by cookie */
-	await store.dispatch("user/checkTokenCookie")
-
 	const createHistory = process.env.SERVER
 		? createMemoryHistory
 		: (process.env.VUE_ROUTER_MODE === "history" ? createWebHistory : createWebHashHistory)
@@ -44,8 +32,6 @@ export default route( async ({ store, ssrContext }) => {
 		if (to.name === "login" && store.state.user.isLogged) next({name: "home"})
 		else next()
 	})
-
-	Loading.hide()
 
 	return Router
 })

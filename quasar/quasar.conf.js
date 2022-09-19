@@ -2,6 +2,7 @@ module.exports = function (ctx) {
 	return {
 		preFetch: true,
 		boot: [
+			"checkTokenCookie",
 			"axios",
 			"setCartFromLocalStorage",
 			"browseProducers",

@@ -8,6 +8,7 @@
 			>
 				<q-input
 					filled
+					type="tel"
 					v-model="phone"
 					label="Телефон *"
 					mask="# (###) ###-##-##"

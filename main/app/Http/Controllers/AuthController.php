@@ -12,7 +12,12 @@ use Illuminate\Http\Response;
 class AuthController extends Controller
 {
 
-    public function login(Request $request, AuthService $authService)
+	/**
+	 * @param Request $request
+	 * @param AuthService $authService
+	 * @return \Illuminate\Contracts\Foundation\Application|ResponseFactory|\Illuminate\Http\JsonResponse|Response
+	 */
+	public function login(Request $request, AuthService $authService)
     {
         if ($request->has(['phone', 'password']))
             return $authService->loginWithCredentials($request->only(['phone', 'password']));
@@ -49,6 +54,11 @@ class AuthController extends Controller
         return response('logged out', 200)->withCookie($cookie);
     }
 
+	/**
+	 * @param Request $request
+	 * @param AuthService $authService
+	 * @return false|\Illuminate\Http\JsonResponse
+	 */
 	public function hasTokenCookie(Request $request, AuthService $authService)
 	{
 		if (!$request->hasCookie('token'))
@@ -57,7 +67,11 @@ class AuthController extends Controller
 		return $authService->loginWithToken($request);
 	}
 
-    public function verifyEmail(Request $request)
+	/**
+	 * @param Request $request
+	 * @return bool|\Illuminate\Contracts\Foundation\Application|ResponseFactory|Response|int
+	 */
+	public function verifyEmail(Request $request)
     {
         if (!hash_equals(
             (string) $request->get('hash'),
