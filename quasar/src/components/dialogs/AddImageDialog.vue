@@ -12,16 +12,16 @@
 					<q-btn
 						color="primary"
 						label="Открыть галерею"
-						class="q-pa-lg full-width"
-						@click="test(1)"
+						class="q-pa-lg full-height"
+						@click="chooseOption(1)"
 					/>
 				</div>
 				<div class="col-6">
 					<q-btn
 						color="primary"
 						label="Сделать снимок"
-						class="q-pa-lg full-width"
-						@click="test(2)"
+						class="q-pa-lg full-height"
+						@click="chooseOption(2)"
 					/>
 				</div>
 			</q-card-section>
@@ -37,13 +37,12 @@ export default {
 
 	emits: [
 		...useDialogPluginComponent.emits,
-		"zxc"
 	],
 
 	setup (props, {emit}) {
 		const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 		// abuse "onOk" event
-		const test = (option) => {
+		const chooseOption = (option) => {
 			onDialogOK(option)
 		}
 		return {
@@ -52,7 +51,7 @@ export default {
 			// into the vue scope for the vue html template
 			dialogRef,
 			onDialogHide,
-			test
+			chooseOption
 		}
 	}
 }

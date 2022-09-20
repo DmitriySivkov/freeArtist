@@ -5,6 +5,19 @@
 		class="bg-primary text-white full-width q-pa-lg"
 		@click="showFilePrompt"
 	/>
+	<q-img
+		v-if="img_path"
+		:src="img_path"
+		:ratio="1"
+		width="150px"
+	/>
+	<q-file
+		v-model="img"
+		ref="file_picker"
+		accept=".jpg, image/*"
+		style="display:none"
+		@update:model-value="getImagePath"
+	/>
 </template>
 
 <script>
@@ -26,22 +39,38 @@ export default {
 	},
 	setup(props) {
 		const $q = useQuasar()
+		const img = ref(null)
+		const img_path = ref("")
+		const file_picker = ref(null)
+
 		const showFilePrompt = () => {
 			$q.dialog({
 				component: AddImageDialog
 			}).onOk((option) => {
-				alert(option)
+				if (option === 1)
+					fromGallery()
 			})
 		}
 
-		const img = ref(null)
+		const fromGallery = () => {
+			file_picker.value.pickFiles()
+		}
+
 		const takePicture = async() => {
 			const base64 = await cordovaCamera.getBase64FromCamera()
 		}
 
+		const getImagePath = (img) => {
+			img_path.value = URL.createObjectURL(img)
+		}
+
 		return {
+			img,
+			img_path,
+			file_picker,
 			takePicture,
-			showFilePrompt
+			showFilePrompt,
+			getImagePath
 		}
 	}
 }
