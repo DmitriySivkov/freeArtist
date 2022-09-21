@@ -1,6 +1,5 @@
 import { store } from "quasar/wrappers"
 import { createStore } from "vuex"
-import common from "src/store/common"
 import user from "src/store/user"
 import role from "src/store/role"
 import order from "src/store/order"
@@ -24,7 +23,6 @@ import permission from "src/store/permission"
 export default store(function (/* { ssrContext } */) {
 	return createStore({
 		modules: {
-			common,
 			user,
 			role,
 			permission,

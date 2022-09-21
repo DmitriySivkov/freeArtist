@@ -1,22 +1,41 @@
 <template>
-	<q-btn
-		flat
-		label="Добавить изображение"
-		class="bg-primary text-white full-width q-pa-lg"
-		@click="showFilePrompt"
-	/>
-	<q-img
-		v-if="img_path"
-		:src="img_path"
-		:ratio="1"
-		width="150px"
-	/>
+	<div class="row">
+		<div class="col-12">
+			<q-btn
+				flat
+				label="Добавить изображение"
+				class="bg-primary text-white full-width q-pa-lg"
+				@click="showFilePrompt"
+			/>
+		</div>
+	</div>
+	<div class="row q-mt-md">
+		<div
+			v-for="(image, index) in product_images"
+			:key="image.id"
+			class="col-xs-3"
+			:class="{
+				'q-pr-none': index === product_images.length-1,
+				'q-pl-none': index === 0,
+				'q-pl-sm q-pr-sm': index !== product_images.length-1 && index !== 0
+			}"
+		>
+			<q-card>
+				<q-card-section>
+					<q-img
+						:src="backend_server + '/storage/' + image.path"
+						fit="contain"
+					/>
+				</q-card-section>
+			</q-card>
+		</div>
+	</div>
 	<q-file
 		v-model="img"
 		ref="file_picker"
 		accept=".jpg, image/*"
 		style="display:none"
-		@update:model-value="getImagePath"
+		@update:model-value="showImage"
 	/>
 </template>
 
@@ -28,9 +47,14 @@ import { ref, computed } from "vue"
 import { useStore } from "vuex"
 import cordovaCamera from "src/services/cordova-camera"
 import AddImageDialog from "src/components/dialogs/AddImageDialog"
+import ShowImageDialog from "src/components/dialogs/ShowImageDialog"
 export default {
-	// eslint-disable-next-line vue/no-unused-components
-	components: { AddImageDialog },
+	components: {
+		// eslint-disable-next-line vue/no-unused-components
+		AddImageDialog,
+		// eslint-disable-next-line vue/no-unused-components
+		ShowImageDialog
+	},
 	props: {
 		selectedProduct: {
 			type: Object,
@@ -39,9 +63,21 @@ export default {
 	},
 	setup(props) {
 		const $q = useQuasar()
+		const $store = useStore()
+		const $router = useRouter()
 		const img = ref(null)
 		const img_path = ref("")
 		const file_picker = ref(null)
+
+		const backend_server = process.env.BACKEND_SERVER
+
+		const product_images = computed(() =>
+			$store.state.userProducer.producers
+				.find((p) => p.id === parseInt($router.currentRoute.value.params.team_id))
+				.products
+				.find((p) => p.id === props.selectedProduct.id)
+				.images
+		)
 
 		const showFilePrompt = () => {
 			$q.dialog({
@@ -60,8 +96,22 @@ export default {
 			const base64 = await cordovaCamera.getBase64FromCamera()
 		}
 
-		const getImagePath = (img) => {
-			img_path.value = URL.createObjectURL(img)
+		const showImage = () => {
+			img_path.value = URL.createObjectURL(img.value)
+			$q.dialog({
+				component: ShowImageDialog,
+				componentProps: {
+					imagePath: img_path.value
+				}
+			}).onOk((option) => {
+				console.log(option)
+			}).onCancel(() => {
+				img.value = null
+				img_path.value = ""
+			}).onDismiss(() => {
+				img.value = null
+				img_path.value = ""
+			})
 		}
 
 		return {
@@ -70,7 +120,9 @@ export default {
 			file_picker,
 			takePicture,
 			showFilePrompt,
-			getImagePath
+			showImage,
+			product_images,
+			backend_server
 		}
 	}
 }

@@ -49,6 +49,12 @@ module.exports = function (ctx) {
 			publicPath: "/",
 			ignorePublicFolder: true,
 
+			env: {
+				BACKEND_SERVER: ctx.dev
+					? "https://freeartist.loc"
+					: "https://192.168.1.3"
+			},
+
 			extendWebpack (cfg) {
 				cfg.module.rules.push({
 					enforce: "pre",

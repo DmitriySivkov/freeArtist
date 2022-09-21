@@ -4,21 +4,29 @@
 		@hide="onDialogHide"
 	>
 		<q-card class="q-dialog-plugin">
+			<div class="row q-pa-md">
+				<div class="col-12">
+					<q-img
+						:src="imagePath"
+						fit="contain"
+					/>
+				</div>
+			</div>
 			<div class="row q-col-gutter-md q-pa-md">
-				<div class="col-xs-12 col-md-6">
+				<div class="col-6">
 					<q-btn
-						color="primary"
-						label="Открыть галерею"
+						color="secondary"
+						icon="done"
 						class="q-pa-lg full-height full-width"
 						@click="chooseOption(1)"
 					/>
 				</div>
-				<div class="col-xs-12 col-md-6">
+				<div class="col-6">
 					<q-btn
-						color="primary"
-						label="Сделать снимок"
+						color="red"
+						icon="clear"
 						class="q-pa-lg full-height full-width"
-						@click="chooseOption(2)"
+						@click="chooseOption(0)"
 					/>
 				</div>
 			</div>
@@ -30,7 +38,9 @@
 import { useDialogPluginComponent } from "quasar"
 
 export default {
-	props: {},
+	props: {
+		imagePath: String
+	},
 
 	emits: [
 		...useDialogPluginComponent.emits,
