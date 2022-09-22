@@ -20,7 +20,6 @@ async function getCameraFileObject() {
 							resolve(fileObject)
 						},
 						function (err) {
-							console.error(err)
 							reject(err)
 						}
 					)
@@ -55,6 +54,11 @@ async function getBase64FromCamera() {
 	return base64
 }
 
+async function b64ToBlob(imageDataURL) {
+	return await (await fetch(imageDataURL)).blob()
+}
+
 export default {
-	getBase64FromCamera
+	getBase64FromCamera,
+	b64ToBlob
 }

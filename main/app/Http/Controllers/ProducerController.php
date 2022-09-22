@@ -173,7 +173,10 @@ class ProducerController extends Controller
 	 */
 	public function getProducerProducts(Producer $producer)
 	{
-		return $producer->products()->with('images')
+		return $producer->products()
+			->with(['images' => function($query) {
+				$query->orderByDesc('created_at');
+			}])
 			->orderByDesc('title')
 			->get();
 	}
@@ -186,7 +189,7 @@ class ProducerController extends Controller
 	 * @param Request $request
 	 * @return ProductImage|\Illuminate\Database\Eloquent\Model
 	 */
-	public function syncProducerProductImagesSettings(Producer $producer, Product $product, Request $request)
+	public function addProducerProductImage(Producer $producer, Product $product, Request $request)
 	{
 		$path = Storage::disk('public')->putFile(
 			'product_images',
@@ -196,6 +199,7 @@ class ProducerController extends Controller
 			'product_id' => $product->id,
 			'path' => $path
 		]);
+
 		return $productImage;
 	}
 

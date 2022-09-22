@@ -79,13 +79,12 @@ export const syncProducerProductCompositionSettings = async({commit}, {producer_
 	})
 }
 
-/** uses 1 image at a time*/
-export const syncProducerProductImagesSettings = async({commit}, {producer_id, product_id, image}) => {
+export const addProducerProductImage = async({commit}, {producer_id, product_id, image}) => {
 	const response = await api.post(
-		"/personal/producers/" + producer_id + "/products/" + product_id + "/syncImagesSettings",
+		"/personal/producers/" + producer_id + "/products/" + product_id + "/addImage",
 		image,
 	)
-	commit("SYNC_PRODUCER_PRODUCT_IMAGES_SETTINGS", {
+	commit("ADD_PRODUCER_PRODUCT_IMAGE", {
 		producer_id,
 		product_id,
 		image: response.data

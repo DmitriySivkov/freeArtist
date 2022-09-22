@@ -20,7 +20,7 @@
 				'q-pl-sm q-pr-sm': index !== product_images.length-1 && index !== 0
 			}"
 		>
-			<q-card>
+			<q-card class="full-height">
 				<q-card-section>
 					<q-img
 						:src="backend_server + '/storage/' + image.path"
@@ -80,11 +80,18 @@ export default {
 		)
 
 		const showFilePrompt = () => {
+			if ($q.platform.is.desktop) {
+				fromGallery()
+				return
+			}
+
 			$q.dialog({
 				component: AddImageDialog
 			}).onOk((option) => {
 				if (option === 1)
 					fromGallery()
+				if (option === 2)
+					fromCamera()
 			})
 		}
 
@@ -92,8 +99,10 @@ export default {
 			file_picker.value.pickFiles()
 		}
 
-		const takePicture = async() => {
+		const fromCamera = async() => {
 			const base64 = await cordovaCamera.getBase64FromCamera()
+			cordovaCamera.b64ToBlob(base64)
+				.then((res) => img.value = res)
 		}
 
 		const showImage = () => {
@@ -103,8 +112,14 @@ export default {
 				componentProps: {
 					imagePath: img_path.value
 				}
-			}).onOk((option) => {
-				console.log(option)
+			}).onOk(() => {
+				let formData = new FormData()
+				formData.append("image", img.value)
+				$store.dispatch("userProducer/addProducerProductImage", {
+					image: formData,
+					producer_id: parseInt($router.currentRoute.value.params.team_id),
+					product_id: props.selectedProduct.id
+				})
 			}).onCancel(() => {
 				img.value = null
 				img_path.value = ""
@@ -118,7 +133,6 @@ export default {
 			img,
 			img_path,
 			file_picker,
-			takePicture,
 			showFilePrompt,
 			showImage,
 			product_images,

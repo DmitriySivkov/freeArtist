@@ -18,7 +18,7 @@
 						color="secondary"
 						icon="done"
 						class="q-pa-lg full-height full-width"
-						@click="chooseOption(1)"
+						@click="confirmPicture"
 					/>
 				</div>
 				<div class="col-6">
@@ -26,7 +26,7 @@
 						color="red"
 						icon="clear"
 						class="q-pa-lg full-height full-width"
-						@click="chooseOption(0)"
+						@click="cancelPicture"
 					/>
 				</div>
 			</div>
@@ -48,9 +48,12 @@ export default {
 
 	setup (props, {emit}) {
 		const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
-		// abuse "onOk" event
-		const chooseOption = (option) => {
-			onDialogOK(option)
+
+		const confirmPicture = () => {
+			onDialogOK()
+		}
+		const cancelPicture = () => {
+			onDialogCancel()
 		}
 		return {
 			// This is REQUIRED;
@@ -58,7 +61,8 @@ export default {
 			// into the vue scope for the vue html template
 			dialogRef,
 			onDialogHide,
-			chooseOption
+			confirmPicture,
+			cancelPicture
 		}
 	}
 }

@@ -63,7 +63,7 @@ Route::group([
 
 		Route::group(['prefix' => '{producer}/products'], function () {
 			Route::get('', [ProducerController::class, 'getProducerProducts']);
-			Route::post('{product}/syncImagesSettings', [ProducerController::class, 'syncProducerProductImagesSettings']);
+			Route::post('{product}/addImage', [ProducerController::class, 'addProducerProductImage']);
 			Route::post('{product}/syncCommonSettings', [ProducerController::class, 'syncProducerProductCommonSettings']);
 			Route::post('{product}/syncCompositionSettings', [ProducerController::class, 'syncProducerProductCompositionSettings']);
 		});

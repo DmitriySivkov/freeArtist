@@ -60,8 +60,7 @@ export const SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS = (state, {producer_id, 
 		.composition = composition
 }
 
-/** uses 1 image at a time*/
-export const SYNC_PRODUCER_PRODUCT_IMAGES_SETTINGS = (state, {producer_id, product_id, image}) => {
+export const ADD_PRODUCER_PRODUCT_IMAGE = (state, {producer_id, product_id, image}) => {
 	state.producers.find((producer) => producer.id === producer_id)
 		.products
 		.find((product) => product.id === product_id)

@@ -50,9 +50,9 @@ module.exports = function (ctx) {
 			ignorePublicFolder: true,
 
 			env: {
-				BACKEND_SERVER: ctx.dev
+				BACKEND_SERVER: ctx.mode.spa
 					? "https://freeartist.loc"
-					: "https://192.168.1.3"
+					: (ctx.mode.cordova ? "https://192.168.1.3" : null)
 			},
 
 			extendWebpack (cfg) {
