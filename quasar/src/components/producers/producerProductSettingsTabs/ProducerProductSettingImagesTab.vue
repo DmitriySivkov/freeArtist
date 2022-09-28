@@ -1,5 +1,8 @@
 <template>
 	<div class="row">
+		{{ img_path }} <br/>
+		{{ test }} <br/>
+		{{ img }}
 		<div class="col-12">
 			<q-btn
 				flat
@@ -9,16 +12,11 @@
 			/>
 		</div>
 	</div>
-	<div class="row q-mt-md">
+	<div class="row q-mt-md q-col-gutter-sm">
 		<div
-			v-for="(image, index) in product_images"
+			v-for="image in product_images"
 			:key="image.id"
-			class="col-xs-3"
-			:class="{
-				'q-pr-none': index === product_images.length-1,
-				'q-pl-none': index === 0,
-				'q-pl-sm q-pr-sm': index !== product_images.length-1 && index !== 0
-			}"
+			class="col-xs-12 col-md-6 col-lg-4"
 		>
 			<q-card class="full-height">
 				<q-card-section>
@@ -68,6 +66,7 @@ export default {
 		const img = ref(null)
 		const img_path = ref("")
 		const file_picker = ref(null)
+		const test = ref(0)
 
 		const backend_server = process.env.BACKEND_SERVER
 
@@ -99,14 +98,12 @@ export default {
 			file_picker.value.pickFiles()
 		}
 
-		const fromCamera = async() => {
-			const base64 = await cordovaCamera.getBase64FromCamera()
-			cordovaCamera.b64ToBlob(base64)
-				.then((res) => img.value = res)
-		}
-
 		const showImage = () => {
-			img_path.value = URL.createObjectURL(img.value)
+			test.value = 1
+
+			if (!img_path.value)
+				img_path.value = URL.createObjectURL(img.value)
+
 			$q.dialog({
 				component: ShowImageDialog,
 				componentProps: {
@@ -120,12 +117,42 @@ export default {
 					producer_id: parseInt($router.currentRoute.value.params.team_id),
 					product_id: props.selectedProduct.id
 				})
+				img.value = null
+				img_path.value = ""
 			}).onCancel(() => {
 				img.value = null
 				img_path.value = ""
 			}).onDismiss(() => {
 				img.value = null
 				img_path.value = ""
+			})
+		}
+		// todo - load to server
+		const fromCamera = () => {
+			navigator.camera.getPicture(imageURI => {
+				window.resolveLocalFileSystemURL(imageURI,
+					function (fileEntry) {
+						fileEntry.file(
+							async function (fileObject) {
+								img_path.value = await cordovaCamera.getBase64FromFileObject(fileObject)
+								file_picker.value.addFiles([fileObject])
+							},
+							function (err) {
+								console.log("error file") // todo - notify
+							}
+						)
+					},
+					function () { } // todo - notify
+				)
+			},
+			console.error, // todo - notify camera error
+			{
+				quality: 50,
+				destinationType: navigator.camera.DestinationType.FILE_URI,
+				encodingType: navigator.camera.EncodingType.JPG,
+				mediaType: navigator.camera.MediaType.PICTURE,
+				saveToPhotoAlbum: false,
+				correctOrientation: true
 			})
 		}
 
@@ -136,7 +163,8 @@ export default {
 			showFilePrompt,
 			showImage,
 			product_images,
-			backend_server
+			backend_server,
+			test
 		}
 	}
 }

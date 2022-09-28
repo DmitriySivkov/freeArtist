@@ -1,39 +1,3 @@
-async function getCameraFileObject() {
-	return new Promise((resolve, reject) => {
-
-		let camera = navigator.camera
-
-		const options = {
-			quality: 50,
-			destinationType: camera.DestinationType.FILE_URI,
-			encodingType: camera.EncodingType.JPG,
-			mediaType: camera.MediaType.PICTURE,
-			saveToPhotoAlbum: true,
-			correctOrientation: true
-		}
-
-		camera.getPicture(imageURI => {
-			window.resolveLocalFileSystemURL(imageURI,
-				function (fileEntry) {
-					fileEntry.file(
-						function (fileObject) {
-							resolve(fileObject)
-						},
-						function (err) {
-							reject(err)
-						}
-					)
-				},
-				function () { }
-			)
-		},
-		console.error,
-		options
-		)
-	})
-
-}
-
 async function getBase64FromFileObject(fileObject) {
 	return new Promise((resolve, reject) => {
 		var reader = new FileReader()
@@ -48,17 +12,6 @@ async function getBase64FromFileObject(fileObject) {
 	})
 }
 
-async function getBase64FromCamera() {
-	let fileObject = await getCameraFileObject()
-	let base64 = await getBase64FromFileObject(fileObject)
-	return base64
-}
-
-async function b64ToBlob(imageDataURL) {
-	return await (await fetch(imageDataURL)).blob()
-}
-
 export default {
-	getBase64FromCamera,
-	b64ToBlob
+	getBase64FromFileObject
 }

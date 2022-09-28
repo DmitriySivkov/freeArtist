@@ -10,6 +10,7 @@
 				<q-input
 					filled
 					v-model="phone"
+					type="tel"
 					label="Телефон *"
 					mask="8 (###) ###-##-##"
 					fill-mask=""
@@ -27,7 +28,7 @@
 					:lazy-rules="true"
 					:rules="[
 						val => !!val || 'Введите пароль',
-						val => val.length > 6 || 'не менее 6 символов',
+						val => val.length >= 6 || 'не менее 6 символов',
 					]"
 				>
 					<template v-slot:append>
