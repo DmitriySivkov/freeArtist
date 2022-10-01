@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Producer
  *
  * @property int $id
- * @property int $team_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingCoworkingRequests

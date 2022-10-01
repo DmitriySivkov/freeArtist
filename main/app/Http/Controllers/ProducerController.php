@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SyncProducerProductCommonSettingsRequest;
-use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -191,16 +189,30 @@ class ProducerController extends Controller
 	 */
 	public function addProducerProductImage(Producer $producer, Product $product, Request $request)
 	{
-		$path = Storage::disk('public')->putFile(
-			'product_images',
-			$request->file('image')
-		);
-		$productImage = ProductImage::create([
+		// todo - permission
+		$basePath = 'team_' . $producer->team->id . '/product_images';
+		if ($request->hasFile('image')) {
+			$path = Storage::disk('public')->putFile(
+				$basePath,
+				$request->file('image')
+			);
+		} else {
+			@list($type, $fileData) = explode(';', $request->getContent());
+			@list(, $fileData) = explode(',', $fileData);
+
+			$extension = explode('/', $type);
+			$path = $basePath . '/' . \Str::random(15) . '.' . end($extension);
+
+			Storage::disk('public')->put(
+				$path,
+				base64_decode($fileData)
+			);
+		}
+
+		return ProductImage::create([
 			'product_id' => $product->id,
 			'path' => $path
 		]);
-
-		return $productImage;
 	}
 
 	/**

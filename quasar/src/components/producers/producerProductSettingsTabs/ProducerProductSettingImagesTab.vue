@@ -1,8 +1,5 @@
 <template>
 	<div class="row">
-		{{ img_path }} <br/>
-		{{ test }} <br/>
-		{{ img }}
 		<div class="col-12">
 			<q-btn
 				flat
@@ -66,7 +63,8 @@ export default {
 		const img = ref(null)
 		const img_path = ref("")
 		const file_picker = ref(null)
-		const test = ref(0)
+		const img_source = ref(null)
+		const { notifySuccess, notifyError } = useNotification()
 
 		const backend_server = process.env.BACKEND_SERVER
 
@@ -95,40 +93,12 @@ export default {
 		}
 
 		const fromGallery = () => {
+			img_source.value = 1
 			file_picker.value.pickFiles()
 		}
 
-		const showImage = () => {
-			test.value = 1
-
-			if (!img_path.value)
-				img_path.value = URL.createObjectURL(img.value)
-
-			$q.dialog({
-				component: ShowImageDialog,
-				componentProps: {
-					imagePath: img_path.value
-				}
-			}).onOk(() => {
-				let formData = new FormData()
-				formData.append("image", img.value)
-				$store.dispatch("userProducer/addProducerProductImage", {
-					image: formData,
-					producer_id: parseInt($router.currentRoute.value.params.team_id),
-					product_id: props.selectedProduct.id
-				})
-				img.value = null
-				img_path.value = ""
-			}).onCancel(() => {
-				img.value = null
-				img_path.value = ""
-			}).onDismiss(() => {
-				img.value = null
-				img_path.value = ""
-			})
-		}
-		// todo - load to server
 		const fromCamera = () => {
+			img_source.value = 2
 			navigator.camera.getPicture(imageURI => {
 				window.resolveLocalFileSystemURL(imageURI,
 					function (fileEntry) {
@@ -149,10 +119,42 @@ export default {
 			{
 				quality: 50,
 				destinationType: navigator.camera.DestinationType.FILE_URI,
-				encodingType: navigator.camera.EncodingType.JPG,
+				encodingType: navigator.camera.EncodingType.JPEG,
 				mediaType: navigator.camera.MediaType.PICTURE,
 				saveToPhotoAlbum: false,
 				correctOrientation: true
+			})
+		}
+
+		const showImage = () => {
+			if (!img_path.value)
+				img_path.value = URL.createObjectURL(img.value)
+
+			$q.dialog({
+				component: ShowImageDialog,
+				componentProps: {
+					imagePath: img_path.value
+				}
+			}).onOk(() => {
+				let formData = new FormData()
+				formData.append("image", img.value)
+
+				$store.dispatch("userProducer/addProducerProductImage", {
+					image: img_source.value === 1 ? formData : img_path.value,
+					producer_id: parseInt($router.currentRoute.value.params.team_id),
+					product_id: props.selectedProduct.id
+				}).then(() => {
+					notifySuccess("Изображение успешно загружено")
+					img.value = null
+					img_path.value = ""
+				})
+
+			}).onCancel(() => {
+				img.value = null
+				img_path.value = ""
+			}).onDismiss(() => {
+				img.value = null
+				img_path.value = ""
 			})
 		}
 
@@ -163,8 +165,7 @@ export default {
 			showFilePrompt,
 			showImage,
 			product_images,
-			backend_server,
-			test
+			backend_server
 		}
 	}
 }
