@@ -96,7 +96,11 @@ export default {
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
 
-		const composition = ref(_.cloneDeep(props.selectedProduct.composition))
+		const composition = ref(
+			props.selectedProduct.hasOwnProperty("composition") ?
+				_.cloneDeep(props.selectedProduct.composition) :
+				[]
+		)
 		const disable_submit = ref(false)
 
 		const addIngredient = () =>

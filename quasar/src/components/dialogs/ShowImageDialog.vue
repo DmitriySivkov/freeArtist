@@ -2,7 +2,7 @@
 	<q-dialog
 		ref="dialogRef"
 		@hide="onDialogHide"
-		position="bottom"
+		:position="$q.platform.is.mobile ? 'bottom' : 'standard'"
 	>
 		<q-card class="q-dialog-plugin">
 			<div class="row q-pa-md">

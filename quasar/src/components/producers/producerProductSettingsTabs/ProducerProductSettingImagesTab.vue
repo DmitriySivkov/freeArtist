@@ -69,11 +69,13 @@ export default {
 		const backend_server = process.env.BACKEND_SERVER
 
 		const product_images = computed(() =>
-			$store.state.userProducer.producers
-				.find((p) => p.id === parseInt($router.currentRoute.value.params.team_id))
-				.products
-				.find((p) => p.id === props.selectedProduct.id)
-				.images
+			props.selectedProduct.id ?
+				$store.state.userProducer.producers
+					.find((p) => p.id === parseInt($router.currentRoute.value.params.team_id))
+					.products
+					.find((p) => p.id === props.selectedProduct.id)
+					.images :
+				[]
 		)
 
 		const showFilePrompt = () => {

@@ -1,10 +1,22 @@
 <template>
 	<div>
-		<q-item v-if="!selected_product_id">
-			<q-item-section>
+		<div
+			class="row q-col-gutter-xs q-ma-lg items-end"
+			v-if="!selected_product_id"
+		>
+			<div class="col-xs-6">
 				Выберите продукт
-			</q-item-section>
-		</q-item>
+			</div>
+			<div class="col-xs-6 offset-md-4 col-md-2">
+				<q-btn
+					size="lg"
+					icon="add"
+					color="primary"
+					class="full-width"
+					@click="createProduct()"
+				/>
+			</div>
+		</div>
 		<ProducerProductList
 			v-model="selected_product_id"
 			:products="team.products"
@@ -24,6 +36,7 @@
 					label="Выбрать другой продукт"
 					color="primary"
 					@click="unselectProduct"
+					class="q-pt-md q-pb-md"
 				/>
 			</q-item-section>
 		</q-item>
@@ -57,23 +70,21 @@ export default {
 		)
 		const selected_product_id = ref(null)
 		const selected_product = computed(
-			() => selected_product_id.value ?
+			() => selected_product_id.value && selected_product_id.value > 0 ?
 				team.value.products.find((p) => p.id === selected_product_id.value) :
 				{}
 		)
 
 		const unselectProduct = () => selected_product_id.value = null
 
-		const productListHeight = computed(() => selected_product_id.value ? "10" : "70")
-		const settingListHeight = computed(() => selected_product_id.value ? "70" : "40")
+		const createProduct = () => selected_product_id.value = -1
 
 		return {
 			team,
 			selected_product_id,
 			selected_product,
 			unselectProduct,
-			productListHeight,
-			settingListHeight
+			createProduct
 		}
 	}
 }

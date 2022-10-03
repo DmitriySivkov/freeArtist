@@ -9,14 +9,17 @@
 			v-model="product.title"
 			lazy-rules
 			:rules="[ val => val && val.length > 3 || 'Название должно быть длиннее 3 символов']"
+			class="q-pb-lg"
 		/>
 
 		<q-field
 			filled
 			v-model="product.price"
+			type="number"
 			label="Стоимость *"
 			class="q-pb-lg"
 			:rules="[ val => parseFloat(val) > 0 || 'Нужно указать стоимость']"
+			lazy-rules
 		>
 			<template v-slot:control="{ floatingLabel, modelValue, emitValue }">
 				<input
@@ -64,6 +67,7 @@ import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 export default {
+	// todo - try to pass empty object for new product
 	props: {
 		selectedProduct: {
 			type: Object,
@@ -75,6 +79,7 @@ export default {
 		const $router = useRouter()
 
 		const product = ref(_.clone(props.selectedProduct))
+
 		const { notifySuccess, notifyError } = useNotification()
 		const disable_submit = ref(false)
 
