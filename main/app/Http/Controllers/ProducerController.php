@@ -167,6 +167,28 @@ class ProducerController extends Controller
 
 	/**
 	 * @param Producer $producer
+	 * @param Request $request
+	 * @return Product|\Illuminate\Database\Eloquent\Model
+	 */
+	public function storeProducerProduct(Producer $producer, Request $request)
+	{
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		// TODO - add permissions
+		if (!$user->owns($producer->team))
+			throw new \LogicException('Доступ закрыт');
+
+		return Product::create([
+			'producer_id' => $producer->id,
+			'title' => $request->input('settings.title'),
+			'price' => $request->input('settings.price'),
+			'amount' => $request->input('settings.amount') ?? 0
+		]);
+	}
+
+	/**
+	 * @param Producer $producer
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
 	public function getProducerProducts(Producer $producer)

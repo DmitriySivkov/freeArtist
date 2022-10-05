@@ -17,9 +17,11 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->foreignId('producer_id');
             $table->string('title');
-            $table->json('composition');
+            $table->json('composition')
+				->nullable();
             $table->decimal('price', 9, 2);
-            $table->unsignedInteger('amount');
+            $table->unsignedInteger('amount')
+				->nullable();
 			$table->unsignedTinyInteger('is_active')
 				->default(1);
             $table->timestamps();

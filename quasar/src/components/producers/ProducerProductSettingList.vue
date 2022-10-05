@@ -13,11 +13,13 @@
 			class="q-pa-md"
 		/>
 		<q-tab
+			:disable="is_empty_product"
 			name="composition"
 			label="Состав"
 			class="q-pa-md"
 		/>
 		<q-tab
+			:disable="is_empty_product"
 			name="images"
 			label="Изображения"
 			class="q-pa-md"
@@ -29,7 +31,10 @@
 		animated
 	>
 		<q-tab-panel name="common">
-			<ProducerProductSettingCommonTab :selected-product="selectedProduct"/>
+			<ProducerProductSettingCommonTab
+				:selected-product="selectedProduct"
+				@product-created="$emit('productCreated', $event)"
+			/>
 		</q-tab-panel>
 
 		<q-tab-panel name="composition">
@@ -43,7 +48,7 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import ProducerProductSettingCommonTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab"
 import ProducerProductSettingCompositionTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCompositionTab"
 import ProducerProductSettingImagesTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab"
@@ -59,11 +64,13 @@ export default {
 			default: () => {}
 		}
 	},
-	setup() {
+	emits: ["productCreated"],
+	setup(props) {
 		const tab = ref("common")
-
+		const is_empty_product = computed(() => Object.keys(props.selectedProduct).length === 0)
 		return {
-			tab
+			tab,
+			is_empty_product,
 		}
 	}
 }

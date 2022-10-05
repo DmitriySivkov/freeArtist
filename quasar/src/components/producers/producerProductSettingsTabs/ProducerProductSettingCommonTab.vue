@@ -42,7 +42,7 @@
 			<div class="col-xs-12 col-md-6">
 				<q-btn
 					:disable="disable_submit"
-					label="Сохранить"
+					:label="is_empty_product ? 'Создать' : 'Сохранить'"
 					type="submit"
 					color="primary"
 					class="q-pa-lg full-width"
@@ -61,24 +61,25 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import _ from "lodash"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 export default {
-	// todo - try to pass empty object for new product
 	props: {
 		selectedProduct: {
 			type: Object,
 			default: () => {}
 		}
 	},
-	setup(props) {
+	emits: ["productCreated"],
+	setup(props, { emit }) {
 		const $store = useStore()
 		const $router = useRouter()
 
 		const product = ref(_.clone(props.selectedProduct))
+		const is_empty_product = computed(() => Object.keys(props.selectedProduct).length === 0)
 
 		const { notifySuccess, notifyError } = useNotification()
 		const disable_submit = ref(false)
@@ -100,21 +101,39 @@ export default {
 				return
 
 			disable_submit.value = true
-			$store.dispatch("userProducer/syncProducerProductCommonSettings", {
-				producer_id: parseInt($router.currentRoute.value.params.team_id),
-				product_id: props.selectedProduct.id,
-				settings: {
-					title: product.value.title,
-					price: parseFloat(product.value.price).toFixed(2),
-					amount: product.value.amount
-				}
-			}).then(() => {
-				notifySuccess("Настройки продукта " + product.value.title + " успешно изменены")
-				disable_submit.value = false
-			}).catch((error) => {
-				notifyError(error.response.data)
-				disable_submit.value = false
-			})
+			if (is_empty_product.value) {
+				$store.dispatch("userProducer/createProducerProduct", {
+					producer_id: parseInt($router.currentRoute.value.params.team_id),
+					settings: {
+						title: product.value.title,
+						price: parseFloat(product.value.price).toFixed(2),
+						amount: product.value.amount
+					}
+				}).then((response) => {
+					emit("productCreated", response.data.id)
+					notifySuccess("Продукт " + product.value.title + " успешно создан")
+					disable_submit.value = false
+				}).catch((error) => {
+					notifyError(error.response.data)
+					disable_submit.value = false
+				})
+			} else {
+				$store.dispatch("userProducer/syncProducerProductCommonSettings", {
+					producer_id: parseInt($router.currentRoute.value.params.team_id),
+					product_id: props.selectedProduct.id,
+					settings: {
+						title: product.value.title,
+						price: parseFloat(product.value.price).toFixed(2),
+						amount: product.value.amount
+					}
+				}).then(() => {
+					notifySuccess("Настройки продукта " + product.value.title + " успешно изменены")
+					disable_submit.value = false
+				}).catch((error) => {
+					notifyError(error.response.data)
+					disable_submit.value = false
+				})
+			}
 		}
 
 		const reset = () => {
@@ -128,7 +147,8 @@ export default {
 			money_config,
 			reset,
 			submit,
-			disable_submit
+			disable_submit,
+			is_empty_product
 		}
 	}
 }

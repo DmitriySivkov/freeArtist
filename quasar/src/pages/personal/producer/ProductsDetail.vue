@@ -42,6 +42,7 @@
 		</q-item>
 		<ProducerProductSettingList
 			:selected-product="selected_product"
+			@product-created="setProductId"
 		/>
 	</div>
 </template>
@@ -61,7 +62,10 @@ export default {
 		return store.dispatch("userProducer/getProducerProductList", parseInt(currentRoute.params.team_id))
 			.then(() => Loading.hide())
 	},
-	components: { ProducerProductList, ProducerProductSettingList },
+	components: {
+		ProducerProductList,
+		ProducerProductSettingList
+	},
 	setup() {
 		const $route = useRoute()
 		const { producerTeams } = useUserProducer()
@@ -75,6 +79,8 @@ export default {
 				{}
 		)
 
+		const setProductId = (product_id) => selected_product_id.value = product_id
+
 		const unselectProduct = () => selected_product_id.value = null
 
 		const createProduct = () => selected_product_id.value = -1
@@ -84,7 +90,8 @@ export default {
 			selected_product_id,
 			selected_product,
 			unselectProduct,
-			createProduct
+			createProduct,
+			setProductId
 		}
 	}
 }
