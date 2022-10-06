@@ -189,6 +189,23 @@ class ProducerController extends Controller
 
 	/**
 	 * @param Producer $producer
+	 * @param Product $product
+	 * @return void
+	 */
+	public function deleteProducerProduct(Producer $producer, Product $product)
+	{
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		// TODO - add permissions
+		if (!$user->owns($producer->team))
+			throw new \LogicException('Доступ закрыт');
+
+		$product->delete();
+	}
+
+	/**
+	 * @param Producer $producer
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
 	public function getProducerProducts(Producer $producer)

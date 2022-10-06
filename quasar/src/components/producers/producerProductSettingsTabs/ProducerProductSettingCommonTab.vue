@@ -39,7 +39,7 @@
 			v-model.number="product.amount"
 		/>
 		<div class="row q-col-gutter-sm q-mt-md">
-			<div class="col-xs-12 col-md-6">
+			<div class="col-xs-12">
 				<q-btn
 					:disable="disable_submit"
 					:label="is_empty_product ? 'Создать' : 'Сохранить'"
@@ -48,12 +48,23 @@
 					class="q-pa-lg full-width"
 				/>
 			</div>
-			<div class="col-xs-12 col-md-6">
+			<div class="col-xs-12">
 				<q-btn
 					label="Сбросить"
 					type="reset"
 					color="warning"
 					class="q-pa-lg full-width"
+				/>
+			</div>
+			<div
+				v-if="!is_empty_product"
+				class="col-xs-12"
+			>
+				<q-btn
+					label="Удалить продукт"
+					color="red-5"
+					class="q-pa-lg full-width"
+					@click="deleteDialog"
 				/>
 			</div>
 		</div>
@@ -66,15 +77,17 @@ import _ from "lodash"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
+import { useQuasar } from "quasar"
 export default {
 	props: {
 		selectedProduct: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		}
 	},
-	emits: ["productCreated"],
+	emits: ["productCreated", "productDeleted"],
 	setup(props, { emit }) {
+		const $q = useQuasar()
 		const $store = useStore()
 		const $router = useRouter()
 
@@ -111,7 +124,7 @@ export default {
 					}
 				}).then((response) => {
 					emit("productCreated", response.data.id)
-					notifySuccess("Продукт " + product.value.title + " успешно создан")
+					notifySuccess("Продукт '" + product.value.title + "' успешно создан")
 					disable_submit.value = false
 				}).catch((error) => {
 					notifyError(error.response.data)
@@ -127,7 +140,7 @@ export default {
 						amount: product.value.amount
 					}
 				}).then(() => {
-					notifySuccess("Настройки продукта " + product.value.title + " успешно изменены")
+					notifySuccess("Настройки продукта '" + product.value.title + "' успешно изменены")
 					disable_submit.value = false
 				}).catch((error) => {
 					notifyError(error.response.data)
@@ -142,13 +155,32 @@ export default {
 			product.value.amount = props.selectedProduct.amount
 		}
 
+		const deleteDialog = () => {
+			$q.dialog({
+				title: "Подтверждение",
+				message: "Удалить продукт: " + product.value.title + " ?",
+				cancel: true,
+			}).onOk(() => {
+				$store.dispatch("userProducer/deleteProducerProduct", {
+					producer_id: parseInt($router.currentRoute.value.params.team_id),
+					product_id: props.selectedProduct.id,
+				}).then(() => {
+					notifySuccess("Продукт '" + product.value.title + "' успешно удалён")
+					emit("productDeleted", props.selectedProduct.id)
+				}).catch((error) => {
+					notifyError(error.response.data)
+				})
+			})
+		}
+
 		return {
 			product,
 			money_config,
 			reset,
 			submit,
 			disable_submit,
-			is_empty_product
+			is_empty_product,
+			deleteDialog
 		}
 	}
 }

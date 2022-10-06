@@ -34,6 +34,7 @@
 			<ProducerProductSettingCommonTab
 				:selected-product="selectedProduct"
 				@product-created="$emit('productCreated', $event)"
+				@product-deleted="$emit('productDeleted', $event)"
 			/>
 		</q-tab-panel>
 
@@ -61,13 +62,14 @@ export default {
 	props: {
 		selectedProduct: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		}
 	},
-	emits: ["productCreated"],
+	emits: ["productCreated", "productDeleted"],
 	setup(props) {
 		const tab = ref("common")
 		const is_empty_product = computed(() => Object.keys(props.selectedProduct).length === 0)
+
 		return {
 			tab,
 			is_empty_product,

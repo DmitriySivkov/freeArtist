@@ -53,7 +53,7 @@ export default {
 	props: {
 		selectedProduct: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		}
 	},
 	setup(props) {

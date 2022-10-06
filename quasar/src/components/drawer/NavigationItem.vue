@@ -32,7 +32,7 @@ export default {
 	props: {
 		link: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		},
 	},
 	setup(props) {

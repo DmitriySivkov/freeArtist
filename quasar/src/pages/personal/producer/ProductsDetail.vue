@@ -32,7 +32,6 @@
 				style="margin-left:0"
 			>
 				<q-btn
-					v-if="selected_product_id"
 					label="Выбрать другой продукт"
 					color="primary"
 					@click="unselectProduct"
@@ -43,6 +42,7 @@
 		<ProducerProductSettingList
 			:selected-product="selected_product"
 			@product-created="setProductId"
+			@product-deleted="unselectProduct"
 		/>
 	</div>
 </template>
@@ -73,6 +73,7 @@ export default {
 			producerTeams.value.find((team) => team.id === parseInt($route.params.team_id))
 		)
 		const selected_product_id = ref(null)
+
 		const selected_product = computed(
 			() => selected_product_id.value && selected_product_id.value > 0 ?
 				team.value.products.find((p) => p.id === selected_product_id.value) :

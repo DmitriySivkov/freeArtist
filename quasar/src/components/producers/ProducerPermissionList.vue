@@ -52,7 +52,7 @@ export default {
 		userId: Number,
 		producer: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		}
 	},
 	setup(props) {

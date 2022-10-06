@@ -63,7 +63,12 @@ export const SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS = (state, {producer_id, 
 export const CREATE_PRODUCER_PRODUCT = (state, {producer_id, product}) => {
 	state.producers.find((producer) => producer.id === producer_id)
 		.products
-		.push(product)
+		.unshift(product)
+}
+
+export const DELETE_PRODUCER_PRODUCT = (state, {producer_id, product_id}) => {
+	const producer = state.producers.find((producer) => producer.id === producer_id)
+	producer.products = producer.products.filter((product) => product.id !== product_id)
 }
 
 export const ADD_PRODUCER_PRODUCT_IMAGE = (state, {producer_id, product_id, image}) => {

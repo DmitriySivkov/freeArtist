@@ -67,7 +67,7 @@ export default {
 	props: {
 		producer: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		}
 	},
 	setup() {

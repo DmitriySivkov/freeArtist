@@ -81,6 +81,22 @@ export const createProducerProduct = async({commit}, {producer_id, settings}) =>
 	return response
 }
 
+export const deleteProducerProduct = async({commit}, {producer_id, product_id}) => {
+	await api.delete(
+		"personal/producers/" + producer_id + "/products/" + product_id,
+		{
+			data: {
+				producer_id,
+				product_id
+			}
+		}
+	)
+	commit("DELETE_PRODUCER_PRODUCT", {
+		producer_id,
+		product_id
+	})
+}
+
 export const syncProducerProductCompositionSettings = async({commit}, {producer_id, product_id, composition}) => {
 	const response = await api.post(
 		"personal/producers/" + producer_id + "/products/" + product_id + "/syncCompositionSettings",

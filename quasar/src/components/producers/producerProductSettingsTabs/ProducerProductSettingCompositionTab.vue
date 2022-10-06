@@ -57,7 +57,7 @@
 			/>
 		</q-card>
 		<div class="row q-col-gutter-sm q-mt-md">
-			<div class="col-xs-12 col-md-6">
+			<div class="col-xs-12">
 				<q-btn
 					:disable="disable_submit"
 					label="Сохранить"
@@ -66,7 +66,7 @@
 					class="q-pa-lg full-width"
 				/>
 			</div>
-			<div class="col-xs-12 col-md-6">
+			<div class="col-xs-12">
 				<q-btn
 					label="Сбросить"
 					type="reset"
@@ -88,7 +88,7 @@ export default {
 	props: {
 		selectedProduct: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		}
 	},
 	setup(props) {
@@ -130,7 +130,7 @@ export default {
 				composition: composition.value
 			}).then(() => {
 				composition.value = _.cloneDeep(props.selectedProduct.composition)
-				notifySuccess("Состав продукта " + props.selectedProduct.title + " успешно изменен")
+				notifySuccess("Состав продукта '" + props.selectedProduct.title + "' успешно изменен")
 				disable_submit.value = false
 			}).catch((error) => {
 				notifyError(error.response.data)
