@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', [RegisterController::class, 'store']);
 Route::post('hasTokenCookie', [AuthController::class, 'hasTokenCookie']);
 
+// todo - incognito mode does not support session cookie
 Route::group(['prefix' => 'auth'], function() {
     Route::post('', [AuthController::class, 'login']);
     Route::post('verify-email', [AuthController::class, 'verifyEmail']);

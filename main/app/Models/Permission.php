@@ -38,7 +38,10 @@ class Permission extends LaratrustPermission
 		self::PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS,
 		self::PERMISSION_PRODUCER_INCOMING_PARTNERSHIP_REQUESTS,
 		self::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS,
-		self::PERMISSION_PRODUCER_MANAGE_PERMISSIONS
+		self::PERMISSION_PRODUCER_MANAGE_PERMISSIONS,
+		self::PERMISSION_PRODUCER_MANAGE_PRODUCT,
+		self::PERMISSION_PRODUCER_CREATE_PRODUCT,
+		self::PERMISSION_PRODUCER_DELETE_PRODUCT
 	];
 
 	const PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS = [
@@ -59,6 +62,21 @@ class Permission extends LaratrustPermission
 	const PERMISSION_PRODUCER_MANAGE_PERMISSIONS = [
 		'name' => 'producer_manage_permissions',
 		'display_name' => 'Управление разрешениями изготовителя',
+		'description' => ''
+	];
+	const PERMISSION_PRODUCER_MANAGE_PRODUCT = [
+		'name' => 'producer_manage_product',
+		'display_name' => 'Управление продуктом',
+		'description' => ''
+	];
+	const PERMISSION_PRODUCER_CREATE_PRODUCT = [
+		'name' => 'producer_create_product',
+		'display_name' => 'Создание продукта',
+		'description' => ''
+	];
+	const PERMISSION_PRODUCER_DELETE_PRODUCT = [
+		'name' => 'producer_delete_product',
+		'display_name' => 'Удаление продукта',
 		'description' => ''
 	];
 	/** end producer permissions */

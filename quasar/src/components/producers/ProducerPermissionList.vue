@@ -1,6 +1,9 @@
 <template>
 	<q-list>
-		<q-item-label header>
+		<q-item-label
+			header
+			v-if="isAbleToEditUserPermissions"
+		>
 			Задайте права
 		</q-item-label>
 		<q-item
@@ -36,7 +39,7 @@
 				color="primary"
 				class="q-pa-lg full-width"
 				@click="setUserPermissions(producer.id, userId, selected_permissions)"
-				:disable="!isAbleToEditUserPermissions"
+				v-if="isAbleToEditUserPermissions"
 			/>
 		</div>
 	</q-page-sticky>
@@ -46,6 +49,7 @@
 import { useStore } from "vuex"
 import { computed, ref, watch } from "vue"
 import { useUserProducer } from "src/composables/userProducer"
+import { useUserPermission } from "src/composables/userPermission"
 import { useNotification } from "src/composables/notification"
 export default {
 	props: {
@@ -58,6 +62,7 @@ export default {
 	setup(props) {
 		const $store = useStore()
 		const { getProducerUser, syncProducerUserPermissions } = useUserProducer()
+		const { hasPermission } = useUserPermission()
 		const { notifySuccess, notifyError } = useNotification()
 		const all_producer_permissions = computed(() => $store.state.permission.producer)
 
@@ -70,14 +75,12 @@ export default {
 		const selected_user = computed(() => props.producer.users.find((u) => u.id === props.userId))
 
 		const isAbleToEditUserPermissions = computed(() =>
-			props.userId !== props.producer.user_id &&
 			(
-				auth_user.value.data.id === props.producer.user_id ||
-				props.producer.users.find((u) => u.id === auth_user.value.data.id)
-					.permissions
-					.map((p) => p.name)
-					.includes("producer_manage_permissions")
-			)
+				hasPermission("producer", props.producer.id,"producer_manage_permissions") ||
+				props.producer.user_id === auth_user.value.data.id
+			) &&
+			props.userId !== auth_user.value.data.id &&
+			props.userId !== props.producer.user_id
 		)
 
 		const setUserPermissions = (producer_id, user_id, permissions) => {

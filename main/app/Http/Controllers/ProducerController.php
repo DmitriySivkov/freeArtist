@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -175,8 +176,10 @@ class ProducerController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		// TODO - add permissions
-		if (!$user->owns($producer->team))
+		if (
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_CREATE_PRODUCT['name'], $producer->team) &&
+			!$user->owns($producer->team)
+		)
 			throw new \LogicException('Доступ закрыт');
 
 		return Product::create([
@@ -197,8 +200,10 @@ class ProducerController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		// TODO - add permissions
-		if (!$user->owns($producer->team))
+		if (
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_DELETE_PRODUCT['name'], $producer->team) &&
+			!$user->owns($producer->team)
+		)
 			throw new \LogicException('Доступ закрыт');
 
 		$product->delete();
@@ -228,7 +233,15 @@ class ProducerController extends Controller
 	 */
 	public function addProducerProductImage(Producer $producer, Product $product, Request $request)
 	{
-		// todo - permission
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		if (
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PRODUCT['name'], $producer->team) &&
+			!$user->owns($producer->team)
+		)
+			throw new \LogicException('Доступ закрыт');
+
 		$basePath = 'team_' . $producer->team->id . '/product_images';
 		if ($request->hasFile('image')) {
 			$path = Storage::disk('public')->putFile(
@@ -264,8 +277,10 @@ class ProducerController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		// TODO - add permissions
-		if (!$user->owns($producer->team))
+		if (
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PRODUCT['name'], $producer->team) &&
+			!$user->owns($producer->team)
+		)
 			throw new \LogicException('Доступ закрыт');
 
 		$product->update([
@@ -287,8 +302,10 @@ class ProducerController extends Controller
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		// TODO - add permissions
-		if (!$user->owns($producer->team))
+		if (
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PRODUCT['name'], $producer->team) &&
+			!$user->owns($producer->team)
+		)
 			throw new \LogicException('Доступ закрыт');
 
 		$composition = array_values(
