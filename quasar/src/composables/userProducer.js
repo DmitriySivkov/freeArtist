@@ -12,6 +12,9 @@ export const useUserProducer = () => {
 		producerTeams.value.find((team) => team.user_id === user.value.data.id)
 	)
 
+	const getProducer = (producer_id) =>
+		producerTeams.value.find((team) => team.id === producer_id)
+
 	const getProducerUser = (producer_id, user_id) =>
 		producerTeams.value.find((team) => team.id === producer_id)
 			.users
@@ -26,6 +29,7 @@ export const useUserProducer = () => {
 	return {
 		producerTeams,
 		userOwnProducer,
+		getProducer,
 		getProducerUser,
 		syncProducerUserPermissions
 	}

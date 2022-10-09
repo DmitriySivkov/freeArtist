@@ -4,7 +4,7 @@
 namespace App\Services;
 
 
-use App\Models\Producer;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
@@ -89,6 +89,7 @@ class AuthService
 	{
 		$this->user->load([
 			'roles',
+			'permissions'
 		]);
 
 		$urrService = new UserRelationRequestService;
@@ -114,7 +115,7 @@ class AuthService
 
 			if (
 				$this->user->owns($team) ||
-				$this->user->hasPermission("producer_incoming_coworking_requests", $team->name)
+				$this->user->hasPermission(Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'], $team->name)
 			) {
 				$requests = [
 					'data' => [

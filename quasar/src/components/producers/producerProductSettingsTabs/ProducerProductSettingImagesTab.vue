@@ -1,5 +1,8 @@
 <template>
-	<div class="row">
+	<div
+		v-if="permissions.update"
+		class="row"
+	>
 		<div class="col-12">
 			<q-btn
 				flat
@@ -52,6 +55,10 @@ export default {
 	},
 	props: {
 		selectedProduct: {
+			type: Object,
+			default: () => ({})
+		},
+		permissions: {
 			type: Object,
 			default: () => ({})
 		}

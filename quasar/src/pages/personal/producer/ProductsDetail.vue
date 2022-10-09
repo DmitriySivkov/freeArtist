@@ -7,7 +7,10 @@
 			<div class="col-xs-6">
 				Выберите продукт
 			</div>
-			<div class="col-xs-6 offset-md-4 col-md-2">
+			<div
+				v-if="is_able_to_create_product"
+				class="col-xs-6 offset-md-4 col-md-2"
+			>
 				<q-btn
 					size="lg"
 					icon="add"
@@ -41,6 +44,11 @@
 		</q-item>
 		<ProducerProductSettingList
 			:selected-product="selected_product"
+			:permissions="{
+				create:is_able_to_create_product,
+				update:is_able_to_manage_product,
+				delete:is_able_to_delete_product
+			}"
 			@product-created="setProductId"
 			@product-deleted="unselectProduct"
 		/>
@@ -54,6 +62,8 @@ import { useRoute } from "vue-router"
 import { useUserProducer } from "src/composables/userProducer"
 import { computed, ref } from "vue"
 import { Loading } from "quasar"
+import { useUserPermission } from "src/composables/userPermission"
+import { useStore } from "vuex"
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		Loading.show({
@@ -67,8 +77,11 @@ export default {
 		ProducerProductSettingList
 	},
 	setup() {
+		const $store = useStore()
 		const $route = useRoute()
 		const { producerTeams } = useUserProducer()
+		const { hasPermission } = useUserPermission()
+		const user = computed(() => $store.state.user)
 		const team = computed(() =>
 			producerTeams.value.find((team) => team.id === parseInt($route.params.team_id))
 		)
@@ -86,13 +99,31 @@ export default {
 
 		const createProduct = () => selected_product_id.value = -1
 
+		const is_able_to_create_product = computed(() =>
+			hasPermission(team.value.id,"producer_create_product") ||
+			team.value.user_id === user.value.data.id
+		)
+
+		const is_able_to_manage_product = computed(() =>
+			hasPermission(team.value.id,"producer_manage_product") ||
+			team.value.user_id === user.value.data.id
+		)
+
+		const is_able_to_delete_product = computed(() =>
+			hasPermission(team.value.id,"producer_delete_product") ||
+			team.value.user_id === user.value.data.id
+		)
+
 		return {
 			team,
 			selected_product_id,
 			selected_product,
 			unselectProduct,
 			createProduct,
-			setProductId
+			setProductId,
+			is_able_to_create_product,
+			is_able_to_manage_product,
+			is_able_to_delete_product
 		}
 	}
 }

@@ -1,5 +1,6 @@
 <template>
 	<q-btn
+		v-if="permissions.update"
 		label="Добавить ингридиент"
 		color="primary"
 		class="q-mb-md"
@@ -15,7 +16,7 @@
 			flat
 		>
 			<q-input
-				:disable="ingredient.to_delete"
+				:disable="ingredient.to_delete || !permissions.update"
 				filled
 				label="Название ингридиента"
 				v-model="ingredient.name"
@@ -23,7 +24,11 @@
 				:rules="[ val => val.length >= 2 || 'Название должно быть длиннее 2 символов']"
 				class="q-pb-lg"
 			>
-				<template v-slot:after>
+				<template
+					v-slot:after
+					v-if="permissions.update"
+				>
+
 					<q-btn
 						v-if="ingredient.to_delete"
 						flat
@@ -44,7 +49,7 @@
 				</template>
 			</q-input>
 			<q-input
-				:disable="ingredient.to_delete"
+				:disable="ingredient.to_delete || !permissions.update"
 				filled
 				type="textarea"
 				label="Описание ингридиента (необязательно)"
@@ -56,7 +61,10 @@
 				class="q-mt-sm q-mb-sm bg-primary"
 			/>
 		</q-card>
-		<div class="row q-col-gutter-sm q-mt-md">
+		<div
+			v-if="permissions.update"
+			class="row q-col-gutter-sm q-mt-md"
+		>
 			<div class="col-xs-12">
 				<q-btn
 					:disable="disable_submit"
@@ -87,6 +95,10 @@ import { useStore } from "vuex"
 export default {
 	props: {
 		selectedProduct: {
+			type: Object,
+			default: () => ({})
+		},
+		permissions: {
 			type: Object,
 			default: () => ({})
 		}

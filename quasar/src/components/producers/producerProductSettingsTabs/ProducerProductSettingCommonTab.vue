@@ -10,6 +10,7 @@
 			lazy-rules
 			:rules="[ val => val && val.length > 3 || 'Название должно быть длиннее 3 символов']"
 			class="q-pb-lg"
+			:disable="!permissions.update"
 		/>
 
 		<q-field
@@ -20,6 +21,7 @@
 			class="q-pb-lg"
 			:rules="[ val => parseFloat(val) > 0 || 'Нужно указать стоимость']"
 			lazy-rules
+			:disable="!permissions.update"
 		>
 			<template v-slot:control="{ floatingLabel, modelValue, emitValue }">
 				<input
@@ -37,9 +39,13 @@
 			type="number"
 			label="Доступное количество"
 			v-model.number="product.amount"
+			:disable="!permissions.update"
 		/>
 		<div class="row q-col-gutter-sm q-mt-md">
-			<div class="col-xs-12">
+			<div
+				v-if="permissions.update"
+				class="col-xs-12"
+			>
 				<q-btn
 					:disable="disable_submit"
 					:label="is_empty_product ? 'Создать' : 'Сохранить'"
@@ -48,7 +54,10 @@
 					class="q-pa-lg full-width"
 				/>
 			</div>
-			<div class="col-xs-12">
+			<div
+				v-if="permissions.update"
+				class="col-xs-12"
+			>
 				<q-btn
 					label="Сбросить"
 					type="reset"
@@ -57,7 +66,7 @@
 				/>
 			</div>
 			<div
-				v-if="!is_empty_product"
+				v-if="!is_empty_product && permissions.delete"
 				class="col-xs-12"
 			>
 				<q-btn
@@ -78,9 +87,14 @@ import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { useQuasar } from "quasar"
+
 export default {
 	props: {
 		selectedProduct: {
+			type: Object,
+			default: () => ({})
+		},
+		permissions: {
 			type: Object,
 			default: () => ({})
 		}
@@ -90,11 +104,11 @@ export default {
 		const $q = useQuasar()
 		const $store = useStore()
 		const $router = useRouter()
+		const { notifySuccess, notifyError } = useNotification()
 
 		const product = ref(_.clone(props.selectedProduct))
 		const is_empty_product = computed(() => Object.keys(props.selectedProduct).length === 0)
 
-		const { notifySuccess, notifyError } = useNotification()
 		const disable_submit = ref(false)
 
 		const money_config = {

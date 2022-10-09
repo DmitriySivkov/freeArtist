@@ -33,17 +33,24 @@
 		<q-tab-panel name="common">
 			<ProducerProductSettingCommonTab
 				:selected-product="selectedProduct"
+				:permissions="permissions"
 				@product-created="$emit('productCreated', $event)"
 				@product-deleted="$emit('productDeleted', $event)"
 			/>
 		</q-tab-panel>
 
 		<q-tab-panel name="composition">
-			<ProducerProductSettingCompositionTab :selected-product="selectedProduct"/>
+			<ProducerProductSettingCompositionTab
+				:selected-product="selectedProduct"
+				:permissions="permissions"
+			/>
 		</q-tab-panel>
 
 		<q-tab-panel name="images">
-			<ProducerProductSettingImagesTab :selected-product="selectedProduct"/>
+			<ProducerProductSettingImagesTab
+				:selected-product="selectedProduct"
+				:permissions="permissions"
+			/>
 		</q-tab-panel>
 	</q-tab-panels>
 </template>
@@ -61,6 +68,10 @@ export default {
 	},
 	props: {
 		selectedProduct: {
+			type: Object,
+			default: () => ({})
+		},
+		permissions: {
 			type: Object,
 			default: () => ({})
 		}

@@ -2,7 +2,7 @@
 	<q-list>
 		<q-item-label
 			header
-			v-if="isAbleToEditUserPermissions"
+			v-if="is_able_to_edit_user_permissions"
 		>
 			Задайте права
 		</q-item-label>
@@ -18,7 +18,7 @@
 				<q-checkbox
 					v-model="selected_permissions"
 					:val="permission.id"
-					:disable="!isAbleToEditUserPermissions"
+					:disable="!is_able_to_edit_user_permissions"
 				/>
 			</q-item-section>
 
@@ -39,7 +39,7 @@
 				color="primary"
 				class="q-pa-lg full-width"
 				@click="setUserPermissions(producer.id, userId, selected_permissions)"
-				v-if="isAbleToEditUserPermissions"
+				v-if="is_able_to_edit_user_permissions"
 			/>
 		</div>
 	</q-page-sticky>
@@ -74,9 +74,9 @@ export default {
 		const auth_user = computed(() => $store.state.user)
 		const selected_user = computed(() => props.producer.users.find((u) => u.id === props.userId))
 
-		const isAbleToEditUserPermissions = computed(() =>
+		const is_able_to_edit_user_permissions = computed(() =>
 			(
-				hasPermission("producer", props.producer.id,"producer_manage_permissions") ||
+				hasPermission(props.producer.id,"producer_manage_permissions") ||
 				props.producer.user_id === auth_user.value.data.id
 			) &&
 			props.userId !== auth_user.value.data.id &&
@@ -105,7 +105,7 @@ export default {
 		return {
 			all_producer_permissions,
 			selected_permissions,
-			isAbleToEditUserPermissions,
+			is_able_to_edit_user_permissions,
 			setUserPermissions
 		}
 	}
