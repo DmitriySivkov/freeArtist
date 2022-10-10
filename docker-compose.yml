@@ -31,7 +31,7 @@ services:
       PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
     links:
       - pg
-      - mailcatcher
+#      - mailcatcher
     networks:
       net:
         ipv4_address: 172.21.1.3
