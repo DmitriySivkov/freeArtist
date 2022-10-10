@@ -56,3 +56,6 @@ Even possible to leave PC ip address as base API addr for any developing
 'q-card' inside v-for with columns works this way: 
 dont add gutters to row. 
 Pull margin classes from q-card to wrapper
+
+### create new DB with postgres
+make pg_container + psql -U root -W root + create database <name>
