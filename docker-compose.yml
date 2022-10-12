@@ -89,6 +89,8 @@ services:
       - ./ws:/var/www/ws
     links:
       - ws-php
+    ports:
+      - 6001:80
     networks:
       net:
         ipv4_address: 172.21.1.7
