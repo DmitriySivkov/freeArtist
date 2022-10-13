@@ -1,7 +1,6 @@
 version: '3.3'
 
 services:
-
   app-nginx:
     build:
       context: .
@@ -9,12 +8,10 @@ services:
     container_name: app-nginx
     volumes:
       - ./main:/var/www/app
-      - ./docker/app/ssl:/etc/nginx/ssl
-    links:
-      - app-php
-    ports:
-      - 443:443
-      - 8080:80
+#    ports:
+#      - 8080:8080
+    depends_on:
+      - nginx-reverse-proxy
     networks:
       net:
         ipv4_address: 172.21.1.2
@@ -36,34 +33,6 @@ services:
       net:
         ipv4_address: 172.21.1.3
 
-#  notifications-nginx:
-#    build:
-#      context: .
-#      dockerfile: docker/notifications/nginx.dockerfile
-#    container_name: notifications-nginx
-#    volumes:
-#      - ./notifications:/var/www/notifications
-#    links:
-#      - notifications-php
-#    networks:
-#      net:
-#        ipv4_address: 172.21.1.4
-#
-#  notifications-php:
-#    build:
-#      context: .
-#      dockerfile: docker/notifications/php-fpm.dockerfile
-#    container_name: notifications-php
-#    volumes:
-#      - ./notifications:/var/www/notifications
-#      - ./docker/notifications/php-ini:/usr/local/etc/php/custom.d
-#    environment:
-#      PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
-#    networks:
-#      net:
-#        ipv4_address: 172.21.1.5
-
-  # todo - separate with main app if necessary
   ws-php:
     build:
       context: .
@@ -72,28 +41,25 @@ services:
     volumes:
       - ./ws:/var/www/ws
       - ./docker/ws/php-ini:/usr/local/etc/php/custom.d
-    links:
-      - pg
     environment:
       PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
     networks:
       net:
         ipv4_address: 172.21.1.6
 
-  ws-nginx:
+  nginx-reverse-proxy:
     build:
       context: .
-      dockerfile: docker/ws/nginx.dockerfile
-    container_name: ws-nginx
+      dockerfile: docker/nginx-reverse-proxy/nginx.dockerfile
+    container_name: nginx-reverse-proxy
     volumes:
-      - ./ws:/var/www/ws
-    links:
-      - ws-php
+      - ./docker/nginx-reverse-proxy/ssl:/etc/nginx/ssl
     ports:
-      - 6001:80
+      - 443:443
+      - 80:80
     networks:
       net:
-        ipv4_address: 172.21.1.7
+        ipv4_address: 172.21.1.251
 
   pg:
     build:
