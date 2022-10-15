@@ -8,7 +8,8 @@ module.exports = function (ctx) {
 			"browseProducers",
 			"browseRoles",
 			"browsePermissions",
-			"money"
+			"money",
+			"ws"
 		],
 
 		css: [
@@ -52,7 +53,8 @@ module.exports = function (ctx) {
 			env: {
 				BACKEND_SERVER: ctx.mode.spa
 					? "https://freeartist.loc"
-					: (ctx.mode.cordova ? "https://192.168.1.3" : null)
+					: (ctx.mode.cordova ? "https://192.168.1.3" : null),
+				BACKEND_HOST: "freeartist.loc"
 			},
 
 			extendWebpack (cfg) {

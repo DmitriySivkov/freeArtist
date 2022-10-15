@@ -8,8 +8,6 @@ services:
     container_name: app-nginx
     volumes:
       - ./main:/var/www/app
-#    ports:
-#      - 8080:8080
     depends_on:
       - nginx-reverse-proxy
     networks:
@@ -40,12 +38,22 @@ services:
     container_name: ws-php
     volumes:
       - ./ws:/var/www/ws
-      - ./docker/ws/php-ini:/usr/local/etc/php/custom.d
-    environment:
-      PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
     networks:
       net:
-        ipv4_address: 172.21.1.6
+        ipv4_address: 172.21.1.4
+
+  ws-nginx:
+    build:
+      context: .
+      dockerfile: docker/ws/nginx.dockerfile
+    container_name: ws-nginx
+    volumes:
+      - ./ws:/var/www/ws
+    depends_on:
+      - nginx-reverse-proxy
+    networks:
+      net:
+        ipv4_address: 172.21.1.5
 
   nginx-reverse-proxy:
     build:
