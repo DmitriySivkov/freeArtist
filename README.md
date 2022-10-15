@@ -59,3 +59,7 @@ Pull margin classes from q-card to wrapper
 
 ### create new DB with postgres
 make pg_container + psql -U root -W root + create database <name>
+
+
+### ping websockets - from quasar dir
+node_modules/wscat/bin/wscat --connect wss://freeartist.loc/ws --no-check
