@@ -63,3 +63,6 @@ make pg_container + psql -U root -W root + create database <name>
 
 ### ping websockets - from quasar dir
 node_modules/wscat/bin/wscat --connect wss://freeartist.loc/ws --no-check
+
+### ping websockets with curl - from container to container
+curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" -H "Host: 172.21.1.5" -H "Origin: http://172.21.1.4" http://172.21.1.5

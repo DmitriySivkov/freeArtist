@@ -40,7 +40,7 @@ return [
                 'encrypted' => true,
                 'host' => env('PUSHER_APP_HOST'),
                 'port' => env('PUSHER_APP_PORT'),
-                'scheme' => env('PUSHER_APP_PROTOCOL')
+                'scheme' => env('PUSHER_APP_PROTOCOL'),
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
