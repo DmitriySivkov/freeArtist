@@ -5,8 +5,8 @@ window.Pusher = require("pusher-js")
 window.Echo = new Echo({
 	broadcaster: "pusher",
 	key: "local",
-	wsHost: process.env.BACKEND_HOST + "/ws",
+	wsHost: process.env.BACKEND_HOST + ":6001",
 	wsPort: 6001,
-	forceTLS: false,
+	forceTLS: true,
 	disableStats: true,
 })

@@ -21,3 +21,7 @@ Route::get('/', function () {
 Route::get('/ws', function () {
     broadcast(new Hello());
 });
+
+Route::post('/ws', function () {
+    broadcast(new Hello());
+});

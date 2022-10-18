@@ -24,7 +24,3 @@ RUN docker-php-ext-install pdo_pgsql zip exif pcntl soap ldap sockets
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-EXPOSE 6001
-
-CMD ["php", "artisan", "websockets:serve"]

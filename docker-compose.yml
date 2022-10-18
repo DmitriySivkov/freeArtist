@@ -8,6 +8,7 @@ services:
     container_name: app-nginx
     volumes:
       - ./main:/var/www/app
+      - ./docker/nginx-reverse-proxy/ssl:/etc/nginx/ssl
     depends_on:
       - nginx-reverse-proxy
     networks:
@@ -31,6 +32,7 @@ services:
       net:
         ipv4_address: 172.21.1.3
 
+#todo - go from 'php-fpm' to 'php'
   ws-php:
     build:
       context: .
@@ -38,6 +40,9 @@ services:
     container_name: ws-php
     volumes:
       - ./ws:/var/www/ws
+    #'websockets:serve' do not let the fpm start correctly
+    expose:
+      - 6001
     networks:
       net:
         ipv4_address: 172.21.1.4
@@ -49,6 +54,7 @@ services:
     container_name: ws-nginx
     volumes:
       - ./ws:/var/www/ws
+      - ./docker/nginx-reverse-proxy/ssl:/etc/nginx/ssl
     depends_on:
       - nginx-reverse-proxy
     networks:
@@ -65,6 +71,7 @@ services:
     ports:
       - 443:443
       - 80:80
+      - 6001:6001
     networks:
       net:
         ipv4_address: 172.21.1.251
