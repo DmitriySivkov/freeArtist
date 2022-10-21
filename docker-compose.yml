@@ -30,23 +30,24 @@ services:
 #      - mailcatcher
     expose:
       - 6001
+    depends_on:
+      - app-nginx
     networks:
       net:
         ipv4_address: 172.21.1.3
 
-#  ws-php:
-#    build:
-#      context: .
-#      dockerfile: docker/ws/php.dockerfile
-#    container_name: ws-php
-#    volumes:
-#      - ./ws:/var/www/ws
-#    expose:
-#      - 6001
-#    entrypoint: ["php", "artisan", "websockets:serve"]
-#    networks:
-#      net:
-#        ipv4_address: 172.21.1.4
+  queue-worker-php:
+    build:
+      context: .
+      dockerfile: docker/queue-worker/php-fpm.dockerfile
+    container_name: qw-php
+    volumes:
+      - ./qw:/var/www/qw
+    depends_on:
+      - rabbitmq
+    networks:
+      net:
+        ipv4_address: 172.21.1.4
 
   nginx-reverse-proxy:
     build:
@@ -96,20 +97,21 @@ services:
 #      net:
 #        ipv4_address: 172.21.1.253
 #
-#  rabbitmq:
-#    container_name: fa-rabbitmq
-#    image: rabbitmq:3.9-management
-#    environment:
-#      - RABBITMQ_DEFAULT_USER=root
-#      - RABBITMQ_DEFAULT_PASS=root
-#    ports:
-#      # AMQP protocol port
-#      - 5672:5672
-#      # HTTP management UI
-#      - 15672:15672
-#    networks:
-#      net:
-#        ipv4_address: 172.21.1.254
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.11.2-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=root
+    ports:
+      # HTTP management UI
+      - 15672:15672
+    expose:
+      # AMQP protocol port
+      - 5672
+    networks:
+      net:
+        ipv4_address: 172.21.1.254
 
 networks:
   net:

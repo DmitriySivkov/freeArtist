@@ -1,7 +1,7 @@
-FROM php:8.0
+FROM php:8.0-fpm
 
 # Set working directory
-WORKDIR /var/www/ws
+WORKDIR /var/www/qw
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
