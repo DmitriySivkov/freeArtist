@@ -28,38 +28,25 @@ services:
     links:
       - pg
 #      - mailcatcher
-    networks:
-      net:
-        ipv4_address: 172.21.1.3
-
-#todo - go from 'php-fpm' to 'php'
-  ws-php:
-    build:
-      context: .
-      dockerfile: docker/ws/php-fpm.dockerfile
-    container_name: ws-php
-    volumes:
-      - ./ws:/var/www/ws
-    #'websockets:serve' do not let the fpm start correctly
     expose:
       - 6001
     networks:
       net:
-        ipv4_address: 172.21.1.4
+        ipv4_address: 172.21.1.3
 
-  ws-nginx:
-    build:
-      context: .
-      dockerfile: docker/ws/nginx.dockerfile
-    container_name: ws-nginx
-    volumes:
-      - ./ws:/var/www/ws
-      - ./docker/nginx-reverse-proxy/ssl:/etc/nginx/ssl
-    depends_on:
-      - nginx-reverse-proxy
-    networks:
-      net:
-        ipv4_address: 172.21.1.5
+#  ws-php:
+#    build:
+#      context: .
+#      dockerfile: docker/ws/php.dockerfile
+#    container_name: ws-php
+#    volumes:
+#      - ./ws:/var/www/ws
+#    expose:
+#      - 6001
+#    entrypoint: ["php", "artisan", "websockets:serve"]
+#    networks:
+#      net:
+#        ipv4_address: 172.21.1.4
 
   nginx-reverse-proxy:
     build:
@@ -70,7 +57,6 @@ services:
       - ./docker/nginx-reverse-proxy/ssl:/etc/nginx/ssl
     ports:
       - 443:443
-      - 80:80
       - 6001:6001
     networks:
       net:
