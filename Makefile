@@ -1,4 +1,4 @@
-.PHONY: pg dump import workers
+.PHONY: pg dump import
 
 PG_CONTAINER_NAME = app-pg
 
@@ -41,3 +41,6 @@ ws:
 
 queue:
 	./queue.sh
+
+broadcast:
+	./broadcast.sh

@@ -13,7 +13,9 @@ return [
 	|
 	*/
 
-	'default' => env('QUEUE_CONNECTION', 'rabbitmq'),
+	'default' => env('QUEUE_CONNECTION', 'sync'),
+
+	'broadcast' => env('BROADCAST_QUEUE_NAME', 'broadcast'),
 
 	/*
 	|--------------------------------------------------------------------------

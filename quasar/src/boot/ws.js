@@ -10,3 +10,20 @@ window.Echo = new Echo({
 	forceTLS: true,
 	disableStats: true,
 })
+
+export default ({ store }) => {
+	let userProducers = store.state.userProducer.producers
+
+	if (userProducers.length !== 0) {
+		let ownProducer = userProducers.find((p) => p.user_id === store.state.user.data.id)
+
+		if (ownProducer) {
+			window.Echo.channel("relation-request")
+				.listen("RelationRequestCreated", (e) => {
+					console.log(e)
+				})
+		}
+	}
+}
+
+

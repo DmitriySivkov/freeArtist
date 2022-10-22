@@ -12,7 +12,15 @@ use Illuminate\Support\Facades\Broadcast;
 | used to check if an authenticated user can listen to the channel.
 |
 */
-
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+/** todo - make private */
+Broadcast::channel('relation-request', function () {
+	return true;
 });
+
+//Broadcast::channel('incoming-relation-requests.{toUserId}', function ($user, $toUserId) {
+//    return (int) $user->id === (int) $toUserId;
+//});
+//
+//Broadcast::channel('outgoing-relation-requests.{fromUserId}', function ($user, $fromUserId) {
+//	return (int) $user->id === (int) $fromUserId;
+//});

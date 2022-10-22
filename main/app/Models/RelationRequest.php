@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,7 +43,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RelationRequest extends Model
 {
-    use HasFactory;
+    use BroadcastsEvents, HasFactory;
 
     const TYPE_COWORKING = 1;
 	const TYPE_PRODUCER_PARTNERSHIP = 2;
@@ -74,6 +77,29 @@ class RelationRequest extends Model
     protected $with = ['from', 'to'];
 
 	protected $appends = ['status'];
+
+	/**
+	 * Get the channels that model events should broadcast on.
+	 *
+	 * @param  string  $event
+	 * @return \Illuminate\Broadcasting\Channel|array
+	 */
+	public function broadcastOn($event)
+	{
+		return [
+			new Channel('relation-request')
+		];
+	}
+
+	/**
+	 * Get the queue that should be used to broadcast model events.
+	 *
+	 * @return string|null
+	 */
+	public function broadcastQueue()
+	{
+		return config('queue.broadcast');
+	}
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Casts\Attribute
