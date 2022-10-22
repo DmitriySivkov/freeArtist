@@ -1,2 +1,2 @@
 #!/bin/bash
-docker exec -it app-php sh -c 'php artisan websockets:serve'
+docker exec -it ws-php sh -c 'php artisan websockets:serve'

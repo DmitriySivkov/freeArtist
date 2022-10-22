@@ -28,8 +28,6 @@ services:
     links:
       - pg
 #      - mailcatcher
-    expose:
-      - 6001
     depends_on:
       - app-nginx
     networks:
@@ -42,12 +40,25 @@ services:
       dockerfile: docker/queue-worker/php-fpm.dockerfile
     container_name: qw-php
     volumes:
-      - ./qw:/var/www/qw
+      - ./main:/var/www/qw
     depends_on:
       - rabbitmq
     networks:
       net:
         ipv4_address: 172.21.1.4
+
+  ws-php:
+    build:
+      context: .
+      dockerfile: docker/ws/php-fpm.dockerfile
+    container_name: ws-php
+    volumes:
+      - ./main:/var/www/ws
+    expose:
+      - 6001
+    networks:
+      net:
+        ipv4_address: 172.21.1.5
 
   nginx-reverse-proxy:
     build:
