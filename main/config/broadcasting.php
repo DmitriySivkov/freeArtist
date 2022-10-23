@@ -39,8 +39,12 @@ return [
 				'cluster' => env('PUSHER_APP_CLUSTER'),
 				'host' => env('PUSHER_APP_HOST'),
 				'port' => env('PUSHER_APP_PORT'),
-				'scheme' => env('PUSHER_APP_SCHEME')
+				'scheme' => env('PUSHER_APP_SCHEME'),
             ],
+			'client_options' => [
+				// for self signed ssl cert
+				'verify' => false
+			],
         ],
 
         'ably' => [

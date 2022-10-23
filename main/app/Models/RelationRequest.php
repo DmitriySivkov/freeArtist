@@ -86,7 +86,9 @@ class RelationRequest extends Model
 	 */
 	public function broadcastOn($event)
 	{
-		return new Channel('relation-request');
+		return [
+			new Channel('relation-request')
+		];
 	}
 
 	/**
