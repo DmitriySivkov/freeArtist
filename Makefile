@@ -49,3 +49,6 @@ queue:
 
 broadcast:
 	./broadcast.sh
+
+cache:
+	./cache.sh

@@ -71,3 +71,6 @@ curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" -H "Host: <ws host i
 
 ### rabbitmq
 booting rabbitmq 1st time requires the 'default' queue created manually
+
+### problems with permissions / cors / access to API
+make cache

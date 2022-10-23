@@ -48,7 +48,7 @@ class AuthController extends Controller
          * Cookie::forget is not used in this case because of required "sameSite=none" param
          */
         $cookie = cookie(
-            'token', '', -1, null, null, true, true, false, 'none'
+            'token', '', -1, null, null, true, true, false, 'None'
         );
 
         return response('logged out', 200)->withCookie($cookie);

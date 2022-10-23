@@ -9,6 +9,7 @@ window.Echo = new Echo({
 	wsPort: 6001,
 	forceTLS: true,
 	disableStats: true,
+	encrypted: true
 })
 
 export default ({ store }) => {

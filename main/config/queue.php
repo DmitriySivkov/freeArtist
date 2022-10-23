@@ -76,11 +76,6 @@ return [
 		'rabbitmq' => [
 			'driver' => 'rabbitmq',
 			'queue' => env('RABBITMQ_QUEUE', 'default'),
-			/*
-			 * Set to "horizon" if you wish to use Laravel Horizon.
-			 */
-			'worker' => env('RABBITMQ_WORKER', 'default'),
-			'dsn' => env('RABBITMQ_DSN', null),
 			'connection' => PhpAmqpLib\Connection\AMQPLazyConnection::class,
 
 			'hosts' => [
@@ -94,26 +89,6 @@ return [
 			],
 
 			'options' => [
-				'queue' => [
-					/*
-					* Determine if queue should be created if it does not exist.
-					*/
-					'declare' => env('RABBITMQ_QUEUE_DECLARE', true),
-
-					/*
-					* Determine if queue should be binded to the exchange created.
-					*/
-					'bind' => env('RABBITMQ_QUEUE_DECLARE_BIND', true),
-
-					/*
-					* Read more about possible values at https://www.rabbitmq.com/tutorials/amqp-concepts.html
-					*/
-					'passive' => env('RABBITMQ_QUEUE_PASSIVE', false),
-					'durable' => env('RABBITMQ_QUEUE_DURABLE', true),
-					'exclusive' => env('RABBITMQ_QUEUE_EXCLUSIVE', false),
-					'auto_delete' => env('RABBITMQ_QUEUE_AUTODELETE', false),
-					'arguments' => env('RABBITMQ_QUEUE_ARGUMENTS'),
-				],
 				'ssl_options' => [
 					'cafile' => env('RABBITMQ_SSL_CAFILE', null),
 					'local_cert' => env('RABBITMQ_SSL_LOCALCERT', null),
@@ -121,7 +96,16 @@ return [
 					'verify_peer' => env('RABBITMQ_SSL_VERIFY_PEER', true),
 					'passphrase' => env('RABBITMQ_SSL_PASSPHRASE', null),
 				],
+				'queue' => [
+					'job' => VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob::class,
+				],
 			],
+
+			/*
+			 * Set to "horizon" if you wish to use Laravel Horizon.
+			 */
+			'worker' => env('RABBITMQ_WORKER', 'default'),
+			'after_commit' => false,
 		],
 
 	],

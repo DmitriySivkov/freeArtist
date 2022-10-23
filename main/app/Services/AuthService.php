@@ -49,7 +49,7 @@ class AuthService
 			'user_producer' => $this->getUserProducerTeams()
 		])
 			->withCookie(
-				cookie('token', $token, 0, null, null, true, true, false, 'none')
+				cookie('token', $token, 0, null, null, true, true, false, 'None')
 			);
     }
 
@@ -68,11 +68,11 @@ class AuthService
         $this->user = auth("sanctum")->user();
 
 		// todo - setup api cache settings. For now - "php artisan optimize" if backend is changed
-		if (!$this->user) {
-			$request->headers->remove('Authorization');
-			$request->cookies->remove('token');
-			return false;
-		}
+//		if (!$this->user) {
+//			$request->headers->remove('Authorization');
+//			$request->cookies->remove('token');
+//			return false;
+//		}
 
 		$this->getUserPayload();
 
