@@ -74,3 +74,15 @@ booting rabbitmq 1st time requires the 'default' queue created manually
 
 ### problems with permissions / cors / access to API
 make cache
+
+### cant connect to websockets locally
+Its self-signed certificate problem. Manually enter websocket url and accept certificate
+
+### start websockets
+make ws
+
+### start websockets in silent mode
+make ws-silent
+
+### start broadcast responsible queue
+make broadcast

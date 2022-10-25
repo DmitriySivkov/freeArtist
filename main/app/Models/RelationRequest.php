@@ -86,9 +86,11 @@ class RelationRequest extends Model
 	 */
 	public function broadcastOn($event)
 	{
-		return [
-			new Channel('relation-request')
-		];
+		$broadcastOn = [];
+		if (is_a($this->from, User::class) && is_a($this->to, Producer::class))
+			$broadcastOn[] = new PrivateChannel('relation-request.user.' . $this->from->id . '.' . $this->to->team->user_id);
+
+		return $broadcastOn;
 	}
 
 	/**

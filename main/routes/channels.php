@@ -12,15 +12,15 @@ use Illuminate\Support\Facades\Broadcast;
 | used to check if an authenticated user can listen to the channel.
 |
 */
-/** todo - make private */
-Broadcast::channel('relation-request', function () {
-	return true;
-});
 
-//Broadcast::channel('incoming-relation-requests.{toUserId}', function ($user, $toUserId) {
-//    return (int) $user->id === (int) $toUserId;
-//});
-//
-//Broadcast::channel('outgoing-relation-requests.{fromUserId}', function ($user, $fromUserId) {
-//	return (int) $user->id === (int) $fromUserId;
-//});
+/** sender-user and receiver-producer know about related requests state */
+Broadcast::channel('relation-requests.user.{fromId}.producer.{toId}', function (\App\Models\User $user, $fromId, $toId) {
+	$producerTeam = \App\Models\Team::find($toId);
+	return $user->id === $fromId ||
+		(
+			$user->id === $producerTeam->user_id ||
+			$user->hasPermission([
+				\App\Models\Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name']
+			], $producerTeam->name)
+		);
+});

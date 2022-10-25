@@ -44,6 +44,9 @@ ws-php_container:
 ws:
 	./ws.sh
 
+ws-silent:
+	./ws.sh silent
+
 queue:
 	./queue.sh
 

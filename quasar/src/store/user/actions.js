@@ -1,10 +1,15 @@
 import { api } from "src/boot/axios"
+import { echo } from "src/boot/ws"
 
-export const login = async ({commit}, payload) => {
+export const login = async ({commit, state}, payload) => {
 	const response = await api.post("auth", payload)
 	commit("SET_USER", response.data.user)
 	commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
 	commit("SET_IS_LOGGED", true)
+	// echo.private("relation-requests." + state.data.id)
+	// 	.listen(".RelationRequestCreated", (e) => {
+	// 		console.log(e)
+	// 	})
 }
 
 export const signUp = async ({commit}, payload) => {
