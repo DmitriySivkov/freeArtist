@@ -13,14 +13,16 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-/** sender-user and receiver-producer know about related requests state */
-Broadcast::channel('relation-requests.user.{fromId}.producer.{toId}', function (\App\Models\User $user, $fromId, $toId) {
-	$producerTeam = \App\Models\Team::find($toId);
-	return $user->id === $fromId ||
-		(
-			$user->id === $producerTeam->user_id ||
-			$user->hasPermission([
-				\App\Models\Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name']
-			], $producerTeam->name)
-		);
+/** common user listens to his outgoing requests */
+Broadcast::channel('relation-requests.user.{userId}', function (\App\Models\User $user, $userId) {
+	return $user->id === $userId;
+});
+
+/** producer listens to his incoming requests */
+Broadcast::channel('relation-requests.producer.{producerId}', function (\App\Models\User $user, $producerId) {
+	$producerTeam = \App\Models\Team::find($producerId);
+	return $user->id === $producerTeam->user_id ||
+		$user->hasPermission([
+			\App\Models\Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name']
+		], $producerTeam->name);
 });
