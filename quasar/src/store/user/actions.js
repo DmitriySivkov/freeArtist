@@ -1,7 +1,4 @@
 import { api } from "src/boot/axios"
-import { echo } from "src/boot/ws"
-import { useUserProducer } from "src/composables/userProducer"
-import { useUserPermission } from "src/composables/userPermission"
 
 export const login = async ({commit, state}, payload) => {
 	const response = await api.post("auth", payload)
@@ -9,28 +6,6 @@ export const login = async ({commit, state}, payload) => {
 	commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
 	commit("SET_IS_LOGGED", true)
 
-	// todo move someone to routes - injects here are forbidden
-	const { producerTeams } = useUserProducer()
-	const { hasPermission } = useUserPermission()
-
-	echo.private("relation-requests.user." + state.data.id)
-		.listen(".RelationRequestCreated", (e) => {
-			console.log(e)
-		})
-
-	if (producerTeams.value.length > 0) {
-		for (let i in producerTeams.value) {
-			if (
-				producerTeams.value[i].user_id === state.data.id ||
-				hasPermission(producerTeams.value[i].id, ["producer_incoming_coworking_requests"])
-			) {
-				echo.private("relation-requests.producer." + producerTeams.value[i].id)
-					.listen(".RelationRequestCreated", (e) => {
-						console.log(e)
-					})
-			}
-		}
-	}
 }
 
 export const signUp = async ({commit}, payload) => {
@@ -41,7 +16,6 @@ export const signUp = async ({commit}, payload) => {
 }
 
 export const logout = async ({commit, state}, payload) => {
-	echo.disconnect()
 	await api.post("personal/logout", payload)
 	commit("SET_USER", {})
 	commit("userProducer/EMPTY_USER_PRODUCER", {}, { root:true })

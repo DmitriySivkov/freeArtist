@@ -1,7 +1,6 @@
-import { route } from "quasar/wrappers"
-import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from "vue-router"
+import {route} from "quasar/wrappers"
+import {createMemoryHistory, createRouter, createWebHashHistory, createWebHistory} from "vue-router"
 import routes from "src/router/routes"
-import { Loading } from "quasar"
 
 /*
  * If not building with SSR mode, you can
@@ -17,8 +16,8 @@ export default route( async ({ store, ssrContext }) => {
 		? createMemoryHistory
 		: (process.env.VUE_ROUTER_MODE === "history" ? createWebHistory : createWebHashHistory)
 
-	const Router = createRouter({
-		scrollBehavior: () => ({ left: 0, top: 0 }),
+	return createRouter({
+		scrollBehavior: () => ({left: 0, top: 0}),
 		routes,
 
 		// Leave this as is and make changes in quasar.conf.js instead!
@@ -26,12 +25,4 @@ export default route( async ({ store, ssrContext }) => {
 		// quasar.conf.js -> build -> publicPath
 		history: createHistory(process.env.MODE === "ssr" ? void 0 : process.env.VUE_ROUTER_BASE)
 	})
-
-	Router.beforeEach((to, from, next) => {
-		if (to.meta.requires_auth && !store.state.user.isLogged) next({ name: "home" })
-		if (to.name === "login" && store.state.user.isLogged) next({name: "home"})
-		else next()
-	})
-
-	return Router
 })

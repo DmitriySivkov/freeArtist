@@ -9,6 +9,12 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+
+Broadcast::routes(['middleware' => [
+	'appendAuthorizationHeader',
+	'auth:sanctum'
+]]);
+
 /*
 |--------------------------------------------------------------------------
 | API Routes

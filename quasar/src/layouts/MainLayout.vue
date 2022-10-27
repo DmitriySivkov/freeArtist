@@ -14,6 +14,6 @@ import Header from "src/layouts/Header"
 
 export default {
 	name: "MainLayout",
-	components: { Header, Footer},
+	components: { Header, Footer },
 }
 </script>

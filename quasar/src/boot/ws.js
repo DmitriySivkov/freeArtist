@@ -13,6 +13,21 @@ const echo = new Echo({
 	forceTLS: true,
 	disableStats: true,
 	enabledTransports: ["ws", "wss"],
+	authEndpoint: process.env.BACKEND_SERVER + "/api/broadcasting/auth",
+	auth: {
+		headers: {
+			"Accept": "Application/json",
+			"Access-Control-Allow-Credentials": true,
+		}
+	}
+})
+
+echo.connector.pusher.connection.bind("connected", function() {
+	window.Pusher.isConnected = true
+})
+
+echo.connector.pusher.connection.bind("disconnected", function(){
+	window.Pusher.isConnected = false
 })
 
 export { echo }

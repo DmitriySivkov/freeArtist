@@ -9,7 +9,8 @@ module.exports = function (ctx) {
 			"browseRoles",
 			"browsePermissions",
 			"money",
-			"ws"
+			"ws",
+			"routes"
 		],
 
 		css: [
