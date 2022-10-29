@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Broadcast;
 
 /** common user listens to his outgoing requests */
 Broadcast::channel('relation-requests.user.{userId}', function (\App\Models\User $user, $userId) {
-	return $user->id === $userId;
+	return $user->id === (int)$userId;
 });
 
 /** producer listens to his incoming requests */

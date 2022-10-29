@@ -1,5 +1,6 @@
 import Echo from "laravel-echo"
 import Pusher from "pusher-js"
+import { api } from "src/boot/axios"
 
 window.Pusher = Pusher
 window.Pusher.logToConsole = true
@@ -13,12 +14,20 @@ const echo = new Echo({
 	forceTLS: true,
 	disableStats: true,
 	enabledTransports: ["ws", "wss"],
-	authEndpoint: process.env.BACKEND_SERVER + "/api/broadcasting/auth",
-	auth: {
-		withCredentials: true,
-		headers: {
-			"Accept": "Application/json",
-			"Access-Control-Allow-Credentials": true,
+	authorizer: (channel, options) => {
+		return {
+			authorize: (socketId, callback) => {
+				api.post("broadcasting/auth", {
+					socket_id: socketId,
+					channel_name: channel.name
+				})
+					.then(response => {
+						callback(false, response.data)
+					})
+					.catch(error => {
+						callback(true, error)
+					})
+			}
 		}
 	},
 })
