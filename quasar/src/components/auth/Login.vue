@@ -76,7 +76,7 @@ import { useRouter } from "vue-router"
 import { useStore } from "vuex"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
-
+import { api } from "src/boot/axios"
 export default {
 	setup() {
 		const $router = useRouter()
@@ -93,16 +93,18 @@ export default {
 			is_pwd,
 
 			onSubmit() {
-				$store.dispatch("user/login", {
-					phone: phone.value,
-					password: password.value,
-				}).then(() => {
-					notifySuccess("Будь как дома, путник!")
-					$router.push({name: "personal"})
-				}).catch((error) => {
-					const errors = Object.values(error.response.data.errors)
-						.reduce((accum, val) => accum.concat(...val), [])
-					notifyError(errors)
+				api.get("sanctum/csrf-cookie").then((response) => {
+					$store.dispatch("user/login", {
+						phone: phone.value,
+						password: password.value,
+					}).then(() => {
+						notifySuccess("Будь как дома, путник!")
+						$router.push({name: "personal"})
+					}).catch((error) => {
+						const errors = Object.values(error.response.data.errors)
+							.reduce((accum, val) => accum.concat(...val), [])
+						notifyError(errors)
+					})
 				})
 			},
 

@@ -12,6 +12,7 @@ use App\Services\RelationRequests\ProducerRelationRequestService;
 use App\Services\RelationRequests\UserRelationRequestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
@@ -25,62 +26,38 @@ class AuthService
 	 */
 	public function loginWithCredentials($credentials)
     {
-        if (!auth()->attempt($credentials))
-            return response()->json(['errors' => ['total' => ['Неверный телефон или пароль']]], 422);
+		if (!Auth::attempt($credentials))
+			return response()->json(['errors' => ['total' => ['Неверный телефон или пароль']]], 422);
 
-        $this->user = auth()->user();
-        $abilities = ['*'];
+		request()->session()->regenerate();
 
-		$loginToken = PersonalAccessToken::query()->where('tokenable_id', $this->user->id)
-			->where('tokenable_type', User::class)->first();
+		$this->user = auth()->user();
 
-		if ($loginToken) {
-			$abilities = $loginToken->abilities;
-			$loginToken->delete();
-		}
-
-		$token = $this->user->createToken($this->user->phone, $abilities)
-			->plainTextToken;
-
-		$this->getUserPayload();
-
-        return response()->json([
-			'user' => $this->user,
-			'user_producer' => $this->getUserProducerTeams()
-		])
-			->withCookie(
-				cookie('token', $token, 0, null, null, true, true, false, 'None')
-			);
+		return $this->makeResponse();
     }
 
 	/**
-	 * @param Request $request
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function loginWithToken(Request $request)
+	public function loginWithToken()
     {
-        if (
-			!$request->hasHeader('Authorization') ||
-			$request->header('Authorization') !== 'Bearer ' . $request->cookie('token')
-		)
-            $request->headers->set('Authorization', 'Bearer ' . $request->cookie('token'));
-
         $this->user = auth("sanctum")->user();
 
-		// todo - setup api cache settings. For now - "php artisan optimize" if backend is changed
-//		if (!$this->user) {
-//			$request->headers->remove('Authorization');
-//			$request->cookies->remove('token');
-//			return false;
-//		}
+		return $this->makeResponse();
+    }
 
+	/**
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	private function makeResponse()
+	{
 		$this->getUserPayload();
 
-        return response()->json([
+		return response()->json([
 			'user' => $this->user,
 			'user_producer' => $this->getUserProducerTeams()
 		]);
-    }
+	}
 
 	/**
 	 * @return void

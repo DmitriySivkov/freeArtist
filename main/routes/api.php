@@ -11,10 +11,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 /** won't work in broadcastServiceProvider for some reason */
-Broadcast::routes(['middleware' => [
-	'appendAuthorizationHeader',
-	'auth:sanctum'
-]]);
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +26,7 @@ Broadcast::routes(['middleware' => [
 
 /** no auth requiring routes */
 Route::post('register', [RegisterController::class, 'store']);
-Route::post('hasTokenCookie', [AuthController::class, 'hasTokenCookie']);
+Route::post('authViaSession', [AuthController::class, 'authViaSession']);
 
 // todo - incognito mode does not support session cookie
 Route::group(['prefix' => 'auth'], function() {
@@ -52,10 +49,7 @@ Route::group(['prefix' => 'producers'], function() {
 
 /** auth requiring routes */
 Route::group([
-	'middleware' => [
-		'appendAuthorizationHeader',
-		'auth:sanctum'
-	],
+	'middleware' => ['auth:sanctum'],
 	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);

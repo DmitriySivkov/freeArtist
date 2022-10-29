@@ -2,7 +2,7 @@ module.exports = function (ctx) {
 	return {
 		preFetch: true,
 		boot: [
-			"checkTokenCookie",
+			"authViaSession",
 			"axios",
 			"setCartFromLocalStorage",
 			"browseProducers",
@@ -53,9 +53,9 @@ module.exports = function (ctx) {
 
 			env: {
 				BACKEND_SERVER: ctx.mode.spa
-					? "https://freeartist.loc"
+					? "https://api.freeartist.loc"
 					: (ctx.mode.cordova ? "https://192.168.1.3" : null),
-				BACKEND_HOST: "freeartist.loc"
+				BACKEND_HOST: "api.freeartist.loc"
 			},
 
 			extendWebpack (cfg) {
@@ -75,6 +75,7 @@ module.exports = function (ctx) {
 			https: true,
 			port: ctx.mode.spa ? 8081
 				: (ctx.mode.pwa ? 9090 : 9000),
+			host: "app.freeartist.loc",
 			open: true
 		},
 

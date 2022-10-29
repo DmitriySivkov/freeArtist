@@ -22,8 +22,8 @@ export const logout = async ({commit, state}, payload) => {
 	commit("SET_IS_LOGGED", false)
 }
 
-export const checkTokenCookie = async ({commit}) => {
-	const response = await api.post("hasTokenCookie")
+export const authViaSession = async ({commit}) => {
+	const response = await api.post("authViaSession")
 	if (response.data) {
 		commit("SET_USER", response.data.user)
 		commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })

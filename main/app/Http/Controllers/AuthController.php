@@ -8,10 +8,11 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
-
 	/**
 	 * @param Request $request
 	 * @param AuthService $authService
@@ -19,52 +20,32 @@ class AuthController extends Controller
 	 */
 	public function login(Request $request, AuthService $authService)
     {
-        if ($request->has(['phone', 'password']))
-            return $authService->loginWithCredentials($request->only(['phone', 'password']));
+		if ($request->has(['phone', 'password']))
+			return $authService->loginWithCredentials($request->only(['phone', 'password']));
 
-        if ($request->hasCookie('token'))
-            return $authService->loginWithToken($request);
-
-        return response('Ошибка сервера авторизации', 422);
+		return response('Ошибка сервера авторизации', 422);
     }
 
     /**
-     * @param Request $request
      * @return ResponseFactory|Response
-     *
-     * its now logging out of current device.
-     * Theres also a way to logout for all devices
      */
-    public function logout(Request $request)
+    public function logout()
     {
-        /** @var User $user */
-        $user = $request->user();
+		Auth::guard('web')->logout();
 
-        $user->currentAccessToken()->delete();
-        if ($request->hasHeader('Authorization'))
-            $request->headers->remove('Authorization');
-
-        /**
-         * Cookie::forget is not used in this case because of required "sameSite=none" param
-         */
-        $cookie = cookie(
-            'token', '', -1, null, null, true, true, false, 'None'
-        );
-
-        return response('logged out', 200)->withCookie($cookie);
+        return response('Успешно', 200);
     }
 
 	/**
-	 * @param Request $request
 	 * @param AuthService $authService
 	 * @return false|\Illuminate\Http\JsonResponse
 	 */
-	public function hasTokenCookie(Request $request, AuthService $authService)
+	public function authViaSession(AuthService $authService)
 	{
-		if (!$request->hasCookie('token'))
+		if (!Auth::check())
 			return false;
 
-		return $authService->loginWithToken($request);
+		return $authService->loginWithToken();
 	}
 
 	/**
