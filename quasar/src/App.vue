@@ -14,11 +14,11 @@ export default defineComponent({
 		const { hasPermission } = useUserPermission()
 		const { user } = useUser()
 
-		watch(() => user.value.data.id, (userId) => {
-			if (userId) {
-				if (!window.Pusher.isConnected)
-					echo.connect()
+		const relationRequestSocket = () => {
+			if (!window.Pusher.isConnected)
+				echo.connect()
 
+			if (user.value.data.id) {
 				echo.private("relation-requests.user." + user.value.data.id)
 					.listen(".RelationRequestCreated", (e) => {
 						console.log(e)
@@ -37,6 +37,14 @@ export default defineComponent({
 						}
 					}
 				}
+			}
+		}
+
+		relationRequestSocket()
+
+		watch(() => user.value.data.id, (userId) => {
+			if (userId) {
+				relationRequestSocket()
 			} else {
 				echo.disconnect()
 			}

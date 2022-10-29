@@ -15,11 +15,12 @@ const echo = new Echo({
 	enabledTransports: ["ws", "wss"],
 	authEndpoint: process.env.BACKEND_SERVER + "/api/broadcasting/auth",
 	auth: {
+		withCredentials: true,
 		headers: {
 			"Accept": "Application/json",
 			"Access-Control-Allow-Credentials": true,
 		}
-	}
+	},
 })
 
 echo.connector.pusher.connection.bind("connected", function() {

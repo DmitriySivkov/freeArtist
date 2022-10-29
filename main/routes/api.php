@@ -7,9 +7,10 @@ use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
-
+/** won't work in broadcastServiceProvider for some reason */
 Broadcast::routes(['middleware' => [
 	'appendAuthorizationHeader',
 	'auth:sanctum'
