@@ -87,8 +87,9 @@
 import { useRelationRequestManager } from "src/composables/relationRequestManager"
 import { useNotification } from "src/composables/notification"
 import { useStore } from "vuex"
+import { useUserProducer } from "src/composables/userProducer"
+import { useRouter } from "vue-router"
 import { computed } from "vue"
-
 export default {
 	props: {
 		producer: {
@@ -98,13 +99,14 @@ export default {
 	},
 	setup(props) {
 		const $store = useStore()
+		const $router = useRouter()
 		const
 			{
 				relationRequest,
-				incomingCoworkingRequests,
 				acceptCoworkingRequest,
 				rejectCoworkingRequest,
 			} = useRelationRequestManager()
+		const { producerTeams } = useUserProducer()
 		const { notifySuccess, notifyError } = useNotification()
 
 		const acceptCowRequest = (requestId) => {
@@ -119,8 +121,14 @@ export default {
 				.catch((error) => { notifyError(error.response.data) })
 		}
 
-		const incomingCowRequests = incomingCoworkingRequests(props.producer.id)
-			.filter((request) => request.status.id === $store.state.relationRequest.statuses.pending.id)
+		const incomingCowRequests = computed(() =>
+			producerTeams.value.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
+				.requests
+				.data
+				.incoming_coworking_requests
+			// .filter((request) => request.status.id === $store.state.relationRequest.statuses.pending.id)
+		)
+
 
 		return {
 			relationRequest,

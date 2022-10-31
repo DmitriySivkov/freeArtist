@@ -11,11 +11,15 @@ export const SET_PRODUCER_PRODUCTS = (state, {products, producer_id}) => {
 
 export const SET_PRODUCER_INCOMING_RELATION_REQUESTS = (state, payload) => {
 	let producer = state.producers.find((team) => team.id === payload.producer_id)
-	if (producer.hasOwnProperty("incoming_coworking_requests")) {
-		producer.incoming_coworking_requests = [...payload.incoming_coworking_requests, producer.incoming_coworking_requests]
-	} else {
-		producer.incoming_coworking_requests = payload.incoming_coworking_requests
-	}
+
+	producer.requests.total_pending_request_count++
+	/** later there will be more types of incoming requests **/
+	producer.requests.data.incoming_coworking_requests = [
+		...producer.requests.data.incoming_coworking_requests,
+		...payload.incoming_coworking_requests
+	]
+
+
 }
 
 export const EMPTY_USER_PRODUCER = (state) => {

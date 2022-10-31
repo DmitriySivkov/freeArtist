@@ -2,14 +2,16 @@
 	<router-view />
 </template>
 <script>
-import {defineComponent, watch} from "vue"
-import {echo} from "boot/ws"
-import {useUserProducer} from "src/composables/userProducer"
-import {useUserPermission} from "src/composables/userPermission"
-import {useUser} from "src/composables/user"
+import { defineComponent, watch } from "vue"
+import { echo } from "boot/ws"
+import { useUserProducer } from "src/composables/userProducer"
+import { useUserPermission } from "src/composables/userPermission"
+import { useUser } from "src/composables/user"
+import { useStore } from "vuex"
 export default defineComponent({
 	name: "App",
 	setup() {
+		const $store = useStore()
 		const { producerTeams } = useUserProducer()
 		const { hasPermission } = useUserPermission()
 		const { user } = useUser()
@@ -21,7 +23,7 @@ export default defineComponent({
 			if (user.value.data.id) {
 				echo.private("relation-requests.user." + user.value.data.id)
 					.listen(".RelationRequestCreated", (e) => {
-						console.log(e)
+						console.log(e.model)
 					})
 
 				if (producerTeams.value.length > 0) {
@@ -32,7 +34,10 @@ export default defineComponent({
 						) {
 							echo.private("relation-requests.producer." + producerTeams.value[i].id)
 								.listen(".RelationRequestCreated", (e) => {
-									console.log(e)
+									$store.commit("userProducer/SET_PRODUCER_INCOMING_RELATION_REQUESTS", {
+										incoming_coworking_requests: [e.model],
+										producer_id: producerTeams.value[i].id
+									})
 								})
 						}
 					}
