@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-/** common user listens to his outgoing requests */
+/** user's requests */
 Broadcast::channel('relation-requests.user.{userId}', function (\App\Models\User $user, $userId) {
 	return $user->id === (int)$userId;
 });
 
-/** producer listens to his incoming requests */
-Broadcast::channel('relation-requests.producer.{producerId}', function (\App\Models\User $user, $producerId) {
+/** producer's requests */
+Broadcast::channel('relation-requests.incoming.producer.{producerId}', function (\App\Models\User $user, $producerId) {
 	$producerTeam = \App\Models\Team::find($producerId);
 	return $user->id === $producerTeam->user_id ||
 		$user->hasPermission([

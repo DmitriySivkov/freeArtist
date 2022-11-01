@@ -24,6 +24,11 @@ export const SET_USER_OUTGOING_COWORKING_REQUESTS = (state, request) => {
 		state.data.outgoing_coworking_requests = [request]
 }
 
+export const SET_USER_OUTGOING_COWORKING_REQUEST_STATUS = (state, {request_id, status}) => {
+	const request = state.data.outgoing_coworking_requests.find((request) => request.id === request_id)
+	request.status = status
+}
+
 export const CANCEL_USER_OUTGOING_COWORKING_REQUEST = (state, payload) => {
 	state.data.outgoing_coworking_requests
 		.find((request) => request.id === payload.canceledRequest.id)

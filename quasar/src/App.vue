@@ -23,7 +23,13 @@ export default defineComponent({
 			if (user.value.data.id) {
 				echo.private("relation-requests.user." + user.value.data.id)
 					.listen(".RelationRequestCreated", (e) => {
-						console.log(e.model)
+
+					})
+					.listen(".RelationRequestUpdated", (e) => {
+						$store.commit("user/SET_USER_OUTGOING_COWORKING_REQUEST_STATUS", {
+							request_id: e.model.id,
+							status: e.model.status
+						})
 					})
 
 				if (producerTeams.value.length > 0) {
@@ -32,11 +38,18 @@ export default defineComponent({
 							producerTeams.value[i].user_id === user.value.data.id ||
 							hasPermission(producerTeams.value[i].id, ["producer_incoming_coworking_requests"])
 						) {
-							echo.private("relation-requests.producer." + producerTeams.value[i].id)
+							echo.private("relation-requests.incoming.producer." + producerTeams.value[i].id)
 								.listen(".RelationRequestCreated", (e) => {
 									$store.commit("userProducer/SET_PRODUCER_INCOMING_RELATION_REQUESTS", {
 										incoming_coworking_requests: [e.model],
 										producer_id: producerTeams.value[i].id
+									})
+								})
+								.listen(".RelationRequestUpdated", (e) => {
+									$store.commit("userProducer/SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
+										producer_id: producerTeams.value[i].id,
+										request_id: e.model.id,
+										status: e.model.status
 									})
 								})
 						}

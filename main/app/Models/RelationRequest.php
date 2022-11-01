@@ -92,9 +92,9 @@ class RelationRequest extends Model
 				'relation-requests.user.' . ( is_a($this->from, User::class) ? $this->from->id : $this->to->id )
 			);
 
-		if (is_a($this->from, User::class) && is_a($this->to, Producer::class))
+		if (is_a($this->to, Producer::class))
 			$broadcastOn[] = new PrivateChannel(
-				'relation-requests.producer.' . $this->to->id
+				'relation-requests.incoming.producer.' . $this->to->id
 			);
 
 		return $broadcastOn;

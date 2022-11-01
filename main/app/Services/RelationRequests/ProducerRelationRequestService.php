@@ -21,7 +21,6 @@ class ProducerRelationRequestService
 			throw new \LogicException('Изготовитель не задан');
 
 		return $this->producer->incomingRelationRequests()
-			->where('status', RelationRequest::STATUS_PENDING['id'])
 			->where('from_type', User::class)
 			->get();
 	}
