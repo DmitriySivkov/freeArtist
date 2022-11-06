@@ -43,7 +43,7 @@ return [
             ],
 			'client_options' => [
 				// for self signed ssl cert
-				'verify' => false
+				'verify' => env('APP_ENV') === 'production'
 			],
         ],
 

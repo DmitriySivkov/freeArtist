@@ -26,3 +26,7 @@ Broadcast::channel('relation-requests.incoming.producer.{producerId}', function 
 			\App\Models\Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name']
 		], $producerTeam->name);
 });
+
+Broadcast::channel('permissions.{userId}', function (\App\Models\User $user, $userId) {
+	return $user->id === (int)$userId;
+});

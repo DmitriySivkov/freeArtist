@@ -2,6 +2,7 @@
 
 namespace App\Services\Permissions;
 
+use App\Events\UserPermissionsSynchronized;
 use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\User;
@@ -34,6 +35,12 @@ class ProducerPermissionService
 		$permissions = Permission::whereIn('id', $permissionIds)->get();
 
 		$user->syncPermissions($permissions, $producer->team);
+
+		UserPermissionsSynchronized::dispatch(
+			$user,
+			$producer,
+			$user->allPermissions(null, $producer->team)
+		);
 
 		return $permissions;
 	}

@@ -16,7 +16,6 @@ class UserRelationRequestService
 	public function getOutgoingCoworkingRequests()
 	{
 		return $this->user->outgoingRelationRequests()
-			->where('status', '!=', RelationRequest::STATUS_ACCEPTED['id'])
 			->get()
 			->loadMorph('to', [
 				Producer::class => ['team']

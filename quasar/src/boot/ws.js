@@ -3,7 +3,7 @@ import Pusher from "pusher-js"
 import { api } from "src/boot/axios"
 
 window.Pusher = Pusher
-window.Pusher.logToConsole = false
+window.Pusher.logToConsole = true
 
 const echo = new Echo({
 	broadcaster: "pusher",

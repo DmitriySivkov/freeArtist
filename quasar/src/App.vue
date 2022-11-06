@@ -55,6 +55,16 @@ export default defineComponent({
 						}
 					}
 				}
+
+				echo.private("permissions." + user.value.data.id)
+					.listen(".permissions.synced", (e) => {
+						console.log(e)
+						$store.commit("userProducer/SYNC_PRODUCER_USER_PERMISSIONS", {
+							producer_id: e.producer.id,
+							user_id: e.user.id,
+							permissions: e.permissions
+						})
+					})
 			}
 		}
 
