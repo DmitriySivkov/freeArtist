@@ -60,4 +60,14 @@ class Team extends LaratrustTeam
 	{
 		return $this->morphTo();
 	}
+
+	public function users()
+	{
+		return $this->belongsToMany(
+			User::class,
+			'role_user',
+			'team_id',
+			'user_id'
+		);
+	}
 }

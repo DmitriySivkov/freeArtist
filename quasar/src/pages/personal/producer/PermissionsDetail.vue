@@ -20,17 +20,9 @@ import ProducerPermissionList from "src/components/producers/ProducerPermissionL
 import { useRoute } from "vue-router"
 import { useUserProducer } from "src/composables/userProducer"
 import { computed, ref } from "vue"
-import { Loading } from "quasar"
 import { useStore } from "vuex"
 
 export default {
-	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-		Loading.show({
-			spinnerColor: "primary",
-		})
-		return store.dispatch("userProducer/getProducerUserList", parseInt(currentRoute.params.team_id))
-			.then(() => Loading.hide())
-	},
 	components: { ProducerUserList, ProducerPermissionList },
 	setup() {
 		const $route = useRoute()
