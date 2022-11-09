@@ -66,11 +66,31 @@ export default {
 		const { notifySuccess, notifyError } = useNotification()
 		const all_producer_permissions = computed(() => $store.state.permission.producer)
 
-		const selected_permissions = ref(
-			props.userId === props.producer.user_id ?
-				all_producer_permissions.value.map((p) => p.id) :
-				getProducerUser(props.producer.id, props.userId).permissions.map((p) => p.id)
-		)
+		const selected_permissions = computed({
+			get: () => {
+				return props.userId === props.producer.user_id ?
+					all_producer_permissions.value.map((p) => p.id) :
+					getProducerUser(props.producer.id, props.userId).permissions.map((p) => p.id)
+			},
+			set: (permission_ids) => {
+				let permissions = JSON.parse(JSON.stringify(all_producer_permissions.value)) // computed prop deep copy
+				$store.commit("userProducer/SYNC_PRODUCER_USER_PERMISSIONS", {
+					producer_id: props.producer.id,
+					user_id: props.userId,
+					permissions: permissions.filter((p) => permission_ids.includes(p.id))
+						.map((p) => {
+							p.pivot = {
+								permission_id: p.id,
+								team_id: props.producer.id,
+								user_id: props.userId,
+								user_type: "App\\Models\\User"
+							}
+							return p
+						})
+				})
+			}
+		})
+
 		const auth_user = computed(() => $store.state.user)
 		const selected_user = computed(() => props.producer.users.find((u) => u.id === props.userId))
 
@@ -96,11 +116,11 @@ export default {
 				})
 		}
 
-		watch(() => props.userId, (selected_user_id) => {
-			selected_permissions.value = selected_user_id === props.producer.user_id ?
-				all_producer_permissions.value.map((p) => p.id) :
-				getProducerUser(props.producer.id, selected_user_id).permissions.map((p) => p.id)
-		})
+		// watch(() => props.userId, (selected_user_id) => {
+		// 	selected_permissions.value = selected_user_id === props.producer.user_id ?
+		// 		all_producer_permissions.value.map((p) => p.id) :
+		// 		getProducerUser(props.producer.id, selected_user_id).permissions.map((p) => p.id)
+		// })
 
 		return {
 			all_producer_permissions,

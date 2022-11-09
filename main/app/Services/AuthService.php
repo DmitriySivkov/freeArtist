@@ -79,13 +79,9 @@ class AuthService
 	 */
 	private function getUserProducerTeams()
 	{
-		/** todo - load users permissions for team */
 		$userProducerTeams = $this->user->rolesTeams()
-			->with(['users'])
 			->where('role_id', Role::ROLE_PRODUCER['id'])
 			->get();
-
-//		$teamsUsersPermissions =
 
 		if ($userProducerTeams->isEmpty())
 			return [];
@@ -112,6 +108,7 @@ class AuthService
 
 				$team->requests = $requests;
 			}
+
 			return $team;
 		});
 	}

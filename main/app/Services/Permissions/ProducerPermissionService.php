@@ -39,7 +39,9 @@ class ProducerPermissionService
 		UserPermissionsSynchronized::dispatch(
 			$user,
 			$producer,
-			$user->allPermissions(null, $producer->team)
+			$user->permissions()
+				->where('team_id', $producer->id)
+				->get()
 		);
 
 		return $permissions;

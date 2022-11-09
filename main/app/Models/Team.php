@@ -30,6 +30,8 @@ use Laratrust\Models\LaratrustTeam;
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereDetailedId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereDetailedType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Team whereUserId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
  */
 class Team extends LaratrustTeam
 {
@@ -61,6 +63,9 @@ class Team extends LaratrustTeam
 		return $this->morphTo();
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
 	public function users()
 	{
 		return $this->belongsToMany(
@@ -70,4 +75,5 @@ class Team extends LaratrustTeam
 			'user_id'
 		);
 	}
+
 }

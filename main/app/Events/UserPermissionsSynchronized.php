@@ -19,20 +19,20 @@ class UserPermissionsSynchronized implements ShouldBroadcast
 
 	public User $user;
 	public Producer $producer;
-	public Collection $permissions;
+	public Collection | array $permissions;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(User $user, Producer $producer, $permissions)
+    public function __construct(User $user, Producer $producer, Collection $permissions)
     {
         $this->queue = config('queue.broadcast');
 
 		$this->user = $user;
 		$this->producer = $producer;
-		$this->permissions = $permissions;
+		$this->permissions = $permissions->toArray();
     }
 
     /**

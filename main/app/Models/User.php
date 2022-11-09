@@ -27,6 +27,7 @@ use Laratrust\Traits\LaratrustUserTrait;
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingRelationRequests
  * @property-read int|null $outgoing_relation_requests_count
+ * @property-read \App\Models\Team|null $ownProducer
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Permission[] $permissions
  * @property-read int|null $permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team[] $permissionsTeams
@@ -40,6 +41,7 @@ use Laratrust\Traits\LaratrustUserTrait;
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
+ * @method static Builder|User nonRelatedProducers()
  * @method static Builder|User orWherePermissionIs($permission = '')
  * @method static Builder|User orWhereRoleIs($role = '', $team = null)
  * @method static Builder|User query()
@@ -57,8 +59,6 @@ use Laratrust\Traits\LaratrustUserTrait;
  * @method static Builder|User whereRoleIs($role = '', $team = null, $boolean = 'and')
  * @method static Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \App\Models\Team|null $ownProducer
- * @method static Builder|User nonRelatedProducers()
  */
 class User extends Authenticatable
 {

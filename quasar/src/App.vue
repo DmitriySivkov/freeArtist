@@ -12,7 +12,7 @@ export default defineComponent({
 	name: "App",
 	setup() {
 		const $store = useStore()
-		const { producerTeams } = useUserProducer()
+		const { producerTeams, getProducer } = useUserProducer()
 		const { hasPermission } = useUserPermission()
 		const { user } = useUser()
 
@@ -58,12 +58,17 @@ export default defineComponent({
 
 				echo.private("permissions." + user.value.data.id)
 					.listen(".permissions.synced", (e) => {
-						console.log(e)
-						$store.commit("userProducer/SYNC_PRODUCER_USER_PERMISSIONS", {
-							producer_id: e.producer.id,
-							user_id: e.user.id,
+						$store.commit("user/SYNC_USER_TEAM_PERMISSIONS", {
+							team_id: e.producer.id,
 							permissions: e.permissions
 						})
+						if (getProducer(e.producer.id).hasOwnProperty("users")) {
+							$store.commit("userProducer/SYNC_PRODUCER_USER_PERMISSIONS", {
+								producer_id: e.producer.id,
+								user_id: e.user.id,
+								permissions: e.permissions
+							})
+						}
 					})
 			}
 		}

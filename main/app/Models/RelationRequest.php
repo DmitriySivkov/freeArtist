@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Broadcasting\Channel;
+
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Builder;

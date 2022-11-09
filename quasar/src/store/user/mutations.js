@@ -40,3 +40,9 @@ export const RESTORE_USER_OUTGOING_COWORKING_REQUEST = (state, payload) => {
 		.find((request) => request.id === payload.restoredRequest.id)
 		.status = payload.restoredStatus
 }
+
+export const SYNC_USER_TEAM_PERMISSIONS = (state, {team_id, permissions}) => {
+	state.data.permissions = state.data.permissions.filter((p) => p.pivot.team_id !== team_id)
+	if (permissions.length !== 0)
+		state.data.permissions.push(...permissions)
+}
