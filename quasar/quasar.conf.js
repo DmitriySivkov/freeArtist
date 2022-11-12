@@ -2,7 +2,7 @@ module.exports = function (ctx) {
 	return {
 		preFetch: true,
 		boot: [
-			"authViaSession",
+			"authViaSession", // show loader
 			"axios",
 			"setCartFromLocalStorage",
 			"browseProducers",
@@ -10,7 +10,7 @@ module.exports = function (ctx) {
 			"browsePermissions",
 			"money",
 			"ws",
-			"routes"
+			"routes" // hide loader
 		],
 
 		css: [
