@@ -2,7 +2,11 @@
 	<q-layout view="lHh Lpr lFf">
 		<Header />
 		<q-page-container>
-			<router-view />
+			<div class="row justify-center">
+				<div class="col-xs-12 col-lg-8 bg-white main">
+					<router-view />
+				</div>
+			</div>
 		</q-page-container>
 		<Footer />
 	</q-layout>

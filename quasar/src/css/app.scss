@@ -8,8 +8,18 @@ input[type="number"] {
 	-moz-appearance: textfield;
 }
 
-.q-table {
-	&__bottom {
-		padding: 0;
-	}
+body {
+	background-color: #e4e4e4;
+}
+
+.header {
+	height: 65px
+}
+
+.footer {
+	height: 85px
+}
+
+.main {
+	height: calc(100vh - 150px) !important;
 }
