@@ -11,6 +11,9 @@ input[type="number"] {
 body {
 	background-image: url("src/assets/body.jpg");
 	background-size: 20%;
+	@media (max-device-width: 1280px) {
+		background-size: 100%;
+	}
 }
 
 .header {
