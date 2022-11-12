@@ -4,6 +4,14 @@
 			<div class="col-xs-shrink">
 				<q-btn
 					class="q-pa-md"
+					icon="login"
+					:color="['login', 'register'].includes(route.name) ? 'secondary': 'primary'"
+					to="/auth"
+				/>
+			</div>
+			<div class="col-xs-shrink">
+				<q-btn
+					class="q-pa-md"
 					icon-right="home"
 					:color="route.name === 'home' ? 'secondary': 'primary'"
 					to="/"
@@ -36,11 +44,12 @@
 <script>
 import { useStore } from "vuex"
 import { computed } from "vue"
-import { useRoute } from "vue-router"
+import { useRouter } from "vue-router"
 export default {
 	setup() {
-		const route = useRoute()
+		const $router = useRouter()
 		const $store = useStore()
+		const route = $router.currentRoute
 		const user = computed(() => $store.state.user)
 		const cartCounter = computed(
 			() => Object.values($store.state.cart.data)

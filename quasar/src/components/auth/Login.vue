@@ -87,32 +87,33 @@ export default {
 		const password = ref("")
 		const is_pwd = ref(true)
 
+		const onSubmit = () => {
+			api.get("sanctum/csrf-cookie").then((response) => {
+				$store.dispatch("user/login", {
+					phone: phone.value,
+					password: password.value,
+				}).then(() => {
+					notifySuccess("Добро пожаловать!")
+					$router.push({name: "personal"})
+				}).catch((error) => {
+					const errors = Object.values(error.response.data.errors)
+						.reduce((accum, val) => accum.concat(...val), [])
+					notifyError(errors)
+				})
+			})
+		}
+
+		const onReset = () => {
+			phone.value = null
+			password.value = null
+		}
+
 		return {
 			phone,
 			password,
 			is_pwd,
-
-			onSubmit() {
-				api.get("sanctum/csrf-cookie").then((response) => {
-					$store.dispatch("user/login", {
-						phone: phone.value,
-						password: password.value,
-					}).then(() => {
-						notifySuccess("Будь как дома, путник!")
-						$router.push({name: "personal"})
-					}).catch((error) => {
-						const errors = Object.values(error.response.data.errors)
-							.reduce((accum, val) => accum.concat(...val), [])
-						notifyError(errors)
-					})
-				})
-			},
-
-			onReset() {
-				phone.value = null
-				password.value = null
-			}
-
+			onSubmit,
+			onReset
 		}
 	}
 }

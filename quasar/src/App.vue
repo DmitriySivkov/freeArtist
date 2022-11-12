@@ -73,15 +73,15 @@ export default defineComponent({
 			}
 		}
 
-		relationRequestSocket()
-
-		watch(() => user.value.data.id, (userId) => {
-			if (userId) {
-				relationRequestSocket()
-			} else {
-				echo.disconnect()
-			}
-		})
+		// relationRequestSocket()
+		//
+		// watch(() => user.value.data.id, (userId) => {
+		// 	if (userId) {
+		// 		relationRequestSocket()
+		// 	} else {
+		// 		echo.disconnect()
+		// 	}
+		// })
 	}
 })
 </script>

@@ -4,8 +4,7 @@ export default [
 		path: "personal/user/orders",
 		component: () => import("pages/personal/customer/Orders"),
 		meta: {
-			route_name: "Список заказов",
-			requires_auth: true,
+			route_name: "Список заказов"
 		}
 	},
 	{
@@ -13,8 +12,7 @@ export default [
 		path: "personal/register-producer",
 		component: () => import("pages/personal/RegisterProducer"),
 		meta: {
-			route_name: "Зарегистрировать изготовителя",
-			requires_auth: true
+			route_name: "Зарегистрировать изготовителя"
 		}
 	},
 	{
@@ -22,8 +20,7 @@ export default [
 		path: "personal/coworking-request",
 		component: () => import("pages/personal/CoworkingRequest"),
 		meta: {
-			route_name: "Заявка: присоединиться к изготовителю",
-			requires_auth: true
+			route_name: "Заявка: присоединиться к изготовителю"
 		}
 	},
 	{
@@ -31,8 +28,7 @@ export default [
 		path: "personal/user/requests",
 		component: () => import("pages/personal/customer/Requests"),
 		meta: {
-			route_name: "Заявки",
-			requires_auth: true
+			route_name: "Заявки"
 		}
 	},
 ]
