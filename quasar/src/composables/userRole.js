@@ -10,7 +10,7 @@ export const useUserRole = () => {
 			.reduce((accum, role) => [...accum, role.name], [])
 			.includes(roleName)
 
-	const userRoles = () => user.value.data.roles
+	const userRoles = computed(() => user.value.data.roles)
 
 	return { user, hasUserRole, userRoles }
 }

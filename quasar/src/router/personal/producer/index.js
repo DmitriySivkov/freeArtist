@@ -1,5 +1,13 @@
 export default [
 	{
+		name: "personal_producer",
+		path: "personal/producer",
+		component: () => import("pages/personal/producer/Profiles"),
+		meta: {
+			route_name: "Список профилей"
+		}
+	},
+	{
 		name: "personal_producer_orders",
 		path: "personal/producer/orders",
 		component: () => import("pages/personal/producer/Orders"),
@@ -37,6 +45,14 @@ export default [
 		component: () => import("pages/personal/producer/RequestsDetail"),
 		meta: {
 			route_name: "Заявки"
+		}
+	},
+	{
+		name: "personal_producer_team_profile",
+		path: "personal/producer/:team_id/profile",
+		component: () => import("pages/personal/producer/ProfileDetail"),
+		meta: {
+			route_name: "Профиль"
 		}
 	},
 	{

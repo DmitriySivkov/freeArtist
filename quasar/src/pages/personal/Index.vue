@@ -1,6 +1,6 @@
 <template>
 	<q-tabs
-		v-if="userRoles().length > 0"
+		v-if="userRoles.length > 0"
 		v-model="selectedTab"
 		dense
 		inline-label

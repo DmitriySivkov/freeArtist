@@ -17,7 +17,7 @@ export default [
 		path: "personal/user",
 		component: () => import("pages/personal/User"),
 		meta: {
-			route_name: "Персональные данные"
+			route_name: "Профиль"
 		}
 	}
 ]

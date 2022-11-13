@@ -31,7 +31,7 @@ export default {
 		const { userOwnProducer } = useUserProducer()
 
 		const items = [
-			{ title: "Персональные данные", link: "/personal/user" },
+			{ title: "Профиль", link: "/personal/user" },
 			{ title: "Заказы", link: "/personal/user/orders" },
 			{
 				title: "Зарегистрировать изготовителя",
