@@ -3,7 +3,8 @@
 		<div class="col-xs-12 col-md-3">
 			<q-card
 				bordered
-				class="q-ma-md border-dashed border-black bg-pink-1 shadow-0"
+				class="q-ma-md border-dashed border-black bg-green-3 shadow-0"
+				:class="{'text-white bg-green-6': isDragging}"
 				style="height:300px"
 			>
 				<q-card-section v-if="image">
@@ -18,10 +19,20 @@
 				<q-card-section
 					v-else
 					class="row flex-center full-height cursor-pointer"
+					@dragenter.prevent="isDragging = true"
+					@dragleave.prevent="isDragging = false"
+					@dragover.prevent
+					@drop.prevent="drop"
 				>
-					Добавьте или перетащите фото
+					Добавить фото
 				</q-card-section>
 			</q-card>
+			<q-file
+				v-model="image"
+				ref="file_picker"
+				accept=".jpg, image/*"
+				style="display:none"
+			/>
 		</div>
 	</div>
 </template>
@@ -31,11 +42,18 @@ import { ref } from "vue"
 export default {
 	setup() {
 		const image = ref(null)
+		const isDragging = ref(false)
 		const backend_server = process.env.BACKEND_SERVER
+
+		const drop = (e) => {
+			console.log(e.dataTransfer.files[0]) //file here
+		}
 
 		return {
 			image,
-			backend_server
+			backend_server,
+			isDragging,
+			drop
 		}
 	}
 }
