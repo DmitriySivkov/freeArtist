@@ -82,3 +82,8 @@ export const ADD_PRODUCER_PRODUCT_IMAGE = (state, {producer_id, product_id, imag
 		.images
 		.unshift(image)
 }
+
+export const SET_PRODUCER_LOGO = (state, {producer_id, logo}) => {
+	state.producers.find((producer) => producer.id === producer_id)
+		.detailed.logo = logo
+}

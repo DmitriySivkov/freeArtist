@@ -120,3 +120,14 @@ export const addProducerProductImage = async({commit}, {producer_id, product_id,
 		image: response.data
 	})
 }
+
+export const setProducerLogo = async({commit}, {producer_id, logo}) => {
+	const response = await api.post(
+		"/personal/producers/" + producer_id + "/setLogo",
+		logo,
+	)
+	commit("SET_PRODUCER_LOGO", {
+		producer_id,
+		logo: response.data
+	})
+}

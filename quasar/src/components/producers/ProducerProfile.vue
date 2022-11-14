@@ -3,28 +3,26 @@
 		<div class="col-xs-12 col-md-3">
 			<q-card
 				bordered
-				class="q-ma-md border-dashed border-black bg-green-3 shadow-0"
-				:class="{'text-white bg-green-6': isDragging}"
+				class="q-ma-md border-dashed bg-green-3 shadow-0"
+				:class="{'text-white bg-green-6 border-white': isDragging, 'border-black': !isDragging}"
 				style="height:300px"
 			>
-				<q-card-section v-if="image">
-					<!--					<q-img-->
-					<!--						:src="backend_server + '/storage/' + image.path"-->
-					<!--						fit="contain"-->
-					<!--					/>-->
+				<q-card-section
+					class="row flex-center full-height"
+				>
 					<q-img
+						v-if="image"
+						:src="backend_server + '/storage/' + image"
 						fit="contain"
 					/>
-				</q-card-section>
-				<q-card-section
-					v-else
-					class="row flex-center full-height cursor-pointer"
-					@dragenter.prevent="isDragging = true"
-					@dragleave.prevent="isDragging = false"
-					@dragover.prevent
-					@drop.prevent="drop"
-				>
-					Добавить фото
+					<span v-else>Добавить фото</span>
+					<div
+						class="full-height full-width absolute cursor-pointer"
+						@dragenter.prevent="isDragging = true"
+						@dragleave.prevent="isDragging = false"
+						@dragover.prevent
+						@drop.prevent="drop"
+					></div>
 				</q-card-section>
 			</q-card>
 			<q-file
@@ -38,15 +36,36 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { ref, computed } from "vue"
+import { useRouter } from "vue-router"
+import { useNotification } from "src/composables/notification"
+import { useStore } from "vuex"
 export default {
 	setup() {
-		const image = ref(null)
+		const $store = useStore()
+		const $router = useRouter()
+		const image = computed(() =>
+			$store.state.userProducer.producers
+				.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
+				.detailed.logo
+		)
 		const isDragging = ref(false)
 		const backend_server = process.env.BACKEND_SERVER
+		const { notifySuccess } = useNotification()
 
 		const drop = (e) => {
-			console.log(e.dataTransfer.files[0]) //file here
+			isDragging.value = false
+
+			let formData = new FormData()
+			formData.append("logo", e.dataTransfer.files[0])
+
+			// todo validate with q-file help
+			$store.dispatch("userProducer/setProducerLogo", {
+				logo: formData,
+				producer_id: parseInt($router.currentRoute.value.params.team_id)
+			}).then(() => {
+				notifySuccess("Изображение успешно загружено")
+			})
 		}
 
 		return {

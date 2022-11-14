@@ -61,6 +61,7 @@ Route::group([
 
 	Route::group(['prefix' => 'producers'], function() {
 		Route::get('{producer}/users', [ProducerController::class, 'getProducerUsers']);
+		Route::post('{producer}/setLogo', [ProducerController::class, 'setProducerLogo']);
 
 		Route::group(['prefix' => '{producer}/products'], function () {
 			Route::get('', [ProducerController::class, 'getProducerProducts']);

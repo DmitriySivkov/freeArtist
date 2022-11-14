@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingRelationRequests
  * @property-read int|null $incoming_relation_requests_count
+ * @property string|null $logo
+ * @method static \Illuminate\Database\Eloquent\Builder|Producer whereLogo($value)
  */
 class Producer extends Model
 {

@@ -12,7 +12,7 @@ input[type="number"] {
 body {
 	background-image: url("src/assets/body.jpg");
 	background-size: 20%;
-	@media (max-device-width: 1280px) {
+	@media (max-device-width: 960px) {
 		background-size: 100%;
 	}
 }
