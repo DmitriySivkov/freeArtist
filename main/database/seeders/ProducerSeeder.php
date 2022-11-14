@@ -19,9 +19,6 @@ class ProducerSeeder extends Seeder
      */
     public function run()
     {
-		/** postgres specific command */
-		DB::statement("ALTER SEQUENCE teams_id_seq RESTART WITH 1");
-
 		$producerRole = Role::where('name', '=', 'producer')
 			->first();
 		$permissionOwner = Permission::where('name', '=', 'owner')
