@@ -23,6 +23,12 @@
 						@dragover.prevent
 						@drop.prevent="drop"
 					></div>
+					<q-inner-loading :showing="isLoading">
+						<q-spinner-gears
+							size="50px"
+							color="primary"
+						/>
+					</q-inner-loading>
 				</q-card-section>
 			</q-card>
 			<q-file
@@ -50,11 +56,12 @@ export default {
 				.detailed.logo
 		)
 		const isDragging = ref(false)
+		const isLoading = ref(false)
 		const backend_server = process.env.BACKEND_SERVER
 		const { notifySuccess } = useNotification()
 
 		const drop = (e) => {
-			isDragging.value = false
+			isLoading.value = true
 
 			let formData = new FormData()
 			formData.append("logo", e.dataTransfer.files[0])
@@ -64,6 +71,8 @@ export default {
 				logo: formData,
 				producer_id: parseInt($router.currentRoute.value.params.team_id)
 			}).then(() => {
+				isLoading.value = false
+				isDragging.value = false
 				notifySuccess("Изображение успешно загружено")
 			})
 		}
@@ -71,6 +80,7 @@ export default {
 		return {
 			image,
 			backend_server,
+			isLoading,
 			isDragging,
 			drop
 		}

@@ -10,6 +10,7 @@ use App\Models\RelationRequest;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Permissions\ProducerPermissionService;
+use App\Services\Producers\ProducerService;
 use App\Services\RelationRequests\ProducerRelationRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -269,38 +270,16 @@ class ProducerController extends Controller
 
 	/**
 	 * @param Producer $producer
-	 * @param Request $request
 	 * @return string
 	 */
-	public function setProducerLogo(Producer $producer, Request $request)
+	public function setProducerLogo(Producer $producer, ProducerService $producerService)
 	{
-		/** @var User $user */
-		$user = auth('sanctum')->user();
-
-		//todo - permissions
-//		if (
-//			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PRODUCT['name'], $producer->team) &&
-//			!$user->owns($producer->team)
-//		)
-//			throw new \LogicException('Доступ закрыт');
-
-		$basePath = 'team_' . $producer->team->id . '/logo';
-
-		if (Storage::disk('public')->exists($basePath))
-			Storage::disk('public')->deleteDirectory($basePath);
-
-		$path = Storage::disk('public')->putFile(
-			$basePath,
-			$request->file('logo'),
-		);
-
-		if (!$path)
-			throw new \LogicException('Ошибка сервиса');
-
-		$producer->logo = $path;
-		$producer->save();
-
-		return $path;
+		try {
+			return $producerService->setLogo($producer);
+		} catch (\Throwable $e) {
+			return response()->json($e->getMessage())
+				->setStatusCode(422);
+		}
 	}
 
 	/**
