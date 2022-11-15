@@ -45,6 +45,7 @@ import { useUserRole } from "src/composables/userRole"
 import { ref } from "vue"
 import { useStore } from "vuex"
 export default {
+	// todo - change tab appearance logic (check roles against the tabs)
 	components: { NavigationCustomer, NavigationProducer },
 	setup() {
 		const $store = useStore()

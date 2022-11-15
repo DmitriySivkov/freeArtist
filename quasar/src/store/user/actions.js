@@ -18,6 +18,7 @@ export const signUp = async ({commit}, payload) => {
 export const logout = async ({commit, state}, payload) => {
 	await api.post("personal/logout", payload)
 	commit("SET_USER", {})
+	commit("SWITCH_PERSONAL", "customer")
 	commit("userProducer/EMPTY_USER_PRODUCER", {}, { root:true })
 	commit("SET_IS_LOGGED", false)
 }

@@ -17,6 +17,7 @@
 					/>
 					<span v-else>Добавить фото</span>
 					<div
+						v-if="canManageLogo"
 						class="full-height full-width absolute cursor-pointer"
 						@dragenter.prevent="isDragging = true"
 						@dragleave.prevent="isDragging = false"
@@ -46,10 +47,12 @@ import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { useStore } from "vuex"
+import { useUserPermission } from "src/composables/userPermission"
 export default {
 	setup() {
 		const $store = useStore()
 		const $router = useRouter()
+		const { hasPermission, isUserTeamOwner } = useUserPermission()
 		const image = computed(() =>
 			$store.state.userProducer.producers
 				.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
@@ -57,6 +60,10 @@ export default {
 		)
 		const isDragging = ref(false)
 		const isLoading = ref(false)
+		const canManageLogo = hasPermission(
+			parseInt($router.currentRoute.value.params.team_id),
+			"producer_manage_logo"
+		)
 		const backend_server = process.env.BACKEND_SERVER
 		const { notifySuccess } = useNotification()
 
@@ -82,7 +89,8 @@ export default {
 			backend_server,
 			isLoading,
 			isDragging,
-			drop
+			drop,
+			canManageLogo
 		}
 	}
 }

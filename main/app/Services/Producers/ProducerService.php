@@ -2,6 +2,7 @@
 
 namespace App\Services\Producers;
 
+use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -13,12 +14,11 @@ class ProducerService
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		//todo - permissions
-//		if (
-//			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PRODUCT['name'], $producer->team) &&
-//			!$user->owns($producer->team)
-//		)
-//			throw new \LogicException('Доступ закрыт');
+		if (
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_LOGO['name'], $producer->team) &&
+			!$user->owns($producer->team)
+		)
+			throw new \LogicException('Доступ закрыт');
 
 		$basePath = 'team_' . $producer->team->id . '/logo';
 

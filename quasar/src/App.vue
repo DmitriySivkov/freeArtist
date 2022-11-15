@@ -26,6 +26,7 @@ export default defineComponent({
 
 					})
 					.listen(".RelationRequestUpdated", (e) => {
+						// todo - add to producer to ProducerUser store && add "producer" role to store
 						$store.commit("user/SET_USER_OUTGOING_COWORKING_REQUEST_STATUS", {
 							request_id: e.model.id,
 							status: e.model.status
@@ -73,15 +74,15 @@ export default defineComponent({
 			}
 		}
 
-		// relationRequestSocket()
-		//
-		// watch(() => user.value.data.id, (userId) => {
-		// 	if (userId) {
-		// 		relationRequestSocket()
-		// 	} else {
-		// 		echo.disconnect()
-		// 	}
-		// })
+		relationRequestSocket()
+
+		watch(() => user.value.data.id, (userId) => {
+			if (userId) {
+				relationRequestSocket()
+			} else {
+				echo.disconnect()
+			}
+		})
 	}
 })
 </script>

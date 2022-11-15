@@ -84,7 +84,7 @@ class UserController extends Controller
 	{
 		return User::nonRelatedProducers()
 			->when($request->has('query'), function($query) use ($request) {
-				return $query->where('display_name', 'ilike', '%' . $request->get('query') . '%');
+				return $query->where('display_name', 'like', '%' . $request->get('query') . '%');
 			})
 			->limit(25)
 			->orderBy('display_name', 'asc')
