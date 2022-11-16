@@ -101,6 +101,25 @@ class RelationRequest extends Model
 	}
 
 	/**
+	 * Get the data to broadcast for the model.
+	 *
+	 * @param  string  $event
+	 * @return array
+	 */
+	public function broadcastWith($event)
+	{
+		if (is_a($this->from, User::class) && is_a($this->to, Producer::class))
+			return [
+				'model' => $this,
+				'type' => 'coworking',
+				'role' => Role::where('name', Role::ROLE_PRODUCER['name'])->first(),
+				'producer' => Team::whereId($this->to->id)->first()
+			];
+
+		return ['model' => $this];
+	}
+
+	/**
 	 * Get the queue that should be used to broadcast model events.
 	 *
 	 * @return string|null

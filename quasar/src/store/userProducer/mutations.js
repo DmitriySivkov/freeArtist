@@ -2,7 +2,7 @@ export const SET_USER_PRODUCER = (state, producer) => {
 	if (state.producers.length > 0)
 		state.producers = [...state.producers, producer]
 	else
-		state.producers = producer
+		state.producers = Array.isArray(producer) ? producer : [producer]
 }
 
 export const SET_PRODUCER_PRODUCTS = (state, {products, producer_id}) => {

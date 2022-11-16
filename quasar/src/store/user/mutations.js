@@ -10,11 +10,11 @@ export const SWITCH_PERSONAL = (state, personal_tab) => {
 	state.personalTab = personal_tab
 }
 
-export const SET_PRODUCER_ROLE = (state, producerRole) => {
-	if (state.data.roles.find((role) => role.id === producerRole.id))
+export const SET_ROLE = (state, role) => {
+	if (state.data.roles.find((r) => r.id === role.id))
 		return
 
-	state.data.roles = [...state.data.roles, producerRole]
+	state.data.roles = [...state.data.roles, role]
 }
 
 export const SET_USER_OUTGOING_COWORKING_REQUESTS = (state, request) => {

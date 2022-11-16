@@ -81,7 +81,8 @@ class AuthService
 	{
 		$userProducerTeams = $this->user->rolesTeams()
 			->where('role_id', Role::ROLE_PRODUCER['id'])
-			->get();
+			->get()
+			->makeHidden('pivot');
 
 		if ($userProducerTeams->isEmpty())
 			return [];

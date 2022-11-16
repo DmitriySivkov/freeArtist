@@ -42,7 +42,7 @@ export const verifyEmail = async ({commit}, payload) => {
 export const registerProducer = async ({commit}, payload) => {
 	const response = await api.post("personal/register", {...payload, case: 1})
 	commit("userProducer/SET_USER_PRODUCER", response.data.producer, { root:true })
-	commit("SET_PRODUCER_ROLE", response.data.role)
+	commit("SET_ROLE", response.data.role)
 }
 
 export const switchPersonal = async ({commit}, personal_tab) => {
