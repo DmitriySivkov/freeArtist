@@ -52,9 +52,11 @@ module.exports = function (ctx) {
 			ignorePublicFolder: true,
 
 			env: {
+				// when developing mobile - substitute address with api server address exposed via ngrok
+				// white screen after ngrok usage ? - router / external IP issue. Replugging router helps
 				BACKEND_SERVER: ctx.mode.spa
 					? "https://api.freeartist.loc"
-					: (ctx.mode.cordova ? "https://192.168.1.3" : null),
+					: (ctx.mode.cordova ? "https://11de-109-161-120-97.ngrok.io" : null),
 				BACKEND_HOST: "api.freeartist.loc"
 			},
 
@@ -75,8 +77,8 @@ module.exports = function (ctx) {
 			https: true,
 			port: ctx.mode.spa ? 8081
 				: (ctx.mode.pwa ? 9090 : 9000),
-			host: "app.freeartist.loc",
-			open: true
+			host: ctx.mode.spa ? "app.freeartist.loc" : null,
+			open: true,
 		},
 
 		animations: "all",

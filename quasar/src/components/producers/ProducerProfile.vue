@@ -4,7 +4,7 @@
 			<q-card
 				bordered
 				class="q-ma-md border-dashed bg-green-3 shadow-0"
-				:class="{'text-white bg-green-6 border-white': isDragging, 'border-black': !isDragging}"
+				:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
 				style="height:300px"
 			>
 				<q-card-section
@@ -17,14 +17,14 @@
 					/>
 					<span v-else>Добавить фото</span>
 					<div
-						v-if="canManageLogo"
+						v-if="can_manage_logo"
 						class="full-height full-width absolute cursor-pointer"
-						@dragenter.prevent="isDragging = true"
-						@dragleave.prevent="isDragging = false"
+						@dragenter.prevent="is_dragging = true"
+						@dragleave.prevent="is_dragging = false"
 						@dragover.prevent
 						@drop.prevent="drop"
 					></div>
-					<q-inner-loading :showing="isLoading">
+					<q-inner-loading :showing="is_loading">
 						<q-spinner-gears
 							size="50px"
 							color="primary"
@@ -52,15 +52,15 @@ export default {
 	setup() {
 		const $store = useStore()
 		const $router = useRouter()
-		const { hasPermission, isUserTeamOwner } = useUserPermission()
+		const { hasPermission } = useUserPermission()
 		const image = computed(() =>
 			$store.state.userProducer.producers
 				.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
 				.detailed.logo
 		)
-		const isDragging = ref(false)
-		const isLoading = ref(false)
-		const canManageLogo = hasPermission(
+		const is_dragging = ref(false)
+		const is_loading = ref(false)
+		const can_manage_logo = hasPermission(
 			parseInt($router.currentRoute.value.params.team_id),
 			"producer_manage_logo"
 		)
@@ -68,7 +68,7 @@ export default {
 		const { notifySuccess } = useNotification()
 
 		const drop = (e) => {
-			isLoading.value = true
+			is_loading.value = true
 
 			let formData = new FormData()
 			formData.append("logo", e.dataTransfer.files[0])
@@ -78,8 +78,8 @@ export default {
 				logo: formData,
 				producer_id: parseInt($router.currentRoute.value.params.team_id)
 			}).then(() => {
-				isLoading.value = false
-				isDragging.value = false
+				is_loading.value = false
+				is_dragging.value = false
 				notifySuccess("Изображение успешно загружено")
 			})
 		}
@@ -87,10 +87,10 @@ export default {
 		return {
 			image,
 			backend_server,
-			isLoading,
-			isDragging,
+			is_loading,
+			is_dragging,
 			drop,
-			canManageLogo
+			can_manage_logo
 		}
 	}
 }

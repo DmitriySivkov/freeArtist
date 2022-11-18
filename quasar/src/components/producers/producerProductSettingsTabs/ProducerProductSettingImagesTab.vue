@@ -3,13 +3,39 @@
 		v-if="permissions.update"
 		class="row"
 	>
-		<div class="col-12">
-			<q-btn
-				flat
-				label="Добавить изображение"
-				class="bg-primary text-white full-width q-pa-lg"
-				@click="showFilePrompt"
-			/>
+		<div class="col-xs-12 col-md-4">
+			<q-card
+				bordered
+				class="q-ma-md border-dashed bg-green-3 shadow-0"
+				:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
+				style="height:300px"
+			>
+				<q-card-section
+					class="row flex-center full-height"
+				>
+					<q-img
+						v-if="img"
+						:src="backend_server + '/storage/' + image"
+						fit="contain"
+					/>
+					<span v-else>Добавить фото</span>
+					<div
+						v-if="permissions.update"
+						class="full-height full-width absolute cursor-pointer"
+						@dragenter.prevent="is_dragging = true"
+						@dragleave.prevent="is_dragging = false"
+						@dragover.prevent
+						@drop.prevent="drop"
+						@click="showFilePrompt"
+					></div>
+					<q-inner-loading :showing="is_loading">
+						<q-spinner-gears
+							size="50px"
+							color="primary"
+						/>
+					</q-inner-loading>
+				</q-card-section>
+			</q-card>
 		</div>
 	</div>
 	<div class="row q-mt-md q-col-gutter-sm">
@@ -71,6 +97,8 @@ export default {
 		const img_path = ref("")
 		const file_picker = ref(null)
 		const img_source = ref(null)
+		const is_dragging = ref(false)
+		const is_loading = ref(false)
 		const { notifySuccess, notifyError } = useNotification()
 
 		const backend_server = process.env.BACKEND_SERVER
@@ -174,7 +202,9 @@ export default {
 			showFilePrompt,
 			showImage,
 			product_images,
-			backend_server
+			backend_server,
+			is_dragging,
+			is_loading
 		}
 	}
 }

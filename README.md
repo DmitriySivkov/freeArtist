@@ -49,11 +49,11 @@ phone and PC shall be on the same IP range e.g 192.168.1.3 - 192.168.1.4 ...
 
 windows blocks connection to itself. Need to turn off some param on windows defender. Brutally - turn off public network defender
 
-when developing mobile - replace backend address with PC ip address (192.168.1.3).
-Even possible to leave PC ip address as base API addr for any developing
+IMPORTANT: when developing mobile - substitute address with api server address exposed via ngrok
+IMPORTANT: white screen after ngrok usage ? - router / external IP issue. Replugging router helps
 
 ###q-card
-'q-card' inside v-for with columns works this way: 
+q-card inside v-for with columns works this way: 
 dont add gutters to row. 
 Pull margin classes from q-card to wrapper
 
