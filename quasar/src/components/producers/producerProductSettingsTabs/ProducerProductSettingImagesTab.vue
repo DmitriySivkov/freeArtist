@@ -133,7 +133,7 @@ export default {
 			img_source.value = 1
 			file_picker.value.pickFiles()
 		}
-
+		// todo - rework for capacitor plugin
 		const fromCamera = () => {
 			img_source.value = 2
 			navigator.camera.getPicture(imageURI => {

@@ -1,3 +1,5 @@
+const path = require("path")
+const ESLintPlugin = require("eslint-webpack-plugin")
 module.exports = function (ctx) {
 	return {
 		preFetch: true,
@@ -56,28 +58,22 @@ module.exports = function (ctx) {
 				// white screen after ngrok usage ? - router / external IP issue. Replugging router helps
 				BACKEND_SERVER: ctx.mode.spa
 					? "https://api.freeartist.loc"
-					: (ctx.mode.cordova ? "https://11de-109-161-120-97.ngrok.io" : null),
+					: (ctx.mode.capacitor ? "https://api.freeartist.loc" : null),
 				BACKEND_HOST: "api.freeartist.loc"
 			},
 
-			extendWebpack (cfg) {
-				cfg.module.rules.push({
-					enforce: "pre",
-					test: /\.(js|vue)$/,
-					loader: "eslint-loader",
-					exclude: /node_modules/,
-					options: {
-						formatter: require("eslint").CLIEngine.getFormatter("stylish")
-					}
-				})
-			},
+			chainWebpack (chain) {
+				chain
+					.plugin("eslint-webpack-plugin")
+					.use(ESLintPlugin, [{ extensions: ["js", "vue"] }])
+			}
 		},
 
 		devServer: {
 			https: true,
 			port: ctx.mode.spa ? 8081
 				: (ctx.mode.pwa ? 9090 : 9000),
-			host: ctx.mode.spa ? "app.freeartist.loc" : null,
+			host: ctx.mode.capacitor ? null : "app.freeartist.loc",
 			open: true,
 		},
 

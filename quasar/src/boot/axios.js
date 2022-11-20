@@ -8,7 +8,7 @@ import axios from "axios"
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-	baseURL: process.env.BACKEND_SERVER + "/api", // use local PC IP for development cordova app or chrome dev forwarding
+	baseURL: process.env.BACKEND_SERVER + "/api",
 	withCredentials: true
 })
 
