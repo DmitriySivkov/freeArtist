@@ -9,7 +9,7 @@ import axios from "axios"
 // for each client)
 const api = axios.create({
 	baseURL: process.env.BACKEND_SERVER + "/api",
-	withCredentials: true
+	withCredentials: true,
 })
 
 export default boot(({ app }) => {

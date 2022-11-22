@@ -1,4 +1,3 @@
-const path = require("path")
 const ESLintPlugin = require("eslint-webpack-plugin")
 module.exports = function (ctx) {
 	return {
@@ -58,23 +57,27 @@ module.exports = function (ctx) {
 				// white screen after ngrok usage ? - router / external IP issue. Replugging router helps
 				BACKEND_SERVER: ctx.mode.spa
 					? "https://api.freeartist.loc"
-					: (ctx.mode.capacitor ? "https://api.freeartist.loc" : null),
+					: (ctx.mode.capacitor ? "https://4062-87-253-6-232.ngrok.io" : null),
 				BACKEND_HOST: "api.freeartist.loc"
 			},
 
 			chainWebpack (chain) {
+				chain.watchOptions = {
+					aggregateTimeout: 200,
+					poll: 1000,
+				}
 				chain
 					.plugin("eslint-webpack-plugin")
 					.use(ESLintPlugin, [{ extensions: ["js", "vue"] }])
-			}
+			},
 		},
-
+		// todo - capacitor docker container & bind it with node
 		devServer: {
 			https: true,
 			port: ctx.mode.spa ? 8081
 				: (ctx.mode.pwa ? 9090 : 9000),
-			host: ctx.mode.capacitor ? null : "app.freeartist.loc",
-			open: true,
+			// host: ctx.mode.capacitor ? null : "app.freeartist.loc",
+			open: false // open browser on load
 		},
 
 		animations: "all",

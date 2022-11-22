@@ -55,3 +55,6 @@ broadcast:
 
 cache:
 	./cache.sh
+
+front:
+	./quasar.sh
