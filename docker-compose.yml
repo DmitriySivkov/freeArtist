@@ -116,22 +116,6 @@ services:
       net:
         ipv4_address: 172.21.1.254
 
-  quasar:
-    build:
-      context: .
-      dockerfile: docker/quasar/quasar.dockerfile
-    container_name: quasar
-    volumes:
-      - ./quasar:/home/node/quasar
-    ports:
-      - 8081:8081
-      - 9000:9000
-    restart: "no"
-    stdin_open: true
-    tty: true
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-
 networks:
   net:
     ipam:

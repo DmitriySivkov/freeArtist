@@ -57,15 +57,11 @@ module.exports = function (ctx) {
 				// white screen after ngrok usage ? - router / external IP issue. Replugging router helps
 				BACKEND_SERVER: ctx.mode.spa
 					? "https://api.freeartist.loc"
-					: (ctx.mode.capacitor ? "https://4062-87-253-6-232.ngrok.io" : null),
+					: (ctx.mode.capacitor ? "https://192.168.1.2" : null), // on mobile dev - change address to available inside network
 				BACKEND_HOST: "api.freeartist.loc"
 			},
 
 			chainWebpack (chain) {
-				chain.watchOptions = {
-					aggregateTimeout: 200,
-					poll: 1000,
-				}
 				chain
 					.plugin("eslint-webpack-plugin")
 					.use(ESLintPlugin, [{ extensions: ["js", "vue"] }])
