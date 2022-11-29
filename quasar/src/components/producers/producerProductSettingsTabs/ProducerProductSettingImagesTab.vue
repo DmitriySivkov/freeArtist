@@ -6,19 +6,14 @@
 		<div class="col-xs-12 col-md-4">
 			<q-card
 				bordered
-				class="q-ma-md border-dashed bg-green-3 shadow-0"
+				class="border-dashed bg-green-3 shadow-0"
 				:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
 				style="height:300px"
 			>
 				<q-card-section
 					class="row flex-center full-height"
 				>
-					<q-img
-						v-if="img"
-						:src="backend_server + '/storage/' + image"
-						fit="contain"
-					/>
-					<span v-else>Добавить фото</span>
+					<span>Добавить фото</span>
 					<div
 						v-if="permissions.update"
 						class="full-height full-width absolute cursor-pointer"
@@ -55,11 +50,11 @@
 		</div>
 	</div>
 	<q-file
-		v-model="img"
+		v-model="image"
 		ref="file_picker"
 		accept=".jpg, image/*"
 		style="display:none"
-		@update:model-value="showImage"
+		@update:model-value="addImage"
 	/>
 </template>
 
@@ -69,7 +64,8 @@ import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { ref, computed } from "vue"
 import { useStore } from "vuex"
-import cordovaCamera from "src/services/cordova-camera"
+import { Plugins, CameraResultType } from "@capacitor/core"
+import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog"
 import ShowImageDialog from "src/components/dialogs/ShowImageDialog"
 export default {
@@ -93,12 +89,13 @@ export default {
 		const $q = useQuasar()
 		const $store = useStore()
 		const $router = useRouter()
-		const img = ref(null)
-		const img_path = ref("")
+		const image = ref(null)
 		const file_picker = ref(null)
 		const img_source = ref(null)
 		const is_dragging = ref(false)
 		const is_loading = ref(false)
+		const { base64ToBlob } = cameraService()
+		const { Camera } = Plugins
 		const { notifySuccess, notifyError } = useNotification()
 
 		const backend_server = process.env.BACKEND_SERVER
@@ -133,74 +130,41 @@ export default {
 			img_source.value = 1
 			file_picker.value.pickFiles()
 		}
-		// todo - rework for capacitor plugin
-		const fromCamera = () => {
+
+		const fromCamera = async () => {
 			img_source.value = 2
-			navigator.camera.getPicture(imageURI => {
-				window.resolveLocalFileSystemURL(imageURI,
-					function (fileEntry) {
-						fileEntry.file(
-							async function (fileObject) {
-								img_path.value = await cordovaCamera.getBase64FromFileObject(fileObject)
-								file_picker.value.addFiles([fileObject])
-							},
-							function (err) {
-								console.log("error file") // todo - notify
-							}
-						)
-					},
-					function () { } // todo - notify
-				)
-			},
-			console.error, // todo - notify camera error
-			{
-				quality: 50,
-				destinationType: navigator.camera.DestinationType.FILE_URI,
-				encodingType: navigator.camera.EncodingType.JPEG,
-				mediaType: navigator.camera.MediaType.PICTURE,
-				saveToPhotoAlbum: false,
-				correctOrientation: true
+			const img = await Camera.getPhoto({
+				quality: 90,
+				allowEditing: false,
+				resultType: CameraResultType.DataUrl
+			})
+			const blob = await base64ToBlob(img.dataUrl)
+			const img_file = new File([blob], "no-matter.jpg")
+			file_picker.value.addFiles([img_file])
+		}
+
+		const addImage = () => {
+			is_loading.value = true
+			let formData = new FormData()
+			formData.append("image", image.value)
+
+			$store.dispatch("userProducer/addProducerProductImage", {
+				image: formData,
+				producer_id: parseInt($router.currentRoute.value.params.team_id),
+				product_id: props.selectedProduct.id
+			}).then(() => {
+				is_loading.value = false
+				is_dragging.value = false
+				notifySuccess("Изображение успешно загружено")
 			})
 		}
 
-		const showImage = () => {
-			if (!img_path.value)
-				img_path.value = URL.createObjectURL(img.value)
-
-			$q.dialog({
-				component: ShowImageDialog,
-				componentProps: {
-					imagePath: img_path.value
-				}
-			}).onOk(() => {
-				let formData = new FormData()
-				formData.append("image", img.value)
-
-				$store.dispatch("userProducer/addProducerProductImage", {
-					image: img_source.value === 1 ? formData : img_path.value,
-					producer_id: parseInt($router.currentRoute.value.params.team_id),
-					product_id: props.selectedProduct.id
-				}).then(() => {
-					notifySuccess("Изображение успешно загружено")
-					img.value = null
-					img_path.value = ""
-				})
-
-			}).onCancel(() => {
-				img.value = null
-				img_path.value = ""
-			}).onDismiss(() => {
-				img.value = null
-				img_path.value = ""
-			})
-		}
 
 		return {
-			img,
-			img_path,
+			image,
 			file_picker,
 			showFilePrompt,
-			showImage,
+			addImage,
 			product_images,
 			backend_server,
 			is_dragging,
