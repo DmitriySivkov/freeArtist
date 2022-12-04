@@ -53,11 +53,9 @@ module.exports = function (ctx) {
 			ignorePublicFolder: true,
 
 			env: {
-				// when developing mobile - substitute address with api server address exposed via ngrok
-				// white screen after ngrok usage ? - router / external IP issue. Replugging router helps
-				BACKEND_SERVER: ctx.mode.spa
-					? "https://api.freeartist.loc"
-					: (ctx.mode.capacitor ? "https://192.168.1.2" : null), // on mobile dev - change address to available inside network
+				// on mobile dev - change address to available inside network
+				BACKEND_SERVER: ctx.dev ? (ctx.mode.spa ? "https://api.freeartist.loc" : (ctx.mode.capacitor ? "https://192.168.1.2" : null)) :
+					"https://46ca-46-237-11-106.ngrok.io",
 				BACKEND_HOST: "api.freeartist.loc"
 			},
 
@@ -67,12 +65,11 @@ module.exports = function (ctx) {
 					.use(ESLintPlugin, [{ extensions: ["js", "vue"] }])
 			},
 		},
-		// todo - capacitor docker container & bind it with node
+
 		devServer: {
 			https: true,
 			port: ctx.mode.spa ? 8081
 				: (ctx.mode.pwa ? 9090 : 9000),
-			// host: ctx.mode.capacitor ? null : "app.freeartist.loc",
 			open: false // open browser on load
 		},
 

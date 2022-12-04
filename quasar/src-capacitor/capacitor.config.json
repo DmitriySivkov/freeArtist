@@ -3,5 +3,9 @@
   "appName": "Quasar App",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {
+    "hostname": "mobile.ngrok.io",
+    "androidScheme": "https"
+  }
 }

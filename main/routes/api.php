@@ -27,10 +27,8 @@ Broadcast::routes(['middleware' => ['auth:sanctum']]);
 Route::post('register', [RegisterController::class, 'store']);
 Route::post('authViaSession', [AuthController::class, 'authViaSession']);
 
-// todo - incognito mode does not support session cookie
 Route::group(['prefix' => 'auth'], function() {
-    Route::post('', [AuthController::class, 'login']);
-    Route::post('verify-email', [AuthController::class, 'verifyEmail']);
+    Route::post('', [AuthController::class, 'login'])->middleware(['web']);
 });
 
 Route::group(['prefix' => 'roles'], function() {
@@ -48,7 +46,7 @@ Route::group(['prefix' => 'producers'], function() {
 
 /** auth requiring routes */
 Route::group([
-	'middleware' => ['auth:sanctum'],
+	'middleware' => ['web','auth:sanctum'],
 	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);
