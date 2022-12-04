@@ -77,6 +77,9 @@ import { useStore } from "vuex"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
 import { api } from "src/boot/axios"
+import "capacitor-secure-storage-plugin"
+import { Plugins } from "@capacitor/core"
+const { SecureStoragePlugin } = Plugins
 export default {
 	setup() {
 		const $router = useRouter()
@@ -88,19 +91,18 @@ export default {
 		const is_pwd = ref(true)
 
 		const onSubmit = () => {
-			api.get("sanctum/csrf-cookie").then((response) => {
-				$store.dispatch("user/login", {
-					phone: phone.value,
-					password: password.value,
-				}).then(() => {
-					notifySuccess("Добро пожаловать!")
-					$router.push({name: "personal"})
-				}).catch((error) => {
-					const errors = Object.values(error.response.data.errors)
-						.reduce((accum, val) => accum.concat(...val), [])
-					notifyError(errors)
-				})
+			$store.dispatch("user/login", {
+				phone: phone.value,
+				password: password.value,
+			}).then(() => {
+				notifySuccess("Добро пожаловать!")
+				$router.push({name: "personal"})
+			}).catch((error) => {
+				const errors = Object.values(error.response.data.errors)
+					.reduce((accum, val) => accum.concat(...val), [])
+				notifyError(errors)
 			})
+
 		}
 
 		const onReset = () => {

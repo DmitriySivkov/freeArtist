@@ -25,10 +25,12 @@ Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 /** no auth requiring routes */
 Route::post('register', [RegisterController::class, 'store']);
-Route::post('authViaSession', [AuthController::class, 'authViaSession']);
+
+Route::post('authViaSession', [AuthController::class, 'authViaSession'])
+	->middleware(\App\Http\Middleware\AppendAuthHeader::class);
 
 Route::group(['prefix' => 'auth'], function() {
-    Route::post('', [AuthController::class, 'login'])->middleware(['web']);
+    Route::post('', [AuthController::class, 'login']);
 });
 
 Route::group(['prefix' => 'roles'], function() {
@@ -46,7 +48,10 @@ Route::group(['prefix' => 'producers'], function() {
 
 /** auth requiring routes */
 Route::group([
-	'middleware' => ['web','auth:sanctum'],
+	'middleware' => [
+		\App\Http\Middleware\AppendAuthHeader::class,
+		'auth:sanctum'
+	],
 	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);

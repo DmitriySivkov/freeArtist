@@ -29,11 +29,16 @@ class AuthService
 		if (!Auth::attempt($credentials))
 			return response()->json(['errors' => ['total' => ['Неверный телефон или пароль']]], 422);
 
-		request()->session()->regenerate();
+		$this->user = User::where('phone', $credentials['phone'])->firstOrFail();
 
-		$this->user = auth()->user();
+		$token = $this->user->createToken($credentials['phone'] . '-' . request()->userAgent())->plainTextToken;
 
-		return $this->makeResponse();
+		$cookie = cookie(
+			'token', $token, 0, "/", config('session.domain'),
+			true, true, false, 'lax'
+		);
+
+		return $this->makeResponse(['token' => $token])->withCookie($cookie);
     }
 
 	/**
@@ -43,20 +48,25 @@ class AuthService
     {
         $this->user = auth("sanctum")->user();
 
+		if (!$this->user)
+			return response()->json(['errors' => ['total' => ['Пользователь не найден']]], 422);
+
 		return $this->makeResponse();
     }
 
+
 	/**
+	 * @param $additional
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	private function makeResponse()
+	private function makeResponse($additional = [])
 	{
 		$this->getUserPayload();
 
 		return response()->json([
 			'user' => $this->user,
 			'user_producer' => $this->getUserProducerTeams()
-		]);
+		] + $additional);
 	}
 
 	/**

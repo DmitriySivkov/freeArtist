@@ -70,7 +70,7 @@ module.exports = function (ctx) {
 			https: true,
 			port: ctx.mode.spa ? 8081
 				: (ctx.mode.pwa ? 9090 : 9000),
-			open: false // open browser on load
+			open: true // open browser on load
 		},
 
 		animations: "all",

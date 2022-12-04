@@ -5,7 +5,6 @@
   "npmClient": "npm",
   "webDir": "www",
   "server": {
-    "hostname": "mobile.ngrok.io",
     "androidScheme": "https"
   }
 }

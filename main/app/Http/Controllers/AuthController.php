@@ -31,6 +31,9 @@ class AuthController extends Controller
      */
     public function logout()
     {
+		if ($currentToken = request()->user()->currentAccessToken())
+			$currentToken->delete();
+
 		Auth::guard('web')->logout();
 
         return response('Успешно', 200);
@@ -42,7 +45,7 @@ class AuthController extends Controller
 	 */
 	public function authViaSession(AuthService $authService)
 	{
-		if (!Auth::check())
+		if (!auth('sanctum')->user())
 			return false;
 
 		return $authService->loginWithToken();
