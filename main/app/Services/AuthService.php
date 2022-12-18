@@ -22,23 +22,31 @@ class AuthService
 
 	/**
 	 * @param $credentials
+	 * @param $isMobile
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function loginWithCredentials($credentials)
+	public function loginWithCredentials($credentials, $isMobile)
     {
 		if (!Auth::attempt($credentials))
 			return response()->json(['errors' => ['total' => ['Неверный телефон или пароль']]], 422);
 
 		$this->user = User::where('phone', $credentials['phone'])->firstOrFail();
 
-		$token = $this->user->createToken($credentials['phone'] . '-' . request()->userAgent())->plainTextToken;
+		$tokenName = $credentials['phone'] . '-' . ($isMobile ? 'mobile' : 'desktop');
+
+		$this->revokeOldTokensOnCurrentDevice($tokenName);
+
+		$token = $this->user->createToken($tokenName)->plainTextToken;
+
+		if ($isMobile)
+			return $this->makeResponse(['token' => $token]);
 
 		$cookie = cookie(
 			'token', $token, 0, "/", config('session.domain'),
 			true, true, false, 'lax'
 		);
 
-		return $this->makeResponse(['token' => $token])->withCookie($cookie);
+		return $this->makeResponse()->withCookie($cookie);
     }
 
 	/**
@@ -54,12 +62,11 @@ class AuthService
 		return $this->makeResponse();
     }
 
-
 	/**
-	 * @param $additional
+	 * @param array $additional
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	private function makeResponse($additional = [])
+	private function makeResponse(array $additional = [])
 	{
 		$this->getUserPayload();
 
@@ -122,6 +129,15 @@ class AuthService
 
 			return $team;
 		});
+	}
+
+	/**
+	 * @param $token
+	 * @return void
+	 */
+	private function revokeOldTokensOnCurrentDevice($token)
+	{
+		$this->user->tokens()->where('name', $token)->delete();
 	}
 
 }

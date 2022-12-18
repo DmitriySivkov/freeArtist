@@ -76,25 +76,32 @@ import { useRouter } from "vue-router"
 import { useStore } from "vuex"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
-import { api } from "src/boot/axios"
-import "capacitor-secure-storage-plugin"
 import { Plugins } from "@capacitor/core"
-const { SecureStoragePlugin } = Plugins
+import { useQuasar } from "quasar"
 export default {
 	setup() {
+		const $q = useQuasar()
 		const $router = useRouter()
 		const $store = useStore()
-		const { notifySuccess, notifyError } = useNotification()
+		const { Storage } = Plugins
 
+		const { notifySuccess, notifyError } = useNotification()
 		const phone = ref(null)
 		const password = ref("")
 		const is_pwd = ref(true)
 
-		const onSubmit = () => {
+		const onSubmit = async() => {
 			$store.dispatch("user/login", {
 				phone: phone.value,
 				password: password.value,
-			}).then(() => {
+				is_mobile: $q.platform.is.capacitor
+			}).then((response) => {
+				if (response.data.token) {
+					Storage.set({
+						key: "token",
+						value: response.data.token
+					})
+				}
 				notifySuccess("Добро пожаловать!")
 				$router.push({name: "personal"})
 			}).catch((error) => {
@@ -102,7 +109,6 @@ export default {
 					.reduce((accum, val) => accum.concat(...val), [])
 				notifyError(errors)
 			})
-
 		}
 
 		const onReset = () => {

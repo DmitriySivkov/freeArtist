@@ -2,10 +2,15 @@ import { api } from "src/boot/axios"
 
 export const login = async ({commit, state}, payload) => {
 	const response = await api.post("auth", payload)
+
+	if (response.data.token)
+		api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
+
 	commit("SET_USER", response.data.user)
 	commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
 	commit("SET_IS_LOGGED", true)
 
+	return response
 }
 
 export const signUp = async ({commit}, payload) => {
@@ -24,8 +29,11 @@ export const logout = async ({commit, state}, payload) => {
 	commit("SET_IS_LOGGED", false)
 }
 
-export const authViaSession = async ({commit}) => {
-	const response = await api.post("authViaSession")
+export const authViaToken = async ({commit}, { token }) => {
+	if (token)
+		api.defaults.headers.common["Authorization"] = "Bearer " + token.value
+
+	const response = await api.post("authViaToken")
 	if (response.data) {
 		commit("SET_USER", response.data.user)
 		commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })

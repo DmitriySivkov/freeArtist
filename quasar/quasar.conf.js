@@ -3,7 +3,7 @@ module.exports = function (ctx) {
 	return {
 		preFetch: true,
 		boot: [
-			"authViaSession", // show loader
+			"authViaToken", // show loader
 			"axios",
 			"setCartFromLocalStorage",
 			"browseProducers",
@@ -55,7 +55,7 @@ module.exports = function (ctx) {
 			env: {
 				// on mobile dev - change address to available inside network
 				BACKEND_SERVER: ctx.dev ? (ctx.mode.spa ? "https://api.freeartist.loc" : (ctx.mode.capacitor ? "https://192.168.1.2" : null)) :
-					"https://46ca-46-237-11-106.ngrok.io",
+					"https://e217-95-106-191-13.ngrok.io",
 				BACKEND_HOST: "api.freeartist.loc"
 			},
 

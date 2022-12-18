@@ -26,7 +26,7 @@ Broadcast::routes(['middleware' => ['auth:sanctum']]);
 /** no auth requiring routes */
 Route::post('register', [RegisterController::class, 'store']);
 
-Route::post('authViaSession', [AuthController::class, 'authViaSession'])
+Route::post('authViaToken', [AuthController::class, 'authViaToken'])
 	->middleware(\App\Http\Middleware\AppendAuthHeader::class);
 
 Route::group(['prefix' => 'auth'], function() {

@@ -21,7 +21,10 @@ class AuthController extends Controller
 	public function login(Request $request, AuthService $authService)
     {
 		if ($request->has(['phone', 'password']))
-			return $authService->loginWithCredentials($request->only(['phone', 'password']));
+			return $authService->loginWithCredentials(
+				$request->only(['phone', 'password']),
+				$request->get('is_mobile')
+			);
 
 		return response('Ошибка сервера авторизации', 422);
     }
@@ -43,7 +46,7 @@ class AuthController extends Controller
 	 * @param AuthService $authService
 	 * @return false|\Illuminate\Http\JsonResponse
 	 */
-	public function authViaSession(AuthService $authService)
+	public function authViaToken(AuthService $authService)
 	{
 		if (!auth('sanctum')->user())
 			return false;
