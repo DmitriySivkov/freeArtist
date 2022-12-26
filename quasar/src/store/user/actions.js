@@ -35,7 +35,7 @@ export const logout = async ({commit, state}, payload) => {
 }
 
 export const authViaToken = async ({commit}, { token }) => {
-	if (token)
+	if (token && token.value)
 		api.defaults.headers.common["Authorization"] = "Bearer " + token.value
 
 	const response = await api.post("authViaToken")
