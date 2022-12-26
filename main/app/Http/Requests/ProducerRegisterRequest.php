@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Register;
+namespace App\Http\Requests;
 
-use App\Contracts\Requests\RegisterRequestContract;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProducerRegisterRequest extends FormRequest implements RegisterRequestContract
+class ProducerRegisterRequest extends FormRequest
 {
 
     /**

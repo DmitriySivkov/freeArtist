@@ -90,12 +90,15 @@ import { ref } from "vue"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
-
+import { useQuasar } from "quasar"
+import { Plugins } from "@capacitor/core"
 export default {
 	setup() {
+		const $q = useQuasar()
 		const $store = useStore()
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
+		const { Storage } = Plugins
 
 		const phone = ref(null)
 		const accept = ref(false)
@@ -113,13 +116,19 @@ export default {
 			onSubmit () {
 				if (accept.value !== true) {
 					notifyError("Необходимо принять условия пользования сервисом")
-				}
-				else {
+				} else {
 					$store.dispatch("user/signUp", {
 						phone: phone.value,
 						password: password.value,
-						consent: accept.value
-					}).then(() => {
+						consent: accept.value,
+						is_mobile: $q.platform.is.capacitor
+					}).then((response) => {
+						if (response.data.token) {
+							Storage.set({
+								key: "token",
+								value: response.data.token
+							})
+						}
 						notifySuccess("Добро пожаловать")
 						$router.push({name:"personal"})
 					}).catch((error) => {

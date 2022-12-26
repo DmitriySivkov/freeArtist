@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Contracts\Requests\NewOrderRequestContract;
 use App\Contracts\Services\OrderServiceContract;
-use App\Http\Requests\Order\CustomerNewOrderRequest;
-use App\Http\Requests\Order\ProducerNewOrderRequest;
+use App\Http\Requests\UserNewOrderRequest;
+use App\Http\Requests\ProducerNewOrderRequest;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Orders\ProducerOrderService;
@@ -28,7 +28,7 @@ class OrderServiceProvider extends ServiceProvider
 				case Role::PRODUCER:
 					return new ProducerNewOrderRequest();
 				default:
-					return new CustomerNewOrderRequest();
+					return new UserNewOrderRequest();
 			}
 		});
 

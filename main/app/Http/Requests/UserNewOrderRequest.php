@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Order;
+namespace App\Http\Requests;
 
 use App\Contracts\Requests\NewOrderRequestContract;
 use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CustomerNewOrderRequest extends FormRequest implements NewOrderRequestContract
+class UserNewOrderRequest extends FormRequest implements NewOrderRequestContract
 {
     /**
      * Determine if the user is authorized to make this request.

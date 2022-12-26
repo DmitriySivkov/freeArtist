@@ -1,11 +1,11 @@
 <template>
-	<ProducerList />
+	<ProducerListHome />
 	<router-view />
 </template>
 
 <script>
-import ProducerList from "src/components/home/ProducerList"
+import ProducerListHome from "src/components/producers/ProducerListHome"
 export default {
-	components: { ProducerList },
+	components: { ProducerListHome },
 }
 </script>

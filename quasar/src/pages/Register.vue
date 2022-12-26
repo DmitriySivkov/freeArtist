@@ -1,12 +1,12 @@
 <template>
 	<q-page class="column justify-center">
-		<CustomerRegister />
+		<UserRegister />
 	</q-page>
 </template>
 
 <script>
-import CustomerRegister from "src/components/register/CustomerRegister"
+import UserRegister from "src/components/users/UserRegister"
 export default {
-	components: { CustomerRegister }
+	components: { UserRegister }
 }
 </script>

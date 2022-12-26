@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProducerController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Broadcast;
@@ -24,7 +23,7 @@ Broadcast::routes(['middleware' => ['auth:sanctum']]);
 */
 
 /** no auth requiring routes */
-Route::post('register', [RegisterController::class, 'store']);
+Route::post('register', [AuthController::class, 'register']);
 
 Route::post('authViaToken', [AuthController::class, 'authViaToken'])
 	->middleware(\App\Http\Middleware\AppendAuthHeader::class);
@@ -55,7 +54,7 @@ Route::group([
 	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);
-	Route::post('register', [RegisterController::class, 'store']);
+	Route::post('register', [ProducerController::class, 'register']);
 
     Route::group(['prefix' => 'orders'], function () {
     	Route::get('', [OrderController::class, 'index']);

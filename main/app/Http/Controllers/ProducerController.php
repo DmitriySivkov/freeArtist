@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProducerRegisterRequest;
 use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\Product;
@@ -342,5 +343,18 @@ class ProducerController extends Controller
 		]);
 
 		return $composition;
+	}
+
+	public function register(ProducerRegisterRequest $request, ProducerService $producerService)
+	{
+		try {
+			return $producerService->register($request->validated());
+		} catch (\Throwable $e) {
+			return response()->json([
+				"errors" => [
+					"registerService" => [$e->getMessage()]
+				]
+			])->setStatusCode(422);
+		}
 	}
 }

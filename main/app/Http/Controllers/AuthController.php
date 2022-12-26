@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use App\Services\AuthService;
 use Carbon\Carbon;
@@ -9,7 +10,6 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
@@ -70,5 +70,23 @@ class AuthController extends Controller
             'email_verified_at' => Carbon::now()
         ]);
     }
+
+	/**
+	 * @param UserRegisterRequest $request
+	 * @param AuthService $authService
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function register(UserRegisterRequest $request, AuthService $authService)
+	{
+		try {
+			return $authService->register($request->validated(), $request->get('is_mobile'));
+		} catch (\Throwable $e) {
+			return response()->json([
+				"errors" => [
+					"registerService" => [$e->getMessage()]
+				]
+			])->setStatusCode(422);
+		}
+	}
 
 }

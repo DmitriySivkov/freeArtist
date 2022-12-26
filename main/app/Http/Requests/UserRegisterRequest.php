@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Register;
+namespace App\Http\Requests;
 
-use App\Contracts\Requests\RegisterRequestContract;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CustomerRegisterRequest extends FormRequest implements RegisterRequestContract
+class UserRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

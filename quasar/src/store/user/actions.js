@@ -15,10 +15,15 @@ export const login = async ({commit, state}, payload) => {
 
 export const signUp = async ({commit}, payload) => {
 	const response = await api.post("register", payload)
-	api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token // todo - check if needed
+
+	if (response.data.token)
+		api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
+
 	commit("SET_USER", response.data.user)
 	commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
 	commit("SET_IS_LOGGED", true)
+
+	return response
 }
 
 export const logout = async ({commit, state}, payload) => {

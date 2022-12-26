@@ -10,10 +10,11 @@ use App\Models\Team;
 use App\Models\User;
 use App\Services\RelationRequests\ProducerRelationRequestService;
 use App\Services\RelationRequests\UserRelationRequestService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
@@ -139,5 +140,36 @@ class AuthService
 	{
 		$this->user->tokens()->where('name', $token)->delete();
 	}
+
+
+	/**
+	 * @param array $userData
+	 * @param bool $isMobile
+	 * @return JsonResponse
+	 * @throws \Throwable
+	 */
+	public function register($userData, $isMobile)
+	{
+		DB::beginTransaction();
+		try {
+			$unhashedPassword = $userData['password'];
+			$userData['password'] = Hash::make($unhashedPassword);
+
+			$user = User::create($userData);
+
+			$response = $this->loginWithCredentials([
+				'phone' => $user->phone,
+				'password' => $unhashedPassword
+			], $isMobile);
+
+			DB::commit();
+		} catch (\Throwable) {
+			DB::rollBack();
+			throw new \LogicException("Ошибка сервера регистрации");
+		}
+
+		return $response;
+	}
+
 
 }

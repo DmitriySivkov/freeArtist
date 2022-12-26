@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ProducerRegister from "src/components/register/ProducerRegister"
+import ProducerRegister from "src/components/producers/ProducerRegister"
 export default {
 	components: { ProducerRegister }
 }
