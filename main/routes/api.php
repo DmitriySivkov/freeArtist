@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -54,15 +55,18 @@ Route::group([
 	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);
-	Route::post('register', [ProducerController::class, 'register']);
 
     Route::group(['prefix' => 'orders'], function () {
     	Route::get('', [OrderController::class, 'index']);
     	Route::post('', [OrderController::class, 'store']);
     });
 
+	Route::group(['prefix' => 'teams'], function() {
+		Route::get('{team}/users', [TeamController::class, 'getUsers']);
+	});
+
 	Route::group(['prefix' => 'producers'], function() {
-		Route::get('{producer}/users', [ProducerController::class, 'getProducerUsers']);
+		Route::post('register', [ProducerController::class, 'register']);
 		Route::post('{producer}/setLogo', [ProducerController::class, 'setProducerLogo']);
 
 		Route::group(['prefix' => '{producer}/products'], function () {

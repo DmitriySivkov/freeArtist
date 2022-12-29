@@ -12,7 +12,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\Permissions\ProducerPermissionService;
 use App\Services\Producers\ProducerService;
-use App\Services\RelationRequests\ProducerRelationRequestService;
+use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -42,15 +42,15 @@ class ProducerController extends Controller
 
 	/**
 	 * @param Producer $producer
-	 * @param ProducerRelationRequestService $prrService
+	 * @param ProducerService $producerService
 	 * @return JsonResponse
 	 */
-	public function getIncomingRelationRequests(Producer $producer, ProducerRelationRequestService $prrService)
+	public function getIncomingRelationRequests(Producer $producer, ProducerService $producerService)
 	{
-		$prrService->setProducer($producer);
+		$producerService->setProducer($producer);
 
 		return response()->json([
-			'incoming_coworking_requests' => $prrService->getIncomingCoworkingRequests()
+			'incoming_coworking_requests' => $producerService->getIncomingCoworkingRequests()
 		]);
 	}
 
@@ -102,16 +102,16 @@ class ProducerController extends Controller
 
 	/**
 	 * @param RelationRequest $relationRequest
-	 * @param ProducerRelationRequestService $prrService
+	 * @param ProducerService $producerService
 	 * @return RelationRequest|JsonResponse
 	 */
-	public function acceptCoworkingRequest(RelationRequest $relationRequest, ProducerRelationRequestService $prrService)
+	public function acceptCoworkingRequest(RelationRequest $relationRequest, ProducerService $producerService)
 	{
 		try {
 			/** @var Producer $producer */
 			$producer = $relationRequest->to;
-			$prrService->setProducer($producer);
-			return $prrService->acceptCoworkingRequest($relationRequest);
+			$producerService->setProducer($producer);
+			return $producerService->acceptCoworkingRequest($relationRequest);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
@@ -120,35 +120,20 @@ class ProducerController extends Controller
 
 	/**
 	 * @param RelationRequest $relationRequest
-	 * @param ProducerRelationRequestService $prrService
+	 * @param ProducerService $producerService
 	 * @return RelationRequest|JsonResponse
 	 */
-	public function rejectCoworkingRequest(RelationRequest $relationRequest, ProducerRelationRequestService $prrService)
+	public function rejectCoworkingRequest(RelationRequest $relationRequest, ProducerService $producerService)
 	{
 		try {
 			/** @var Producer $producer */
 			$producer = $relationRequest->to;
-			$prrService->setProducer($producer);
-			return $prrService->rejectCoworkingRequest($relationRequest);
+			$producerService->setProducer($producer);
+			return $producerService->rejectCoworkingRequest($relationRequest);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
 		}
-	}
-
-	/**
-	 * @param Producer $producer
-	 * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-	 */
-	public function getProducerUsers(Producer $producer)
-	{
-		return User::whereRoleIs(Role::ROLE_PRODUCER['name'], $producer->team)
-			->with([
-				'permissions' => function($query) use ($producer) {
-					$query->where('team_id', $producer->team->id);
-				}
-			])
-			->get();
 	}
 
 	/**
@@ -306,7 +291,6 @@ class ProducerController extends Controller
 		]);
 	}
 
-
 	/**
 	 * @param Producer $producer
 	 * @param Product $product
@@ -350,11 +334,8 @@ class ProducerController extends Controller
 		try {
 			return $producerService->register($request->validated());
 		} catch (\Throwable $e) {
-			return response()->json([
-				"errors" => [
-					"registerService" => [$e->getMessage()]
-				]
-			])->setStatusCode(422);
+			// todo - bring errors to this view everywhere
+			return ResponseService::error($e->getMessage());
 		}
 	}
 }

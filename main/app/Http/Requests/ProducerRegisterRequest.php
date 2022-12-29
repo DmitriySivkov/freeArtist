@@ -25,7 +25,7 @@ class ProducerRegisterRequest extends FormRequest
     public function rules()
     {
         return [
-			'producer' => ['required', 'unique:producers,title']
+			'display_name' => ['required', 'unique:teams,display_name']
         ];
     }
 
@@ -37,7 +37,7 @@ class ProducerRegisterRequest extends FormRequest
     public function messages()
     {
         return [
-            'producer.unique' => 'Такой изготовитель уже существует',
+            'display_name.unique' => 'Такое название уже существует',
         ];
     }
 }

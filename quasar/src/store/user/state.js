@@ -1,5 +1,5 @@
 export default {
 	isLogged: false,
-	personalTab: "customer",
+	personalTab: "user",
 	data: {}
 }

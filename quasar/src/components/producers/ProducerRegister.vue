@@ -64,16 +64,24 @@ export default {
 
 		const onSubmit = () => {
 			$store.dispatch("user/registerProducer", {
-				producer: producer.value,
+				display_name: producer.value,
 			}).then(() => {
 				notifySuccess("Успешно")
 				$router.push({name:"personal_user"})
-			})
-				.catch((error) => {
+			}).catch((error) => {
+				// todo - bring errors to this view everywhere
+				if (typeof error.response.data.errors === "object") {
 					const errors = Object.values(error.response.data.errors)
 						.reduce((accum, val) => accum.concat(...val), [])
-					notifyError(errors)
-				})
+
+					for (let i in errors) {
+						notifyError(errors[i])
+					}
+				} else {
+					notifyError(error.response.data.errors)
+				}
+
+			})
 		}
 
 		const onReset = () =>

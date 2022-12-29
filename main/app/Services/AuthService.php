@@ -4,12 +4,14 @@
 namespace App\Services;
 
 
+use App\Contracts\ProducerServiceContract;
+use App\Contracts\UserServiceContract;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
-use App\Services\RelationRequests\ProducerRelationRequestService;
-use App\Services\RelationRequests\UserRelationRequestService;
+use App\Services\Producers\ProducerService;
+use App\Services\Users\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -87,9 +89,10 @@ class AuthService
 			'permissions'
 		]);
 
-		$urrService = new UserRelationRequestService;
-		$urrService->setUser($this->user);
-		$this->user->outgoing_coworking_requests = $urrService->getOutgoingCoworkingRequests();
+		/** @var UserService $userService */
+		$userService = app(UserServiceContract::class);
+		$userService->setUser($this->user);
+		$this->user->outgoing_coworking_requests = $userService->getOutgoingCoworkingRequests();
 	}
 
 	/**
@@ -105,10 +108,11 @@ class AuthService
 		if ($userProducerTeams->isEmpty())
 			return [];
 
-		$prrService = new ProducerRelationRequestService;
+		/** @var ProducerService $producerService */
+		$producerService = app(ProducerServiceContract::class);
 
-		return $userProducerTeams->map(function(Team $team) use ($prrService) {
-			$prrService->setProducer($team->detailed);
+		return $userProducerTeams->map(function(Team $team) use ($producerService) {
+			$producerService->setProducer($team->detailed);
 
 			if (
 				$this->user->owns($team) ||
@@ -116,7 +120,7 @@ class AuthService
 			) {
 				$requests = [
 					'data' => [
-						'incoming_coworking_requests' => $prrService->getIncomingCoworkingRequests()
+						'incoming_coworking_requests' => $producerService->getIncomingCoworkingRequests()
 					],
 				];
 				$requests['total_pending_request_count'] = collect($requests['data'])

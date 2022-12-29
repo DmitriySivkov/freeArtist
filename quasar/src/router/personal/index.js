@@ -1,8 +1,8 @@
-import customerRoutes from "src/router/personal/customer"
+import userRoutes from "src/router/personal/user"
 import producerRoutes from "src/router/personal/producer"
 
 export default [
-	...customerRoutes,
+	...userRoutes,
 	...producerRoutes,
 	{
 		name: "personal",

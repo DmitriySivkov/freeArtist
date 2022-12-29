@@ -29,7 +29,7 @@ export const signUp = async ({commit}, payload) => {
 export const logout = async ({commit, state}, payload) => {
 	await api.post("personal/logout", payload)
 	commit("SET_USER", {})
-	commit("SWITCH_PERSONAL", "customer")
+	commit("SWITCH_PERSONAL", "user")
 	commit("userProducer/EMPTY_USER_PRODUCER", {}, { root:true })
 	commit("SET_IS_LOGGED", false)
 }
@@ -53,8 +53,9 @@ export const verifyEmail = async ({commit}, payload) => {
 	})
 }
 
+//todo - load all neccessary data for SET_USER_PRODUCER. Check 'SET_ROLE' if role already exists.
 export const registerProducer = async ({commit}, payload) => {
-	const response = await api.post("personal/register", {...payload, case: 1})
+	const response = await api.post("personal/producers/register", { ...payload })
 	commit("userProducer/SET_USER_PRODUCER", response.data.producer, { root:true })
 	commit("SET_ROLE", response.data.role)
 }

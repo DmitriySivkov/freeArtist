@@ -2,7 +2,7 @@ export default [
 	{
 		name: "personal_user_orders",
 		path: "personal/user/orders",
-		component: () => import("pages/personal/customer/Orders"),
+		component: () => import("pages/personal/user/Orders"),
 		meta: {
 			route_name: "Список заказов"
 		}
@@ -26,7 +26,7 @@ export default [
 	{
 		name: "personal_user_requests",
 		path: "personal/user/requests",
-		component: () => import("pages/personal/customer/Requests"),
+		component: () => import("pages/personal/user/Requests"),
 		meta: {
 			route_name: "Заявки"
 		}

@@ -32,27 +32,27 @@
 			:key="index"
 			:name="tab.name"
 		>
-			<NavigationCustomer v-if="selectedTab === 'customer'" />
+			<NavigationUser v-if="selectedTab === 'user'" />
 			<NavigationProducer v-if="selectedTab === 'producer'" />
 		</q-tab-panel>
 	</q-tab-panels>
 </template>
 
 <script>
-import NavigationCustomer from "src/pages/personal/customer/Navigation"
+import NavigationUser from "src/pages/personal/user/Navigation"
 import NavigationProducer from "src/pages/personal/producer/Navigation"
 import { useUserRole } from "src/composables/userRole"
 import { ref } from "vue"
 import { useStore } from "vuex"
 export default {
 	// todo - change tab appearance logic (check roles against the tabs)
-	components: { NavigationCustomer, NavigationProducer },
+	components: { NavigationUser, NavigationProducer },
 	setup() {
 		const $store = useStore()
 		const { user, userRoles } = useUserRole()
 		const selectedTab = ref(user.value.personalTab)
 		const tabs = [
-			{name: "customer", icon: "account_box", label: "Пользователь"},
+			{name: "user", icon: "account_box", label: "Пользователь"},
 			{name: "producer", icon: "work_outline", label: "Изготовитель"}
 		]
 
