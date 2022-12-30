@@ -102,8 +102,8 @@ export default {
 
 		const product_images = computed(() =>
 			props.selectedProduct.id ?
-				$store.state.userProducer.producers
-					.find((p) => p.id === parseInt($router.currentRoute.value.params.team_id))
+				$store.state.team.user_teams
+					.find((t) => t.id === parseInt($router.currentRoute.value.params.team_id))
 					.products
 					.find((p) => p.id === props.selectedProduct.id)
 					.images :

@@ -59,7 +59,7 @@
 import ProducerProductList from "src/components/producers/ProducerProductList"
 import ProducerProductSettingList from "src/components/producers/ProducerProductSettingList"
 import { useRoute } from "vue-router"
-import { useUserProducer } from "src/composables/userProducer"
+import { useUserTeam } from "src/composables/userTeam"
 import { computed, ref } from "vue"
 import { Loading } from "quasar"
 import { useUserPermission } from "src/composables/userPermission"
@@ -79,11 +79,11 @@ export default {
 	setup() {
 		const $store = useStore()
 		const $route = useRoute()
-		const { producerTeams } = useUserProducer()
+		const { user_teams } = useUserTeam()
 		const { hasPermission } = useUserPermission()
 		const user = computed(() => $store.state.user)
 		const team = computed(() =>
-			producerTeams.value.find((team) => team.id === parseInt($route.params.team_id))
+			user_teams.value.find((team) => team.id === parseInt($route.params.team_id))
 		)
 		const selected_product_id = ref(null)
 

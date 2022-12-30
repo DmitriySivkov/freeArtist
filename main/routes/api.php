@@ -63,6 +63,7 @@ Route::group([
 
 	Route::group(['prefix' => 'teams'], function() {
 		Route::get('{team}/users', [TeamController::class, 'getUsers']);
+		Route::post('{team}/permissions/{user}/sync', [TeamController::class, 'syncUserPermissions']);
 	});
 
 	Route::group(['prefix' => 'producers'], function() {
@@ -78,9 +79,6 @@ Route::group([
 			Route::post('{product}/syncCompositionSettings', [ProducerController::class, 'syncProducerProductCompositionSettings']);
 		});
 
-		Route::group(['prefix' => 'permissions'], function() {
-			Route::post('{producer}/sync/{user}', [ProducerController::class, 'syncUserPermissions']);
-		});
 		Route::group(['prefix' => 'relationRequests'], function() {
 			Route::get('incoming/{producer}', [ProducerController::class, 'getIncomingRelationRequests']);
 			Route::post('{producer}/sendProducerPartnershipRequest', [ProducerController::class, 'sendProducerPartnershipRequest']);

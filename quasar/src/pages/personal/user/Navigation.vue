@@ -25,10 +25,10 @@
 
 <script>
 import { computed } from "vue"
-import { useUserProducer } from "src/composables/userProducer"
+import { useUserTeam } from "src/composables/userTeam"
 export default {
 	setup() {
-		const { userOwnProducer } = useUserProducer()
+		const { userOwnTeam } = useUserTeam()
 
 		const items = [
 			{ title: "Профиль", link: "/personal/user" },
@@ -36,7 +36,7 @@ export default {
 			{
 				title: "Зарегистрировать изготовителя",
 				link: "/personal/register-producer",
-				conditional: !userOwnProducer.value
+				conditional: !userOwnTeam.value
 			},
 			{ title: "Заявки", link: "/personal/user/requests" }
 		]

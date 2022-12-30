@@ -54,7 +54,7 @@ export default {
 		const $router = useRouter()
 		const { hasPermission } = useUserPermission()
 		const image = computed(() =>
-			$store.state.userProducer.producers
+			$store.state.team.user_teams
 				.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
 				.detailed.logo
 		)

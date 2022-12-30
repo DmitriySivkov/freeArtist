@@ -5,16 +5,16 @@
 <script>
 import ProducerRequestList from "src/components/producers/ProducerRequestList"
 import { useRoute } from "vue-router"
-import { useUserProducer } from "src/composables/userProducer"
+import { useUserTeam } from "src/composables/userTeam"
 import { computed } from "vue"
 
 export default {
 	components: { ProducerRequestList },
 	setup() {
 		const $route = useRoute()
-		const { producerTeams } = useUserProducer()
+		const { user_teams } = useUserTeam()
 		const team = computed(() =>
-			producerTeams.value.find((team) => team.id === parseInt($route.params.team_id))
+			user_teams.value.find((team) => team.id === parseInt($route.params.team_id))
 		)
 
 		return {

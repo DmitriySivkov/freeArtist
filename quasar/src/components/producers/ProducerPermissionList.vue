@@ -47,8 +47,8 @@
 
 <script>
 import { useStore } from "vuex"
-import { computed, ref, watch } from "vue"
-import { useUserProducer } from "src/composables/userProducer"
+import { computed } from "vue"
+import { useUserTeam } from "src/composables/userTeam"
 import { useUserPermission } from "src/composables/userPermission"
 import { useNotification } from "src/composables/notification"
 export default {
@@ -61,7 +61,7 @@ export default {
 	},
 	setup(props) {
 		const $store = useStore()
-		const { getProducerUser, syncProducerUserPermissions } = useUserProducer()
+		const { getTeamUser, syncTeamUserPermissions } = useUserTeam()
 		const { hasPermission } = useUserPermission()
 		const { notifySuccess, notifyError } = useNotification()
 		const all_producer_permissions = computed(() => $store.state.permission.producer)
@@ -70,7 +70,7 @@ export default {
 			get: () => {
 				return props.userId === props.producer.user_id ?
 					all_producer_permissions.value.map((p) => p.id) :
-					getProducerUser(props.producer.id, props.userId).permissions.map((p) => p.id)
+					getTeamUser(props.producer.id, props.userId).permissions.map((p) => p.id)
 			},
 			set: (permission_ids) => {
 				let permissions = JSON.parse(JSON.stringify(all_producer_permissions.value)) // computed prop deep copy
@@ -103,8 +103,8 @@ export default {
 			props.userId !== props.producer.user_id
 		)
 
-		const setUserPermissions = (producer_id, user_id, permissions) => {
-			syncProducerUserPermissions(producer_id, user_id, permissions)
+		const setUserPermissions = (team_id, user_id, permissions) => {
+			syncTeamUserPermissions(team_id, user_id, permissions)
 				.then(() => {
 					notifySuccess(
 						"Права пользователя: '" +
@@ -119,7 +119,7 @@ export default {
 		// watch(() => props.userId, (selected_user_id) => {
 		// 	selected_permissions.value = selected_user_id === props.producer.user_id ?
 		// 		all_producer_permissions.value.map((p) => p.id) :
-		// 		getProducerUser(props.producer.id, selected_user_id).permissions.map((p) => p.id)
+		// 		getTeamUser(props.producer.id, selected_user_id).permissions.map((p) => p.id)
 		// })
 
 		return {

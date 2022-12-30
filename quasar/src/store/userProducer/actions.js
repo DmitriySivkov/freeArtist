@@ -25,27 +25,6 @@ export const rejectCoworkingRequest = async ({commit}, {producer_id, request_id}
 	})
 }
 
-// todo - make a store for team - move there common things among all types of users
-export const getProducerUserList = async ({commit}, producer_id) => {
-	const response = await api.get("personal/teams/" + producer_id + "/users")
-	commit("SET_PRODUCER_USERS", {
-		producer_id,
-		users: response.data
-	})
-}
-
-export const syncProducerUserPermissions = async ({commit}, { producer_id, user_id, permissions }) => {
-	const response = await api.post(
-		"personal/producers/permissions/" + producer_id + "/sync/" + user_id,
-		permissions
-	)
-	commit("SYNC_PRODUCER_USER_PERMISSIONS", {
-		producer_id,
-		user_id,
-		permissions:response.data
-	})
-}
-
 export const getProducerProductList = async ({commit}, producer_id) => {
 	const response = await api.get("personal/producers/" + producer_id + "/products")
 	commit("SET_PRODUCER_PRODUCTS", {

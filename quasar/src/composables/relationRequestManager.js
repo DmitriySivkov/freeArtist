@@ -4,7 +4,7 @@ import { useStore } from "vuex"
 export const useRelationRequestManager = () => {
 	const $store = useStore()
 	const user = computed(() => $store.state.user)
-	const userProducer = computed(() => $store.state.userProducer)
+	const team_store = computed(() => $store.state.team)
 	const relationRequest = computed(() => $store.state.relationRequest)
 
 	/** customer requests */
@@ -27,19 +27,19 @@ export const useRelationRequestManager = () => {
 
 	/** producer requests */
 	const outgoingProducerPartnershipRequests = (producerId) =>
-		userProducer.value.producers.find((team) => team.id === producerId)
+		team_store.value.user_teams.find((team) => team.id === producerId)
 			.requests
 			.data
 			.outgoing_producer_partnership_requests
 
 	const incomingProducerPartnershipRequests = (producerId) =>
-		userProducer.value.producers.find((team) => team.id === producerId)
+		team_store.value.user_teams.find((team) => team.id === producerId)
 			.requests
 			.data
 			.incoming_producer_partnership_requests
 
 	const incomingCoworkingRequests = (producerId) =>
-		userProducer.value.producers.find((team) => team.id === producerId)
+		team_store.value.user_teams.find((team) => team.id === producerId)
 			.requests
 			.data
 			.incoming_coworking_requests

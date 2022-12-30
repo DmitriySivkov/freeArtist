@@ -82,7 +82,6 @@ class ProducerService implements ProducerServiceContract
 				['user_type' => User::class, 'team_id' => $team->id]
 			);
 
-			$team->load('detailed');
 			$team->requests = ['data' => [], 'total_pending_request_count' => 0];
 
 			DB::commit();
@@ -92,7 +91,7 @@ class ProducerService implements ProducerServiceContract
 		}
 
 		return response()->json([
-			'producer' => $team,
+			'team' => $team,
 			'role' => $user->roles()
 				->where('role_id', Role::ROLE_PRODUCER['id'])
 				->where('team_id', $team->id)
@@ -202,4 +201,46 @@ class ProducerService implements ProducerServiceContract
 		$this->producer = $producer;
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Collection[][][]
+	 */
+	public function onAuth()
+	{
+		return [
+			'requests' => $this->getRequests()
+		];
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Collection[][]
+	 */
+	public function getRequests()
+	{
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		if (
+			!$user->owns($this->producer->team) &&
+			!$user->hasPermission(
+				Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'],
+				$this->producer->team->name
+			)
+		) {
+			throw new \LogicException('Недостаточно прав');
+		}
+
+		$requests = [
+			'data' => [
+				'incoming_coworking_requests' => $this->getIncomingCoworkingRequests()
+			],
+		];
+
+		$requests['total_pending_request_count'] = collect($requests['data'])
+			->reduce(function($carry, $requestList) {
+				$carry += count($requestList);
+				return $carry;
+			}, 0);
+
+		return $requests;
+	}
 }

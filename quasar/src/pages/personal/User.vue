@@ -26,13 +26,13 @@
 				<th>Привилегии</th>
 				<tbody>
 					<tr
-						v-for="(team, index) in producerTeams"
+						v-for="(team, index) in user_teams"
 						:key="index"
 					>
 						<td class="text-left">{{ team.display_name }}</td>
 						<td class="text-left">
 							<ul>
-								<li v-if="userOwnProducer && userOwnProducer.id === team.id">
+								<li v-if="userOwnTeam && userOwnTeam.id === team.id">
 									Владелец
 								</li>
 								<!--								<li-->
@@ -53,20 +53,19 @@
 
 <script>
 import { useUserRole } from "src/composables/userRole"
-import { useUserProducer } from "src/composables/userProducer"
-
+import { useUserTeam } from "src/composables/userTeam"
 export default {
 	setup() {
 		const { user, hasUserRole } = useUserRole()
-		const { producerTeams, userOwnProducer } = useUserProducer()
+		const { user_teams, userOwnTeam } = useUserTeam()
 
 		const userCommon = Object.entries(user.value.data)
 			.filter(([prop]) => ["phone", "name", "email"].includes(prop))
 
 		return {
 			userCommon,
-			producerTeams,
-			userOwnProducer,
+			user_teams,
+			userOwnTeam,
 			user,
 			hasUserRole
 		}

@@ -18,7 +18,7 @@
 import ProducerUserList from "src/components/producers/ProducerUserList"
 import ProducerPermissionList from "src/components/producers/ProducerPermissionList"
 import { useRoute } from "vue-router"
-import { useUserProducer } from "src/composables/userProducer"
+import { useUserTeam } from "src/composables/userTeam"
 import { Loading } from "quasar"
 import { computed, ref } from "vue"
 import { useStore } from "vuex"
@@ -28,15 +28,15 @@ export default {
 		Loading.show({
 			spinnerColor: "primary",
 		})
-		return store.dispatch("userProducer/getProducerUserList", parseInt(currentRoute.params.team_id))
+		return store.dispatch("team/getUserList", parseInt(currentRoute.params.team_id))
 			.then(() => Loading.hide())
 	},
 	components: { ProducerUserList, ProducerPermissionList },
 	setup() {
 		const $route = useRoute()
-		const { producerTeams } = useUserProducer()
+		const { user_teams } = useUserTeam()
 		const team = computed(() =>
-			producerTeams.value.find((team) => team.id === parseInt($route.params.team_id))
+			user_teams.value.find((team) => team.id === parseInt($route.params.team_id))
 		)
 		const $store = useStore()
 		const user = computed(() => $store.state.user)

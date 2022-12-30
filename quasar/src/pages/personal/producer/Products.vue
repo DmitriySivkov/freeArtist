@@ -9,13 +9,13 @@
 import ProducerTeamList from "src/components/producers/ProducerTeamList"
 import { computed } from "vue"
 import _ from "lodash"
-import { useUserProducer } from "src/composables/userProducer"
+import { useUserTeam } from "src/composables/userTeam"
 export default {
 	components: { ProducerTeamList },
 	setup() {
-		const { producerTeams } = useUserProducer()
+		const { user_teams } = useUserTeam()
 		const producerTeamsSorted = computed(() => _.orderBy(
-			producerTeams.value, team => team.display_name, "asc"
+			user_teams.value, team => team.display_name, "asc"
 		))
 
 		return {

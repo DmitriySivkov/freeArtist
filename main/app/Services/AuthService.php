@@ -4,13 +4,10 @@
 namespace App\Services;
 
 
-use App\Contracts\ProducerServiceContract;
+use App\Contracts\TeamServiceContract;
 use App\Contracts\UserServiceContract;
-use App\Models\Permission;
-use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
-use App\Services\Producers\ProducerService;
 use App\Services\Users\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
@@ -75,7 +72,7 @@ class AuthService
 
 		return response()->json([
 			'user' => $this->user,
-			'user_producer' => $this->getUserProducerTeams()
+			'user_teams' => $this->getUserTeams()
 		] + $additional);
 	}
 
@@ -98,41 +95,20 @@ class AuthService
 	/**
 	 * @return array|Collection
 	 */
-	private function getUserProducerTeams()
+	private function getUserTeams()
 	{
-		$userProducerTeams = $this->user->rolesTeams()
-			->where('role_id', Role::ROLE_PRODUCER['id'])
-			->get()
-			->makeHidden('pivot');
+		$userTeams = $this->user->rolesTeams()->get();
 
-		if ($userProducerTeams->isEmpty())
+		if ($userTeams->isEmpty())
 			return [];
 
-		/** @var ProducerService $producerService */
-		$producerService = app(ProducerServiceContract::class);
+		/** @var TeamService $teamService */
+		$teamService = app(TeamServiceContract::class);
 
-		return $userProducerTeams->map(function(Team $team) use ($producerService) {
-			$producerService->setProducer($team->detailed);
-
-			if (
-				$this->user->owns($team) ||
-				$this->user->hasPermission(Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'], $team->name)
-			) {
-				$requests = [
-					'data' => [
-						'incoming_coworking_requests' => $producerService->getIncomingCoworkingRequests()
-					],
-				];
-				$requests['total_pending_request_count'] = collect($requests['data'])
-					->reduce(function($carry, $requestList) {
-						$carry += count($requestList);
-						return $carry;
-					}, 0);
-
-				$team->requests = $requests;
-			}
-
-			return $team;
+		return $userTeams->map(function(Team $team) use ($teamService) {
+			$team->makeHidden('pivot');
+			$teamService->setTeam($team);
+			return $teamService->onAuth();
 		});
 	}
 
@@ -144,7 +120,6 @@ class AuthService
 	{
 		$this->user->tokens()->where('name', $token)->delete();
 	}
-
 
 	/**
 	 * @param array $userData
@@ -174,6 +149,5 @@ class AuthService
 
 		return $response;
 	}
-
 
 }

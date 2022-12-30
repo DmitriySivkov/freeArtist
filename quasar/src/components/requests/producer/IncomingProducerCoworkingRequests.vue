@@ -86,8 +86,7 @@
 <script>
 import { useRelationRequestManager } from "src/composables/relationRequestManager"
 import { useNotification } from "src/composables/notification"
-import { useStore } from "vuex"
-import { useUserProducer } from "src/composables/userProducer"
+import { useUserTeam } from "src/composables/userTeam"
 import { useRouter } from "vue-router"
 import { computed } from "vue"
 export default {
@@ -98,7 +97,6 @@ export default {
 		}
 	},
 	setup(props) {
-		const $store = useStore()
 		const $router = useRouter()
 		const
 			{
@@ -106,7 +104,7 @@ export default {
 				acceptCoworkingRequest,
 				rejectCoworkingRequest,
 			} = useRelationRequestManager()
-		const { producerTeams } = useUserProducer()
+		const { user_teams } = useUserTeam()
 		const { notifySuccess, notifyError } = useNotification()
 
 		const acceptCowRequest = (requestId) => {
@@ -122,7 +120,7 @@ export default {
 		}
 
 		const incomingCowRequests = computed(() =>
-			producerTeams.value.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
+			user_teams.value.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
 				.requests
 				.data
 				.incoming_coworking_requests

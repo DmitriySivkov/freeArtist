@@ -1,3 +1,3 @@
 export default {
-	producers: []
+	user_teams: []
 }

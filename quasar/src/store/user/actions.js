@@ -7,7 +7,7 @@ export const login = async ({commit, state}, payload) => {
 		api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
 
 	commit("SET_USER", response.data.user)
-	commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
+	commit("team/SET_USER_TEAMS", response.data.user_teams, { root:true })
 	commit("SET_IS_LOGGED", true)
 
 	return response
@@ -20,7 +20,6 @@ export const signUp = async ({commit}, payload) => {
 		api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
 
 	commit("SET_USER", response.data.user)
-	commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
 	commit("SET_IS_LOGGED", true)
 
 	return response
@@ -28,9 +27,10 @@ export const signUp = async ({commit}, payload) => {
 
 export const logout = async ({commit, state}, payload) => {
 	await api.post("personal/logout", payload)
+
 	commit("SET_USER", {})
 	commit("SWITCH_PERSONAL", "user")
-	commit("userProducer/EMPTY_USER_PRODUCER", {}, { root:true })
+	commit("team/EMPTY_USER_TEAMS", {}, { root:true })
 	commit("SET_IS_LOGGED", false)
 }
 
@@ -39,9 +39,10 @@ export const authViaToken = async ({commit}, { token }) => {
 		api.defaults.headers.common["Authorization"] = "Bearer " + token.value
 
 	const response = await api.post("authViaToken")
+
 	if (response.data) {
 		commit("SET_USER", response.data.user)
-		commit("userProducer/SET_USER_PRODUCER", response.data.user_producer, { root:true })
+		commit("team/SET_USER_TEAMS", response.data.user_teams, { root:true })
 		commit("SET_IS_LOGGED", true)
 	}
 }
@@ -53,10 +54,9 @@ export const verifyEmail = async ({commit}, payload) => {
 	})
 }
 
-//todo - load all neccessary data for SET_USER_PRODUCER. Check 'SET_ROLE' if role already exists.
 export const registerProducer = async ({commit}, payload) => {
 	const response = await api.post("personal/producers/register", { ...payload })
-	commit("userProducer/SET_USER_PRODUCER", response.data.producer, { root:true })
+	commit("team/SET_USER_TEAMS", response.data.team, { root:true })
 	commit("SET_ROLE", response.data.role)
 }
 
