@@ -35,16 +35,16 @@ export const usePrivateChannels = () => {
 					user_teams.value[i].user_id === user.value.data.id ||
 					hasPermission(user_teams.value[i].id, ["producer_incoming_coworking_requests"])
 				) {
-					echo.private("relation-requests.incoming.producer." + user_teams.value[i].id)
+					echo.private("relation-requests.incoming.producer." + user_teams.value[i].detailed.id)
 						.listen(".RelationRequestCreated", (e) => {
-							$store.commit("userProducer/SET_PRODUCER_INCOMING_RELATION_REQUESTS", {
+							$store.commit("producer/SET_PRODUCER_INCOMING_RELATION_REQUESTS", {
 								incoming_coworking_requests: [e.model],
-								producer_id: user_teams.value[i].id
+								producer_id: user_teams.value[i].detailed.id
 							})
 						})
 						.listen(".RelationRequestUpdated", (e) => {
-							$store.commit("userProducer/SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
-								producer_id: user_teams.value[i].id,
+							$store.commit("team/SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
+								producer_id: user_teams.value[i].detailed.id,
 								request_id: e.model.id,
 								status: e.model.status
 							})

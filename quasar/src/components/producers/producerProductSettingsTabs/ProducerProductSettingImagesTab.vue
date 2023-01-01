@@ -148,9 +148,9 @@ export default {
 			let formData = new FormData()
 			formData.append("image", image.value)
 
-			$store.dispatch("userProducer/addProducerProductImage", {
+			$store.dispatch("producer/addProducerProductImage", {
 				image: formData,
-				producer_id: parseInt($router.currentRoute.value.params.team_id),
+				producer_id: parseInt($router.currentRoute.value.params.producer_id),
 				product_id: props.selectedProduct.id
 			}).then(() => {
 				is_loading.value = false

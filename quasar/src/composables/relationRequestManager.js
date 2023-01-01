@@ -52,10 +52,10 @@ export const useRelationRequestManager = () => {
 		)
 
 	const acceptCoworkingRequest = (producer_id, request_id) =>
-		$store.dispatch("userProducer/acceptCoworkingRequest", { producer_id, request_id })
+		$store.dispatch("producer/acceptCoworkingRequest", { producer_id, request_id })
 
 	const rejectCoworkingRequest = (producer_id, request_id) =>
-		$store.dispatch("userProducer/rejectCoworkingRequest", { producer_id, request_id })
+		$store.dispatch("producer/rejectCoworkingRequest", { producer_id, request_id })
 
 	return {
 		relationRequest,

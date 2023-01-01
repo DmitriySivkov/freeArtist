@@ -69,8 +69,9 @@ export default {
 		Loading.show({
 			spinnerColor: "primary",
 		})
-		return store.dispatch("userProducer/getProducerProductList", parseInt(currentRoute.params.team_id))
-			.then(() => Loading.hide())
+		return store.dispatch(
+			"producer/getProducerProductList", parseInt(currentRoute.params.producer_id)
+		).then(() => Loading.hide())
 	},
 	components: {
 		ProducerProductList,
@@ -83,7 +84,7 @@ export default {
 		const { hasPermission } = useUserPermission()
 		const user = computed(() => $store.state.user)
 		const team = computed(() =>
-			user_teams.value.find((team) => team.id === parseInt($route.params.team_id))
+			user_teams.value.find((t) => t.detailed.id === parseInt($route.params.producer_id))
 		)
 		const selected_product_id = ref(null)
 

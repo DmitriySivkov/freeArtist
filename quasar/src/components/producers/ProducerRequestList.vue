@@ -1,8 +1,8 @@
 <template>
-	<!--					<OutgoingProducerPartnershipRequests :producer="props.row" />-->
-	<!--					<IncomingProducerPartnershipRequests :producer="props.row" />-->
-	<!--					<OutgoingProducerCoworkingInvitations :producer="props.row" />-->
-	<IncomingProducerCoworkingRequests :producer="producer" />
+	<!--					<OutgoingProducerPartnershipRequests :team="team" />-->
+	<!--					<IncomingProducerPartnershipRequests :team="team" />-->
+	<!--					<OutgoingProducerCoworkingInvitations :team="team" />-->
+	<IncomingProducerCoworkingRequests :team="team" />
 </template>
 
 <script>
@@ -13,7 +13,7 @@ import IncomingProducerCoworkingRequests from "src/components/requests/producer/
 
 export default {
 	props: {
-		producer: {
+		team: {
 			type: Object,
 			default: () => ({})
 		}

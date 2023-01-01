@@ -136,7 +136,7 @@ export default {
 				return
 
 			disable_submit.value = true
-			$store.dispatch("userProducer/syncProducerProductCompositionSettings", {
+			$store.dispatch("producer/syncProducerProductCompositionSettings", {
 				producer_id: parseInt($router.currentRoute.value.params.team_id),
 				product_id: props.selectedProduct.id,
 				composition: composition.value

@@ -74,9 +74,9 @@ export default {
 			formData.append("logo", e.dataTransfer.files[0])
 
 			// todo validate with q-file help
-			$store.dispatch("userProducer/setProducerLogo", {
+			$store.dispatch("producer/setProducerLogo", {
 				logo: formData,
-				producer_id: parseInt($router.currentRoute.value.params.team_id)
+				producer_id: parseInt($router.currentRoute.value.params.producer_id)
 			}).then(() => {
 				is_loading.value = false
 				is_dragging.value = false

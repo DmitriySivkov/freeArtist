@@ -129,8 +129,8 @@ export default {
 
 			disable_submit.value = true
 			if (is_empty_product.value) {
-				$store.dispatch("userProducer/createProducerProduct", {
-					producer_id: parseInt($router.currentRoute.value.params.team_id),
+				$store.dispatch("producer/createProducerProduct", {
+					producer_id: parseInt($router.currentRoute.value.params.producer_id),
 					settings: {
 						title: product.value.title,
 						price: parseFloat(product.value.price).toFixed(2),
@@ -145,8 +145,8 @@ export default {
 					disable_submit.value = false
 				})
 			} else {
-				$store.dispatch("userProducer/syncProducerProductCommonSettings", {
-					producer_id: parseInt($router.currentRoute.value.params.team_id),
+				$store.dispatch("producer/syncProducerProductCommonSettings", {
+					producer_id: parseInt($router.currentRoute.value.params.producer_id),
 					product_id: props.selectedProduct.id,
 					settings: {
 						title: product.value.title,
@@ -175,8 +175,8 @@ export default {
 				message: "Удалить продукт: " + product.value.title + " ?",
 				cancel: true,
 			}).onOk(() => {
-				$store.dispatch("userProducer/deleteProducerProduct", {
-					producer_id: parseInt($router.currentRoute.value.params.team_id),
+				$store.dispatch("producer/deleteProducerProduct", {
+					producer_id: parseInt($router.currentRoute.value.params.producer_id),
 					product_id: props.selectedProduct.id,
 				}).then(() => {
 					notifySuccess("Продукт '" + product.value.title + "' успешно удалён")

@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Producer;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -18,7 +18,7 @@ class UserPermissionsSynchronized implements ShouldBroadcast
 	public string $queue;
 
 	public User $user;
-	public Producer $producer;
+	public Team $team;
 	public Collection | array $permissions;
 
     /**
@@ -26,12 +26,12 @@ class UserPermissionsSynchronized implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(User $user, Producer $producer, Collection $permissions)
+    public function __construct(User $user, Team $team, Collection $permissions)
     {
         $this->queue = config('queue.broadcast');
 
 		$this->user = $user;
-		$this->producer = $producer;
+		$this->team = $team;
 		$this->permissions = $permissions->toArray();
     }
 

@@ -74,8 +74,8 @@ export default {
 			},
 			set: (permission_ids) => {
 				let permissions = JSON.parse(JSON.stringify(all_producer_permissions.value)) // computed prop deep copy
-				$store.commit("userProducer/SYNC_PRODUCER_USER_PERMISSIONS", {
-					producer_id: props.producer.id,
+				$store.commit("team/SYNC_TEAM_USER_PERMISSIONS", {
+					team_id: props.producer.id,
 					user_id: props.userId,
 					permissions: permissions.filter((p) => permission_ids.includes(p.id))
 						.map((p) => {

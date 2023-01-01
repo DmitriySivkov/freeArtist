@@ -32,7 +32,7 @@
 						<td class="text-left">{{ team.display_name }}</td>
 						<td class="text-left">
 							<ul>
-								<li v-if="userOwnTeam && userOwnTeam.id === team.id">
+								<li v-if="user_own_team && user_own_team.id === team.id">
 									Владелец
 								</li>
 								<!--								<li-->
@@ -57,7 +57,7 @@ import { useUserTeam } from "src/composables/userTeam"
 export default {
 	setup() {
 		const { user, hasUserRole } = useUserRole()
-		const { user_teams, userOwnTeam } = useUserTeam()
+		const { user_teams, user_own_team } = useUserTeam()
 
 		const userCommon = Object.entries(user.value.data)
 			.filter(([prop]) => ["phone", "name", "email"].includes(prop))
@@ -65,7 +65,7 @@ export default {
 		return {
 			userCommon,
 			user_teams,
-			userOwnTeam,
+			user_own_team,
 			user,
 			hasUserRole
 		}

@@ -3,12 +3,14 @@ import { useStore } from "vuex"
 
 export const useUserTeam = () => {
 	const $store = useStore()
+
 	const user = computed(() => $store.state.user)
+
 	const team_store = computed(() => $store.state.team)
 
 	const user_teams = computed(() => team_store.value.user_teams)
 
-	const userOwnTeam = computed(() =>
+	const user_own_team = computed(() =>
 		user_teams.value.find((team) => team.user_id === user.value.data.id)
 	)
 
@@ -28,7 +30,7 @@ export const useUserTeam = () => {
 
 	return {
 		user_teams,
-		userOwnTeam,
+		user_own_team,
 		getTeam,
 		getTeamUser,
 		syncTeamUserPermissions

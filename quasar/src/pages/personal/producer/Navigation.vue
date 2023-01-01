@@ -28,7 +28,7 @@ import { computed } from "vue"
 import { useUserTeam } from "src/composables/userTeam"
 export default {
 	setup() {
-		const { userOwnTeam } = useUserTeam()
+		const { user_own_team } = useUserTeam()
 
 		const items = [
 			{ title: "Профиль", link: "/personal/producer" },
@@ -36,7 +36,7 @@ export default {
 			{
 				title: "Зарегистрировать изготовителя",
 				link: "/personal/register-producer",
-				conditional: !userOwnTeam.value
+				conditional: !user_own_team.value
 			},
 			{ title: "Заявки", link: "/personal/producer/requests" },
 			{ title: "Разрешения", link: "/personal/producer/permissions" },

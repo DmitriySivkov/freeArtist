@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Team;
+use App\Models\User;
+use App\Services\TeamService;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
@@ -18,5 +20,22 @@ class TeamController extends Controller
 					$query->where('team_id', $team->id);
 				}
 			]);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Team $team
+	 * @param User $user
+	 * @param TeamService $teamService
+	 * @return JsonResponse|Collection
+	 */
+	public function syncUserPermissions(Request $request, Team $team, User $user, TeamService $teamService)
+	{
+		try {
+			return $teamService->syncUserPermissions($request->all(), $team, $user);
+		} catch (\Throwable $e) {
+			return response()->json($e->getMessage())
+				->setStatusCode(422);
+		}
 	}
 }

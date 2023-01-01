@@ -40,16 +40,16 @@ export default [
 		}
 	},
 	{
-		name: "personal_producer_team_requests",
-		path: "personal/producer/:team_id/requests",
+		name: "personal_producer_requests_detail",
+		path: "personal/producer/:producer_id/requests",
 		component: () => import("pages/personal/producer/RequestsDetail"),
 		meta: {
 			route_name: "Заявки"
 		}
 	},
 	{
-		name: "personal_producer_team_profile",
-		path: "personal/producer/:team_id/profile",
+		name: "personal_producer_profile_detail",
+		path: "personal/producer/:producer_id/profile",
 		component: () => import("pages/personal/producer/ProfileDetail"),
 		meta: {
 			route_name: "Профиль"
@@ -64,8 +64,8 @@ export default [
 		}
 	},
 	{
-		name: "personal_producer_team_permissions",
-		path: "personal/producer/:team_id/permissions",
+		name: "personal_producer_permissions_detail",
+		path: "personal/producer/:producer_id/permissions",
 		component: () => import("pages/personal/producer/PermissionsDetail"),
 		meta: {
 			route_name: "Разрешения"
@@ -80,8 +80,8 @@ export default [
 		}
 	},
 	{
-		name: "personal_producer_team_products",
-		path: "personal/producer/:team_id/products",
+		name: "personal_producer_products_detail",
+		path: "personal/producer/:producer_id/products",
 		component: () => import("pages/personal/producer/ProductsDetail"),
 		meta: {
 			route_name: "Настройки продуктов"

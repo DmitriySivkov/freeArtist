@@ -1,6 +1,6 @@
 <template>
 	<ProducerTeamList
-		detail-route-name="personal_producer_team_profile"
+		detail-route-name="personal_producer_profile_detail"
 		:teams="producerTeamsSorted"
 	/>
 </template>
@@ -15,7 +15,9 @@ export default {
 	setup() {
 		const { user_teams } = useUserTeam()
 		const producerTeamsSorted = computed(() => _.orderBy(
-			user_teams.value, team => team.display_name, "asc"
+			user_teams.value.filter((t) => t.detailed_type === "App\\Models\\Producer"),
+			team => team.display_name,
+			"asc"
 		))
 
 		return {

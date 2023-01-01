@@ -1,5 +1,5 @@
 <template>
-	<ProducerRequestList :producer="team"/>
+	<ProducerRequestList :team="team"/>
 </template>
 
 <script>
@@ -14,7 +14,7 @@ export default {
 		const $route = useRoute()
 		const { user_teams } = useUserTeam()
 		const team = computed(() =>
-			user_teams.value.find((team) => team.id === parseInt($route.params.team_id))
+			user_teams.value.find((t) => t.detailed.id === parseInt($route.params.producer_id))
 		)
 
 		return {

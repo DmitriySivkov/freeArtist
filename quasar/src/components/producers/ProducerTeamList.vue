@@ -4,11 +4,12 @@
 			bordered
 			separator
 		>
+
 			<q-item
 				v-for="(team, index) in teams"
 				:key="index"
 				clickable
-				@click="goToDetail(team.id)"
+				@click="goToDetail(team.detailed.id)"
 			>
 				<q-item-section>
 					{{ team.display_name }}
@@ -43,9 +44,9 @@ export default ({
 	setup(props) {
 		const $router = useRouter()
 
-		const goToDetail = (team_id) => $router.push({
+		const goToDetail = (producer_id) => $router.push({
 			name: props.detailRouteName,
-			params: { team_id }
+			params: { producer_id }
 		})
 
 		return {

@@ -8,7 +8,6 @@ use App\Models\Producer;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\RelationRequest;
-use App\Models\Role;
 use App\Models\User;
 use App\Services\Permissions\ProducerPermissionService;
 use App\Services\Producers\ProducerService;
@@ -63,8 +62,10 @@ class ProducerController extends Controller
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
+
 		/** @var Producer|null $ownProducer */
 		$ownProducer = $user->ownProducer();
+
 		try {
 			if ($ownProducer->id !== $producer->id)
 				throw new \LogicException('Вы не являетесь владельцем этого изготовителя');
@@ -137,23 +138,6 @@ class ProducerController extends Controller
 	}
 
 	/**
-	 * @param Request $request
-	 * @param Producer $producer
-	 * @param User $user
-	 * @param ProducerPermissionService $ppService
-	 * @return JsonResponse|Collection
-	 */
-	public function syncUserPermissions(Request $request, Producer $producer, User $user, ProducerPermissionService $ppService)
-	{
-		try {
-			return $ppService->syncUserPermissions($request->all(), $producer, $user);
-		} catch (\Throwable $e) {
-			return response()->json($e->getMessage())
-				->setStatusCode(422);
-		}
-	}
-
-	/**
 	 * @param Producer $producer
 	 * @param Request $request
 	 * @return Product|\Illuminate\Database\Eloquent\Model
@@ -211,7 +195,6 @@ class ProducerController extends Controller
 	}
 
 	//todo - put product actions somewhere else & request validation ?
-
 	/**
 	 * @param Producer $producer
 	 * @param Product $product

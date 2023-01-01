@@ -1,14 +1,14 @@
 <template>
 	<q-table
 		grid
-		:rows="incomingCowRequests"
+		:rows="incoming_cow_requests"
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
 	>
 		<template v-slot:top>
 			<div class="col-xs-12 text-center">
-				<span class="text-h6">Входящие заявки на вступление в команду <br/>"{{ producer.display_name }}" </span>
+				<span class="text-h6">Входящие заявки на вступление в команду <br/>"{{ team.display_name }}" </span>
 			</div>
 		</template>
 		<template v-slot:item="props">
@@ -91,7 +91,7 @@ import { useRouter } from "vue-router"
 import { computed } from "vue"
 export default {
 	props: {
-		producer: {
+		team: {
 			type: Object,
 			default: () => ({})
 		}
@@ -108,19 +108,19 @@ export default {
 		const { notifySuccess, notifyError } = useNotification()
 
 		const acceptCowRequest = (requestId) => {
-			acceptCoworkingRequest(props.producer.id, requestId)
+			acceptCoworkingRequest(props.team.detailed.id, requestId)
 				.then(() => { notifySuccess("Заявка принята") })
 				.catch((error) => { notifyError(error.response.data) })
 		}
 
 		const rejectCowRequest = (requestId) => {
-			rejectCoworkingRequest(props.producer.id, requestId)
+			rejectCoworkingRequest(props.team.detailed.id, requestId)
 				.then(() => { notifySuccess("В заявке отказано") })
 				.catch((error) => { notifyError(error.response.data) })
 		}
 
-		const incomingCowRequests = computed(() =>
-			user_teams.value.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
+		const incoming_cow_requests = computed(() =>
+			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
 				.requests
 				.data
 				.incoming_coworking_requests
@@ -130,7 +130,7 @@ export default {
 
 		return {
 			relationRequest,
-			incomingCowRequests,
+			incoming_cow_requests,
 			acceptCowRequest,
 			rejectCowRequest
 		}
