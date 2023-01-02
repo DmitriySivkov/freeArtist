@@ -15,7 +15,7 @@ export default {
 	setup() {
 		const { user_teams } = useUserTeam()
 		const producerTeamsSorted = computed(() => _.orderBy(
-			user_teams.value.filter((t) => t.detailed_type === "App\\Models\\Producer"),
+			user_teams.value,
 			team => team.display_name,
 			"asc"
 		))

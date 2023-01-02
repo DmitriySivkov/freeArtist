@@ -21,9 +21,11 @@ export const usePrivateChannels = () => {
 					request_id: e.model.id,
 					status: e.model.status
 				})
-				if (e.type === "coworking") {
+				if (e.type === "coworking" && e.model.status.id !== 3) {
 					$store.commit("user/SET_ROLE", e.role)
 					$store.commit("team/SET_USER_TEAMS", e.team)
+
+					connectRelationRequestIncomingProducer()
 				}
 			})
 	}

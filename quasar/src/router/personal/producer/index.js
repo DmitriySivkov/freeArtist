@@ -32,22 +32,6 @@ export default [
 		}
 	},
 	{
-		name: "personal_producer_requests",
-		path: "personal/producer/requests",
-		component: () => import("pages/personal/producer/Requests"),
-		meta: {
-			route_name: "Заявки"
-		}
-	},
-	{
-		name: "personal_producer_requests_detail",
-		path: "personal/producer/:producer_id/requests",
-		component: () => import("pages/personal/producer/RequestsDetail"),
-		meta: {
-			route_name: "Заявки"
-		}
-	},
-	{
 		name: "personal_producer_profile_detail",
 		path: "personal/producer/:producer_id/profile",
 		component: () => import("pages/personal/producer/ProfileDetail"),

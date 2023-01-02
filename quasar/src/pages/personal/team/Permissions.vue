@@ -1,7 +1,7 @@
 <template>
 	<TeamList
 		detail-route-name="personal_team_permissions_detail"
-		:teams="producerTeamsSorted"
+		:teams="teams"
 	/>
 </template>
 
@@ -14,14 +14,14 @@ export default {
 	components: { TeamList },
 	setup() {
 		const { user_teams } = useUserTeam()
-		const producerTeamsSorted = computed(() => _.orderBy(
-			user_teams.value.filter((t) => t.detailed_type === "App\\Models\\Producer"),
+		const teams = computed(() => _.orderBy(
+			user_teams.value,
 			team => team.display_name,
 			"asc"
 		))
 
 		return {
-			producerTeamsSorted
+			teams
 		}
 	}
 }

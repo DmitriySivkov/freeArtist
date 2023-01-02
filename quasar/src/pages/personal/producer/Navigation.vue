@@ -38,7 +38,7 @@ export default {
 				link: "/personal/register-producer",
 				conditional: !user_own_team.value
 			},
-			{ title: "Заявки", link: "/personal/producer/requests" },
+			{ title: "Заявки", link: "/personal/team/requests" },
 			{ title: "Разрешения", link: "/personal/team/permissions" },
 			{ title: "Управлять продуктами", link: "/personal/producer/products" }
 		]

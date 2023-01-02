@@ -1,20 +1,19 @@
 <template>
-	<ProducerRequestList :team="team"/>
+	<TeamRequestList :team="team" />
 </template>
 
 <script>
-import ProducerRequestList from "src/components/producers/ProducerRequestList"
+import TeamRequestList from "src/components/teams/TeamRequestList"
 import { useRoute } from "vue-router"
 import { useUserTeam } from "src/composables/userTeam"
 import { computed } from "vue"
-
 export default {
-	components: { ProducerRequestList },
+	components: { TeamRequestList },
 	setup() {
 		const $route = useRoute()
 		const { user_teams } = useUserTeam()
 		const team = computed(() =>
-			user_teams.value.find((t) => t.detailed.id === parseInt($route.params.producer_id))
+			user_teams.value.find((t) => t.id === parseInt($route.params.team_id))
 		)
 
 		return {

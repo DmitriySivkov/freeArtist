@@ -1,8 +1,10 @@
 <template>
-	<!--					<OutgoingProducerPartnershipRequests :team="team" />-->
-	<!--					<IncomingProducerPartnershipRequests :team="team" />-->
-	<!--					<OutgoingProducerCoworkingInvitations :team="team" />-->
-	<IncomingProducerCoworkingRequests :team="team" />
+	<div v-if="team.detailed_type === 'App\\Models\\Producer'">
+		<!--					<OutgoingProducerPartnershipRequests :team="team" />-->
+		<!--					<IncomingProducerPartnershipRequests :team="team" />-->
+		<!--					<OutgoingProducerCoworkingInvitations :team="team" />-->
+		<IncomingProducerCoworkingRequests :team="team" />
+	</div>
 </template>
 
 <script>

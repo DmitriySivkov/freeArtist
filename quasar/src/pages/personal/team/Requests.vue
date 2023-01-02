@@ -1,7 +1,7 @@
 <template>
 	<TeamList
-		detail-route-name="personal_producer_requests_detail"
-		:teams="producerTeamsSorted"
+		detail-route-name="personal_team_requests_detail"
+		:teams="teams"
 		:counter="producerPendingRequestCount"
 		:use-counter="true"
 	/>
@@ -18,14 +18,14 @@ export default {
 	setup() {
 		const { producerPendingRequestCount } = useRelationRequestManager()
 		const { user_teams } = useUserTeam()
-		const producerTeamsSorted = computed(() => _.orderBy(
-			user_teams.value.filter((t) => t.detailed_type === "App\\Models\\Producer"),
+		const teams = computed(() => _.orderBy(
+			user_teams.value,
 			team => team.display_name,
 			"asc"
 		))
 
 		return {
-			producerTeamsSorted,
+			teams,
 			producerPendingRequestCount
 		}
 	}

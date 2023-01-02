@@ -120,7 +120,7 @@ export default {
 		}
 
 		const incoming_cow_requests = computed(() =>
-			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
+			user_teams.value.find((t) => t.id === parseInt($router.currentRoute.value.params.team_id))
 				.requests
 				.data
 				.incoming_coworking_requests
