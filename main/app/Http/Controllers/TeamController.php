@@ -27,7 +27,7 @@ class TeamController extends Controller
 	 * @param Team $team
 	 * @param User $user
 	 * @param TeamService $teamService
-	 * @return JsonResponse|Collection
+	 * @return \Illuminate\Http\JsonResponse|\Illuminate\Support\Collection
 	 */
 	public function syncUserPermissions(Request $request, Team $team, User $user, TeamService $teamService)
 	{

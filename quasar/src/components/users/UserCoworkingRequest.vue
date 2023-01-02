@@ -103,7 +103,7 @@ export default {
 				producerTeamList.value = response.data.map((producerTeam) => {
 					return {
 						label: producerTeam.display_name,
-						value: producerTeam.id
+						value: producerTeam.detailed.id
 					}
 				})
 			})

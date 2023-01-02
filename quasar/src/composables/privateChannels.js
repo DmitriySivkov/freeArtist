@@ -23,7 +23,7 @@ export const usePrivateChannels = () => {
 				})
 				if (e.type === "coworking") {
 					$store.commit("user/SET_ROLE", e.role)
-					$store.commit("team/SET_USER_TEAMS", e.producer)
+					$store.commit("team/SET_USER_TEAMS", e.team)
 				}
 			})
 	}
@@ -37,7 +37,7 @@ export const usePrivateChannels = () => {
 				) {
 					echo.private("relation-requests.incoming.producer." + user_teams.value[i].detailed.id)
 						.listen(".RelationRequestCreated", (e) => {
-							$store.commit("producer/SET_PRODUCER_INCOMING_RELATION_REQUESTS", {
+							$store.commit("team/SET_PRODUCER_INCOMING_RELATION_REQUESTS", {
 								incoming_coworking_requests: [e.model],
 								producer_id: user_teams.value[i].detailed.id
 							})
@@ -58,12 +58,12 @@ export const usePrivateChannels = () => {
 		echo.private("permissions." + user.value.data.id)
 			.listen(".permissions.synced", (e) => {
 				$store.commit("user/SYNC_USER_TEAM_PERMISSIONS", {
-					team_id: e.producer.id,
+					team_id: e.team.id,
 					permissions: e.permissions
 				})
-				if (getTeam(e.producer.id).hasOwnProperty("users")) {
+				if (getTeam(e.team.id).hasOwnProperty("users")) {
 					$store.commit("team/SYNC_TEAM_USER_PERMISSIONS", {
-						team_id: e.producer.id,
+						team_id: e.team.id,
 						user_id: e.user.id,
 						permissions: e.permissions
 					})

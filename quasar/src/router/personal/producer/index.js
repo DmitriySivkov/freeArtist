@@ -56,22 +56,6 @@ export default [
 		}
 	},
 	{
-		name: "personal_producer_permissions",
-		path: "personal/producer/permissions",
-		component: () => import("pages/personal/producer/Permissions"),
-		meta: {
-			route_name: "Разрешения"
-		}
-	},
-	{
-		name: "personal_producer_permissions_detail",
-		path: "personal/producer/:producer_id/permissions",
-		component: () => import("pages/personal/producer/PermissionsDetail"),
-		meta: {
-			route_name: "Разрешения"
-		}
-	},
-	{
 		name: "personal_producer_products",
 		path: "personal/producer/products",
 		component: () => import("pages/personal/producer/Products"),

@@ -113,7 +113,7 @@ class RelationRequest extends Model
 				'model' => $this,
 				'type' => 'coworking',
 				'role' => Role::where('name', Role::ROLE_PRODUCER['name'])->first(),
-				'producer' => Team::whereId($this->to->id)->first()
+				'team' => $this->to->team
 			];
 
 		return ['model' => $this];

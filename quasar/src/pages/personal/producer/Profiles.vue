@@ -1,17 +1,17 @@
 <template>
-	<ProducerTeamList
+	<TeamList
 		detail-route-name="personal_producer_profile_detail"
 		:teams="producerTeamsSorted"
 	/>
 </template>
 
 <script>
-import ProducerTeamList from "src/components/producers/ProducerTeamList"
+import TeamList from "src/components/teams/TeamList"
 import { computed } from "vue"
 import _ from "lodash"
 import { useUserTeam } from "src/composables/userTeam"
 export default {
-	components: { ProducerTeamList },
+	components: { TeamList },
 	setup() {
 		const { user_teams } = useUserTeam()
 		const producerTeamsSorted = computed(() => _.orderBy(

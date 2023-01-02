@@ -39,7 +39,7 @@ export default {
 				conditional: !user_own_team.value
 			},
 			{ title: "Заявки", link: "/personal/producer/requests" },
-			{ title: "Разрешения", link: "/personal/producer/permissions" },
+			{ title: "Разрешения", link: "/personal/team/permissions" },
 			{ title: "Управлять продуктами", link: "/personal/producer/products" }
 		]
 

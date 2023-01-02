@@ -1,9 +1,11 @@
 import userRoutes from "src/router/personal/user"
 import producerRoutes from "src/router/personal/producer"
+import teamRoutes from "src/router/personal/team"
 
 export default [
 	...userRoutes,
 	...producerRoutes,
+	...teamRoutes,
 	{
 		name: "personal",
 		path: "personal",

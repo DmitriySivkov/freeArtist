@@ -28,20 +28,20 @@ export const getProducerIncomingRequests = async ({commit}, producer_id) => {
 
 export const acceptCoworkingRequest = async ({commit}, { producer_id, request_id }) => {
 	const response = await api.post("personal/producers/relationRequests/acceptCoworkingRequest/" + request_id)
-	commit("SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
+	commit("team/SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
 		producer_id,
 		request_id: response.data.id,
 		status: response.data.status
-	})
+	}, { root:true })
 }
 
 export const rejectCoworkingRequest = async ({commit}, { producer_id, request_id }) => {
 	const response = await api.post("personal/producers/relationRequests/rejectCoworkingRequest/" + request_id)
-	commit("SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
+	commit("team/SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
 		producer_id,
 		request_id: response.data.id,
 		status: response.data.status
-	})
+	}, { root:true })
 }
 
 export const getProducerProductList = async ({commit}, producer_id) => {

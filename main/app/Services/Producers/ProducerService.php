@@ -127,7 +127,10 @@ class ProducerService implements ProducerServiceContract
 
 		if (
 			!$user->owns($this->producer->team) &&
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'], $this->producer->team->name)
+			!$user->hasPermission(
+				Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'],
+				$this->producer->team->name
+			)
 		)
 			throw new \LogicException('Доступ закрыт');
 
@@ -154,7 +157,7 @@ class ProducerService implements ProducerServiceContract
 			\DB::commit();
 		} catch (\Throwable $e) {
 			\DB::rollBack();
-			throw new \LogicException('Ошибка сервера запросов');
+			throw new \LogicException('Ошибка сервера заявок');
 		}
 
 		return $relationRequest->refresh();
@@ -175,7 +178,10 @@ class ProducerService implements ProducerServiceContract
 
 		if (
 			!$user->owns($this->producer->team) &&
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'], $this->producer->team->name)
+			!$user->hasPermission(
+				Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'],
+				$this->producer->team->name
+			)
 		)
 			throw new \LogicException('Доступ закрыт');
 
@@ -226,7 +232,7 @@ class ProducerService implements ProducerServiceContract
 				$this->producer->team->name
 			)
 		) {
-			throw new \LogicException('Недостаточно прав');
+			return [];
 		}
 
 		$requests = [
