@@ -3,12 +3,14 @@ import { useUserTeam } from "src/composables/userTeam"
 import { useUserPermission } from "src/composables/userPermission"
 import { useUser } from "src/composables/user"
 import { useStore } from "vuex"
+import { useRelationRequestManager } from "src/composables/relationRequestManager"
 
 export const usePrivateChannels = () => {
 	const $store = useStore()
 	const { user_teams, getTeam } = useUserTeam()
 	const { hasPermission } = useUserPermission()
 	const { user } = useUser()
+	const { relation_request } = useRelationRequestManager()
 
 	const connectRelationRequestUser = () => {
 		// todo - set 'created' hook right
@@ -21,11 +23,12 @@ export const usePrivateChannels = () => {
 					request_id: e.model.id,
 					status: e.model.status
 				})
-				if (e.type === "coworking" && e.model.status.id !== 3) {
+				if (
+					e.type === relation_request.value.types.coworking.id &&
+					e.model.status.id === relation_request.value.statuses.accepted.id
+				) {
 					$store.commit("user/SET_ROLE", e.role)
 					$store.commit("team/SET_USER_TEAMS", e.team)
-
-					connectRelationRequestIncomingProducer()
 				}
 			})
 	}

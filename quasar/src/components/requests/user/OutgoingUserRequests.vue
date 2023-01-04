@@ -1,17 +1,17 @@
 <template>
 	<q-table
 		grid
-		:rows="outgoingCoworkingRequests"
+		:rows="outgoingRequests"
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
 	>
 		<template v-slot:top>
 			<div class="col-xs-12 col-md-10 q-mb-sm">
-				<span class="text-h6">Исходящие на вступление в команду </span>
+				<span class="text-h6">Исходящие</span>
 			</div>
 			<q-btn
-				:to="{ name: 'personal_coworking_request'}"
+				:to="{ name: 'personal_user_outgoing_request'}"
 				size="md"
 				color="secondary"
 				label="Создать"
@@ -36,7 +36,7 @@
 							<div class="col-xs-7 col-md-10">
 								Статус: {{ props.row.status.label }}<br/>
 								Получатель: {{ props.row.to.team.display_name }}<br/>
-								Тип: {{ relationRequest.types.coworking.label }}
+								Тип: {{ relation_request.types.coworking.label }}
 							</div>
 							<q-btn
 								v-if="props.row.status.id === 1"
@@ -87,8 +87,8 @@ export default {
 	setup() {
 		const
 			{
-				relationRequest,
-				outgoingCoworkingRequests,
+				relation_request,
+				outgoingRequests,
 				cancelCoworkingRequest,
 				restoreCoworkingRequest
 			} = useRelationRequestManager()
@@ -113,8 +113,8 @@ export default {
 		}
 
 		return {
-			relationRequest,
-			outgoingCoworkingRequests,
+			relation_request,
+			outgoingRequests,
 			cancelCowRequest,
 			restoreCowRequest
 		}

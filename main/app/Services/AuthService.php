@@ -8,7 +8,6 @@ use App\Contracts\TeamServiceContract;
 use App\Contracts\UserServiceContract;
 use App\Models\Team;
 use App\Models\User;
-use App\Services\Users\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -68,28 +67,17 @@ class AuthService
 	 */
 	private function makeResponse(array $additional = [])
 	{
-		$this->getUserPayload();
-
-		return response()->json([
-			'user' => $this->user,
-			'user_teams' => $this->getUserTeams()
-		] + $additional);
-	}
-
-	/**
-	 * @return void
-	 */
-	private function getUserPayload()
-	{
 		$this->user->load([
 			'roles',
 			'permissions'
 		]);
 
-		/** @var UserService $userService */
-		$userService = app(UserServiceContract::class);
-		$userService->setUser($this->user);
-		$this->user->outgoing_coworking_requests = $userService->getOutgoingCoworkingRequests();
+		return response()->json([
+			'user' => $this->user,
+			'user_teams' => $this->getUserTeams(),
+			'user_requests' => $this->getUserRequests(),
+			'user_teams_requests' => $this->getTeamRequests()
+		] + $additional);
 	}
 
 	/**
@@ -97,19 +85,46 @@ class AuthService
 	 */
 	private function getUserTeams()
 	{
-		$userTeams = $this->user->rolesTeams()->get();
+		$this->userTeams = $this->user->rolesTeams()->get();
 
-		if ($userTeams->isEmpty())
+		if ($this->userTeams->isEmpty())
 			return [];
 
+		return $this->userTeams->map(function(Team $team) {
+			$team->makeHidden('pivot');
+			return $team;
+		});
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	private function getUserRequests()
+	{
+		/** @var UserService $userService */
+		$userService = app(UserServiceContract::class);
+		$userService->setUser($this->user);
+
+		$incomingRequests = $userService->getUserIncomingRequests();
+		$outgoingRequests = $userService->getUserOutgoingRequests();
+
+		return $incomingRequests->merge($outgoingRequests);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	private function getTeamRequests()
+	{
 		/** @var TeamService $teamService */
 		$teamService = app(TeamServiceContract::class);
 
-		return $userTeams->map(function(Team $team) use ($teamService) {
-			$team->makeHidden('pivot');
+		return $this->userTeams->reduce(function(Collection $carry, Team $team) use ($teamService) {
 			$teamService->setTeam($team);
-			return $teamService->onAuth();
-		});
+			$carry = $carry->merge($teamService->getTeamIncomingRequests());
+			$carry = $carry->merge($teamService->getTeamOutgoingRequests());
+			return $carry;
+		}, collect([]));
 	}
 
 	/**

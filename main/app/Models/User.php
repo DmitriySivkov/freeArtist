@@ -84,6 +84,17 @@ class User extends Authenticatable
 		return $this->morphMany(RelationRequest::class, 'from');
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+	 */
+	public function incomingRelationRequests()
+	{
+		return $this->morphMany(RelationRequest::class, 'to');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
 	public function ownProducer()
 	{
 		return $this->hasOne(Team::class)

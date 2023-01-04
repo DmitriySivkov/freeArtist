@@ -24,14 +24,6 @@ export default [
 		}
 	},
 	{
-		name: "personal_coworking_request",
-		path: "personal/coworking-request",
-		component: () => import("pages/personal/CoworkingRequest"),
-		meta: {
-			route_name: "Заявка: присоединиться к изготовителю"
-		}
-	},
-	{
 		name: "personal_producer_profile_detail",
 		path: "personal/producer/:producer_id/profile",
 		component: () => import("pages/personal/producer/ProfileDetail"),

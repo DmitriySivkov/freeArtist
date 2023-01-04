@@ -69,4 +69,12 @@ class Producer extends Model
 		return $this->morphMany(RelationRequest::class, 'to');
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+	 */
+	public function outgoingRelationRequests()
+	{
+		return $this->morphMany(RelationRequest::class, 'from');
+	}
+
 }

@@ -5,7 +5,7 @@ import role from "src/store/role"
 import order from "src/store/order"
 import producer from "src/store/producer"
 import cart from "src/store/cart"
-import relationRequest from "src/store/relationRequest"
+import relation_request from "src/store/relation_request"
 import team from "src/store/team"
 import permission from "src/store/permission"
 
@@ -29,7 +29,7 @@ export default store(function (/* { ssrContext } */) {
 			order,
 			producer,
 			cart,
-			relationRequest,
+			relation_request,
 			team
 		},
 

@@ -16,11 +16,11 @@ export default [
 		}
 	},
 	{
-		name: "personal_coworking_request",
-		path: "personal/coworking-request",
-		component: () => import("pages/personal/CoworkingRequest"),
+		name: "personal_user_outgoing_request",
+		path: "personal/outgoing-request",
+		component: () => import("pages/personal/OutgoingRequest"),
 		meta: {
-			route_name: "Заявка: присоединиться к изготовителю"
+			route_name: "Новая зявка"
 		}
 	},
 	{

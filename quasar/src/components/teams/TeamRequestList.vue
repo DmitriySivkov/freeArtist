@@ -1,17 +1,13 @@
 <template>
 	<div v-if="team.detailed_type === 'App\\Models\\Producer'">
-		<!--					<OutgoingProducerPartnershipRequests :team="team" />-->
-		<!--					<IncomingProducerPartnershipRequests :team="team" />-->
-		<!--					<OutgoingProducerCoworkingInvitations :team="team" />-->
-		<IncomingProducerCoworkingRequests :team="team" />
+		<!--					<OutgoingProducerRequests :team="team" />-->
+		<IncomingProducerRequests :team="team" />
 	</div>
 </template>
 
 <script>
-// import OutgoingProducerPartnershipRequests from "src/components/requests/producer/OutgoingProducerPartnershipRequests"
-// import IncomingProducerPartnershipRequests from "src/components/requests/producer/IncomingProducerPartnershipRequests"
-// import OutgoingProducerCoworkingInvitations from "src/components/requests/producer/OutgoingProducerCoworkingInvitations"
-import IncomingProducerCoworkingRequests from "src/components/requests/producer/IncomingProducerCoworkingRequests"
+// import OutgoingProducerRequests from "src/components/requests/producer/OutgoingProducerRequests"
+import IncomingProducerRequests from "src/components/requests/producer/IncomingProducerRequests"
 
 export default {
 	props: {
@@ -21,10 +17,8 @@ export default {
 		}
 	},
 	components: {
-		// OutgoingProducerPartnershipRequests,
-		// IncomingProducerPartnershipRequests,
 		// OutgoingProducerCoworkingInvitations,
-		IncomingProducerCoworkingRequests
+		IncomingProducerRequests
 	},
 }
 </script>

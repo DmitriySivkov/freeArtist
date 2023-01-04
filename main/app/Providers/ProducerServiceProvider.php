@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Contracts\ProducerServiceContract;
-use App\Services\Producers\ProducerService;
+use App\Services\ProducerService;
 use Illuminate\Support\ServiceProvider;
 
 class ProducerServiceProvider extends ServiceProvider

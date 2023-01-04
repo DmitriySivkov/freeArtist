@@ -1,11 +1,11 @@
 <template>
-	<OutgoingUserCoworkingRequests />
+	<OutgoingUserRequests />
 </template>
 
 <script>
-import OutgoingUserCoworkingRequests from "src/components/requests/user/OutgoingUserCoworkingRequests"
+import OutgoingUserRequests from "src/components/requests/user/OutgoingUserRequests"
 
 export default {
-	components: { OutgoingUserCoworkingRequests }
+	components: { OutgoingUserRequests }
 }
 </script>

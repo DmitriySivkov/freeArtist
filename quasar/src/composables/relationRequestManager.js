@@ -5,69 +5,50 @@ export const useRelationRequestManager = () => {
 	const $store = useStore()
 	const user = computed(() => $store.state.user)
 	const team_store = computed(() => $store.state.team)
-	const relationRequest = computed(() => $store.state.relationRequest)
+	const relation_request = computed(() => $store.state.relation_request)
 
-	/** customer requests */
+	// todo - rework - just send, not specifically coworking
 	const sendCoworkingRequest = (producer, message) =>
 		$store.dispatch("user/sendCoworkingRequest",{ producer, message })
 
+	// todo - rework - just accept, not specifically coworking
 	const cancelCoworkingRequest = (requestId) =>
 		$store.dispatch("user/cancelCoworkingRequest", {
 			requestId,
-			status: relationRequest.value.statuses.rejected_by_contributor
+			status: relation_request.value.statuses.rejected_by_contributor
 		})
 
+	// todo - rework - just accept, not specifically coworking
 	const restoreCoworkingRequest = (requestId) =>
 		$store.dispatch("user/restoreCoworkingRequest", {
 			requestId,
-			status: relationRequest.value.statuses.pending
+			status: relation_request.value.statuses.pending
 		})
 
-	const outgoingCoworkingRequests = user.value.data.outgoing_coworking_requests
-
-	/** producer requests */
-	const outgoingProducerPartnershipRequests = (producerId) =>
-		team_store.value.user_teams.find((team) => team.id === producerId)
-			.requests
-			.data
-			.outgoing_producer_partnership_requests
-
-	const incomingProducerPartnershipRequests = (producerId) =>
-		team_store.value.user_teams.find((team) => team.id === producerId)
-			.requests
-			.data
-			.incoming_producer_partnership_requests
-
-	const incomingCoworkingRequests = (producerId) =>
-		team_store.value.user_teams.find((team) => team.id === producerId)
-			.requests
-			.data
-			.incoming_coworking_requests
-
-	const producerPendingRequestCount = (team) =>
-		Object.keys(team.requests.data).reduce((carry, requestType) =>
-			carry + team.requests.data[requestType].filter(
-				(request) => request.status.id === relationRequest.value.statuses.pending.id
-			).length, 0
+	const teamIncomingRequests = (team) =>
+		relation_request.value.user_teams_requests.filter(
+			(r) => r.to_id === team.detailed_id && r.to_type === team.detailed_type
 		)
 
+	const teamPendingRequestCount = (team) =>
+		teamIncomingRequests(team).filter((r) => r.status.id === relation_request.value.statuses.pending.id).length
+
+	// todo - rework for not only producer
 	const acceptCoworkingRequest = (producer_id, request_id) =>
 		$store.dispatch("producer/acceptCoworkingRequest", { producer_id, request_id })
 
+	// todo - rework for not only producer
 	const rejectCoworkingRequest = (producer_id, request_id) =>
 		$store.dispatch("producer/rejectCoworkingRequest", { producer_id, request_id })
 
 	return {
-		relationRequest,
-		outgoingCoworkingRequests,
+		relation_request,
 		cancelCoworkingRequest,
 		sendCoworkingRequest,
 		restoreCoworkingRequest,
-		outgoingProducerPartnershipRequests,
-		incomingProducerPartnershipRequests,
-		incomingCoworkingRequests,
+		teamIncomingRequests,
 		acceptCoworkingRequest,
 		rejectCoworkingRequest,
-		producerPendingRequestCount
+		teamPendingRequestCount
 	}
 }

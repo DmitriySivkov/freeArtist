@@ -8,6 +8,8 @@ export const login = async ({commit, state}, payload) => {
 
 	commit("SET_USER", response.data.user)
 	commit("team/SET_USER_TEAMS", response.data.user_teams, { root:true })
+	commit("relation_request/SET_USER_REQUESTS", response.data.user_requests, { root:true })
+	commit("relation_request/SET_USER_TEAMS_REQUESTS", response.data.user_teams_requests, { root:true })
 	commit("SET_IS_LOGGED", true)
 
 	return response
@@ -31,6 +33,7 @@ export const logout = async ({commit, state}, payload) => {
 	commit("SET_USER", {})
 	commit("SWITCH_PERSONAL", "user")
 	commit("team/EMPTY_USER_TEAMS", {}, { root:true })
+	commit("relation_request/EMPTY_USER_REQUESTS", {}, { root:true })
 	commit("SET_IS_LOGGED", false)
 }
 
@@ -43,6 +46,8 @@ export const authViaToken = async ({commit}, { token }) => {
 	if (response.data) {
 		commit("SET_USER", response.data.user)
 		commit("team/SET_USER_TEAMS", response.data.user_teams, { root:true })
+		commit("relation_request/SET_USER_REQUESTS", response.data.user_requests, { root:true })
+		commit("relation_request/SET_USER_TEAMS_REQUESTS", response.data.user_teams_requests, { root:true })
 		commit("SET_IS_LOGGED", true)
 	}
 }

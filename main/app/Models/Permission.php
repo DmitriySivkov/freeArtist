@@ -4,15 +4,18 @@ namespace App\Models;
 
 use Laratrust\Models\LaratrustPermission;
 
+
 /**
  * App\Models\Permission
  *
  * @property int $id
+ * @property int $role_id
  * @property string $name
  * @property string|null $display_name
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Role|null $relatedRoles
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property-read int|null $roles_count
  * @method static \Illuminate\Database\Eloquent\Builder|Permission newModelQuery()
@@ -23,11 +26,9 @@ use Laratrust\Models\LaratrustPermission;
  * @method static \Illuminate\Database\Eloquent\Builder|Permission whereDisplayName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Permission whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Permission whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereRoleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Permission whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $role_id
- * @method static \Illuminate\Database\Eloquent\Builder|Permission whereRoleId($value)
- * @property-read \App\Models\Role|null $relatedRoles
  */
 class Permission extends LaratrustPermission
 {
@@ -35,9 +36,8 @@ class Permission extends LaratrustPermission
 
 	/** producer permissions */
 	const PERMISSIONS_PRODUCER = [
-		self::PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS,
-		self::PERMISSION_PRODUCER_INCOMING_PARTNERSHIP_REQUESTS,
-		self::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS,
+		self::PERMISSION_PRODUCER_OUTGOING_REQUESTS,
+		self::PERMISSION_PRODUCER_INCOMING_REQUESTS,
 		self::PERMISSION_PRODUCER_MANAGE_PERMISSIONS,
 		self::PERMISSION_PRODUCER_MANAGE_PRODUCT,
 		self::PERMISSION_PRODUCER_CREATE_PRODUCT,
@@ -45,19 +45,14 @@ class Permission extends LaratrustPermission
 		self::PERMISSION_PRODUCER_MANAGE_LOGO
 	];
 
-	const PERMISSION_PRODUCER_OUTGOING_PARTNERSHIP_REQUESTS = [
-		'name' => 'producer_outgoing_partnership_requests',
-		'display_name' => 'Управление исходящими запросами на партнерство между изготовителями',
+	const PERMISSION_PRODUCER_OUTGOING_REQUESTS = [
+		'name' => 'producer_outgoing_requests',
+		'display_name' => 'Управление исходящими запросами',
 		'description' => ''
 	];
-	const PERMISSION_PRODUCER_INCOMING_PARTNERSHIP_REQUESTS = [
-		'name' => 'producer_incoming_producer_partnership_requests',
-		'display_name' => 'Управление входящими запросами на партнерство между изготовителями',
-		'description' => ''
-	];
-	const PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS = [
-		'name' => 'producer_incoming_coworking_requests',
-		'display_name' => 'Управление входящими запросами на сотрудничество между изготовителем и пользователем',
+	const PERMISSION_PRODUCER_INCOMING_REQUESTS = [
+		'name' => 'producer_incoming_requests',
+		'display_name' => 'Управление входящими запросами',
 		'description' => ''
 	];
 	const PERMISSION_PRODUCER_MANAGE_PERMISSIONS = [

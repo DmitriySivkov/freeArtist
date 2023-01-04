@@ -54,6 +54,7 @@ export default ({
 		const teams_filtered = computed(
 			() => props.teams.filter((t) => t.detailed_type === personal_types[user.value.personalTab])
 		)
+
 		const goToDetail = (team_id) => $router.push({
 			name: props.detailRouteName,
 			params: { team_id }

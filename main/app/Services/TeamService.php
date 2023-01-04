@@ -26,6 +26,7 @@ class TeamService implements TeamServiceContract
 	public function onAuth()
 	{
 		if ($this->team->detailed_type === Producer::class) {
+			/** @var ProducerService $service */
 			$service = app(ProducerServiceContract::class);
 			$service->setProducer($this->team->detailed);
 		}
@@ -75,5 +76,27 @@ class TeamService implements TeamServiceContract
 		);
 
 		return $permissions;
+	}
+
+	public function getTeamIncomingRequests()
+	{
+		if ($this->team->detailed_type === Producer::class) {
+			/** @var ProducerService $producerService */
+			$producerService = app(ProducerServiceContract::class);
+			$producerService->setProducer($this->team->detailed);
+			return $producerService->getIncomingRequests();
+		}
+		return [];
+	}
+
+	public function getTeamOutgoingRequests()
+	{
+		if ($this->team->detailed_type === Producer::class) {
+			/** @var ProducerService $producerService */
+			$producerService = app(ProducerServiceContract::class);
+			$producerService->setProducer($this->team->detailed);
+			return $producerService->getOutgoingRequests();
+		}
+		return [];
 	}
 }

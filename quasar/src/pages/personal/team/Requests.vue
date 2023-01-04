@@ -2,7 +2,7 @@
 	<TeamList
 		detail-route-name="personal_team_requests_detail"
 		:teams="teams"
-		:counter="producerPendingRequestCount"
+		:counter="teamPendingRequestCount"
 		:use-counter="true"
 	/>
 </template>
@@ -16,7 +16,7 @@ import { useRelationRequestManager } from "src/composables/relationRequestManage
 export default {
 	components: { TeamList },
 	setup() {
-		const { producerPendingRequestCount } = useRelationRequestManager()
+		const { teamPendingRequestCount } = useRelationRequestManager()
 		const { user_teams } = useUserTeam()
 		const teams = computed(() => _.orderBy(
 			user_teams.value,
@@ -26,7 +26,7 @@ export default {
 
 		return {
 			teams,
-			producerPendingRequestCount
+			teamPendingRequestCount
 		}
 	}
 }

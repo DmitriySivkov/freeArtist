@@ -1,4 +1,6 @@
 export default {
+	user_requests: [],
+	user_teams_requests: [],
 	statuses: {
 		pending: {
 			id: 1,

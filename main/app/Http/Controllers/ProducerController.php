@@ -9,12 +9,10 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\RelationRequest;
 use App\Models\User;
-use App\Services\Permissions\ProducerPermissionService;
-use App\Services\Producers\ProducerService;
+use App\Services\ProducerService;
 use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class ProducerController extends Controller

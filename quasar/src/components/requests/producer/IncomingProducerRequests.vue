@@ -1,7 +1,7 @@
 <template>
 	<q-table
 		grid
-		:rows="incoming_cow_requests"
+		:rows="teamIncomingRequests(team)"
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
@@ -20,7 +20,7 @@
 					<div class="col-xs-12 col-md-8">
 						Статус: {{ props.row.status.label }}<br/>
 						Отправитель: {{ props.row.from.name ?? props.row.from.phone }}<br/>
-						Тип: {{ relationRequest.types.coworking.label }}
+						Тип: {{ relation_request.types.coworking.label }}
 					</div>
 					<div class="col-xs-12 col-md-4">
 						<div class="row q-col-gutter-sm">
@@ -97,14 +97,13 @@ export default {
 		}
 	},
 	setup(props) {
-		const $router = useRouter()
 		const
 			{
-				relationRequest,
+				relation_request,
 				acceptCoworkingRequest,
 				rejectCoworkingRequest,
+				teamIncomingRequests
 			} = useRelationRequestManager()
-		const { user_teams } = useUserTeam()
 		const { notifySuccess, notifyError } = useNotification()
 
 		const acceptCowRequest = (requestId) => {
@@ -119,18 +118,9 @@ export default {
 				.catch((error) => { notifyError(error.response.data) })
 		}
 
-		const incoming_cow_requests = computed(() =>
-			user_teams.value.find((t) => t.id === parseInt($router.currentRoute.value.params.team_id))
-				.requests
-				.data
-				.incoming_coworking_requests
-			// .filter((request) => request.status.id === $store.state.relationRequest.statuses.pending.id)
-		)
-
-
 		return {
-			relationRequest,
-			incoming_cow_requests,
+			relation_request,
+			teamIncomingRequests,
 			acceptCowRequest,
 			rejectCowRequest
 		}

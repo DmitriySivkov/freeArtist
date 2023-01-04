@@ -111,7 +111,7 @@ class RelationRequest extends Model
 		if (is_a($this->from, User::class) && is_a($this->to, Producer::class))
 			return [
 				'model' => $this,
-				'type' => 'coworking',
+				'type' => self::TYPE_COWORKING,
 				'role' => Role::where('name', Role::ROLE_PRODUCER['name'])->first(),
 				'team' => $this->to->team
 			];

@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface ProducerServiceContract extends TeamServiceContract
+interface ProducerServiceContract
 {
 
 }

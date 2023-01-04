@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Producers;
+namespace App\Services;
 
 use App\Contracts\ProducerServiceContract;
 use App\Models\Permission;
@@ -16,6 +16,15 @@ use Illuminate\Support\Facades\Storage;
 class ProducerService implements ProducerServiceContract
 {
 	protected Producer $producer;
+
+	/**
+	 * @param Producer $producer
+	 * @return void
+	 */
+	public function setProducer(Producer $producer)
+	{
+		$this->producer = $producer;
+	}
 
 	/**
 	 * @param Producer $producer
@@ -82,8 +91,6 @@ class ProducerService implements ProducerServiceContract
 				['user_type' => User::class, 'team_id' => $team->id]
 			);
 
-			$team->requests = ['data' => [], 'total_pending_request_count' => 0];
-
 			DB::commit();
 		} catch (\Throwable $e) {
 			DB::rollBack();
@@ -100,16 +107,51 @@ class ProducerService implements ProducerServiceContract
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Collection
+	 * @return array|\Illuminate\Database\Eloquent\Collection
 	 */
-	public function getIncomingCoworkingRequests()
+	public function getIncomingRequests()
 	{
 		if (!$this->producer)
 			throw new \LogicException('Изготовитель не задан');
 
-		return $this->producer->incomingRelationRequests()
-			->where('from_type', User::class)
-			->get();
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		if (
+			!$user->owns($this->producer->team) &&
+			!$user->hasPermission(
+				Permission::PERMISSION_PRODUCER_INCOMING_REQUESTS['name'],
+				$this->producer->team->name
+			)
+		) {
+			return [];
+		}
+
+		return $this->producer->incomingRelationRequests()->get();
+	}
+
+	/**
+	 * @return array|\Illuminate\Database\Eloquent\Collection
+	 */
+	public function getOutgoingRequests()
+	{
+		if (!$this->producer)
+			throw new \LogicException('Изготовитель не задан');
+
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		if (
+			!$user->owns($this->producer->team) &&
+			!$user->hasPermission(
+				Permission::PERMISSION_PRODUCER_OUTGOING_REQUESTS['name'],
+				$this->producer->team->name
+			)
+		) {
+			return [];
+		}
+
+		return $this->producer->outgoingRelationRequests()->get();
 	}
 
 	/**
@@ -128,7 +170,7 @@ class ProducerService implements ProducerServiceContract
 		if (
 			!$user->owns($this->producer->team) &&
 			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'],
+				Permission::PERMISSION_PRODUCER_INCOMING_REQUESTS['name'],
 				$this->producer->team->name
 			)
 		)
@@ -179,7 +221,7 @@ class ProducerService implements ProducerServiceContract
 		if (
 			!$user->owns($this->producer->team) &&
 			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'],
+				Permission::PERMISSION_PRODUCER_INCOMING_REQUESTS['name'],
 				$this->producer->team->name
 			)
 		)
@@ -196,57 +238,5 @@ class ProducerService implements ProducerServiceContract
 		]);
 
 		return $relationRequest->refresh();
-	}
-
-	/**
-	 * @param Producer $producer
-	 * @return void
-	 */
-	public function setProducer(Producer $producer)
-	{
-		$this->producer = $producer;
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Collection[][][]
-	 */
-	public function onAuth()
-	{
-		return [
-			'requests' => $this->getRequests()
-		];
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Collection[][]
-	 */
-	public function getRequests()
-	{
-		/** @var User $user */
-		$user = auth('sanctum')->user();
-
-		if (
-			!$user->owns($this->producer->team) &&
-			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name'],
-				$this->producer->team->name
-			)
-		) {
-			return [];
-		}
-
-		$requests = [
-			'data' => [
-				'incoming_coworking_requests' => $this->getIncomingCoworkingRequests()
-			],
-		];
-
-		$requests['total_pending_request_count'] = collect($requests['data'])
-			->reduce(function($carry, $requestList) {
-				$carry += count($requestList);
-				return $carry;
-			}, 0);
-
-		return $requests;
 	}
 }

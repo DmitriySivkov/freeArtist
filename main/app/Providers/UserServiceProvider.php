@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Contracts\UserServiceContract;
-use App\Services\Users\UserService;
+use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
 
 class UserServiceProvider extends ServiceProvider
