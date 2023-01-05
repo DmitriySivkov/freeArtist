@@ -7,9 +7,8 @@ export const useRelationRequestManager = () => {
 	const team_store = computed(() => $store.state.team)
 	const relation_request = computed(() => $store.state.relation_request)
 
-	// todo - rework - just send, not specifically coworking
-	const sendCoworkingRequest = (producer, message) =>
-		$store.dispatch("user/sendCoworkingRequest",{ producer, message })
+	const createUserOutgoingRequest = (team, message) =>
+		$store.dispatch("user/createOutgoingRequest",{ team, message })
 
 	// todo - rework - just accept, not specifically coworking
 	const cancelCoworkingRequest = (requestId) =>
@@ -30,6 +29,12 @@ export const useRelationRequestManager = () => {
 			(r) => r.to_id === team.detailed_id && r.to_type === team.detailed_type
 		)
 
+	const user_outgoing_requests = computed(() =>
+		relation_request.value.user_requests.filter(
+			(r) => r.from_id === user.value.data.id && r.from_type === "App\\Models\\User"
+		)
+	)
+
 	const teamPendingRequestCount = (team) =>
 		teamIncomingRequests(team).filter((r) => r.status.id === relation_request.value.statuses.pending.id).length
 
@@ -44,11 +49,12 @@ export const useRelationRequestManager = () => {
 	return {
 		relation_request,
 		cancelCoworkingRequest,
-		sendCoworkingRequest,
+		createUserOutgoingRequest,
 		restoreCoworkingRequest,
 		teamIncomingRequests,
 		acceptCoworkingRequest,
 		rejectCoworkingRequest,
-		teamPendingRequestCount
+		teamPendingRequestCount,
+		user_outgoing_requests
 	}
 }

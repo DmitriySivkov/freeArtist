@@ -69,9 +69,9 @@ export const switchPersonal = async ({commit}, personal_tab) => {
 	commit("SWITCH_PERSONAL", personal_tab)
 }
 
-export const sendCoworkingRequest = async ({commit}, payload) => {
-	const response = await api.post("personal/users/relationRequests/sendCoworkingRequest", { ...payload })
-	commit("SET_USER_OUTGOING_COWORKING_REQUESTS", response.data)
+export const createOutgoingRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/users/relationRequests/createOutgoingRequest", { ...payload })
+	commit("relation_request/SET_USER_REQUESTS", response.data, { root:true })
 }
 
 export const cancelCoworkingRequest = async ({commit}, payload) => {

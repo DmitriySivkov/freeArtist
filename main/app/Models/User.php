@@ -41,7 +41,7 @@ use Laratrust\Traits\LaratrustUserTrait;
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
- * @method static Builder|User nonRelatedProducers()
+ * @method static Builder|User nonRelatedTeams()
  * @method static Builder|User orWherePermissionIs($permission = '')
  * @method static Builder|User orWhereRoleIs($role = '', $team = null)
  * @method static Builder|User query()
@@ -105,11 +105,11 @@ class User extends Authenticatable
 	/**
 	 * @return \Illuminate\Database\Query\Builder
 	 */
-	public function scopeNonRelatedProducers()
+	public function scopeNonRelatedTeams()
 	{
 		return Team::whereNotIn(
 			'id',
-			$this->rolesTeams->where('detailed_type', Producer::class)->pluck('id')
+			$this->rolesTeams->pluck('id')
 		);
 	}
 

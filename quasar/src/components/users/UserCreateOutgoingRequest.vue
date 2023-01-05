@@ -9,19 +9,19 @@
 					<q-card-section
 						class="text-center bg-primary text-white"
 					>
-						Присоединиться к существующему изготовителю.<br/>
-						Вы по-прежнему сможете зарегистрироваться как самостоятельный изготовитель
+						Присоединиться к существующей команде.<br/>
+						Вы по-прежнему сможете зарегистрироваться собственную.
 					</q-card-section>
 				</q-card>
 
 				<q-select
 					filled
-					v-model="producerTeam"
+					v-model="team"
 					use-input
 					input-debounce="1000"
-					label="Начните вводить название изготовителя *"
-					:options="producerTeamList"
-					@filter="loadProducerTeamList"
+					label="Начните вводить название компании *"
+					:options="team_list"
+					@filter="loadTeamList"
 					behavior="dialog"
 					:rules="[
 						val => !!val,
@@ -64,20 +64,19 @@ import { ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
 import { useRelationRequestManager } from "src/composables/relationRequestManager"
-
 export default {
 	setup() {
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
-		const { sendCoworkingRequest } = useRelationRequestManager()
+		const { createUserOutgoingRequest } = useRelationRequestManager()
 
-		const producerTeam = ref(null)
+		const team = ref(null)
 		const message = ref("")
 
-		const producerTeamList = ref([])
+		const team_list = ref([])
 
 		const onSubmit = () => {
-			sendCoworkingRequest(producerTeam.value.value, message.value)
+			createUserOutgoingRequest(team.value.value, message.value)
 				.then(() => {
 					notifySuccess("Заявка успешно отправлена")
 					$router.push({name: "personal_user_requests"})
@@ -90,32 +89,32 @@ export default {
 		}
 
 		const onReset = () =>
-			producerTeam.value = null
+			team.value = null
 
-		const loadProducerTeamList = async (query, update) => {
+		const loadTeamList = async (query, update) => {
 			if (query.length < 1) return
 
-			const response = await api.get("personal/users/nonRelatedProducers",{
+			const response = await api.get("personal/users/nonRelatedTeams",{
 				params: { query }
 			})
 
 			update(() => {
-				producerTeamList.value = response.data.map((producerTeam) => {
+				team_list.value = response.data.map((team) => {
 					return {
-						label: producerTeam.display_name,
-						value: producerTeam.detailed.id
+						label: team.display_name,
+						value: team.id
 					}
 				})
 			})
 		}
 
 		return {
-			producerTeam,
+			team,
 			message,
-			producerTeamList,
+			team_list,
 			onSubmit,
 			onReset,
-			loadProducerTeamList
+			loadTeamList
 		}
 	},
 }

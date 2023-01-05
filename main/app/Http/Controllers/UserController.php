@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Producer;
 use App\Models\RelationRequest;
+use App\Models\Team;
 use App\Models\User;
+use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -13,42 +15,43 @@ class UserController extends Controller
 	 * @param Request $request
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function sendCoworkingRequest(Request $request)
+	public function createOutgoingRequest(Request $request)
 	{
+		$team = Team::findOrFail($request->get('team'));
+
 		/** @var User $user */
 		$user = auth('sanctum')->user();
+
 		try {
 			$relationRequest = $user->outgoingRelationRequests()
-				->where('to_id', $request->get('producer'))
-				->where('to_type', Producer::class)
+				->where('to_id', $team->detailed_id)
+				->where('to_type', $team->detailed_type)
 				->first();
 
 			if ($relationRequest) {
 				switch ($relationRequest->status['id']) {
 					case RelationRequest::STATUS_PENDING['id']:
-						throw new \LogicException('Запрос обрабатывается изготовителем');
+						throw new \LogicException('Запрос обрабатывается компанией');
 					case RelationRequest::STATUS_ACCEPTED['id']:
-						throw new \LogicException('Вы уже состоите в команде этого изготовителя');
+						throw new \LogicException('Вы уже состоите в этой компании');
 				}
 			}
 
-			$joinRequest = RelationRequest::create([
+			$outgoingRequest = RelationRequest::create([
 				'from_id' => $user->id,
 				'from_type' => User::class,
-				'to_id' => $request->get('producer'),
-				'to_type' => Producer::class,
+				'to_id' => $team->detailed_id,
+				'to_type' => $team->detailed_type,
 				'status' => RelationRequest::STATUS_PENDING['id'],
 				'message' => $request->get('message')
 			]);
+
 		} catch (\Throwable $e) {
-			return response()->json(["errors" =>
-				["joinProducerRequest" => [$e->getMessage()]]
-			])
-				->setStatusCode(422);
+			return ResponseService::error($e->getMessage());
 		}
 
 		return response()->json(
-			$joinRequest->load(['from'])->loadMorph('to', [
+			$outgoingRequest->load(['from'])->loadMorph('to', [
 				Producer::class => ['team']
 			])
 		);
@@ -80,9 +83,9 @@ class UserController extends Controller
 	 * @param Request $request
 	 * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
 	 */
-	public function getNonRelatedProducers(Request $request)
+	public function getNonRelatedTeams(Request $request)
 	{
-		return User::nonRelatedProducers()
+		return User::nonRelatedTeams()
 			->when($request->has('query'), function($query) use ($request) {
 				return $query->where('display_name', 'like', '%' . $request->get('query') . '%');
 			})

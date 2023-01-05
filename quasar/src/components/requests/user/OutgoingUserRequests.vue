@@ -1,7 +1,7 @@
 <template>
 	<q-table
 		grid
-		:rows="outgoingRequests"
+		:rows="user_outgoing_requests"
 		:row-key="row => row.id"
 		hide-header
 		hide-pagination
@@ -35,8 +35,7 @@
 							</div>
 							<div class="col-xs-7 col-md-10">
 								Статус: {{ props.row.status.label }}<br/>
-								Получатель: {{ props.row.to.team.display_name }}<br/>
-								Тип: {{ relation_request.types.coworking.label }}
+								Получатель: {{ props.row.to.team.display_name }}
 							</div>
 							<q-btn
 								v-if="props.row.status.id === 1"
@@ -82,16 +81,16 @@
 <script>
 import { useRelationRequestManager} from "src/composables/relationRequestManager"
 import { useNotification } from "src/composables/notification"
-
 export default {
 	setup() {
 		const
 			{
 				relation_request,
-				outgoingRequests,
+				user_outgoing_requests,
 				cancelCoworkingRequest,
 				restoreCoworkingRequest
 			} = useRelationRequestManager()
+
 		const { notifySuccess, notifyError } = useNotification()
 		const cancelCowRequest = (requestId) => {
 			cancelCoworkingRequest(requestId)
@@ -114,7 +113,7 @@ export default {
 
 		return {
 			relation_request,
-			outgoingRequests,
+			user_outgoing_requests,
 			cancelCowRequest,
 			restoreCowRequest
 		}

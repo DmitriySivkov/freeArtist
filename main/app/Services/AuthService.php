@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Contracts\TeamServiceContract;
 use App\Contracts\UserServiceContract;
+use App\Models\Producer;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -105,8 +106,17 @@ class AuthService
 		$userService = app(UserServiceContract::class);
 		$userService->setUser($this->user);
 
-		$incomingRequests = $userService->getUserIncomingRequests();
-		$outgoingRequests = $userService->getUserOutgoingRequests();
+		$incomingRequests = $userService->getUserIncomingRequests()
+			->get()
+			->loadMorph('from', [
+				Producer::class => 'team'
+			]);
+
+		$outgoingRequests = $userService->getUserOutgoingRequests()
+			->get()
+			->loadMorph('to', [
+				Producer::class => 'team'
+			]);
 
 		return $incomingRequests->merge($outgoingRequests);
 	}

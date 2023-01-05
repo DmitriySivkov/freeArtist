@@ -88,10 +88,10 @@ Route::group([
 	});
 
 	Route::group(['prefix' => 'users'], function() {
-		Route::get('nonRelatedProducers', [UserController::class, 'getNonRelatedProducers']);
+		Route::get('nonRelatedTeams', [UserController::class, 'getNonRelatedTeams']);
 
 		Route::group(['prefix' => 'relationRequests'], function() {
-			Route::post('sendCoworkingRequest', [UserController::class, 'sendCoworkingRequest']);
+			Route::post('createOutgoingRequest', [UserController::class, 'createOutgoingRequest']);
 			Route::post('cancelCoworkingRequest/{relationRequest}', [UserController::class, 'cancelCoworkingRequest']);
 			Route::post('restoreCoworkingRequest/{relationRequest}', [UserController::class, 'restoreCoworkingRequest']);
 		});

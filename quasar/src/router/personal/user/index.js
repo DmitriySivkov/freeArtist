@@ -20,7 +20,7 @@ export default [
 		path: "personal/outgoing-request",
 		component: () => import("pages/personal/OutgoingRequest"),
 		meta: {
-			route_name: "Новая зявка"
+			route_name: "Новая заявка"
 		}
 	},
 	{

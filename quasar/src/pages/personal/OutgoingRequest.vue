@@ -1,12 +1,12 @@
 <template>
 	<q-page class="column justify-center">
-		<UserCoworkingRequest />
+		<UserCreateOutgoingRequest />
 	</q-page>
 </template>
 
 <script>
-import UserCoworkingRequest from "src/components/users/UserCoworkingRequest"
+import UserCreateOutgoingRequest from "components/users/UserCreateOutgoingRequest"
 export default {
-	components: { UserCoworkingRequest },
+	components: { UserCreateOutgoingRequest },
 }
 </script>
