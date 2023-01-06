@@ -62,8 +62,17 @@ Route::group([
     });
 
 	Route::group(['prefix' => 'teams'], function() {
-		Route::get('{team}/users', [TeamController::class, 'getUsers']);
-		Route::post('{team}/permissions/{user}/sync', [TeamController::class, 'syncUserPermissions']);
+
+		Route::group(['prefix' => '{team}/users'], function() {
+			Route::get('', [TeamController::class, 'getUsers']);
+			Route::post('{user}/permissions/sync', [TeamController::class, 'syncUserPermissions']);
+		});
+
+		Route::group(['prefix' => '{team}/relationRequests'], function() {
+			Route::get('incoming', [TeamController::class, 'getIncomingRequests']);
+			Route::post('{relationRequest}/accept', [TeamController::class, 'acceptRequest']);
+			Route::post('{relationRequest}/reject', [TeamController::class, 'rejectRequest']);
+		});
 	});
 
 	Route::group(['prefix' => 'producers'], function() {
@@ -78,22 +87,15 @@ Route::group([
 			Route::post('{product}/syncCommonSettings', [ProducerController::class, 'syncProducerProductCommonSettings']);
 			Route::post('{product}/syncCompositionSettings', [ProducerController::class, 'syncProducerProductCompositionSettings']);
 		});
-
-		Route::group(['prefix' => 'relationRequests'], function() {
-			Route::get('incoming/{producer}', [ProducerController::class, 'getIncomingRelationRequests']);
-			Route::post('{producer}/sendProducerPartnershipRequest', [ProducerController::class, 'sendProducerPartnershipRequest']);
-			Route::post('acceptCoworkingRequest/{relationRequest}', [ProducerController::class, 'acceptCoworkingRequest']);
-			Route::post('rejectCoworkingRequest/{relationRequest}', [ProducerController::class, 'rejectCoworkingRequest']);
-		});
 	});
 
 	Route::group(['prefix' => 'users'], function() {
 		Route::get('nonRelatedTeams', [UserController::class, 'getNonRelatedTeams']);
 
 		Route::group(['prefix' => 'relationRequests'], function() {
-			Route::post('createOutgoingRequest', [UserController::class, 'createOutgoingRequest']);
-			Route::post('cancelCoworkingRequest/{relationRequest}', [UserController::class, 'cancelCoworkingRequest']);
-			Route::post('restoreCoworkingRequest/{relationRequest}', [UserController::class, 'restoreCoworkingRequest']);
+			Route::post('create', [UserController::class, 'createRequest']);
+			Route::post('{relationRequest}/cancel', [UserController::class, 'cancelRequest']);
+			Route::post('{relationRequest}/restore', [UserController::class, 'restoreRequest']);
 		});
 	});
 

@@ -69,22 +69,22 @@ export const switchPersonal = async ({commit}, personal_tab) => {
 	commit("SWITCH_PERSONAL", personal_tab)
 }
 
-export const createOutgoingRequest = async ({commit}, payload) => {
-	const response = await api.post("personal/users/relationRequests/createOutgoingRequest", { ...payload })
+export const createRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/users/relationRequests/create", { ...payload })
 	commit("relation_request/SET_USER_REQUESTS", response.data, { root:true })
 }
 
-export const cancelCoworkingRequest = async ({commit}, payload) => {
-	const response = await api.post("personal/users/relationRequests/cancelCoworkingRequest/" + payload.requestId)
-	commit("CANCEL_USER_OUTGOING_COWORKING_REQUEST", {
+export const cancelRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/users/relationRequests/" + payload.request_id + "/cancel")
+	commit("CANCEL_USER_REQUEST", {
 		canceledRequest: response.data,
 		canceledStatus: payload.status
 	})
 }
 
-export const restoreCoworkingRequest = async ({commit}, payload) => {
-	const response = await api.post("personal/users/relationRequests/restoreCoworkingRequest/" + payload.requestId)
-	commit("RESTORE_USER_OUTGOING_COWORKING_REQUEST", {
+export const restoreRequest = async ({commit}, payload) => {
+	const response = await api.post("personal/users/relationRequests/" + payload.request_id + "/restore")
+	commit("RESTORE_USER_REQUEST", {
 		restoredRequest: response.data,
 		restoredStatus: payload.status
 	})

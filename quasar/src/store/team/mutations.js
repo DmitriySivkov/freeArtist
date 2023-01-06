@@ -1,7 +1,6 @@
 import {
 	SET_PRODUCER_PRODUCTS,
 	SET_PRODUCER_INCOMING_RELATION_REQUESTS,
-	SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS,
 	SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS,
 	SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS,
 	CREATE_PRODUCER_PRODUCT,
@@ -13,7 +12,6 @@ import {
 export {
 	SET_PRODUCER_PRODUCTS,
 	SET_PRODUCER_INCOMING_RELATION_REQUESTS,
-	SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS,
 	SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS,
 	SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS,
 	CREATE_PRODUCER_PRODUCT,
@@ -42,4 +40,16 @@ export const SYNC_TEAM_USER_PERMISSIONS = (state, {team_id, user_id, permissions
 		.users
 		.find((user) => user.id === user_id)
 		.permissions = permissions
+}
+
+export const SET_TEAM_REQUEST_STATUS = (state, { team_id, request_id, status }) => {
+	const requests = state.user_teams.find((t) => t.id === team_id)
+		.requests
+
+	requests.data
+		.incoming_coworking_requests
+		.find((request) => request.id === request_id)
+		.status = status
+
+	requests.total_pending_request_count--
 }

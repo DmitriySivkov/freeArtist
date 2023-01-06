@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RelationRequest;
 use App\Models\Team;
 use App\Models\User;
 use App\Services\TeamService;
@@ -33,6 +34,38 @@ class TeamController extends Controller
 	{
 		try {
 			return $teamService->syncUserPermissions($request->all(), $team, $user);
+		} catch (\Throwable $e) {
+			return response()->json($e->getMessage())
+				->setStatusCode(422);
+		}
+	}
+
+
+	public function getIncomingRequests(Team $team, TeamService $teamService)
+	{
+		$teamService->setTeam($team);
+
+		return response()->json(
+			$teamService->getTeamIncomingRequests()
+		);
+	}
+
+	public function acceptRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
+	{
+		try {
+			$teamService->setTeam($team);
+			return $teamService->acceptRequest($relationRequest);
+		} catch (\Throwable $e) {
+			return response()->json($e->getMessage())
+				->setStatusCode(422);
+		}
+	}
+
+	public function rejectRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
+	{
+		try {
+			$teamService->setTeam($team);
+			return $teamService->rejectRequest($relationRequest);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);

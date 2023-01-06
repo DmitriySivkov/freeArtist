@@ -19,8 +19,7 @@
 				<q-card-section class="row items-center">
 					<div class="col-xs-12 col-md-8">
 						Статус: {{ props.row.status.label }}<br/>
-						Отправитель: {{ props.row.from.name ?? props.row.from.phone }}<br/>
-						Тип: {{ relation_request.types.coworking.label }}
+						Отправитель: {{ props.row.from.name ?? props.row.from.phone }}
 					</div>
 					<div class="col-xs-12 col-md-4">
 						<div class="row q-col-gutter-sm">

@@ -63,12 +63,12 @@ import { useRouter } from "vue-router"
 import { ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
-import { useRelationRequestManager } from "src/composables/relationRequestManager"
+import { useUser } from "src/composables/user"
 export default {
 	setup() {
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
-		const { createUserOutgoingRequest } = useRelationRequestManager()
+		const { userCreateRequest } = useUser()
 
 		const team = ref(null)
 		const message = ref("")
@@ -76,7 +76,7 @@ export default {
 		const team_list = ref([])
 
 		const onSubmit = () => {
-			createUserOutgoingRequest(team.value.value, message.value)
+			userCreateRequest(team.value.value, message.value)
 				.then(() => {
 					notifySuccess("Заявка успешно отправлена")
 					$router.push({name: "personal_user_requests"})

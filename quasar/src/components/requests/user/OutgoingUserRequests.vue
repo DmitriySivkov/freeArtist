@@ -20,7 +20,7 @@
 		</template>
 		<template v-slot:item="props">
 			<div class="col-xs-12">
-				<q-card class="q-ml-md q-mb-md q-mr-md">
+				<q-card class="q-mb-md">
 					<q-card-section>
 						<div class="row items-center text-center">
 							<div class="col-xs-2 col-md-1">

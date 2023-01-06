@@ -25,10 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $from
  * @property-read Model|\Eloquent $to
- * @method static Builder|RelationRequest coworkingRequests()
  * @method static Builder|RelationRequest newModelQuery()
  * @method static Builder|RelationRequest newQuery()
- * @method static Builder|RelationRequest partnershipRequests()
  * @method static Builder|RelationRequest query()
  * @method static Builder|RelationRequest whereCreatedAt($value)
  * @method static Builder|RelationRequest whereFromId($value)
@@ -153,15 +151,4 @@ class RelationRequest extends Model
 	{
 		return $this->morphTo();
 	}
-
-	public function scopeCoworkingRequests(Builder $query)
-	{
-		return $query->where('type', self::TYPE_COWORKING);
-	}
-
-	public function scopePartnershipRequests(Builder $query)
-	{
-		return $query->where('type', self::TYPE_PRODUCER_PARTNERSHIP);
-	}
-
 }

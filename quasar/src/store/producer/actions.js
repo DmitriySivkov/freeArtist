@@ -10,40 +10,6 @@ export const getProducer = async ({commit}, producerId) => {
 	commit("SET_CURRENT_PRODUCER", response.data)
 }
 
-export const sendProducerPartnershipRequest = async ({commit}, payload) => {
-	const response = await api.post(
-		"personal/producers/relationRequests/sendProducerPartnershipRequest/" + payload.ownProducerId,
-		{ ...payload }
-	)
-	commit("SET_PRODUCER_OUTGOING_PRODUCER_PARTNERSHIP_REQUESTS", response.data)
-}
-
-// todo - used nowhere - remove ?
-export const getProducerIncomingRequests = async ({commit}, producer_id) => {
-	const response = await api.get(
-		"personal/producers/relationRequests/incoming/" + producer_id
-	)
-	commit("SET_PRODUCER_INCOMING_RELATION_REQUESTS", { ...response.data, producer_id: parseInt(producer_id) })
-}
-
-export const acceptCoworkingRequest = async ({commit}, { producer_id, request_id }) => {
-	const response = await api.post("personal/producers/relationRequests/acceptCoworkingRequest/" + request_id)
-	commit("team/SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
-		producer_id,
-		request_id: response.data.id,
-		status: response.data.status
-	}, { root:true })
-}
-
-export const rejectCoworkingRequest = async ({commit}, { producer_id, request_id }) => {
-	const response = await api.post("personal/producers/relationRequests/rejectCoworkingRequest/" + request_id)
-	commit("team/SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
-		producer_id,
-		request_id: response.data.id,
-		status: response.data.status
-	}, { root:true })
-}
-
 export const getProducerProductList = async ({commit}, producer_id) => {
 	const response = await api.get("personal/producers/" + producer_id + "/products")
 	commit("team/SET_PRODUCER_PRODUCTS", {

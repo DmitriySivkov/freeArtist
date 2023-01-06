@@ -7,5 +7,8 @@ export const useUser = () => {
 
 	const isUserLogged = () => user.value.isLogged
 
-	return { user, isUserLogged }
+	return {
+		user,
+		isUserLogged
+	}
 }

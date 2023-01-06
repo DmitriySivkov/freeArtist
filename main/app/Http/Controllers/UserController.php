@@ -15,7 +15,7 @@ class UserController extends Controller
 	 * @param Request $request
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function createOutgoingRequest(Request $request)
+	public function createRequest(Request $request)
 	{
 		$team = Team::findOrFail($request->get('team'));
 
@@ -61,7 +61,7 @@ class UserController extends Controller
 	 * @param RelationRequest $relationRequest
 	 * @return RelationRequest
 	 */
-	public function cancelCoworkingRequest(RelationRequest $relationRequest)
+	public function cancelRequest(RelationRequest $relationRequest)
 	{
 		$relationRequest->status = RelationRequest::STATUS_REJECTED_BY_CONTRIBUTOR['id'];
 		$relationRequest->save();
@@ -72,7 +72,7 @@ class UserController extends Controller
 	 * @param RelationRequest $relationRequest
 	 * @return RelationRequest
 	 */
-	public function restoreCoworkingRequest(RelationRequest $relationRequest)
+	public function restoreRequest(RelationRequest $relationRequest)
 	{
 		$relationRequest->status = RelationRequest::STATUS_PENDING['id'];
 		$relationRequest->save();

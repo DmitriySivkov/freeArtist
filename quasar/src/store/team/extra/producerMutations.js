@@ -14,18 +14,6 @@ export const SET_PRODUCER_INCOMING_RELATION_REQUESTS = (state, payload) => {
 	]
 }
 
-export const SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS = (state, { producer_id, request_id, status }) => {
-	const requests = state.user_teams.find((t) => t.detailed.id === producer_id)
-		.requests
-
-	requests.data
-		.incoming_coworking_requests
-		.find((request) => request.id === request_id)
-		.status = status
-
-	requests.total_pending_request_count--
-}
-
 export const SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS = (state, { producer_id, product_id, settings }) => {
 	const product = state.user_teams.find((t) => t.detailed.id === producer_id)
 		.products

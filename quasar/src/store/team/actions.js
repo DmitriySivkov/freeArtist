@@ -19,3 +19,21 @@ export const syncTeamUserPermissions = async ({commit}, { team_id, user_id, perm
 		permissions:response.data
 	})
 }
+
+export const acceptRequest = async ({commit}, { team_id, request_id }) => {
+	const response = await api.post("personal/teams/" + team_id + "/relationRequests" + request_id + "/accept")
+	commit("team/SET_TEAM_REQUEST_STATUS", {
+		team_id,
+		request_id: response.data.id,
+		status: response.data.status
+	})
+}
+
+export const rejectRequest = async ({commit}, { team_id, request_id }) => {
+	const response = await api.post("personal/teams/" + team_id + "/relationRequests" + request_id + "/reject")
+	commit("team/SET_TEAM_REQUEST_STATUS", {
+		team_id,
+		request_id: response.data.id,
+		status: response.data.status
+	})
+}
