@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Contracts\ProducerServiceContract;
 use App\Models\Permission;
 use App\Models\Producer;
-use App\Models\RelationRequest;
 use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
@@ -36,7 +35,7 @@ class ProducerService implements ProducerServiceContract
 		$user = auth('sanctum')->user();
 
 		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_LOGO['name'], $producer->team) &&
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_LOGO['name'], $producer->team) &&
 			!$user->owns($producer->team)
 		)
 			throw new \LogicException('Доступ закрыт');
@@ -120,7 +119,7 @@ class ProducerService implements ProducerServiceContract
 		if (
 			!$user->owns($this->producer->team) &&
 			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_INCOMING_REQUESTS['name'],
+				Permission::PERMISSION_PRODUCER_REQUESTS['name'],
 				$this->producer->team->name
 			)
 		) {
@@ -144,7 +143,7 @@ class ProducerService implements ProducerServiceContract
 		if (
 			!$user->owns($this->producer->team) &&
 			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_OUTGOING_REQUESTS['name'],
+				Permission::PERMISSION_PRODUCER_REQUESTS['name'],
 				$this->producer->team->name
 			)
 		) {

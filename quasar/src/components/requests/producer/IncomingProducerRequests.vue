@@ -21,7 +21,10 @@
 						Статус: {{ props.row.status.label }}<br/>
 						Отправитель: {{ props.row.from.name ?? props.row.from.phone }}
 					</div>
-					<div class="col-xs-12 col-md-4">
+					<div
+						v-if="props.row.status.id !== relation_request.statuses.rejected_by_contributor.id"
+						class="col-xs-12 col-md-4"
+					>
 						<div class="row q-col-gutter-sm">
 							<div class="col-xs-12">
 								<q-btn
@@ -29,7 +32,7 @@
 									size="md"
 									color="secondary"
 									class="full-width"
-									@click="acceptCowRequest(props.row.id)"
+									@click="acceptRequest(props.row.id)"
 								/>
 							</div>
 							<div class="col-xs-12">
@@ -38,7 +41,7 @@
 									size="md"
 									color="warning"
 									class="full-width"
-									@click="rejectCowRequest(props.row.id)"
+									@click="rejectRequest(props.row.id)"
 								/>
 							</div>
 						</div>
@@ -85,9 +88,6 @@
 <script>
 import { useRelationRequestManager } from "src/composables/relationRequestManager"
 import { useNotification } from "src/composables/notification"
-import { useUserTeam } from "src/composables/userTeam"
-import { useRouter } from "vue-router"
-import { computed } from "vue"
 export default {
 	props: {
 		team: {
@@ -99,20 +99,20 @@ export default {
 		const
 			{
 				relation_request,
-				acceptCoworkingRequest,
-				rejectCoworkingRequest,
+				teamAcceptRequest,
+				teamRejectRequest,
 				teamIncomingRequests
 			} = useRelationRequestManager()
 		const { notifySuccess, notifyError } = useNotification()
 
-		const acceptCowRequest = (requestId) => {
-			acceptCoworkingRequest(props.team.detailed.id, requestId)
+		const acceptRequest = (request_id) => {
+			teamAcceptRequest(props.team.id, request_id)
 				.then(() => { notifySuccess("Заявка принята") })
 				.catch((error) => { notifyError(error.response.data) })
 		}
 
-		const rejectCowRequest = (requestId) => {
-			rejectCoworkingRequest(props.team.detailed.id, requestId)
+		const rejectRequest = (request_id) => {
+			teamRejectRequest(props.team.id, request_id)
 				.then(() => { notifySuccess("В заявке отказано") })
 				.catch((error) => { notifyError(error.response.data) })
 		}
@@ -120,8 +120,8 @@ export default {
 		return {
 			relation_request,
 			teamIncomingRequests,
-			acceptCowRequest,
-			rejectCowRequest
+			acceptRequest,
+			rejectRequest
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <template>
 	<q-btn
-		v-if="permissions.update"
+		v-if="isAbleToManageProduct"
 		label="Добавить ингридиент"
 		color="primary"
 		class="q-mb-md"
@@ -16,7 +16,7 @@
 			flat
 		>
 			<q-input
-				:disable="ingredient.to_delete || !permissions.update"
+				:disable="ingredient.to_delete || !isAbleToManageProduct"
 				filled
 				label="Название ингридиента"
 				v-model="ingredient.name"
@@ -26,7 +26,7 @@
 			>
 				<template
 					v-slot:after
-					v-if="permissions.update"
+					v-if="isAbleToManageProduct"
 				>
 
 					<q-btn
@@ -49,7 +49,7 @@
 				</template>
 			</q-input>
 			<q-input
-				:disable="ingredient.to_delete || !permissions.update"
+				:disable="ingredient.to_delete || !isAbleToManageProduct"
 				filled
 				type="textarea"
 				label="Описание ингридиента (необязательно)"
@@ -62,7 +62,7 @@
 			/>
 		</q-card>
 		<div
-			v-if="permissions.update"
+			v-if="isAbleToManageProduct"
 			class="row q-col-gutter-sm q-mt-md"
 		>
 			<div class="col-xs-12">
@@ -98,10 +98,7 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		permissions: {
-			type: Object,
-			default: () => ({})
-		}
+		isAbleToManageProduct: Boolean
 	},
 	setup(props) {
 		const $store = useStore()

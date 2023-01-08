@@ -59,6 +59,8 @@ use Laratrust\Traits\LaratrustUserTrait;
  * @method static Builder|User whereRoleIs($role = '', $team = null, $boolean = 'and')
  * @method static Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingRelationRequests
+ * @property-read int|null $incoming_relation_requests_count
  */
 class User extends Authenticatable
 {

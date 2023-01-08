@@ -94,8 +94,7 @@ Route::group([
 
 		Route::group(['prefix' => 'relationRequests'], function() {
 			Route::post('create', [UserController::class, 'createRequest']);
-			Route::post('{relationRequest}/cancel', [UserController::class, 'cancelRequest']);
-			Route::post('{relationRequest}/restore', [UserController::class, 'restoreRequest']);
+			Route::post('{relationRequest}/setStatus', [UserController::class, 'setRelationRequestStatus']);
 		});
 	});
 

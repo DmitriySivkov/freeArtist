@@ -1,60 +1,47 @@
 import { echo } from "boot/ws"
 import { useUserTeam } from "src/composables/userTeam"
-import { useUserPermission } from "src/composables/userPermission"
 import { useUser } from "src/composables/user"
 import { useStore } from "vuex"
 import { useRelationRequestManager } from "src/composables/relationRequestManager"
 
 export const usePrivateChannels = () => {
 	const $store = useStore()
-	const { user_teams, getTeam } = useUserTeam()
-	const { hasPermission } = useUserPermission()
+	const { user_teams } = useUserTeam()
 	const { user } = useUser()
 	const { relation_request } = useRelationRequestManager()
 
 	const connectRelationRequestUser = () => {
-		// todo - set 'created' hook right
 		echo.private("relation-requests.user." + user.value.data.id)
 			.listen(".RelationRequestCreated", (e) => {
 
 			})
 			.listen(".RelationRequestUpdated", (e) => {
-				$store.commit("user/SET_USER_OUTGOING_COWORKING_REQUEST_STATUS", {
-					request_id: e.model.id,
-					status: e.model.status
-				})
-				if (
-					e.type === relation_request.value.types.coworking.id &&
-					e.model.status.id === relation_request.value.statuses.accepted.id
-				) {
-					$store.commit("user/SET_ROLE", e.role)
-					$store.commit("team/SET_USER_TEAMS", e.team)
+				if (e.model.status_changed_by_user !== user.value.data.id) {
+					$store.commit("relation_request/SET_USER_RELATION_REQUEST_STATUS", {
+						request_id: e.model.id,
+						status_id: e.model.status.id
+					})
+					if (e.model.status.id === relation_request.value.statuses.accepted.id) {
+						$store.commit("user/SET_ROLE", e.role)
+						$store.commit("team/SET_USER_TEAMS", e.team)
+					}
 				}
 			})
 	}
 
-	const connectRelationRequestIncomingProducer = () => {
+	const connectRelationRequestTeam = () => {
 		if (user_teams.value.length > 0) {
 			for (let i in user_teams.value) {
-				if (
-					user_teams.value[i].user_id === user.value.data.id ||
-					hasPermission(user_teams.value[i].id, ["producer_incoming_coworking_requests"])
-				) {
-					echo.private("relation-requests.incoming.producer." + user_teams.value[i].detailed.id)
-						.listen(".RelationRequestCreated", (e) => {
-							$store.commit("team/SET_PRODUCER_INCOMING_RELATION_REQUESTS", {
-								incoming_coworking_requests: [e.model],
-								producer_id: user_teams.value[i].detailed.id
-							})
+				echo.private("relation-requests.team." + user_teams.value[i].id)
+					.listen(".RelationRequestCreated", (e) => {
+						$store.commit("relation_request/SET_USER_TEAMS_REQUESTS", e.model)
+					})
+					.listen(".RelationRequestUpdated", (e) => {
+						$store.commit("relation_request/SET_USER_TEAM_RELATION_REQUEST_STATUS", {
+							request_id: e.model.id,
+							status_id: e.model.status.id
 						})
-						.listen(".RelationRequestUpdated", (e) => {
-							$store.commit("team/SET_PRODUCER_INCOMING_COWORKING_REQUEST_STATUS", {
-								producer_id: user_teams.value[i].detailed.id,
-								request_id: e.model.id,
-								status: e.model.status
-							})
-						})
-				}
+					})
 			}
 		}
 	}
@@ -62,23 +49,17 @@ export const usePrivateChannels = () => {
 	const connectPermissions = () => {
 		echo.private("permissions." + user.value.data.id)
 			.listen(".permissions.synced", (e) => {
-				$store.commit("user/SYNC_USER_TEAM_PERMISSIONS", {
+				$store.commit("team/SYNC_TEAM_USER_PERMISSIONS", {
 					team_id: e.team.id,
+					user_id: e.user.id,
 					permissions: e.permissions
 				})
-				if (getTeam(e.team.id).hasOwnProperty("users")) {
-					$store.commit("team/SYNC_TEAM_USER_PERMISSIONS", {
-						team_id: e.team.id,
-						user_id: e.user.id,
-						permissions: e.permissions
-					})
-				}
 			})
 	}
 
 	return {
 		connectRelationRequestUser,
-		connectRelationRequestIncomingProducer,
+		connectRelationRequestTeam,
 		connectPermissions
 	}
 }

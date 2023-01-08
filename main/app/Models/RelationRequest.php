@@ -38,13 +38,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|RelationRequest whereToType($value)
  * @method static Builder|RelationRequest whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $status_changed_by_user
+ * @property-read \App\Models\User|null $lastStatusChanger
+ * @method static Builder|RelationRequest whereStatusChangedByUser($value)
  */
 class RelationRequest extends Model
 {
     use BroadcastsEvents, HasFactory;
-
-    const TYPE_COWORKING = 1;
-	const TYPE_PRODUCER_PARTNERSHIP = 2;
 
 	const STATUS_PENDING = [
 		'id' => 1,
@@ -90,9 +90,9 @@ class RelationRequest extends Model
 				'relation-requests.user.' . ( is_a($this->from, User::class) ? $this->from->id : $this->to->id )
 			);
 
-		if (is_a($this->to, Producer::class))
+		if (!is_a($this->to, User::class))
 			$broadcastOn[] = new PrivateChannel(
-				'relation-requests.incoming.producer.' . $this->to->id
+				'relation-requests.team.' . $this->to->team->id
 			);
 
 		return $broadcastOn;
@@ -106,12 +106,12 @@ class RelationRequest extends Model
 	 */
 	public function broadcastWith($event)
 	{
-		if (is_a($this->from, User::class) && is_a($this->to, Producer::class))
+		if (is_a($this->from, User::class) && is_a(!$this->to, User::class))
 			return [
 				'model' => $this,
-				'type' => self::TYPE_COWORKING,
 				'role' => Role::where('name', Role::ROLE_PRODUCER['name'])->first(),
-				'team' => $this->to->team
+				'team' => $this->to->team,
+				'last_changer' => $this->status_changed_by_user
 			];
 
 		return ['model' => $this];
@@ -142,13 +142,27 @@ class RelationRequest extends Model
         );
     }
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+	 */
 	public function from()
 	{
 		return $this->morphTo();
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+	 */
 	public function to()
 	{
 		return $this->morphTo();
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function lastStatusChanger()
+	{
+		return $this->belongsTo(User::class, 'status_changed_by_user');
 	}
 }

@@ -15,12 +15,13 @@ class CreateRelationRequestsTable extends Migration
     {
         Schema::create('relation_requests', function (Blueprint $table) {
             $table->id();
-			$table->unsignedBigInteger('from_id');
+			$table->unsignedInteger('from_id');
 			$table->string('from_type');
-			$table->unsignedBigInteger('to_id');
+			$table->unsignedInteger('to_id');
 			$table->string('to_type');
 			$table->unsignedTinyInteger('status')
 				->default(\App\Models\RelationRequest::STATUS_PENDING['id']);
+			$table->unsignedInteger('status_changed_by_user');
 			$table->text('message')
 				->nullable();
             $table->timestamps();

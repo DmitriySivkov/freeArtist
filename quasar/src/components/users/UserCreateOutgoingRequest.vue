@@ -63,12 +63,12 @@ import { useRouter } from "vue-router"
 import { ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
-import { useUser } from "src/composables/user"
+import { useRelationRequestManager } from "src/composables/relationRequestManager"
 export default {
 	setup() {
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
-		const { userCreateRequest } = useUser()
+		const { userCreateRequest } = useRelationRequestManager()
 
 		const team = ref(null)
 		const message = ref("")

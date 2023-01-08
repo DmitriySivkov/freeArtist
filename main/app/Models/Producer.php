@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $incoming_relation_requests_count
  * @property string|null $logo
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereLogo($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingRelationRequests
+ * @property-read int|null $outgoing_relation_requests_count
  */
 class Producer extends Model
 {

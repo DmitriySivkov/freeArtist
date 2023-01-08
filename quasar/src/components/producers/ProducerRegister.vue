@@ -53,12 +53,13 @@ import { useRouter } from "vue-router"
 import { ref } from "vue"
 import { useStore } from "vuex"
 import { useNotification } from "src/composables/notification"
-
+import { usePrivateChannels } from "src/composables/privateChannels"
 export default {
 	setup() {
 		const $router = useRouter()
 		const $store = useStore()
 		const { notifySuccess, notifyError } = useNotification()
+		const private_channels = usePrivateChannels()
 
 		const producer = ref(null)
 
@@ -66,6 +67,7 @@ export default {
 			$store.dispatch("user/registerProducer", {
 				display_name: producer.value,
 			}).then(() => {
+				private_channels.connectRelationRequestTeam()
 				notifySuccess("Успешно")
 				$router.push({name:"personal_user"})
 			}).catch((error) => {

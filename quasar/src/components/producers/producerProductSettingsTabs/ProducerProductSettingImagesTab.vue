@@ -1,6 +1,6 @@
 <template>
 	<div
-		v-if="permissions.update"
+		v-if="isAbleToManageProduct"
 		class="row"
 	>
 		<div class="col-xs-12 col-md-4">
@@ -15,7 +15,7 @@
 				>
 					<span>Добавить фото</span>
 					<div
-						v-if="permissions.update"
+						v-if="isAbleToManageProduct"
 						class="full-height full-width absolute cursor-pointer"
 						@dragenter.prevent="is_dragging = true"
 						@dragleave.prevent="is_dragging = false"
@@ -80,10 +80,7 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		permissions: {
-			type: Object,
-			default: () => ({})
-		}
+		isAbleToManageProduct: Boolean
 	},
 	setup(props) {
 		const $q = useQuasar()

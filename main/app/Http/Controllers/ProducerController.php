@@ -7,7 +7,6 @@ use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\Product;
 use App\Models\ProductImage;
-use App\Models\RelationRequest;
 use App\Models\User;
 use App\Services\ProducerService;
 use App\Services\ResponseService;
@@ -48,7 +47,7 @@ class ProducerController extends Controller
 		$user = auth('sanctum')->user();
 
 		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_CREATE_PRODUCT['name'], $producer->team) &&
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $producer->team) &&
 			!$user->owns($producer->team)
 		)
 			throw new \LogicException('Доступ закрыт');
@@ -72,7 +71,7 @@ class ProducerController extends Controller
 		$user = auth('sanctum')->user();
 
 		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_DELETE_PRODUCT['name'], $producer->team) &&
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $producer->team) &&
 			!$user->owns($producer->team)
 		)
 			throw new \LogicException('Доступ закрыт');
@@ -107,7 +106,7 @@ class ProducerController extends Controller
 		$user = auth('sanctum')->user();
 
 		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PRODUCT['name'], $producer->team) &&
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $producer->team) &&
 			!$user->owns($producer->team)
 		)
 			throw new \LogicException('Доступ закрыт');
@@ -162,7 +161,7 @@ class ProducerController extends Controller
 		$user = auth('sanctum')->user();
 
 		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PRODUCT['name'], $producer->team) &&
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $producer->team) &&
 			!$user->owns($producer->team)
 		)
 			throw new \LogicException('Доступ закрыт');

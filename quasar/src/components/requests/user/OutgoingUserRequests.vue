@@ -43,7 +43,7 @@
 								size="md"
 								color="warning"
 								class="full-height col-xs-3 col-md-1"
-								@click="cancelCowRequest(props.row.id)"
+								@click="cancelRequest(props.row.id)"
 							/>
 							<q-btn
 								v-if="props.row.status.id === 4"
@@ -51,7 +51,7 @@
 								size="md"
 								color="secondary"
 								class="full-height col-xs-3 col-md-1"
-								@click="restoreCowRequest(props.row.id)"
+								@click="restoreRequest(props.row.id)"
 							/>
 						</div>
 					</q-card-section>
@@ -87,13 +87,12 @@ export default {
 			{
 				relation_request,
 				user_outgoing_requests,
-				cancelCoworkingRequest,
-				restoreCoworkingRequest
+				userSetRequestStatus
 			} = useRelationRequestManager()
 
 		const { notifySuccess, notifyError } = useNotification()
-		const cancelCowRequest = (requestId) => {
-			cancelCoworkingRequest(requestId)
+		const cancelRequest = (request_id) => {
+			userSetRequestStatus(request_id, relation_request.value.statuses.rejected_by_contributor.id)
 				.then(() => {
 					notifySuccess("Заявка отменена")
 				})
@@ -101,8 +100,8 @@ export default {
 					notifyError(error)
 				})
 		}
-		const restoreCowRequest = (requestId) => {
-			restoreCoworkingRequest(requestId)
+		const restoreRequest = (request_id) => {
+			userSetRequestStatus(request_id, relation_request.value.statuses.pending.id)
 				.then(() => {
 					notifySuccess("Заявка восстановлена")
 				})
@@ -114,8 +113,8 @@ export default {
 		return {
 			relation_request,
 			user_outgoing_requests,
-			cancelCowRequest,
-			restoreCowRequest
+			cancelRequest,
+			restoreRequest
 		}
 	}
 }

@@ -36,48 +36,30 @@ class Permission extends LaratrustPermission
 
 	/** producer permissions */
 	const PERMISSIONS_PRODUCER = [
-		self::PERMISSION_PRODUCER_OUTGOING_REQUESTS,
-		self::PERMISSION_PRODUCER_INCOMING_REQUESTS,
-		self::PERMISSION_PRODUCER_MANAGE_PERMISSIONS,
-		self::PERMISSION_PRODUCER_MANAGE_PRODUCT,
-		self::PERMISSION_PRODUCER_CREATE_PRODUCT,
-		self::PERMISSION_PRODUCER_DELETE_PRODUCT,
-		self::PERMISSION_PRODUCER_MANAGE_LOGO
+		self::PERMISSION_PRODUCER_REQUESTS,
+		self::PERMISSION_PRODUCER_PERMISSIONS,
+		self::PERMISSION_PRODUCER_PRODUCT,
+		self::PERMISSION_PRODUCER_LOGO
 	];
 
-	const PERMISSION_PRODUCER_OUTGOING_REQUESTS = [
-		'name' => 'producer_outgoing_requests',
-		'display_name' => 'Управление исходящими запросами',
+	const PERMISSION_PRODUCER_REQUESTS = [
+		'name' => 'producer_requests',
+		'display_name' => 'Управление запросами',
 		'description' => ''
 	];
-	const PERMISSION_PRODUCER_INCOMING_REQUESTS = [
-		'name' => 'producer_incoming_requests',
-		'display_name' => 'Управление входящими запросами',
+	const PERMISSION_PRODUCER_PERMISSIONS = [
+		'name' => 'producer_permissions',
+		'display_name' => 'Управление разрешениями',
 		'description' => ''
 	];
-	const PERMISSION_PRODUCER_MANAGE_PERMISSIONS = [
-		'name' => 'producer_manage_permissions',
-		'display_name' => 'Управление разрешениями изготовителя',
-		'description' => ''
-	];
-	const PERMISSION_PRODUCER_MANAGE_PRODUCT = [
-		'name' => 'producer_manage_product',
+	const PERMISSION_PRODUCER_PRODUCT = [
+		'name' => 'producer_product',
 		'display_name' => 'Управление продуктом',
 		'description' => ''
 	];
-	const PERMISSION_PRODUCER_CREATE_PRODUCT = [
-		'name' => 'producer_create_product',
-		'display_name' => 'Создание продукта',
-		'description' => ''
-	];
-	const PERMISSION_PRODUCER_DELETE_PRODUCT = [
-		'name' => 'producer_delete_product',
-		'display_name' => 'Удаление продукта',
-		'description' => ''
-	];
-	const PERMISSION_PRODUCER_MANAGE_LOGO = [
-		'name' => 'producer_manage_logo',
-		'display_name' => 'Изменение логотипа изготовителя',
+	const PERMISSION_PRODUCER_LOGO = [
+		'name' => 'producer_logo',
+		'display_name' => 'Изменение логотипа',
 		'description' => ''
 	];
 	/** end producer permissions */

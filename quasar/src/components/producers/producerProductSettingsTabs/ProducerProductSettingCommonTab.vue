@@ -10,7 +10,7 @@
 			lazy-rules
 			:rules="[ val => val && val.length > 3 || 'Название должно быть длиннее 3 символов']"
 			class="q-pb-lg"
-			:disable="!permissions.update"
+			:disable="!isAbleToManageProduct"
 		/>
 
 		<q-field
@@ -21,7 +21,7 @@
 			class="q-pb-lg"
 			:rules="[ val => parseFloat(val) > 0 || 'Нужно указать стоимость']"
 			lazy-rules
-			:disable="!permissions.update"
+			:disable="!isAbleToManageProduct"
 		>
 			<template v-slot:control="{ floatingLabel, modelValue, emitValue }">
 				<input
@@ -39,11 +39,11 @@
 			type="number"
 			label="Доступное количество"
 			v-model.number="product.amount"
-			:disable="!permissions.update"
+			:disable="!isAbleToManageProduct"
 		/>
 		<div class="row q-col-gutter-sm q-mt-md">
 			<div
-				v-if="permissions.update"
+				v-if="isAbleToManageProduct"
 				class="col-xs-12"
 			>
 				<q-btn
@@ -55,7 +55,7 @@
 				/>
 			</div>
 			<div
-				v-if="permissions.update"
+				v-if="isAbleToManageProduct"
 				class="col-xs-12"
 			>
 				<q-btn
@@ -66,7 +66,7 @@
 				/>
 			</div>
 			<div
-				v-if="!is_empty_product && permissions.delete"
+				v-if="!is_empty_product && isAbleToManageProduct"
 				class="col-xs-12"
 			>
 				<q-btn
@@ -94,10 +94,7 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		permissions: {
-			type: Object,
-			default: () => ({})
-		}
+		isAbleToManageProduct: Boolean
 	},
 	emits: ["productCreated", "productDeleted"],
 	setup(props, { emit }) {

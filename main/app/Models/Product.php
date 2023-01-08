@@ -35,6 +35,8 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductImage[] $pictures
  * @property-read int|null $pictures_count
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereIsActive($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductImage[] $images
+ * @property-read int|null $images_count
  */
 class Product extends Model
 {

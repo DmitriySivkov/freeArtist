@@ -13,18 +13,16 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-/** user's requests */
 Broadcast::channel('relation-requests.user.{userId}', function (\App\Models\User $user, $userId) {
 	return $user->id === (int)$userId;
 });
 
-/** producer's requests */
-Broadcast::channel('relation-requests.incoming.producer.{producerId}', function (\App\Models\User $user, $producerId) {
-	$producer = \App\Models\Producer::find($producerId);
-	return $user->id === $producer->team->user_id ||
+Broadcast::channel('relation-requests.team.{teamId}', function (\App\Models\User $user, $teamId) {
+	$team = \App\Models\Team::find($teamId);
+	return $user->id === $team->user_id ||
 		$user->hasPermission([
-			\App\Models\Permission::PERMISSION_PRODUCER_INCOMING_COWORKING_REQUESTS['name']
-		], $producer->team->name);
+			\App\Models\Permission::PERMISSION_PRODUCER_REQUESTS['name'] // todo - add other types later
+		], $team->name);
 });
 
 Broadcast::channel('permissions.{userId}', function (\App\Models\User $user, $userId) {

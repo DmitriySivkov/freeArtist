@@ -74,18 +74,13 @@ export const createRequest = async ({commit}, payload) => {
 	commit("relation_request/SET_USER_REQUESTS", response.data, { root:true })
 }
 
-export const cancelRequest = async ({commit}, payload) => {
-	const response = await api.post("personal/users/relationRequests/" + payload.request_id + "/cancel")
-	commit("CANCEL_USER_REQUEST", {
-		canceledRequest: response.data,
-		canceledStatus: payload.status
-	})
-}
-
-export const restoreRequest = async ({commit}, payload) => {
-	const response = await api.post("personal/users/relationRequests/" + payload.request_id + "/restore")
-	commit("RESTORE_USER_REQUEST", {
-		restoredRequest: response.data,
-		restoredStatus: payload.status
-	})
+export const setRelationRequestStatus = async ({commit}, { request_id, status_id }) => {
+	const response = await api.post(
+		"personal/users/relationRequests/" + request_id + "/setStatus",
+		{ status_id }
+	)
+	commit("relation_request/SET_USER_RELATION_REQUEST_STATUS", {
+		request_id: response.data.id,
+		status_id: response.data.status.id
+	}, { root:true })
 }

@@ -17,7 +17,7 @@ class UserController extends Controller
 	 */
 	public function createRequest(Request $request)
 	{
-		$team = Team::findOrFail($request->get('team'));
+		$team = Team::findOrFail($request->get('team_id'));
 
 		/** @var User $user */
 		$user = auth('sanctum')->user();
@@ -43,6 +43,7 @@ class UserController extends Controller
 				'to_id' => $team->detailed_id,
 				'to_type' => $team->detailed_type,
 				'status' => RelationRequest::STATUS_PENDING['id'],
+				'status_changed_by_user' => $user->id,
 				'message' => $request->get('message')
 			]);
 
@@ -59,23 +60,22 @@ class UserController extends Controller
 
 	/**
 	 * @param RelationRequest $relationRequest
+	 * @param Request $request
 	 * @return RelationRequest
 	 */
-	public function cancelRequest(RelationRequest $relationRequest)
+	public function setRelationRequestStatus(RelationRequest $relationRequest, Request $request)
 	{
-		$relationRequest->status = RelationRequest::STATUS_REJECTED_BY_CONTRIBUTOR['id'];
-		$relationRequest->save();
-		return $relationRequest;
-	}
+		/** @var User $user */
+		$user = auth('sanctum')->user();
 
-	/**
-	 * @param RelationRequest $relationRequest
-	 * @return RelationRequest
-	 */
-	public function restoreRequest(RelationRequest $relationRequest)
-	{
-		$relationRequest->status = RelationRequest::STATUS_PENDING['id'];
+		$relationRequest->status = collect(RelationRequest::STATUSES)
+			->filter(fn($status) => $status['id'] === $request->get('status_id'))
+			->first()['id'];
+
+		$relationRequest->status_changed_by_user = $user->id;
+
 		$relationRequest->save();
+
 		return $relationRequest;
 	}
 

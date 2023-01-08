@@ -23,7 +23,7 @@ export default defineComponent({
 
 			if (user.value.data.id) {
 				private_channels.connectRelationRequestUser()
-				private_channels.connectRelationRequestIncomingProducer()
+				private_channels.connectRelationRequestTeam()
 				private_channels.connectPermissions()
 			}
 		}

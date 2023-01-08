@@ -19,14 +19,4 @@ export default {
 			label: "Отменено заявителем"
 		}
 	},
-	types: {
-		coworking: {
-			id: 1,
-			label: "Совместная деятельность"
-		},
-		producer_partnership: {
-			id: 2,
-			label: "Партнерство изготовителей"
-		}
-	}
 }

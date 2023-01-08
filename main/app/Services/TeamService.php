@@ -54,7 +54,7 @@ class TeamService implements TeamServiceContract
 		$authUser = auth('sanctum')->user();
 
 		if (
-			!$authUser->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PERMISSIONS['name'], $team) &&
+			!$authUser->hasPermission(Permission::PERMISSION_PRODUCER_PERMISSIONS['name'], $team) &&
 			!$authUser->owns($team)
 		)
 			throw new \LogicException("Доступ закрыт");
@@ -110,7 +110,7 @@ class TeamService implements TeamServiceContract
 		if (
 			!$user->owns($this->team) &&
 			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_INCOMING_REQUESTS['name'],
+				Permission::PERMISSION_PRODUCER_REQUESTS['name'],
 				$this->team->name
 			)
 		)
@@ -155,7 +155,7 @@ class TeamService implements TeamServiceContract
 		if (
 			!$user->owns($this->team) &&
 			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_INCOMING_REQUESTS['name'],
+				Permission::PERMISSION_PRODUCER_REQUESTS['name'],
 				$this->team->name
 			)
 		)

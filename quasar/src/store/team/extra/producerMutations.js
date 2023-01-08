@@ -3,17 +3,6 @@ export const SET_PRODUCER_PRODUCTS = (state, { products, producer_id }) => {
 	state.user_teams.find((t) => t.detailed.id === producer_id).products = products
 }
 
-export const SET_PRODUCER_INCOMING_RELATION_REQUESTS = (state, payload) => {
-	let producer = state.user_teams.find((t) => t.detailed.id === payload.producer_id)
-
-	producer.requests.total_pending_request_count++
-	/** later there will be more types of incoming requests **/
-	producer.requests.data.incoming_coworking_requests = [
-		...producer.requests.data.incoming_coworking_requests,
-		...payload.incoming_coworking_requests
-	]
-}
-
 export const SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS = (state, { producer_id, product_id, settings }) => {
 	const product = state.user_teams.find((t) => t.detailed.id === producer_id)
 		.products

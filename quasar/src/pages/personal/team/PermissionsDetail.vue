@@ -58,7 +58,7 @@ export default {
 
 		const is_able_to_edit_user_permissions = computed(() =>
 			(
-				hasPermission(team.value.id,"producer_manage_permissions") ||
+				hasPermission(team.value.id,"producer_permissions") ||
 				team.value.user_id === user.value.data.id
 			) &&
 			selected_user.value !== user.value.data.id &&

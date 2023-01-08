@@ -8,7 +8,7 @@
 				Выберите продукт
 			</div>
 			<div
-				v-if="is_able_to_create_product"
+				v-if="is_able_to_manage_product"
 				class="col-xs-6 offset-md-4 col-md-2"
 			>
 				<q-btn
@@ -44,11 +44,7 @@
 		</q-item>
 		<ProducerProductSettingList
 			:selected-product="selected_product"
-			:permissions="{
-				create:is_able_to_create_product,
-				update:is_able_to_manage_product,
-				delete:is_able_to_delete_product
-			}"
+			:is-able-to-manage-product="is_able_to_manage_product"
 			@product-created="setProductId"
 			@product-deleted="unselectProduct"
 		/>
@@ -100,18 +96,8 @@ export default {
 
 		const createProduct = () => selected_product_id.value = -1
 
-		const is_able_to_create_product = computed(() =>
-			hasPermission(team.value.id,"producer_create_product") ||
-			team.value.user_id === user.value.data.id
-		)
-
 		const is_able_to_manage_product = computed(() =>
 			hasPermission(team.value.id,"producer_manage_product") ||
-			team.value.user_id === user.value.data.id
-		)
-
-		const is_able_to_delete_product = computed(() =>
-			hasPermission(team.value.id,"producer_delete_product") ||
 			team.value.user_id === user.value.data.id
 		)
 
@@ -122,9 +108,7 @@ export default {
 			unselectProduct,
 			createProduct,
 			setProductId,
-			is_able_to_create_product,
-			is_able_to_manage_product,
-			is_able_to_delete_product
+			is_able_to_manage_product
 		}
 	}
 }
