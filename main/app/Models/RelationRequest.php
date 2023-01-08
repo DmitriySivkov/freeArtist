@@ -106,7 +106,7 @@ class RelationRequest extends Model
 	 */
 	public function broadcastWith($event)
 	{
-		if (is_a($this->from, User::class) && is_a(!$this->to, User::class))
+		if (is_a($this->from, User::class) && !is_a($this->to, User::class))
 			return [
 				'model' => $this,
 				'role' => Role::where('name', Role::ROLE_PRODUCER['name'])->first(),

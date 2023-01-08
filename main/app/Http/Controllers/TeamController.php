@@ -52,10 +52,21 @@ class TeamController extends Controller
 
 	public function acceptRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
 	{
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		\DB::beginTransaction();
 		try {
 			$teamService->setTeam($team);
-			return $teamService->acceptRequest($relationRequest);
+			$request = $teamService->acceptRequest($relationRequest);
+
+			$relationRequest->status_changed_by_user = $user->id;
+			$relationRequest->save();
+
+			\DB::commit();
+			return $request;
 		} catch (\Throwable $e) {
+			\DB::rollBack();
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
 		}
@@ -63,10 +74,21 @@ class TeamController extends Controller
 
 	public function rejectRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
 	{
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		\DB::beginTransaction();
 		try {
 			$teamService->setTeam($team);
-			return $teamService->rejectRequest($relationRequest);
+			$request = $teamService->rejectRequest($relationRequest);
+
+			$relationRequest->status_changed_by_user = $user->id;
+			$relationRequest->save();
+
+			\DB::commit();
+			return $request;
 		} catch (\Throwable $e) {
+			\DB::rollBack();
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
 		}

@@ -34,13 +34,17 @@ export const usePrivateChannels = () => {
 			for (let i in user_teams.value) {
 				echo.private("relation-requests.team." + user_teams.value[i].id)
 					.listen(".RelationRequestCreated", (e) => {
-						$store.commit("relation_request/SET_USER_TEAMS_REQUESTS", e.model)
+						if (e.model.status_changed_by_user !== user.value.data.id) {
+							$store.commit("relation_request/SET_USER_TEAMS_REQUESTS", e.model)
+						}
 					})
 					.listen(".RelationRequestUpdated", (e) => {
-						$store.commit("relation_request/SET_USER_TEAM_RELATION_REQUEST_STATUS", {
-							request_id: e.model.id,
-							status_id: e.model.status.id
-						})
+						if (e.model.status_changed_by_user !== user.value.data.id) {
+							$store.commit("relation_request/SET_USER_TEAM_RELATION_REQUEST_STATUS", {
+								request_id: e.model.id,
+								status_id: e.model.status.id
+							})
+						}
 					})
 			}
 		}
