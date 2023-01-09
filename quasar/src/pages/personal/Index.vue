@@ -1,7 +1,7 @@
 <template>
 	<q-tabs
 		v-if="userRoles.length > 0"
-		v-model="selectedTab"
+		v-model="selected_tab"
 		dense
 		inline-label
 		active-color="white"
@@ -24,7 +24,7 @@
 	<q-separator />
 
 	<q-tab-panels
-		v-model="selectedTab"
+		v-model="selected_tab"
 		animated
 	>
 		<q-tab-panel
@@ -32,8 +32,8 @@
 			:key="index"
 			:name="tab.name"
 		>
-			<NavigationUser v-if="selectedTab === 'user'" />
-			<NavigationProducer v-if="selectedTab === 'producer'" />
+			<NavigationUser v-if="selected_tab === 'user'" />
+			<NavigationProducer v-if="selected_tab === 'producer'" />
 		</q-tab-panel>
 	</q-tab-panels>
 </template>
@@ -45,27 +45,26 @@ import { useUserRole } from "src/composables/userRole"
 import { ref } from "vue"
 import { useStore } from "vuex"
 export default {
-	// todo - change tab appearance logic (check roles against the tabs)
 	components: { NavigationUser, NavigationProducer },
 	setup() {
 		const $store = useStore()
 		const { user, userRoles } = useUserRole()
-		const selectedTab = ref(user.value.personalTab)
+		const selected_tab = ref(user.value.personal_tab)
 		const tabs = [
-			{name: "user", icon: "account_box", label: "Пользователь"},
-			{name: "producer", icon: "work_outline", label: "Изготовитель"}
+			{ name: "user", icon: "account_box", label: "Пользователь" },
+			{ name: "producer", icon: "work_outline", label: "Изготовитель" }
 		]
 
-		const switchPersonal = (personalTab) =>
+		const switchPersonal = (personal_tab) =>
 			$store.dispatch(
 				"user/switchPersonal",
-				personalTab
+				personal_tab
 			)
 
 		return {
 			user,
 			tabs,
-			selectedTab,
+			selected_tab,
 			userRoles,
 			switchPersonal
 		}

@@ -52,7 +52,7 @@ export default ({
 		}
 
 		const teams_filtered = computed(
-			() => props.teams.filter((t) => t.detailed_type === personal_types[user.value.personalTab])
+			() => props.teams.filter((t) => t.detailed_type === personal_types[user.value.personal_tab])
 		)
 
 		const goToDetail = (team_id) => $router.push({

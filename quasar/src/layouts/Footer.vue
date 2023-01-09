@@ -23,7 +23,7 @@
 						/>
 					</div>
 					<div
-						v-if="user.isLogged"
+						v-if="user.is_logged"
 						class="col-xs-shrink"
 					>
 						<q-btn

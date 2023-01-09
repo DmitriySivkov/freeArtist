@@ -6,6 +6,7 @@ module.exports = function (ctx) {
 			"authViaToken", // show loader
 			"axios",
 			"setCartFromLocalStorage",
+			"setPersonalTabFromLocalStorage",
 			"browseProducers",
 			"browseRoles",
 			"browsePermissions",

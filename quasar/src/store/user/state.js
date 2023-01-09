@@ -1,5 +1,5 @@
 export default {
-	isLogged: false,
-	personalTab: "user",
+	is_logged: false,
+	personal_tab: "user",
 	data: {}
 }

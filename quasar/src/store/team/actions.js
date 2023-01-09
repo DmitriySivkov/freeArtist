@@ -10,7 +10,7 @@ export const getUserList = async ({commit}, team_id) => {
 
 export const syncTeamUserPermissions = async ({commit}, { team_id, user_id, permissions }) => {
 	const response = await api.post(
-		"personal/teams/" + team_id + "/permissions/" + user_id + "/sync",
+		"personal/teams/" + team_id + "/users/" + user_id + "/permissions/sync",
 		permissions
 	)
 	commit("SYNC_TEAM_USER_PERMISSIONS", {
