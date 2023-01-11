@@ -24,6 +24,7 @@ export const usePrivateChannels = () => {
 					if (e.model.status.id === relation_request.value.statuses.accepted.id) {
 						$store.commit("user/SET_ROLE", e.role)
 						$store.commit("team/SET_USER_TEAMS", e.team)
+						connectPermissions()
 					}
 				}
 			})
@@ -50,15 +51,20 @@ export const usePrivateChannels = () => {
 		}
 	}
 
+	// todo - handle double commit on user that grants permissions
 	const connectPermissions = () => {
-		echo.private("permissions." + user.value.data.id)
-			.listen(".permissions.synced", (e) => {
-				$store.commit("team/SYNC_TEAM_USER_PERMISSIONS", {
-					team_id: e.team.id,
-					user_id: e.user.id,
-					permissions: e.permissions
-				})
-			})
+		if (user_teams.value.length > 0) {
+			for (let i in user_teams.value) {
+				echo.private("permissions." + user_teams.value[i].id)
+					.listen(".permissions.synced", (e) => {
+						$store.commit("team/SYNC_TEAM_USER_PERMISSIONS", {
+							team_id: e.team.id,
+							user_id: e.user.id,
+							permissions: e.permissions
+						})
+					})
+			}
+		}
 	}
 
 	return {

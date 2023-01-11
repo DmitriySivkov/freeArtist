@@ -42,7 +42,7 @@ class UserPermissionsSynchronized implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('permissions.' . $this->user->id);
+        return new PrivateChannel('permissions.' . $this->team->id);
     }
 
 	/**

@@ -25,6 +25,7 @@ Broadcast::channel('relation-requests.team.{teamId}', function (\App\Models\User
 		], $team->name);
 });
 
-Broadcast::channel('permissions.{userId}', function (\App\Models\User $user, $userId) {
-	return $user->id === (int)$userId;
+Broadcast::channel('permissions.{teamId}', function (\App\Models\User $user, $teamId) {
+	$team = \App\Models\Team::find($teamId);
+	return $team->users->pluck('id')->contains($user->id);
 });

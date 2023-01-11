@@ -12,11 +12,11 @@ export const useUserPermission = () => {
 		const team_user = team.hasOwnProperty("users") ?
 			team.users.find((u) => u.id === user.value.data.id) : false
 
-		return user.value.data.permissions.filter((p) => p.pivot.team_id === team_id)
+		return user.value.data.permissions.filter((p) => p.pivot.team_id === team_id) // if user already has permission loaded on auth
 			.map((p) => p.name)
 			.includes(permission_name) ||
-		team.user_id === user.value.data.id ||
-		(team_user ? team_user.permissions.map((p) => p.name).includes(permission_name) : false)
+		team.user_id === user.value.data.id || // if user is team owner
+		(team_user ? team_user.permissions.map((p) => p.name).includes(permission_name) : false) // if user just got permissions in real time
 	}
 
 	return { hasPermission }

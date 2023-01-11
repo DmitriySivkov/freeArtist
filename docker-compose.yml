@@ -60,6 +60,17 @@ services:
       net:
         ipv4_address: 172.21.1.5
 
+#  cron:
+#    build:
+#      context: .
+#      dockerfile: docker/cron/php-alpine.dockerfile
+#    container_name: cron-php
+#    volumes:
+#      - ./main:/var/www/cron
+#    networks:
+#      net:
+#        ipv4_address: 172.21.1.6
+
   nginx-reverse-proxy:
     build:
       context: .
