@@ -40,7 +40,11 @@ class TeamController extends Controller
 		}
 	}
 
-
+	/**
+	 * @param Team $team
+	 * @param TeamService $teamService
+	 * @return \Illuminate\Http\JsonResponse
+	 */
 	public function getIncomingRequests(Team $team, TeamService $teamService)
 	{
 		$teamService->setTeam($team);
@@ -50,6 +54,13 @@ class TeamController extends Controller
 		);
 	}
 
+	/**
+	 * @param Team $team
+	 * @param RelationRequest $relationRequest
+	 * @param TeamService $teamService
+	 * @return RelationRequest|\Illuminate\Http\JsonResponse
+	 * @throws \Throwable
+	 */
 	public function acceptRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
 	{
 		\DB::beginTransaction();
@@ -66,6 +77,13 @@ class TeamController extends Controller
 		}
 	}
 
+	/**
+	 * @param Team $team
+	 * @param RelationRequest $relationRequest
+	 * @param TeamService $teamService
+	 * @return RelationRequest|\Illuminate\Http\JsonResponse
+	 * @throws \Throwable
+	 */
 	public function rejectRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
 	{
 		\DB::beginTransaction();
