@@ -21,7 +21,6 @@ class CreateRelationRequestsTable extends Migration
 			$table->string('to_type');
 			$table->unsignedTinyInteger('status')
 				->default(\App\Models\RelationRequest::STATUS_PENDING['id']);
-			$table->unsignedInteger('status_changed_by_user');
 			$table->text('message')
 				->nullable();
             $table->timestamps();

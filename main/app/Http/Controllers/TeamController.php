@@ -52,16 +52,10 @@ class TeamController extends Controller
 
 	public function acceptRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
 	{
-		/** @var User $user */
-		$user = auth('sanctum')->user();
-
 		\DB::beginTransaction();
 		try {
 			$teamService->setTeam($team);
 			$request = $teamService->acceptRequest($relationRequest);
-
-			$relationRequest->status_changed_by_user = $user->id;
-			$relationRequest->save();
 
 			\DB::commit();
 			return $request;
@@ -74,16 +68,10 @@ class TeamController extends Controller
 
 	public function rejectRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
 	{
-		/** @var User $user */
-		$user = auth('sanctum')->user();
-
 		\DB::beginTransaction();
 		try {
 			$teamService->setTeam($team);
 			$request = $teamService->rejectRequest($relationRequest);
-
-			$relationRequest->status_changed_by_user = $user->id;
-			$relationRequest->save();
 
 			\DB::commit();
 			return $request;

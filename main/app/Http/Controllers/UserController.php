@@ -43,7 +43,6 @@ class UserController extends Controller
 				'to_id' => $team->detailed_id,
 				'to_type' => $team->detailed_type,
 				'status' => RelationRequest::STATUS_PENDING['id'],
-				'status_changed_by_user' => $user->id,
 				'message' => $request->get('message')
 			]);
 
@@ -72,8 +71,6 @@ class UserController extends Controller
 			->filter(fn($status) => $status['id'] === $request->get('status_id'))
 			->first()['id'];
 
-		$relationRequest->status_changed_by_user = $user->id;
-
 		$relationRequest->save();
 
 		return $relationRequest;
@@ -85,12 +82,15 @@ class UserController extends Controller
 	 */
 	public function getNonRelatedTeams(Request $request)
 	{
-		return User::nonRelatedTeams()
+		/** @var User $user */
+		$user = auth('sanctum')->user();
+
+		return $user->nonRelatedTeams()
 			->when($request->has('query'), function($query) use ($request) {
 				return $query->where('display_name', 'like', '%' . $request->get('query') . '%');
 			})
 			->limit(25)
-			->orderBy('display_name', 'asc')
+			->orderBy('display_name')
 			->get();
 	}
 }

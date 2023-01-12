@@ -38,7 +38,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|RelationRequest whereToType($value)
  * @method static Builder|RelationRequest whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $status_changed_by_user
  * @property-read \App\Models\User|null $lastStatusChanger
  * @method static Builder|RelationRequest whereStatusChangedByUser($value)
  */
@@ -110,8 +109,7 @@ class RelationRequest extends Model
 			return [
 				'model' => $this,
 				'role' => Role::where('name', Role::ROLE_PRODUCER['name'])->first(),
-				'team' => $this->to->team,
-				'last_changer' => $this->status_changed_by_user
+				'team' => $this->to->team
 			];
 
 		return ['model' => $this];
@@ -156,13 +154,5 @@ class RelationRequest extends Model
 	public function to()
 	{
 		return $this->morphTo();
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function lastStatusChanger()
-	{
-		return $this->belongsTo(User::class, 'status_changed_by_user');
 	}
 }

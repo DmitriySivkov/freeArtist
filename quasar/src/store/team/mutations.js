@@ -33,11 +33,11 @@ export const EMPTY_USER_TEAMS = (state) => {
 	state.user_teams = []
 }
 
-export const SYNC_TEAM_USER_PERMISSIONS = (state, {team_id, user_id, permissions}) => {
-	state.user_teams.find((team) => team.id === team_id)
-		.users
-		.find((user) => user.id === user_id)
-		.permissions = permissions
+export const SYNC_TEAM_USER_PERMISSIONS = (state, { team_id, user_id, permissions }) => {
+	const team = state.user_teams.find((team) => team.id === team_id)
+
+	if (team.hasOwnProperty("users"))
+		team.users.find((user) => user.id === user_id).permissions = permissions
 }
 
 export const SET_TEAM_REQUEST_STATUS = (state, { team_id, request_id, status }) => {
