@@ -62,7 +62,7 @@ export default {
 		const is_loading = ref(false)
 		const can_manage_logo = hasPermission(
 			parseInt($router.currentRoute.value.params.team_id),
-			"producer_manage_logo"
+			"producer_logo"
 		)
 		const backend_server = process.env.BACKEND_SERVER
 		const { notifySuccess } = useNotification()

@@ -97,7 +97,7 @@ export default {
 		const createProduct = () => selected_product_id.value = -1
 
 		const is_able_to_manage_product = computed(() =>
-			hasPermission(team.value.id,"producer_manage_product") ||
+			hasPermission(team.value.id,"producer_product") ||
 			team.value.user_id === user.value.data.id
 		)
 

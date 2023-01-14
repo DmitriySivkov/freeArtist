@@ -185,7 +185,7 @@ class ProducerController extends Controller
 		$user = auth('sanctum')->user();
 
 		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_MANAGE_PRODUCT['name'], $producer->team) &&
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $producer->team) &&
 			!$user->owns($producer->team)
 		)
 			throw new \LogicException('Доступ закрыт');

@@ -8,7 +8,7 @@
 				v-for="(team, index) in teams_filtered"
 				:key="index"
 				clickable
-				@click="goToDetail(team.id)"
+				@click="goToDetail(team)"
 			>
 				<q-item-section>
 					{{ team.display_name }}
@@ -51,13 +51,17 @@ export default ({
 			producer: "App\\Models\\Producer"
 		}
 
+		const personal_types_to_detail = {
+			"App\\Models\\Producer": "producer_id"
+		}
+
 		const teams_filtered = computed(
 			() => props.teams.filter((t) => t.detailed_type === personal_types[user.value.personal_tab])
 		)
 
-		const goToDetail = (team_id) => $router.push({
+		const goToDetail = (team) => $router.push({
 			name: props.detailRouteName,
-			params: { team_id }
+			params: { team_id: team.id, [personal_types_to_detail[team.detailed_type]]: team.detailed.id }
 		})
 
 		return {

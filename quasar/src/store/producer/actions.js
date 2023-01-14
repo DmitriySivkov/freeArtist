@@ -25,24 +25,22 @@ export const syncProducerProductCommonSettings = async({commit}, { producer_id, 
 			settings: settings
 		}
 	)
-	commit("SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS", {
+	commit("team/SYNC_PRODUCER_PRODUCT_COMMON_SETTINGS", {
 		producer_id,
 		product_id,
 		settings
-	})
+	}, { root:true })
 }
 
 export const createProducerProduct = async({commit}, { producer_id, settings }) => {
 	const response = await api.post(
 		"personal/producers/" + producer_id + "/products",
-		{
-			settings
-		}
+		{ settings }
 	)
-	commit("CREATE_PRODUCER_PRODUCT", {
+	commit("team/CREATE_PRODUCER_PRODUCT", {
 		producer_id,
 		product: response.data
-	})
+	}, { root:true })
 	return response
 }
 
@@ -56,10 +54,10 @@ export const deleteProducerProduct = async({commit}, { producer_id, product_id }
 			}
 		}
 	)
-	commit("DELETE_PRODUCER_PRODUCT", {
+	commit("team/DELETE_PRODUCER_PRODUCT", {
 		producer_id,
 		product_id
-	})
+	}, { root:true })
 }
 
 export const syncProducerProductCompositionSettings = async({commit}, {producer_id, product_id, composition}) => {
@@ -67,11 +65,11 @@ export const syncProducerProductCompositionSettings = async({commit}, {producer_
 		"personal/producers/" + producer_id + "/products/" + product_id + "/syncCompositionSettings",
 		{ composition }
 	)
-	commit("SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS", {
+	commit("team/SYNC_PRODUCER_PRODUCT_COMPOSITION_SETTINGS", {
 		producer_id,
 		product_id,
 		composition: response.data
-	})
+	}, { root:true })
 }
 
 export const addProducerProductImage = async({commit}, { producer_id, product_id, image }) => {
@@ -79,11 +77,11 @@ export const addProducerProductImage = async({commit}, { producer_id, product_id
 		"/personal/producers/" + producer_id + "/products/" + product_id + "/addImage",
 		image,
 	)
-	commit("ADD_PRODUCER_PRODUCT_IMAGE", {
+	commit("team/ADD_PRODUCER_PRODUCT_IMAGE", {
 		producer_id,
 		product_id,
 		image: response.data
-	})
+	}, { root:true })
 }
 
 export const setProducerLogo = async({commit}, { producer_id, logo }) => {
@@ -91,8 +89,8 @@ export const setProducerLogo = async({commit}, { producer_id, logo }) => {
 		"/personal/producers/" + producer_id + "/setLogo",
 		logo,
 	)
-	commit("SET_PRODUCER_LOGO", {
+	commit("team/SET_PRODUCER_LOGO", {
 		producer_id,
 		logo: response.data
-	})
+	}, { root:true })
 }

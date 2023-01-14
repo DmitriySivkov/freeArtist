@@ -64,6 +64,7 @@ import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { ref, computed } from "vue"
 import { useStore } from "vuex"
+import { useUserTeam } from "src/composables/userTeam"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog"
@@ -94,16 +95,14 @@ export default {
 		const { base64ToBlob } = cameraService()
 		const { Camera } = Plugins
 		const { notifySuccess, notifyError } = useNotification()
+		const { user_teams } = useUserTeam()
 
 		const backend_server = process.env.BACKEND_SERVER
 
 		const product_images = computed(() =>
 			props.selectedProduct.id ?
-				$store.state.team.user_teams
-					.find((t) => t.id === parseInt($router.currentRoute.value.params.team_id))
-					.products
-					.find((p) => p.id === props.selectedProduct.id)
-					.images :
+				user_teams.value.find((t) => t.detailed_id === parseInt($router.currentRoute.value.params.producer_id))
+					.products.find((p) => p.id === props.selectedProduct.id).images :
 				[]
 		)
 

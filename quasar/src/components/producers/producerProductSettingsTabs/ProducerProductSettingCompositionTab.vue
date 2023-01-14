@@ -106,7 +106,7 @@ export default {
 		const { notifySuccess, notifyError } = useNotification()
 
 		const composition = ref(
-			props.selectedProduct.hasOwnProperty("composition") ?
+			props.selectedProduct.composition ?
 				_.cloneDeep(props.selectedProduct.composition) :
 				[]
 		)
@@ -134,7 +134,7 @@ export default {
 
 			disable_submit.value = true
 			$store.dispatch("producer/syncProducerProductCompositionSettings", {
-				producer_id: parseInt($router.currentRoute.value.params.team_id),
+				producer_id: parseInt($router.currentRoute.value.params.producer_id),
 				product_id: props.selectedProduct.id,
 				composition: composition.value
 			}).then(() => {

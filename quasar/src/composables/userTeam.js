@@ -28,11 +28,16 @@ export const useUserTeam = () => {
 			{ team_id, user_id, permissions }
 		)
 
+	const user_teams_producer = computed(() =>
+		user_teams.value.filter((t) => t.detailed_type === "App\\Models\\Producer")
+	)
+
 	return {
 		user_teams,
 		user_own_team,
 		getTeam,
 		getTeamUser,
-		syncTeamUserPermissions
+		syncTeamUserPermissions,
+		user_teams_producer
 	}
 }

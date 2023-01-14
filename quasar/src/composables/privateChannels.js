@@ -4,6 +4,7 @@ import { useUser } from "src/composables/user"
 import { useStore } from "vuex"
 import { useRelationRequestManager } from "src/composables/relationRequestManager"
 
+// todo - make less WS connections ?
 export const usePrivateChannels = () => {
 	const $store = useStore()
 	const { user_teams } = useUserTeam()
