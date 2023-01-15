@@ -86,3 +86,6 @@ make ws-silent
 
 ### start broadcast responsible queue
 make broadcast
+
+### to make GEO work
+php artisan php artisan sxgeo:update & set 'LOCAL_IP' key in 'env'
