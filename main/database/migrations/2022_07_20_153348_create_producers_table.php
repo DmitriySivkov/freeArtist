@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
 			$table->string('logo')
 				->nullable();
+			$table->string('geo')
+				->nullable();
             $table->timestamps();
         });
     }

@@ -25,6 +25,14 @@
 					]"
 				/>
 
+				<q-input
+					filled
+					class="q-mt-none q-pb-none q-mb-lg"
+					v-model="geo"
+					label="Местоположение"
+					:loading="!geo"
+				/>
+
 				<div class="row q-col-gutter-sm">
 					<div class="col-xs-6">
 						<q-btn
@@ -50,8 +58,9 @@
 
 <script>
 import { useRouter } from "vue-router"
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import { useStore } from "vuex"
+import { api } from "src/boot/axios"
 import { useNotification } from "src/composables/notification"
 import { usePrivateChannels } from "src/composables/privateChannels"
 export default {
@@ -60,6 +69,7 @@ export default {
 		const $store = useStore()
 		const { notifySuccess, notifyError } = useNotification()
 		const private_channels = usePrivateChannels()
+		const geo = ref("")
 
 		const producer = ref(null)
 
@@ -86,13 +96,24 @@ export default {
 			})
 		}
 
+		onMounted(() => {
+			api.get("personal/geo").then((response) => {
+				if (response.data) {
+					geo.value = response.data["country"]["name_ru"] + ", " +
+						response.data["region"]["name_ru"] + ", " +
+						response.data["city"]["name_ru"]
+				}
+			})
+		})
+
 		const onReset = () =>
 			producer.value = null
 
 		return {
 			producer,
 			onSubmit,
-			onReset
+			onReset,
+			geo
 		}
 	},
 }

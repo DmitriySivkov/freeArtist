@@ -2,9 +2,8 @@
 	<div class="row">
 		<div class="col-xs-12 col-md-3">
 			<q-card
-				bordered
-				class="q-ma-md border-dashed bg-green-3 shadow-0"
-				:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
+				class="q-ma-md bg-green-3"
+				:class="{'bg-green-6': is_dragging}"
 				style="height:300px"
 			>
 				<q-card-section
@@ -40,6 +39,19 @@
 				style="display:none"
 				@update:model-value="addImage"
 			/>
+		</div>
+		<div class="col-xs-12 col-md-3">
+			<q-markup-table
+				dark
+				class="bg-indigo-8 q-mt-md"
+			>
+				<tbody>
+					<tr>
+						<td class="text-left">Название</td>
+						<td class="text-left">{{ team.display_name }}</td>
+					</tr>
+				</tbody>
+			</q-markup-table>
 		</div>
 	</div>
 </template>

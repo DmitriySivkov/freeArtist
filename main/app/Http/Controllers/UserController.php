@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\UserServiceContract;
 use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\Team;
 use App\Models\User;
 use App\Services\ResponseService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -92,5 +94,12 @@ class UserController extends Controller
 			->limit(25)
 			->orderBy('display_name')
 			->get();
+	}
+
+	public function getGeoByIp()
+	{
+		/** @var UserService $userService */
+		$userService = app(UserServiceContract::class);
+		return $userService->getUserGeoByIp();
 	}
 }

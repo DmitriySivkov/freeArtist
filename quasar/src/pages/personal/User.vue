@@ -7,7 +7,7 @@
 			>
 				<tbody>
 					<tr
-						v-for="[key, value] in userCommon"
+						v-for="[key, value] in user_common"
 						:key="key"
 					>
 						<td class="text-left">{{ key }}</td>
@@ -59,11 +59,11 @@ export default {
 		const { user, hasUserRole } = useUserRole()
 		const { user_teams, user_own_team } = useUserTeam()
 
-		const userCommon = Object.entries(user.value.data)
+		const user_common = Object.entries(user.value.data)
 			.filter(([prop]) => ["phone", "name", "email"].includes(prop))
 
 		return {
-			userCommon,
+			user_common,
 			user_teams,
 			user_own_team,
 			user,
