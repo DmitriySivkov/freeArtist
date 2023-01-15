@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Contracts\Requests;
+namespace App\Contracts;
 
 
 interface NewOrderRequestContract

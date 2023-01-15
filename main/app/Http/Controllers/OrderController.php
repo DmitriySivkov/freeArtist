@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 
-use App\Contracts\Requests\NewOrderRequestContract;
-use App\Contracts\Services\OrderServiceContract;
+use App\Contracts\NewOrderRequestContract;
+use App\Contracts\OrderServiceContract;
 
 class OrderController extends Controller
 {

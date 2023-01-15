@@ -4,7 +4,7 @@
 namespace App\Services\Orders;
 
 
-use App\Contracts\Services\OrderServiceContract;
+use App\Contracts\OrderServiceContract;
 use App\Models\Order;
 
 abstract class OrderService implements OrderServiceContract

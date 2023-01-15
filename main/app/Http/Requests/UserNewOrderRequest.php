@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Contracts\Requests\NewOrderRequestContract;
+use App\Contracts\NewOrderRequestContract;
 use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
 

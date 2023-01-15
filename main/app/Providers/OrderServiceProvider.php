@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Contracts\Requests\NewOrderRequestContract;
-use App\Contracts\Services\OrderServiceContract;
+use App\Contracts\NewOrderRequestContract;
+use App\Contracts\OrderServiceContract;
 use App\Http\Requests\UserNewOrderRequest;
 use App\Http\Requests\ProducerNewOrderRequest;
 use App\Models\Role;
