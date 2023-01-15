@@ -93,7 +93,7 @@ class ProducerController extends Controller
 			->get();
 	}
 
-	//todo - put product actions somewhere else & request validation ?
+	//todo - move to service
 	/**
 	 * @param Producer $producer
 	 * @param Product $product

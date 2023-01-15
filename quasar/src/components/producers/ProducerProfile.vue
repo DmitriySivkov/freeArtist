@@ -11,8 +11,8 @@
 					class="row flex-center full-height"
 				>
 					<q-img
-						v-if="image"
-						:src="backend_server + '/storage/' + image"
+						v-if="team.detailed.logo"
+						:src="backend_server + '/storage/' + team.detailed.logo"
 						fit="contain"
 					/>
 					<span v-else>Добавить фото</span>
@@ -23,6 +23,7 @@
 						@dragleave.prevent="is_dragging = false"
 						@dragover.prevent
 						@drop.prevent="drop"
+						@click="showFilePrompt"
 					></div>
 					<q-inner-loading :showing="is_loading">
 						<q-spinner-gears
@@ -37,51 +38,98 @@
 				ref="file_picker"
 				accept=".jpg, image/*"
 				style="display:none"
+				@update:model-value="addImage"
 			/>
 		</div>
 	</div>
 </template>
 
 <script>
-import { ref, computed } from "vue"
-import { useRouter } from "vue-router"
+import { ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { useStore } from "vuex"
 import { useUserPermission } from "src/composables/userPermission"
+import AddImageDialog from "components/dialogs/AddImageDialog"
+import { Plugins, CameraResultType } from "@capacitor/core"
+import { useQuasar } from "quasar"
+import { cameraService } from "src/services/cameraService"
 export default {
-	setup() {
+	props: {
+		team: {
+			type: Object,
+			default: () => ({})
+		}
+	},
+	setup(props) {
+		const $q = useQuasar()
 		const $store = useStore()
-		const $router = useRouter()
 		const { hasPermission } = useUserPermission()
-		const image = computed(() =>
-			$store.state.team.user_teams
-				.find((team) => team.id === parseInt($router.currentRoute.value.params.team_id))
-				.detailed.logo
-		)
+		const { Camera } = Plugins
+		const { base64ToBlob } = cameraService()
+
+		const image = ref(props.team.detailed.logo)
+
+		const file_picker = ref(null)
 		const is_dragging = ref(false)
 		const is_loading = ref(false)
+
 		const can_manage_logo = hasPermission(
-			parseInt($router.currentRoute.value.params.team_id),
+			parseInt(props.team.id),
 			"producer_logo"
 		)
 		const backend_server = process.env.BACKEND_SERVER
 		const { notifySuccess } = useNotification()
 
 		const drop = (e) => {
+			file_picker.value.addFiles([e.dataTransfer.files[0]])
+		}
+
+		const addImage = () => {
 			is_loading.value = true
 
-			let formData = new FormData()
-			formData.append("logo", e.dataTransfer.files[0])
+			let form_data = new FormData()
+			form_data.append("logo", image.value)
 
 			// todo validate with q-file help
 			$store.dispatch("producer/setProducerLogo", {
-				logo: formData,
-				producer_id: parseInt($router.currentRoute.value.params.producer_id)
+				logo: form_data,
+				producer_id: props.team.detailed_id
 			}).then(() => {
 				is_loading.value = false
 				is_dragging.value = false
 				notifySuccess("Изображение успешно загружено")
 			})
+		}
+
+		const showFilePrompt = () => {
+			if ($q.platform.is.desktop) {
+				fromGallery()
+				return
+			}
+
+			$q.dialog({
+				component: AddImageDialog
+			}).onOk((option) => {
+				if (option === 1)
+					fromGallery()
+				if (option === 2)
+					fromCamera()
+			})
+		}
+
+		const fromGallery = () => {
+			file_picker.value.pickFiles()
+		}
+
+		const fromCamera = async () => {
+			const img = await Camera.getPhoto({
+				quality: 90,
+				allowEditing: false,
+				resultType: CameraResultType.DataUrl
+			})
+			const blob = await base64ToBlob(img.dataUrl)
+			const img_file = new File([blob], "no-matter.jpg")
+			file_picker.value.addFiles([img_file])
 		}
 
 		return {
@@ -90,7 +138,10 @@ export default {
 			is_loading,
 			is_dragging,
 			drop,
-			can_manage_logo
+			addImage,
+			can_manage_logo,
+			showFilePrompt,
+			file_picker
 		}
 	}
 }

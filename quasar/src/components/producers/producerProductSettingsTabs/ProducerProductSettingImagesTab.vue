@@ -68,13 +68,10 @@ import { useUserTeam } from "src/composables/userTeam"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog"
-import ShowImageDialog from "src/components/dialogs/ShowImageDialog"
 export default {
 	components: {
 		// eslint-disable-next-line vue/no-unused-components
-		AddImageDialog,
-		// eslint-disable-next-line vue/no-unused-components
-		ShowImageDialog
+		AddImageDialog
 	},
 	props: {
 		selectedProduct: {
@@ -89,7 +86,6 @@ export default {
 		const $router = useRouter()
 		const image = ref(null)
 		const file_picker = ref(null)
-		const img_source = ref(null)
 		const is_dragging = ref(false)
 		const is_loading = ref(false)
 		const { base64ToBlob } = cameraService()
@@ -123,12 +119,10 @@ export default {
 		}
 
 		const fromGallery = () => {
-			img_source.value = 1
 			file_picker.value.pickFiles()
 		}
 
 		const fromCamera = async () => {
-			img_source.value = 2
 			const img = await Camera.getPhoto({
 				quality: 90,
 				allowEditing: false,
@@ -141,11 +135,11 @@ export default {
 
 		const addImage = () => {
 			is_loading.value = true
-			let formData = new FormData()
-			formData.append("image", image.value)
+			let form_data = new FormData()
+			form_data.append("image", image.value)
 
 			$store.dispatch("producer/addProducerProductImage", {
-				image: formData,
+				image: form_data,
 				producer_id: parseInt($router.currentRoute.value.params.producer_id),
 				product_id: props.selectedProduct.id
 			}).then(() => {
@@ -155,6 +149,9 @@ export default {
 			})
 		}
 
+		const drop = (e) => {
+			file_picker.value.addFiles([e.dataTransfer.files[0]])
+		}
 
 		return {
 			image,
@@ -164,7 +161,8 @@ export default {
 			product_images,
 			backend_server,
 			is_dragging,
-			is_loading
+			is_loading,
+			drop
 		}
 	}
 }
