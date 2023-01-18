@@ -34,14 +34,4 @@ class UserService implements UserServiceContract
 	{
 		return $this->user->incomingRelationRequests();
 	}
-
-	/**
-	 * @return array|false
-	 */
-	public function getUserGeoByIp()
-	{
-		$ip = app()->env === 'local' ? env('LOCAL_IP') : request()->ip();
-
-		return SxGeo::getCityFull($ip);
-	}
 }

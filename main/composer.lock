@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c60e51130badbf6c0cf0f4f835329a90",
+    "content-hash": "32a8be1b7547f857112bf6d98dfcaf44",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -633,70 +633,6 @@
                 }
             ],
             "time": "2022-06-18T20:57:19+00:00"
-        },
-        {
-            "name": "eseath/sypexgeo",
-            "version": "v2.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Eseath/sypexgeo.git",
-                "reference": "de86dc64851b5c919d3eeac0e7615b8d462c97a9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Eseath/sypexgeo/zipball/de86dc64851b5c919d3eeac0e7615b8d462c97a9",
-                "reference": "de86dc64851b5c919d3eeac0e7615b8d462c97a9",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-zip": "*",
-                "guzzlehttp/guzzle": "^6.0|^7.0",
-                "php": "^7.0|^8.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^3.6",
-                "phpunit/phpunit": "^6.5|^7.5|^8.5|^9.5"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Eseath\\SxGeo\\SxGeoServiceProvider"
-                    ],
-                    "aliases": {
-                        "SxGeo": "Eseath\\SxGeo\\Facades\\SxGeo"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Eseath\\SxGeo\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ruslan A.",
-                    "email": "ruslan.a94@yandex.com"
-                }
-            ],
-            "description": "A PHP package for working with the SypexGeo database file.",
-            "keywords": [
-                "geo",
-                "geoip",
-                "laravel",
-                "sxgeo",
-                "sypexgeo"
-            ],
-            "support": {
-                "issues": "https://github.com/Eseath/sypexgeo/issues",
-                "source": "https://github.com/Eseath/sypexgeo"
-            },
-            "time": "2021-12-08T08:04:15+00:00"
         },
         {
             "name": "evenement/evenement",

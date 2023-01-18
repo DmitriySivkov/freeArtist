@@ -55,7 +55,6 @@ Route::group([
 	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);
-	Route::get('geo', [UserController::class, 'getGeoByIp']);
 
     Route::group(['prefix' => 'orders'], function () {
     	Route::get('', [OrderController::class, 'index']);
