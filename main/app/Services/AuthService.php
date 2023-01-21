@@ -93,6 +93,9 @@ class AuthService
 
 		return $this->userTeams->map(function(Team $team) {
 			$team->makeHidden('pivot');
+			$team->loadMorph('detailed', [
+				Producer::class => ['city']
+			]);
 			return $team;
 		});
 	}
@@ -109,13 +112,13 @@ class AuthService
 		$incomingRequests = $userService->getUserIncomingRequests()
 			->get()
 			->loadMorph('from', [
-				Producer::class => 'team'
+				Producer::class => ['team']
 			]);
 
 		$outgoingRequests = $userService->getUserOutgoingRequests()
 			->get()
 			->loadMorph('to', [
-				Producer::class => 'team'
+				Producer::class => ['team']
 			]);
 
 		return $incomingRequests->merge($outgoingRequests);

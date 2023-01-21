@@ -25,7 +25,8 @@ class ProducerRegisterRequest extends FormRequest
     public function rules()
     {
         return [
-			'display_name' => ['required', 'unique:teams,display_name']
+			'display_name' => ['required', 'unique:teams,display_name'],
+			'city_id' => ['nullable', 'exists:cities,id']
         ];
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProducerController;
@@ -44,6 +45,10 @@ Route::group(['prefix' => 'permissions'], function() {
 Route::group(['prefix' => 'producers'], function() {
 	Route::get('', [ProducerController::class, 'index']);
 	Route::get('{producer}', [ProducerController::class, 'show']);
+});
+
+Route::group(['prefix' => 'cities'], function() {
+	Route::get('', [CityController::class, 'index']);
 });
 
 /** auth requiring routes */

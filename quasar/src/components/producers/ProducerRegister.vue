@@ -25,13 +25,25 @@
 					]"
 				/>
 
-				<q-input
+				<q-select
 					filled
-					class="q-mt-none q-pb-none q-mb-lg"
-					v-model="geo"
-					label="Местоположение"
-					:loading="!geo"
-				/>
+					class="q-mb-lg"
+					v-model="location"
+					use-input
+					input-debounce="1000"
+					label="Начните вводить название города"
+					:options="location_options"
+					@filter="loadLocation"
+					behavior="dialog"
+				>
+					<template v-slot:no-option>
+						<q-item>
+							<q-item-section class="text-grey">
+								Город не найден
+							</q-item-section>
+						</q-item>
+					</template>
+				</q-select>
 
 				<div class="row q-col-gutter-sm">
 					<div class="col-xs-6">
@@ -58,7 +70,7 @@
 
 <script>
 import { useRouter } from "vue-router"
-import { onMounted, ref } from "vue"
+import { ref } from "vue"
 import { useStore } from "vuex"
 import { api } from "src/boot/axios"
 import { useNotification } from "src/composables/notification"
@@ -69,13 +81,15 @@ export default {
 		const $store = useStore()
 		const { notifySuccess, notifyError } = useNotification()
 		const private_channels = usePrivateChannels()
-		const geo = ref("")
+		const location = ref(null)
+		const location_options = ref(null)
 
 		const producer = ref(null)
 
 		const onSubmit = () => {
 			$store.dispatch("user/registerProducer", {
 				display_name: producer.value,
+				city_id: location.value.value
 			}).then(() => {
 				private_channels.connectRelationRequestTeam()
 				notifySuccess("Успешно")
@@ -96,15 +110,22 @@ export default {
 			})
 		}
 
-		onMounted(() => {
-			api.get("personal/geo").then((response) => {
-				if (response.data) {
-					geo.value = response.data["country"]["name_ru"] + ", " +
-						response.data["region"]["name_ru"] + ", " +
-						response.data["city"]["name_ru"]
-				}
+		const loadLocation = async (query, update) => {
+			if (query.length < 1) return
+
+			const response = await api.get("cities",{
+				params: { query }
 			})
-		})
+
+			update(() => {
+				location_options.value = response.data.map((location) => {
+					return {
+						label: location.city + " (" + location.address + ")",
+						value: location.id
+					}
+				})
+			})
+		}
 
 		const onReset = () =>
 			producer.value = null
@@ -113,7 +134,9 @@ export default {
 			producer,
 			onSubmit,
 			onReset,
-			geo
+			location,
+			location_options,
+			loadLocation
 		}
 	},
 }

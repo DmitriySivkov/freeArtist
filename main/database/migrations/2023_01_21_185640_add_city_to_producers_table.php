@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('producers', function (Blueprint $table) {
-            $table->id();
-			$table->string('logo')
-				->nullable();
-            $table->timestamps();
+        Schema::table('producers', function (Blueprint $table) {
+            $table->unsignedInteger('city_id')
+				->nullable()
+				->after('logo');
         });
     }
 
@@ -28,6 +27,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('producers');
+        Schema::table('producers', function (Blueprint $table) {
+            $table->dropColumn('city_id');
+        });
     }
 };

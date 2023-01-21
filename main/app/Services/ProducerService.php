@@ -74,7 +74,9 @@ class ProducerService implements ProducerServiceContract
 			if ($user->ownProducer()->exists())
 				throw new \LogicException('Вы уже являетесь изготовителем-владельцем');
 
-			$producer = Producer::create();
+			$producer = Producer::create([
+				'city_id' => $producerData['city_id']
+			]);
 
 			$team = Team::create([
 				'name' => 'producer_' . $user->id . '_owner',
@@ -90,6 +92,7 @@ class ProducerService implements ProducerServiceContract
 				['user_type' => User::class, 'team_id' => $team->id]
 			);
 
+
 			DB::commit();
 		} catch (\Throwable $e) {
 			DB::rollBack();
@@ -97,7 +100,9 @@ class ProducerService implements ProducerServiceContract
 		}
 
 		return response()->json([
-			'team' => $team,
+			'team' => $team->loadMorph('detailed', [
+				Producer::class => 'city'
+			]),
 			'role' => $user->roles()
 				->where('role_id', Role::ROLE_PRODUCER['id'])
 				->where('team_id', $team->id)
