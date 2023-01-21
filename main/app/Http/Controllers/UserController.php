@@ -95,4 +95,11 @@ class UserController extends Controller
 			->orderBy('display_name')
 			->get();
 	}
+
+	public function getGeoByIp()
+	{
+		/** @var UserService $userService */
+		$userService = app(UserServiceContract::class);
+		return $userService->getUserGeoByIp();
+	}
 }

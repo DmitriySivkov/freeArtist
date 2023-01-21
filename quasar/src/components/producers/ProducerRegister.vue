@@ -25,12 +25,13 @@
 					]"
 				/>
 
-				<iframe
-					src="https://yandex.ru/map-widget/v1/?um=constructor%3A42c91024f8af872fce02329893825eab209e60cf5e4142d72b0388335d3d15d1&amp;source=constructor"
-					width="500"
-					height="400"
-					frameborder="0"
-				></iframe>
+				<q-input
+					filled
+					class="q-mt-none q-pb-none q-mb-lg"
+					v-model="geo"
+					label="Местоположение"
+					:loading="!geo"
+				/>
 
 				<div class="row q-col-gutter-sm">
 					<div class="col-xs-6">
@@ -68,6 +69,7 @@ export default {
 		const $store = useStore()
 		const { notifySuccess, notifyError } = useNotification()
 		const private_channels = usePrivateChannels()
+		const geo = ref("")
 
 		const producer = ref(null)
 
@@ -94,13 +96,24 @@ export default {
 			})
 		}
 
+		onMounted(() => {
+			api.get("personal/geo").then((response) => {
+				if (response.data) {
+					geo.value = response.data["country"]["name_ru"] + ", " +
+						response.data["region"]["name_ru"] + ", " +
+						response.data["city"]["name_ru"]
+				}
+			})
+		})
+
 		const onReset = () =>
 			producer.value = null
 
 		return {
 			producer,
 			onSubmit,
-			onReset
+			onReset,
+			geo
 		}
 	},
 }
