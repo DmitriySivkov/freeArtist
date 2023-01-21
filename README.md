@@ -25,7 +25,6 @@ quasar build
 ### quasar workflow
 https://quasar.dev/quasar-cli-webpack/boot-files#quasar-app-flow
 
-
 ### Customize the configuration
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
@@ -46,11 +45,6 @@ cordova build problem:
 https://stackoverflow.com/questions/47239251/install-failed-user-restricted-android-studio-using-redmi-4-device
 
 windows blocks connection to itself. Need to turn off some param on windows defender. Brutally - turn off public network defender
-
-### AUTH
-Auth is session cookie based. While developing phone and PC shall be on the same IP range and be pingable
-Locally front & server addresses are IPs. In that case "Session domain" env key should NOT be set
-
 
 ### q-card
 q-card inside v-for with columns works this way: 
