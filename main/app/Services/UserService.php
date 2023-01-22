@@ -38,7 +38,7 @@ class UserService implements UserServiceContract
 	/**
 	 * @return array|false
 	 */
-	public function getUserGeoByIp()
+	public function getUserLocationByIp()
 	{
 		$ip = app()->env === 'local' ? env('LOCAL_IP') : request()->ip();
 

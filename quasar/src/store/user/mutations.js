@@ -20,3 +20,7 @@ export const SET_ROLE = (state, role) => {
 
 	state.data.roles = [...state.data.roles, role]
 }
+
+export const SET_LOCATION = (state, location) => {
+	state.location = location
+}

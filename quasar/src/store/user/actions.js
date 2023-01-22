@@ -84,3 +84,8 @@ export const setRelationRequestStatus = async ({commit}, { request_id, status_id
 		status_id: response.data.status.id
 	}, { root:true })
 }
+
+export const setLocation = async ({commit}) => {
+	const response = await api.get("user/location")
+	commit("SET_LOCATION", response.data)
+}

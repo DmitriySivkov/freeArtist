@@ -96,10 +96,10 @@ class UserController extends Controller
 			->get();
 	}
 
-	public function getGeoByIp()
+	public function getLocationByIp()
 	{
 		/** @var UserService $userService */
 		$userService = app(UserServiceContract::class);
-		return $userService->getUserGeoByIp();
+		return $userService->getUserLocationByIp();
 	}
 }

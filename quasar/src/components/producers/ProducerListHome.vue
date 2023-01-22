@@ -1,53 +1,36 @@
 <template>
-	<div class="q-pa-md">
-		<q-table
-			grid
-			:rows="producers"
-			:columns="columns"
-			row-key="id"
-			:filter="filter"
-			:pagination="{rowsPerPage:10}"
-			hide-header
-		>
-			<template v-slot:top-left>
-				<q-input
-					borderless
-					dense
-					debounce="300"
-					v-model="filter"
-					placeholder="Искать..."
+	<q-table
+		grid
+		:rows="producers"
+		:columns="columns"
+		row-key="id"
+		:pagination="{rowsNumber:10}"
+		hide-header
+	>
+		<template v-slot:item="props">
+			<div
+				class="q-table__grid-item col-xs-12 col-md-4"
+				style="min-height:300px"
+			>
+				<div
+					class="q-table__grid-item-card q-table__card full-height"
+					:class="{ 'bg-light-green-2': cart.hasOwnProperty(props.row.id) }"
+					@click="show(props.row.id)"
 				>
-					<template v-slot:append>
-						<q-icon name="search" />
-					</template>
-				</q-input>
-			</template>
-			<template v-slot:item="props">
-				<div class="q-table__grid-item col-xs-12 col-sm-6 col-md-4 col-lg-3">
-					<div
-						:class="{ 'bg-light-green-2': cart.hasOwnProperty(props.row.id) }"
-						class="q-table__grid-item-card q-table__card cursor-pointer"
-						@click="show(props.row.id)"
-					>
-						<div class="q-table__grid-item-row">
-							<div class="q-table__grid-item-value">
-								{{ props.row.team.display_name }}
-								<span v-if="cart.hasOwnProperty(props.row.id)">
-									{{ "(" + cart[props.row.id].products.length + ")" }}
-								</span>
-							</div>
-						</div>
-					</div>
+					{{ props.row.team.display_name }}
+					<span v-if="cart.hasOwnProperty(props.row.id)">
+						{{ "(" + cart[props.row.id].products.length + ")" }}
+					</span>
 				</div>
-			</template>
-		</q-table>
-	</div>
+			</div>
+		</template>
+	</q-table>
 </template>
 
 <script>
 import _ from "lodash"
 import { useStore } from "vuex"
-import { computed, ref } from "vue"
+import { computed } from "vue"
 import { useRouter } from "vue-router"
 export default ({
 	setup() {
@@ -56,20 +39,22 @@ export default ({
 		const producers = computed(() => _.orderBy(
 			$store.state.producer.data, producer => producer.team.display_name, "asc"
 		))
+
 		const columns = [
 			{ name: "display_name", align: "center", label: "Название", field: row => row.team.display_name, sortable: true },
 		]
+
 		const cart = computed(() => $store.state.cart.data)
-		const filter = ref("")
+
+		const show = (producer_id) => {
+			$router.push({name:"producer_detail", params: { producer_id }})
+		}
 
 		return {
 			producers,
 			columns,
 			cart,
-			filter,
-			show(producer_id) {
-				$router.push({name:"producer_detail", params: { producer_id }})
-			},
+			show
 		}
 	}
 })

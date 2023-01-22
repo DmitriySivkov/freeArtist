@@ -5,6 +5,7 @@ module.exports = function (ctx) {
 		boot: [
 			"authViaToken", // show loader
 			"axios",
+			"setLocation",
 			"setCartFromLocalStorage",
 			"setPersonalTabFromLocalStorage",
 			"browseProducers",
