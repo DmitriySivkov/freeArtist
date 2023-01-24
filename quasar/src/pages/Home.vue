@@ -1,6 +1,7 @@
 <template>
-	<ProducerListHome />
-	<router-view />
+	<suspense>
+		<ProducerListHome />
+	</suspense>
 </template>
 
 <script>

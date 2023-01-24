@@ -10,6 +10,8 @@ use App\Models\ProductImage;
 use App\Models\User;
 use App\Services\ProducerService;
 use App\Services\ResponseService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -21,8 +23,16 @@ class ProducerController extends Controller
 	 */
 	public function index()
 	{
-		$producers = Producer::with(['team'])
-			->get();
+		$producers = Producer::select([
+			'producers.*',
+			'teams.display_name'
+		])
+			->leftJoin('teams', function(JoinClause $join) {
+				$join->on('teams.detailed_id', '=', 'producers.id')
+					->where('teams.detailed_type', Producer::class);
+			})
+			->orderBy('teams.display_name')
+			->paginate(2);
 
 		return response()->json($producers);
 	}

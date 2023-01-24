@@ -1,7 +1,7 @@
 <template>
 	<q-table
 		grid
-		:rows="producers"
+		:rows="producers.data"
 		:columns="columns"
 		row-key="id"
 		:pagination="{rowsNumber:10}"
@@ -17,32 +17,44 @@
 					:class="{ 'bg-light-green-2': cart.hasOwnProperty(props.row.id) }"
 					@click="show(props.row.id)"
 				>
-					{{ props.row.team.display_name }}
+					{{ props.row.display_name }}
 					<span v-if="cart.hasOwnProperty(props.row.id)">
 						{{ "(" + cart[props.row.id].products.length + ")" }}
 					</span>
 				</div>
 			</div>
 		</template>
+		<template v-slot:bottom="pagination">
+			{{ pagination }}
+		</template>
 	</q-table>
 </template>
 
 <script>
-import _ from "lodash"
 import { useStore } from "vuex"
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
+import { Loading } from "quasar"
+import { api } from "src/boot/axios"
 export default ({
-	setup() {
+	async setup() {
 		const $store = useStore()
 		const $router = useRouter()
-		const producers = computed(() => _.orderBy(
-			$store.state.producer.data, producer => producer.team.display_name, "asc"
-		))
+
+		const producers = ref([])
 
 		const columns = [
-			{ name: "display_name", align: "center", label: "Название", field: row => row.team.display_name, sortable: true },
+			{ name: "display_name", align: "center", label: "Название", field: row => row.display_name, sortable: true },
 		]
+
+		const loadProducers = async() => {
+			Loading.show({ spinnerColor: "primary" })
+			const response = await api.get("producers")
+			producers.value = response.data
+			Loading.hide()
+		}
+
+		await loadProducers()
 
 		const cart = computed(() => $store.state.cart.data)
 
