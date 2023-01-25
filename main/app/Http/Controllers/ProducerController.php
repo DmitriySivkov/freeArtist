@@ -21,7 +21,7 @@ class ProducerController extends Controller
 	/**
 	 * @return JsonResponse
 	 */
-	public function index()
+	public function index(Request $request)
 	{
 		$producers = Producer::select([
 			'producers.*',
@@ -32,7 +32,7 @@ class ProducerController extends Controller
 					->where('teams.detailed_type', Producer::class);
 			})
 			->orderBy('teams.display_name')
-			->paginate(2);
+			->paginate($request->get('per_page'));
 
 		return response()->json($producers);
 	}

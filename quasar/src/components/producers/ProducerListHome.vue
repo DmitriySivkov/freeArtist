@@ -1,15 +1,17 @@
 <template>
 	<q-table
 		grid
-		:rows="producers.data"
+		:rows="producers"
 		:columns="columns"
 		row-key="id"
-		:pagination="{rowsNumber:10}"
+		v-model:pagination="pagination"
 		hide-header
+		@request="onRequest"
+		class="home__producers-table"
 	>
 		<template v-slot:item="props">
 			<div
-				class="q-table__grid-item col-xs-12 col-md-4"
+				class="q-table__grid-item col-xs-12 col-md-6"
 				style="min-height:300px"
 			>
 				<div
@@ -24,8 +26,50 @@
 				</div>
 			</div>
 		</template>
-		<template v-slot:bottom="pagination">
-			{{ pagination }}
+		<template
+			v-slot:bottom="pagination"
+			class="q-pl-xs q-pr-xs"
+		>
+			<div class="col-xs-12 col-md-7">
+				<div class="row q-col-gutter-sm">
+					<div class="col-3">
+						<q-btn
+							class="full-width text-h6"
+							icon="keyboard_double_arrow_left"
+							color="primary"
+							:disable="pagination.isFirstPage"
+							@click="pagination.firstPage"
+						/>
+					</div>
+					<div class="col-3">
+						<q-btn
+							class="full-width text-h6"
+							icon="chevron_left"
+							color="primary"
+							:disable="pagination.isFirstPage"
+							@click="pagination.prevPage"
+						/>
+					</div>
+					<div class="col-3">
+						<q-btn
+							class="full-width text-h6"
+							icon="chevron_right"
+							color="primary"
+							:disable="pagination.isLastPage"
+							@click="pagination.nextPage"
+						/>
+					</div>
+					<div class="col-3">
+						<q-btn
+							class="full-width text-h6"
+							icon="keyboard_double_arrow_right"
+							color="primary"
+							:disable="pagination.isLastPage"
+							@click="pagination.lastPage"
+						/>
+					</div>
+				</div>
+			</div>
 		</template>
 	</q-table>
 </template>
@@ -34,27 +78,22 @@
 import { useStore } from "vuex"
 import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
-import { Loading } from "quasar"
 import { api } from "src/boot/axios"
+import { Loading } from "quasar"
 export default ({
 	async setup() {
 		const $store = useStore()
 		const $router = useRouter()
 
+		const pagination = ref({
+			page: 1,
+			rowsPerPage: 2
+		})
 		const producers = ref([])
 
 		const columns = [
 			{ name: "display_name", align: "center", label: "Название", field: row => row.display_name, sortable: true },
 		]
-
-		const loadProducers = async() => {
-			Loading.show({ spinnerColor: "primary" })
-			const response = await api.get("producers")
-			producers.value = response.data
-			Loading.hide()
-		}
-
-		await loadProducers()
 
 		const cart = computed(() => $store.state.cart.data)
 
@@ -62,11 +101,36 @@ export default ({
 			$router.push({name:"producer_detail", params: { producer_id }})
 		}
 
+		const loadProducers = async(page) => {
+			const response = await api.get("producers", {
+				params: {
+					page: page ?? pagination.value.page,
+					per_page: pagination.value.rowsPerPage
+				}
+			})
+			pagination.value = {
+				...pagination.value,
+				page: response.data.current_page,
+				rowsNumber: response.data.total
+			}
+			producers.value = response.data.data
+		}
+
+		await loadProducers()
+
+		const onRequest = async(props) => {
+			Loading.show({ spinnerColor: "primary" })
+			await loadProducers(props.pagination.page)
+			Loading.hide()
+		}
+
 		return {
 			producers,
 			columns,
 			cart,
-			show
+			show,
+			onRequest,
+			pagination
 		}
 	}
 })
