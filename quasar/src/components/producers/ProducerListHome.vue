@@ -14,16 +14,36 @@
 				class="q-table__grid-item col-xs-12 col-md-6"
 				style="min-height:300px"
 			>
-				<div
-					class="q-table__grid-item-card q-table__card full-height"
+				<q-card
+					class="full-height bg-primary text-white q-pa-xs"
 					:class="{ 'bg-light-green-2': cart.hasOwnProperty(props.row.id) }"
 					@click="show(props.row.id)"
 				>
-					{{ props.row.display_name }}
-					<span v-if="cart.hasOwnProperty(props.row.id)">
-						{{ "(" + cart[props.row.id].products.length + ")" }}
-					</span>
-				</div>
+					<div class="row q-mb-xs">
+						<q-card
+							flat
+							class="col-12 bg-indigo-10 q-pa-sm"
+						>
+							<span class="text-h6">{{ props.row.display_name }}</span>
+							<span v-if="cart.hasOwnProperty(props.row.id)">
+								{{ " (" + cart[props.row.id].products.length + ")" }}
+							</span>
+						</q-card>
+					</div>
+					<div class="row">
+						<q-card
+							flat
+							class="col-xs-12 col-md-4 bg-indigo-10"
+							:class="{'q-pa-xs':props.row.logo}"
+						>
+							<q-img
+								:class="{'bg-white':!props.row.logo}"
+								:src="props.row.logo ? backend_server + '/storage/' + props.row.logo : 'no-image.png'"
+								fit="contain"
+							/>
+						</q-card>
+					</div>
+				</q-card>
 			</div>
 		</template>
 		<template
@@ -84,10 +104,11 @@ export default ({
 	async setup() {
 		const $store = useStore()
 		const $router = useRouter()
+		const backend_server = process.env.BACKEND_SERVER
 
 		const pagination = ref({
 			page: 1,
-			rowsPerPage: 2
+			rowsPerPage: 4
 		})
 		const producers = ref([])
 
@@ -130,7 +151,8 @@ export default ({
 			cart,
 			show,
 			onRequest,
-			pagination
+			pagination,
+			backend_server
 		}
 	}
 })

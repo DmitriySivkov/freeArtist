@@ -16,6 +16,7 @@
 							label="Город"
 							:options="location_options"
 							@filter="loadLocation"
+							behavior="dialog"
 							bg-color="white"
 						>
 							<template v-slot:no-option>
