@@ -31,6 +31,13 @@ class ProducerController extends Controller
 				$join->on('teams.detailed_id', '=', 'producers.id')
 					->where('teams.detailed_type', Producer::class);
 			})
+			->when(
+				(int)$request->get('location_range') === User::LOCATION_RANGE_NEARBY && $request->get('city'),
+				fn(Builder $builder) =>
+				$builder->whereHas('city', fn(Builder $builder) =>
+					$builder->where('city', 'like', '%' . $request->get('city') . '%')
+				)
+			)
 			->orderBy('teams.display_name')
 			->paginate($request->get('per_page'));
 

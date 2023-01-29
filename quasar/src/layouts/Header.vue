@@ -10,22 +10,19 @@
 						<q-select
 							filled
 							square
-							v-model="location"
-							use-input
-							input-debounce="1000"
-							label="Город"
-							:options="location_options"
-							@filter="loadLocation"
+							v-model="selected_option"
+							:options="options"
 							behavior="dialog"
 							bg-color="white"
+							@update:model-value="setLocationRange"
 						>
-							<template v-slot:no-option>
-								<q-item>
-									<q-item-section class="text-grey">
-										Город не найден
-									</q-item-section>
-								</q-item>
-							</template>
+							<!--							<template v-slot:no-option>-->
+							<!--								<q-item>-->
+							<!--									<q-item-section class="text-grey">-->
+							<!--										Город не найден-->
+							<!--									</q-item-section>-->
+							<!--								</q-item>-->
+							<!--							</template>-->
 						</q-select>
 					</div>
 					<!--					<div class="col-xs-12 col-md-8">-->
@@ -50,33 +47,42 @@ export default {
 		const route = useRoute()
 		const user = computed(() => $store.state.user)
 
-		const location = ref(
-			user.value.location ? user.value.location.city.name_ru : null
-		)
-		const location_options = ref(null)
+		// const location = ref(
+		// 	user.value.location ? user.value.location.city.name_ru : null
+		// )
 
-		const loadLocation = async (query, update) => {
-			if (query.length < 1) return
+		const options = [
+			{ label: "Рядом с вами", value: 1 },
+			{ label: "Все", value: 2 }
+		]
+		const selected_option = ref(options.find((o) => o.value === 1).label)
 
-			const response = await api.get("cities",{
-				params: { query }
-			})
-
-			update(() => {
-				location_options.value = response.data.map((location) => {
-					return {
-						label: location.city + " (" + location.address + ")",
-						value: location.id
-					}
-				})
-			})
+		const setLocationRange = (range) => {
+			$store.commit("user/SET_LOCATION_RANGE", range.value)
 		}
+
+		// const loadLocation = async (query, update) => {
+		// 	if (query.length < 1) return
+		//
+		// 	const response = await api.get("cities",{
+		// 		params: { query }
+		// 	})
+		//
+		// 	update(() => {
+		// 		location_options.value = response.data.map((location) => {
+		// 			return {
+		// 				label: location.city + " (" + location.address + ")",
+		// 				value: location.id
+		// 			}
+		// 		})
+		// 	})
+		// }
 
 		return {
 			route,
-			location,
-			location_options,
-			loadLocation
+			selected_option,
+			options,
+			setLocationRange
 		}
 	}
 }

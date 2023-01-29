@@ -96,7 +96,7 @@
 
 <script>
 import { useStore } from "vuex"
-import { computed, ref } from "vue"
+import { computed, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Loading } from "quasar"
@@ -104,13 +104,18 @@ export default ({
 	async setup() {
 		const $store = useStore()
 		const $router = useRouter()
+		const user = computed(() => $store.state.user)
 		const backend_server = process.env.BACKEND_SERVER
 
+		const user_city = ref(user.value.location ?
+			user.value.location.city.name_ru : null
+		)
+
+		const producers = ref([])
 		const pagination = ref({
 			page: 1,
 			rowsPerPage: 4
 		})
-		const producers = ref([])
 
 		const columns = [
 			{ name: "display_name", align: "center", label: "Название", field: row => row.display_name, sortable: true },
@@ -126,7 +131,9 @@ export default ({
 			const response = await api.get("producers", {
 				params: {
 					page: page ?? pagination.value.page,
-					per_page: pagination.value.rowsPerPage
+					per_page: pagination.value.rowsPerPage,
+					location_range: user.value.location_range,
+					city: user_city.value,
 				}
 			})
 			pagination.value = {
@@ -136,6 +143,8 @@ export default ({
 			}
 			producers.value = response.data.data
 		}
+
+		watch(() => user.value.location_range, () => loadProducers())
 
 		await loadProducers()
 

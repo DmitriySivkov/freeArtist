@@ -42,6 +42,6 @@ class UserService implements UserServiceContract
 	{
 		$ip = app()->env === 'local' ? env('LOCAL_IP') : request()->ip();
 
-		return SxGeo::getCityFull($ip);
+		return SxGeo::getCity($ip);
 	}
 }

@@ -24,3 +24,7 @@ export const SET_ROLE = (state, role) => {
 export const SET_LOCATION = (state, location) => {
 	state.location = location
 }
+
+export const SET_LOCATION_RANGE = (state, range) => {
+	state.location_range = range
+}
