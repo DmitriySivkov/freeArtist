@@ -5,7 +5,10 @@
 	>
 		<q-toolbar class="q-pa-md justify-center">
 			<div class="col-xs-12 col-lg-8">
-				<div class="row items-center justify-end">
+				<div
+					v-if="route.name === 'home'"
+					class="row items-center justify-end"
+				>
 					<div class="col-xs-12 col-md-4">
 						<q-select
 							filled
@@ -25,11 +28,16 @@
 							<!--							</template>-->
 						</q-select>
 					</div>
-					<!--					<div class="col-xs-12 col-md-8">-->
-					<!--						<q-toolbar-title class="text-h5">-->
-					<!--							{{ route.meta.route_name || ''}}-->
-					<!--						</q-toolbar-title>-->
-					<!--					</div>-->
+				</div>
+				<div
+					v-else
+					class="row items-center"
+				>
+					<div class="col-xs-12 col-md-8">
+						<q-toolbar-title class="text-h5">
+							{{ route.meta.route_name || ''}}
+						</q-toolbar-title>
+					</div>
 				</div>
 			</div>
 		</q-toolbar>
