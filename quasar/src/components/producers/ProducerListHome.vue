@@ -128,6 +128,8 @@ export default ({
 		}
 
 		const loadProducers = async(page) => {
+			Loading.show({ spinnerColor: "primary" })
+
 			const response = await api.get("producers", {
 				params: {
 					page: page ?? pagination.value.page,
@@ -142,6 +144,8 @@ export default ({
 				rowsNumber: response.data.total
 			}
 			producers.value = response.data.data
+
+			Loading.hide()
 		}
 
 		watch(() => user.value.location_range, () => loadProducers())
@@ -149,9 +153,7 @@ export default ({
 		await loadProducers()
 
 		const onRequest = async(props) => {
-			Loading.show({ spinnerColor: "primary" })
 			await loadProducers(props.pagination.page)
-			Loading.hide()
 		}
 
 		return {

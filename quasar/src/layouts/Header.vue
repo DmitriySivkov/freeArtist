@@ -3,7 +3,10 @@
 		elevated
 		class="header"
 	>
-		<q-toolbar class="q-pa-md justify-center">
+		<q-toolbar
+			style="min-height:90px"
+			class="q-pa-md justify-center"
+		>
 			<div class="col-xs-12 col-lg-8">
 				<div
 					v-if="route.name === 'home'"
@@ -15,7 +18,6 @@
 							square
 							v-model="selected_option"
 							:options="options"
-							behavior="dialog"
 							bg-color="white"
 							@update:model-value="setLocationRange"
 						>
