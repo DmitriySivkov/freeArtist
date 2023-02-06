@@ -1,0 +1,9 @@
+.home {
+	&__producers-table {
+		& > .q-table__bottom {
+			justify-content: end;
+			padding-left: 4px;
+			padding-right: 4px;
+		}
+	}
+}

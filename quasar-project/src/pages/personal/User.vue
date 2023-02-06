@@ -1,0 +1,74 @@
+<template>
+	<div class="q-pa-md row">
+		<div class="col-xs-12 col-md-6 col-lg-3">
+			<q-markup-table
+				dark
+				class="bg-indigo-8 q-mb-sm"
+			>
+				<tbody>
+					<tr
+						v-for="[key, value] in user_common"
+						:key="key"
+					>
+						<td class="text-left">{{ key }}</td>
+						<td class="text-left">{{ value }}</td>
+					</tr>
+				</tbody>
+			</q-markup-table>
+
+			<q-markup-table
+				v-if="hasUserRole('producer')"
+				dark
+				class="bg-indigo-8"
+				separator="vertical"
+			>
+				<th>Изготовитель</th>
+				<th>Привилегии</th>
+				<tbody>
+					<tr
+						v-for="(team, index) in user_teams"
+						:key="index"
+					>
+						<td class="text-left">{{ team.display_name }}</td>
+						<td class="text-left">
+							<ul>
+								<li v-if="user_own_team && user_own_team.id === team.id">
+									Владелец
+								</li>
+								<!--								<li-->
+								<!--									v-else-->
+								<!--									v-for="(rightId, index) in producer.pivot.rights"-->
+								<!--									:key="index"-->
+								<!--								>-->
+								<!--									{{ producerUserRights.find((right) => right.id === rightId).label }}-->
+								<!--								</li>-->
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</q-markup-table>
+		</div>
+	</div>
+</template>
+
+<script>
+import { useUserRole } from "src/composables/userRole"
+import { useUserTeam } from "src/composables/userTeam"
+export default {
+	setup() {
+		const { user, hasUserRole } = useUserRole()
+		const { user_teams, user_own_team } = useUserTeam()
+
+		const user_common = Object.entries(user.value.data)
+			.filter(([prop]) => ["phone", "name", "email"].includes(prop))
+
+		return {
+			user_common,
+			user_teams,
+			user_own_team,
+			user,
+			hasUserRole
+		}
+	},
+}
+</script>
