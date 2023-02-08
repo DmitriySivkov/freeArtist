@@ -7,7 +7,7 @@
 		<div class="col-xs-12">
 			<q-card>
 				<q-card-section class="text-center">
-					Стоимость: {{ totalPrice }} р.
+					Стоимость: {{ total_price }} р.
 				</q-card-section>
 				<q-separator />
 				<q-card-actions align="center">
@@ -25,12 +25,15 @@
 <script>
 import { computed } from "vue"
 import { useCartStore } from "src/stores/cart"
+import { useOrderStore } from "src/stores/order"
 export default {
 	setup() {
 		const cart_store = useCartStore()
+    const order_store = useOrderStore()
+
 		const cart = computed(() => cart_store.data)
 
-		const totalPrice = computed(() => {
+		const total_price = computed(() => {
 			return Object.values(cart.value).reduce(
 				(accum, cart_item) =>
 					accum + cart_item.products.reduce((ac, product) => ac + product.data.price * product.amount, 0),
@@ -38,11 +41,11 @@ export default {
 		})
 
 		const makeNewOrder = () => {
-			// $store.dispatch("order/create", cart.value)
+			order_store.create(cart.value)
 		}
 
 		return {
-			totalPrice,
+			total_price,
 			makeNewOrder
 		}
 	}

@@ -13,15 +13,19 @@
 import OrderCalendar from "src/components/orders/OrderCalendar"
 import ProducerOrderCalendarList from "src/components/orders/Producer/ProducerOrderCalendarList"
 import { date, Loading } from "quasar"
-
+import { useOrderStore } from "src/stores/order"
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+    const order_store = useOrderStore(store)
+
 		Loading.show({
 			spinnerColor: "primary",
 		})
-		return store.dispatch("order/getList", {
-			filter: { date: date.formatDate(Date.now(), "DD.MM.YYYY") }
-		}).then(() => Loading.hide())
+
+    return order_store.getList({
+      filter: { date: date.formatDate(Date.now(), "DD.MM.YYYY") }
+    }).then(() => Loading.hide())
+
 	},
 	components: {
 		OrderCalendar,
