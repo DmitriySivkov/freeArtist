@@ -1,9 +1,8 @@
 import { computed } from "vue"
-import { useStore } from "vuex"
-
+import { useUserStore } from "src/stores/user"
 export const useUser = () => {
-	const $store = useStore()
-	const user = computed(() => $store.state.user)
+  const user_store = useUserStore()
+	const user = computed(() => user_store.$state)
 
 	const isUserLogged = () => user.value.is_logged
 

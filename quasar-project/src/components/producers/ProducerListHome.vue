@@ -100,11 +100,13 @@ import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Loading } from "quasar"
 import { useCartStore } from "src/stores/cart"
+import { useUserStore } from "src/stores/user"
 export default ({
 	async setup() {
     const cart_store = useCartStore()
+    const user_store = useUserStore()
 		const $router = useRouter()
-		const user = computed(() => $store.state.user)
+		const user = computed(() => user_store.$state)
 		const backend_server = process.env.BACKEND_SERVER
 
 		const user_city = ref(user.value.location ?

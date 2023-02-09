@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
 import { useTeamStore } from "src/stores/team"
 import { useRelationRequestStore } from "src/stores/relation-request"
+import { LocalStorage } from "quasar"
 
 export const useUserStore = defineStore("user", {
 	state: () => ({
@@ -40,20 +41,26 @@ export const useUserStore = defineStore("user", {
       if (response.data.token)
         api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
 
-      commit("SET_USER", response.data.user)
-      commit("SET_IS_LOGGED", true)
+      this.data = response.data.user
+      this.is_logged = true
 
       return response
     },
 
     async logout(payload) {
+      const team_store = useTeamStore()
+      const relation_request_store = useRelationRequestStore()
+
       await api.post("personal/logout", payload)
 
-      commit("SET_USER", {})
-      commit("SWITCH_PERSONAL", "user")
-      commit("team/EMPTY_USER_TEAMS", {}, { root:true })
-      commit("relation_request/EMPTY_USER_REQUESTS", {}, { root:true })
-      commit("SET_IS_LOGGED", false)
+      this.data = {}
+
+      this.switchPersonal("user")
+
+      team_store.emptyUserTeams()
+      relation_request_store.emptyUserRequests()
+
+      this.is_logged = false
     },
 
     async authViaToken({ token }) {
@@ -63,50 +70,63 @@ export const useUserStore = defineStore("user", {
       const response = await api.post("authViaToken")
 
       if (response.data) {
-        commit("SET_USER", response.data.user)
-        commit("team/SET_USER_TEAMS", response.data.user_teams, { root:true })
-        commit("relation_request/SET_USER_REQUESTS", response.data.user_requests, { root:true })
-        commit("relation_request/SET_USER_TEAMS_REQUESTS", response.data.user_teams_requests, { root:true })
-        commit("SET_IS_LOGGED", true)
+        this.data = response.data.user
+        team_store.setUserTeams(response.data.user_teams)
+
+        relation_request_store.setUserRequests(response.data.user_requests)
+        relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
+
+        this.is_logged = true
       }
     },
 
-    async verifyEmail(payload) {
-      await api.post("auth/verify-email", {
-        hash: payload.hash,
-        email: payload.email
-      })
-    },
-
     async registerProducer(payload) {
+      const team_store = useTeamStore()
+
       const response = await api.post("personal/producers/register", { ...payload })
-      commit("team/SET_USER_TEAMS", response.data.team, { root:true })
-      commit("SET_ROLE", response.data.role)
+
+      team_store.setUserTeams(response.data.team)
+
+      this.setRole(response.data.role)
     },
 
     switchPersonal(personal_tab) {
-      commit("SWITCH_PERSONAL", personal_tab)
+      this.personal_tab = personal_tab
+      LocalStorage.set("personal_tab", personal_tab)
     },
 
     async createRequest(payload) {
+      const relation_request_store = useRelationRequestStore()
+
       const response = await api.post("personal/users/relationRequests/create", { ...payload })
-      commit("relation_request/SET_USER_REQUESTS", response.data, { root:true })
+
+      relation_request_store.setUserRequests(response.data)
     },
 
     async setRelationRequestStatus({ request_id, status_id }) {
+      const relation_request_store = useRelationRequestStore()
+
       const response = await api.post(
         "personal/users/relationRequests/" + request_id + "/setStatus",
         { status_id }
       )
-      commit("relation_request/SET_USER_RELATION_REQUEST_STATUS", {
+
+      relation_request_store.setUserRelationRequestStatus({
         request_id: response.data.id,
         status_id: response.data.status.id
-      }, { root:true })
+      })
     },
 
     async setLocation() {
       const response = await api.get("user/location")
-      commit("SET_LOCATION", response.data)
+      this.location = response.data
+    },
+
+    setRole(role) {
+      if (this.data.roles.find((r) => r.id === role.id))
+        return
+
+      this.data.roles = [...state.data.roles, role]
     }
 	}
 })

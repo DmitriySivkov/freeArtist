@@ -73,16 +73,16 @@
 
 <script>
 import { useRouter } from "vue-router"
-import { useStore } from "vuex"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
 import { Plugins } from "@capacitor/core"
 import { useQuasar } from "quasar"
+import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
 		const $q = useQuasar()
 		const $router = useRouter()
-		const $store = useStore()
+    const user_store = useUserStore()
 		const { Storage } = Plugins
 
 		const { notifySuccess, notifyError } = useNotification()
@@ -91,7 +91,7 @@ export default {
 		const is_pwd = ref(true)
 
 		const onSubmit = async() => {
-			$store.dispatch("user/login", {
+			user_store.login({
 				phone: phone.value,
 				password: password.value,
 				is_mobile: $q.platform.is.capacitor

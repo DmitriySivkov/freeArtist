@@ -51,11 +51,13 @@ import { useRoute } from "vue-router"
 import { computed, ref } from "vue"
 import { api } from "boot/axios"
 import { useStore } from "vuex"
+import { useUserStore } from "src/stores/user"
 export default {
 	setup () {
 		const $store = useStore()
+    const user_store = useUserStore()
 		const route = useRoute()
-		const user = computed(() => $store.state.user)
+		const user = computed(() => user_store.$state)
 
 		// const location = ref(
 		// 	user.value.location ? user.value.location.city.name_ru : null

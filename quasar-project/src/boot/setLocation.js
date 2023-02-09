@@ -1,3 +1,6 @@
+import { useUserStore } from "src/stores/user"
+
 export default async ({ store }) => {
-	await store.dispatch("user/setLocation")
+  const user_store = useUserStore(store)
+	await user_store.setLocation()
 }

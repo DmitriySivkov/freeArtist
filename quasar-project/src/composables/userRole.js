@@ -1,9 +1,9 @@
 import { computed } from "vue"
-import { useStore } from "vuex"
+import { useUserStore } from "src/stores/user"
 
 export const useUserRole = () => {
-	const $store = useStore()
-	const user = computed(() => $store.state.user)
+  const user_store = useUserStore()
+	const user = computed(() => user_store.$state)
 
 	const hasUserRole = (roleName) =>
 		user.value.data.roles

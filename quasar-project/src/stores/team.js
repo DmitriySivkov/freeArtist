@@ -13,6 +13,10 @@ export const useTeamStore = defineStore("team", {
         this.user_teams = [...this.user_teams, team]
       else
         this.user_teams = Array.isArray(team) ? team : [team]
+    },
+
+    emptyUserTeams() {
+      this.user_teams = []
     }
 	}
 })

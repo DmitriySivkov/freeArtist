@@ -1,10 +1,11 @@
 import { computed } from "vue"
 import { useStore } from "vuex"
+import { useUserStore } from "src/stores/user"
 
 export const useUserTeam = () => {
 	const $store = useStore()
-
-	const user = computed(() => $store.state.user)
+  const user_store = useUserStore()
+	const user = computed(() => user_store.$state)
 
 	const team_store = computed(() => $store.state.team)
 

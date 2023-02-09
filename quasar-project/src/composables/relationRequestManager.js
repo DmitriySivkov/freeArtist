@@ -1,10 +1,14 @@
 import { computed } from "vue"
 import { useStore } from "vuex"
+import { useUserStore } from "src/stores/user"
+import { useRelationRequestStore } from "src/stores/relation-request"
 
 export const useRelationRequestManager = () => {
 	const $store = useStore()
-	const user = computed(() => $store.state.user)
-	const relation_request = computed(() => $store.state.relation_request)
+  const user_store = useUserStore()
+  const relation_request_store = useRelationRequestStore()
+	const user = computed(() => user_store.$state)
+	const relation_request = computed(() => relation_request_store.$state)
 
 	const teamIncomingRequests = (team) =>
 		relation_request.value.user_teams_requests.filter(
@@ -12,10 +16,10 @@ export const useRelationRequestManager = () => {
 		)
 
 	const userCreateRequest = (team_id, message) =>
-		$store.dispatch("user/createRequest",{ team_id, message })
+		user_store.createRequest({ team_id, message })
 
 	const userSetRequestStatus = (request_id, status_id) =>
-		$store.dispatch("user/setRelationRequestStatus", {
+		user_store.setRelationRequestStatus({
 			request_id,
 			status_id
 		})

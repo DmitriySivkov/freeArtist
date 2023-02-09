@@ -28,6 +28,7 @@
 import { useRouter } from "vue-router"
 import { useStore } from "vuex"
 import { computed } from "vue"
+import { useUserStore } from "src/stores/user"
 export default ({
 	props: {
 		detailRouteName: String,
@@ -43,9 +44,10 @@ export default ({
 	},
 	setup(props) {
 		const $store = useStore()
+    const user_store = useUserStore()
 		const $router = useRouter()
 
-		const user = computed(() => $store.state.user)
+		const user = computed(() => user_store.$state)
 
 		const personal_types = {
 			producer: "App\\Models\\Producer"

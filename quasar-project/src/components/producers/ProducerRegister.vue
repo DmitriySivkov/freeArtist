@@ -71,14 +71,14 @@
 <script>
 import { useRouter } from "vue-router"
 import { ref } from "vue"
-import { useStore } from "vuex"
 import { api } from "src/boot/axios"
 import { useNotification } from "src/composables/notification"
 import { usePrivateChannels } from "src/composables/privateChannels"
+import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
 		const $router = useRouter()
-		const $store = useStore()
+    const user_store = useUserStore()
 		const { notifySuccess, notifyError } = useNotification()
 		const private_channels = usePrivateChannels()
 		const location = ref(null)
@@ -87,7 +87,7 @@ export default {
 		const producer = ref(null)
 
 		const onSubmit = () => {
-			$store.dispatch("user/registerProducer", {
+			user_store.registerProducer({
 				display_name: producer.value,
 				city_id: location.value.value
 			}).then(() => {

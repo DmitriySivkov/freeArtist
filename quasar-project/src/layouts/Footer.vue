@@ -52,12 +52,14 @@
 import { computed } from "vue"
 import { useRouter } from "vue-router"
 import { useCartStore } from "src/stores/cart"
+import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
 		const $router = useRouter()
     const cart_store = useCartStore()
+    const user_store = useUserStore()
 		const route = $router.currentRoute
-		const user = computed(() => $store.state.user)
+		const user = computed(() => user_store.$state)
 		const cartCounter = computed(
 			() => Object.values(cart_store.data)
 				.reduce((accum, cart_item) => accum + cart_item.products.length, 0)
