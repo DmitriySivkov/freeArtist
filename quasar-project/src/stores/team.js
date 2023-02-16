@@ -1,6 +1,5 @@
 import { defineStore } from "pinia"
-import { LocalStorage } from "quasar"
-import { useNotification } from "src/composables/notification"
+import * as teamProducerActions from "src/stores/extra/teamProducer"
 
 export const useTeamStore = defineStore("team", {
 	state: () => ({
@@ -8,6 +7,8 @@ export const useTeamStore = defineStore("team", {
 	}),
 
 	actions: {
+    ...teamProducerActions,
+
     setUserTeams(team) {
       if (this.user_teams.length > 0)
         this.user_teams = [...this.user_teams, team]
@@ -17,6 +18,7 @@ export const useTeamStore = defineStore("team", {
 
     emptyUserTeams() {
       this.user_teams = []
-    }
+    },
+
 	}
 })

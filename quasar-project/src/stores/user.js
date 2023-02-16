@@ -126,7 +126,7 @@ export const useUserStore = defineStore("user", {
       if (this.data.roles.find((r) => r.id === role.id))
         return
 
-      this.data.roles = [...state.data.roles, role]
+      this.data.roles = [...this.data.roles, role]
     }
 	}
 })
