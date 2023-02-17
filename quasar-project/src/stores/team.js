@@ -1,5 +1,7 @@
 import { defineStore } from "pinia"
-import * as teamProducerActions from "src/stores/extra/teamProducer"
+import * as teamProducerActions from "src/stores/morph/teamProducer"
+import { api } from "src/boot/axios";
+import { useRelationRequestStore } from "src/stores/relation-request"
 
 export const useTeamStore = defineStore("team", {
 	state: () => ({
@@ -19,6 +21,56 @@ export const useTeamStore = defineStore("team", {
     emptyUserTeams() {
       this.user_teams = []
     },
+
+    setTeamUsers({team_id, users}) {
+      this.user_teams.find((team) => team.id === team_id).users = users
+    },
+
+    async getUserList(team_id) {
+      const response = await api.get("personal/teams/" + team_id + "/users")
+
+      this.setTeamUsers({ team_id, users: response.data})
+    },
+
+    commitTeamUserPermissions({ team_id, user_id, permissions }) {
+      const team = this.user_teams.find((team) => team.id === team_id)
+
+      if (team.hasOwnProperty("users"))
+        team.users.find((user) => user.id === user_id).permissions = permissions
+    },
+
+    async syncTeamUserPermissions({ team_id, user_id, permissions }) {
+      const response = await api.post(
+        "personal/teams/" + team_id + "/users/" + user_id + "/permissions/sync",
+        permissions
+      )
+
+      this.commitTeamUserPermissions({
+        team_id,
+        user_id,
+        permissions:response.data
+      })
+    },
+
+    async acceptRequest({ team_id, request_id }) {
+      const response = await api.post("personal/teams/" + team_id + "/relationRequests/" + request_id + "/accept")
+
+      const relation_request_store = useRelationRequestStore()
+      relation_request_store.setUserTeamRelationRequestStatus({
+        request_id: response.data.id,
+        status_id: response.data.status.id
+      })
+    },
+
+    async rejectRequest({ team_id, request_id }) {
+      const response = await api.post("personal/teams/" + team_id + "/relationRequests/" + request_id + "/reject")
+
+      const relation_request_store = useRelationRequestStore()
+      relation_request_store.setUserTeamRelationRequestStatus({
+        request_id: response.data.id,
+        status_id: response.data.status.id
+      })
+    }
 
 	}
 })

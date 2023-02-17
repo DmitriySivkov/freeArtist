@@ -49,6 +49,11 @@ export const useRelationRequestStore = defineStore("relation_request", {
     setUserRelationRequestStatus ({ request_id, status_id }) {
       this.user_requests.find((r) => r.id === request_id).status =
         Object.values(this.statuses).find((s) => s.id === status_id)
+    },
+
+    setUserTeamRelationRequestStatus({ request_id, status_id }) {
+      this.user_teams_requests.find((r) => r.id === request_id).status =
+        Object.values(this.statuses).find((s) => s.id === status_id)
     }
 	}
 })

@@ -3,6 +3,8 @@ import { useUserTeam } from "src/composables/userTeam"
 import { useUser } from "src/composables/user"
 import { useStore } from "vuex"
 import { useRelationRequestManager } from "src/composables/relationRequestManager"
+import { useTeamStore } from "src/stores/team"
+import { useRelationRequestStore } from "src/stores/relation-request";
 
 // todo - make less WS connections ?
 export const usePrivateChannels = () => {
@@ -27,28 +29,30 @@ export const usePrivateChannels = () => {
 	}
 
 	const connectRelationRequestTeam = () => {
+    const relation_request_store = useRelationRequestStore()
 		if (user_teams.value.length > 0) {
 			for (let i in user_teams.value) {
 				echo.private("relation-requests.team." + user_teams.value[i].id)
 					.listen(".RelationRequestCreated", (e) => {
-						$store.commit("relation_request/SET_USER_TEAMS_REQUESTS", e.model)
+            relation_request_store.setUserTeamsRequests(e.model)
 					})
 					.listen(".RelationRequestUpdated", (e) => {
-						$store.commit("relation_request/SET_USER_TEAM_RELATION_REQUEST_STATUS", {
-							request_id: e.model.id,
-							status_id: e.model.status.id
-						})
+            relation_request_store.setUserTeamRelationRequestStatus({
+              request_id: e.model.id,
+              status_id: e.model.status.id
+            })
 					})
 			}
 		}
 	}
 
 	const connectPermissions = () => {
+    const team_store = useTeamStore()
 		if (user_teams.value.length > 0) {
 			for (let i in user_teams.value) {
 				echo.private("permissions." + user_teams.value[i].id)
 					.listen(".permissions.synced", (e) => {
-						$store.commit("team/SYNC_TEAM_USER_PERMISSIONS", {
+						team_store.commitTeamUserPermissions({
 							team_id: e.team.id,
 							user_id: e.user.id,
 							permissions: e.permissions

@@ -1,18 +1,18 @@
 import { computed } from "vue"
 import { useStore } from "vuex"
 import { useUserStore } from "src/stores/user"
+import { useTeamStore } from "src/stores/user"
 
 export const useUserTeam = () => {
 	const $store = useStore()
+
   const user_store = useUserStore()
-	const user = computed(() => user_store.$state)
+	const team_store = useTeamStore()
 
-	const team_store = computed(() => $store.state.team)
-
-	const user_teams = computed(() => team_store.value.user_teams)
+	const user_teams = computed(() => team_store.user_teams)
 
 	const user_own_team = computed(() =>
-		user_teams.value.find((team) => team.user_id === user.value.data.id)
+		user_teams.value.find((team) => team.user_id === user_store.data.id)
 	)
 
 	const getTeam = (team_id) =>
@@ -24,10 +24,7 @@ export const useUserTeam = () => {
 			.find((user) => user.id === user_id)
 
 	const syncTeamUserPermissions = (team_id, user_id, permissions) =>
-		$store.dispatch(
-			"team/syncTeamUserPermissions",
-			{ team_id, user_id, permissions }
-		)
+    team_store.syncTeamUserPermissions({ team_id, user_id, permissions })
 
 	const user_teams_producer = computed(() =>
 		user_teams.value.filter((t) => t.detailed_type === "App\\Models\\Producer")
