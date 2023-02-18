@@ -12,36 +12,50 @@
 	>
 		<template v-slot:item="props">
 			<q-card
-				style="height:200px"
-				class="bg-primary text-white q-pa-xs"
+				class="col-12 bg-primary text-white q-mb-sm"
 				:class="{ 'bg-light-green-2': cart.hasOwnProperty(props.row.id) }"
 				@click="show(props.row.id)"
 			>
-				<div class="row q-mb-xs">
-					<q-card
-						flat
-						class="col-12 bg-indigo-10 q-pa-sm"
-					>
+				<q-card-section
+					horizontal
+					class="row"
+				>
+					<div class="col-12 bg-indigo-10 q-pa-md">
 						<span class="text-h6">{{ props.row.display_name }}</span>
 						<span v-if="cart.hasOwnProperty(props.row.id)">
 							{{ " (" + cart[props.row.id].products.length + ")" }}
 						</span>
-					</q-card>
-				</div>
-				<div class="row">
-					<q-card
-						style=""
-						flat
-						class="col-xs-12 col-md-4 bg-indigo-10"
-						:class="{'q-pa-xs':props.row.logo}"
+					</div>
+				</q-card-section>
+				<q-card-section
+					horizontal
+					class="row"
+				>
+					<div
+						style="height:250px"
+						class="col-3"
 					>
 						<q-img
-							:class="{'bg-white':!props.row.logo}"
+							style="height:100%"
 							:src="props.row.logo ? backend_server + '/storage/' + props.row.logo : 'no-image.png'"
-							fit="cover"
+							fit="contain"
 						/>
-					</q-card>
-				</div>
+					</div>
+				</q-card-section>
+				<!--								<div class="row">-->
+				<!--									<q-card-->
+				<!--										style=""-->
+				<!--										flat-->
+				<!--										class="col-xs-12 col-md-4 bg-indigo-10"-->
+				<!--										:class="{'q-pa-xs':props.row.logo}"-->
+				<!--									>-->
+				<!--										<q-img-->
+				<!--											:class="{'bg-white':!props.row.logo}"-->
+				<!--											:src="props.row.logo ? backend_server + '/storage/' + props.row.logo : 'no-image.png'"-->
+				<!--											fit="cover"-->
+				<!--										/>-->
+				<!--									</q-card>-->
+				<!--								</div>-->
 			</q-card>
 		</template>
 		<template v-slot:bottom="pagination">
