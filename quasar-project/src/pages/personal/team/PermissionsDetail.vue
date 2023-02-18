@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import TeamUserList from "src/components/teams/TeamUserList"
-import TeamPermissionList from "src/components/teams/TeamPermissionList"
+import TeamUserList from "src/components/teams/TeamUserList.vue"
+import TeamPermissionList from "src/components/teams/TeamPermissionList.vue"
 import { useRoute } from "vue-router"
 import { useUserTeam } from "src/composables/userTeam"
 import { Loading } from "quasar"
@@ -51,7 +51,7 @@ export default {
 			user_teams.value.find((team) => team.id === parseInt($route.params.team_id))
 		)
 
-    const user_store = useUserStore()
+		const user_store = useUserStore()
 
 		const user = computed(() => user_store.$state)
 		const selected_user = ref(

@@ -6,8 +6,8 @@
 </template>
 
 <script>
-// import OutgoingProducerRequests from "src/components/requests/producer/OutgoingProducerRequests"
-import IncomingProducerRequests from "src/components/requests/producer/IncomingProducerRequests"
+// import OutgoingProducerRequests from "src/components/requests/producer/OutgoingProducerRequests.vue"
+import IncomingProducerRequests from "src/components/requests/producer/IncomingProducerRequests.vue"
 
 export default {
 	props: {

@@ -2,7 +2,7 @@ export default [
 	{
 		name: "register",
 		path: "register",
-		component: () => import("pages/Register"),
+		component: () => import("pages/Register.vue"),
 		meta: {
 			route_name: "Регистрация"
 		},
@@ -10,7 +10,7 @@ export default [
 	{
 		name: "login",
 		path: "auth",
-		component: () => import("pages/Auth"),
+		component: () => import("pages/Auth.vue"),
 		meta: {
 			route_name: "Авторизация",
 		}

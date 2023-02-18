@@ -8,15 +8,15 @@
 </template>
 
 <script>
-import ProductList from "src/components/cart/ProductList"
-import OrderSummary from "src/components/cart/OrderSummary"
+import ProductList from "src/components/cart/ProductList.vue"
+import OrderSummary from "src/components/cart/OrderSummary.vue"
 import { useCartStore } from "src/stores/cart"
 import { computed, onMounted, ref } from "vue"
 export default {
 	components: {
-    ProductList,
-    OrderSummary
-  },
+		ProductList,
+		OrderSummary
+	},
 	setup() {
 		const cart_store = useCartStore()
 		const cart = computed(() => Object.values(cart_store.data))

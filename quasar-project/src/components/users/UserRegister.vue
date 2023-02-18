@@ -92,12 +92,12 @@ import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { useQuasar } from "quasar"
 import { Plugins } from "@capacitor/core"
-import { useUserStore } from "src/stores/user";
+import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
 		const $q = useQuasar()
 		const $store = useStore()
-    const user_store = useUserStore()
+		const user_store = useUserStore()
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
 		const { Storage } = Plugins
@@ -119,7 +119,7 @@ export default {
 				if (accept.value !== true) {
 					notifyError("Необходимо принять условия пользования сервисом")
 				} else {
-          user_store.signUp({
+					user_store.signUp({
 						phone: phone.value,
 						password: password.value,
 						consent: accept.value,

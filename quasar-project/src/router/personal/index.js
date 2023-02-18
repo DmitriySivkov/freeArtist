@@ -9,7 +9,7 @@ export default [
 	{
 		name: "personal",
 		path: "personal",
-		component: () => import("pages/personal/Index"),
+		component: () => import("pages/personal/Index.vue"),
 		meta: {
 			route_name: "Личный кабинет",
 		},
@@ -17,7 +17,7 @@ export default [
 	{
 		name: "personal_user",
 		path: "personal/user",
-		component: () => import("pages/personal/User"),
+		component: () => import("pages/personal/User.vue"),
 		meta: {
 			route_name: "Профиль"
 		}

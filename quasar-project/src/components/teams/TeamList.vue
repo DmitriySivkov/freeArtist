@@ -44,7 +44,7 @@ export default ({
 	},
 	setup(props) {
 		const $store = useStore()
-    const user_store = useUserStore()
+		const user_store = useUserStore()
 		const $router = useRouter()
 
 		const user = computed(() => user_store.$state)

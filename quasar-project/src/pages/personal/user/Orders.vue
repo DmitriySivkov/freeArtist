@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import OrderCalendar from "src/components/orders/OrderCalendar"
-import CustomerOrderCalendarList from "src/components/orders/Customer/CustomerOrderCalendarList"
+import OrderCalendar from "src/components/orders/OrderCalendar.vue"
+import CustomerOrderCalendarList from "src/components/orders/Customer/CustomerOrderCalendarList.vue"
 import { date, Loading } from "quasar"
 import { useOrderStore } from "src/stores/order"
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-    const order_store = useOrderStore(store)
+		const order_store = useOrderStore(store)
 
 		Loading.show({
 			spinnerColor: "primary",

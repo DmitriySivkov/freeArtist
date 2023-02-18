@@ -39,8 +39,8 @@
 </template>
 
 <script>
-import NavigationUser from "src/pages/personal/user/Navigation"
-import NavigationProducer from "src/pages/personal/producer/Navigation"
+import NavigationUser from "src/pages/personal/user/Navigation.vue"
+import NavigationProducer from "src/pages/personal/producer/Navigation.vue"
 import { useUserRole } from "src/composables/userRole"
 import { ref } from "vue"
 import { useStore } from "vuex"

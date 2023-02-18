@@ -4,9 +4,9 @@ import { useRelationRequestStore } from "src/stores/relation-request"
 import { useTeamStore } from "src/stores/team"
 
 export const useRelationRequestManager = () => {
-  const user_store = useUserStore()
-  const relation_request_store = useRelationRequestStore()
-  const team_store = useTeamStore()
+	const user_store = useUserStore()
+	const relation_request_store = useRelationRequestStore()
+	const team_store = useTeamStore()
 
 	const teamIncomingRequests = (team) =>
 		relation_request_store.user_teams_requests.filter(
@@ -32,10 +32,10 @@ export const useRelationRequestManager = () => {
 		teamIncomingRequests(team).filter((r) => r.status.id === relation_request_store.statuses.pending.id).length
 
 	const teamAcceptRequest = (team_id, request_id) =>
-    team_store.acceptRequest({ team_id, request_id })
+		team_store.acceptRequest({ team_id, request_id })
 
 	const teamRejectRequest = (team_id, request_id) =>
-    team_store.rejectRequest({ team_id, request_id })
+		team_store.rejectRequest({ team_id, request_id })
 
 	return {
 		userCreateRequest,

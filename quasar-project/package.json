@@ -11,29 +11,29 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "pinia": "^2.0.11",
+    "@capacitor/cli": "^2.0.0",
+    "@capacitor/core": "^2.0.0",
     "@quasar/extras": "^1.0.0",
-    "quasar": "^2.6.0",
-    "vue": "^3.0.0",
-    "vue-router": "^4.0.0",
-    "v-money": "^0.8.1",
-    "pusher-js": "^7.4.0",
-    "laravel-echo": "^1.14.0",
-    "lodash": "^4.17.21",
+    "axios": "^0.21.1",
     "capacitor-secure-storage-plugin": "^0.5.1",
     "core-js": "^3.6.5",
-    "@capacitor/cli": "^2.0.0",
-    "@capacitor/core": "^2.0.0"
+    "laravel-echo": "^1.14.0",
+    "lodash": "^4.17.21",
+    "pinia": "^2.0.11",
+    "pusher-js": "^7.4.0",
+    "quasar": "^2.6.0",
+    "v-money": "^0.8.1",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.10.0",
-    "eslint-plugin-vue": "^9.0.0",
-    "eslint-config-prettier": "^8.1.0",
-    "prettier": "^2.5.1",
     "@quasar/app-vite": "^1.0.0",
     "autoprefixer": "^10.4.2",
-    "postcss": "^8.4.14"
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "postcss": "^8.4.14",
+    "prettier": "^2.5.1"
   },
   "engines": {
     "node": "^18 || ^16 || ^14.19",

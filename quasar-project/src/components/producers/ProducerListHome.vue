@@ -46,11 +46,8 @@
 				</q-card>
 			</div>
 		</template>
-		<template
-			v-slot:bottom="pagination"
-			class="q-pl-xs q-pr-xs"
-		>
-			<div class="col-xs-12 col-md-7">
+		<template v-slot:bottom="pagination">
+			<div class="col-xs-12 col-md-7 q-pl-xs q-pr-xs">
 				<div class="row q-col-gutter-sm">
 					<div class="col-3">
 						<q-btn
@@ -103,8 +100,8 @@ import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
 export default ({
 	async setup() {
-    const cart_store = useCartStore()
-    const user_store = useUserStore()
+		const cart_store = useCartStore()
+		const user_store = useUserStore()
 		const $router = useRouter()
 		const user = computed(() => user_store.$state)
 		const backend_server = process.env.BACKEND_SERVER

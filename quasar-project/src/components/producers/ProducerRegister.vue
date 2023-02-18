@@ -78,7 +78,7 @@ import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
 		const $router = useRouter()
-    const user_store = useUserStore()
+		const user_store = useUserStore()
 		const { notifySuccess, notifyError } = useNotification()
 		const private_channels = usePrivateChannels()
 		const location = ref(null)

@@ -33,7 +33,7 @@ export const useCartManager = (productsInitObject) => {
 		if (product_amount > producerProduct.amount)
 			products[product_id] = producerProduct.amount
 
-    cart_store.addToCart({ producer, products })
+		cart_store.addToCart({ producer, products })
 	}
 
 	return { products, increase, decrease, orderAmountChanged }

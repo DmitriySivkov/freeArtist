@@ -33,7 +33,7 @@
 import { useStore } from "vuex"
 import { computed } from "vue"
 import { useUserTeam } from "src/composables/userTeam"
-import { useTeamStore } from "src/stores/team";
+import { useTeamStore } from "src/stores/team"
 export default {
 	props: {
 		userId: Number,
@@ -48,7 +48,7 @@ export default {
 	},
 	setup(props) {
 		const $store = useStore()
-    const team_store = useTeamStore()
+		const team_store = useTeamStore()
 		const { getTeamUser } = useUserTeam()
 		const all_producer_permissions = computed(() => $store.state.permission.producer)
 

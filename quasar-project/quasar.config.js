@@ -1,4 +1,4 @@
-const { configure } = require('quasar/wrappers');
+const { configure } = require("quasar/wrappers")
 
 
 module.exports = configure(function (ctx) {
@@ -29,7 +29,7 @@ module.exports = configure(function (ctx) {
     ],
 
     css: [
-      'app.scss'
+      "app.scss"
     ],
 
     extras: [
@@ -40,11 +40,11 @@ module.exports = configure(function (ctx) {
 
     build: {
       target: {
-        browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
-        node: 'node16'
+        browser: [ "es2019", "edge88", "firefox78", "chrome87", "safari13.1" ],
+        node: "node16"
       },
 
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: "hash", // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
@@ -53,7 +53,12 @@ module.exports = configure(function (ctx) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        // on mobile dev - change address to available inside network
+        BACKEND_SERVER: ctx.dev ? (ctx.mode.spa ? "https://api.freeartist.loc" : (ctx.mode.capacitor ? "https://192.168.1.2" : null)) :
+          "https://e217-95-106-191-13.ngrok.io",
+        BACKEND_HOST: "api.freeartist.loc"
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -79,7 +84,7 @@ module.exports = configure(function (ctx) {
     framework: {
       config: {},
 
-      iconSet: 'material-icons',
+      iconSet: "material-icons",
 
       components: [],
       directives: [],
@@ -95,7 +100,7 @@ module.exports = configure(function (ctx) {
       ]
     },
 
-    animations: 'all',
+    animations: "all",
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#property-sourcefiles
     // sourceFiles: {
@@ -126,16 +131,16 @@ module.exports = configure(function (ctx) {
                       // (gets superseded if process.env.PORT is specified at runtime)
 
       middlewares: [
-        'render' // keep this as last one
+        "render" // keep this as last one
       ]
     },
 
     // https://v2.quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
-      workboxMode: 'generateSW', // or 'injectManifest'
+      workboxMode: "generateSW", // or 'injectManifest'
       injectPwaMetaTags: true,
-      swFilename: 'sw.js',
-      manifestFilename: 'manifest.json',
+      swFilename: "sw.js",
+      manifestFilename: "manifest.json",
       useCredentialsForManifestTag: false,
       // useFilenameHashes: true,
       // extendGenerateSWOptions (cfg) {}
@@ -161,7 +166,7 @@ module.exports = configure(function (ctx) {
 
       inspectPort: 5858,
 
-      bundler: 'packager', // 'packager' or 'builder'
+      bundler: "packager", // 'packager' or 'builder'
 
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
@@ -179,18 +184,18 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'quasar-project'
+        appId: "quasar-project"
       }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex
     bex: {
       contentScripts: [
-        'my-content-script'
+        "my-content-script"
       ],
 
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
     }
   }
-});
+})

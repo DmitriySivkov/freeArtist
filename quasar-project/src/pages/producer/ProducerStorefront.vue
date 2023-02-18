@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ProducerStorefront from "src/components/producers/ProducerStorefront"
+import ProducerStorefront from "src/components/producers/ProducerStorefront.vue"
 import { Loading } from "quasar"
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import TeamRequestList from "src/components/teams/TeamRequestList"
+import TeamRequestList from "src/components/teams/TeamRequestList.vue"
 import { useRoute } from "vue-router"
 import { useUserTeam } from "src/composables/userTeam"
 import { computed } from "vue"

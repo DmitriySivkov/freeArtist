@@ -48,16 +48,13 @@
 
 <script>
 import { useRoute } from "vue-router"
-import { computed, ref } from "vue"
-import { api } from "boot/axios"
-import { useStore } from "vuex"
+import { ref } from "vue"
+import { api } from "src/boot/axios"
 import { useUserStore } from "src/stores/user"
 export default {
 	setup () {
-		const $store = useStore()
-    const user_store = useUserStore()
+		const user_store = useUserStore()
 		const route = useRoute()
-		const user = computed(() => user_store.$state)
 
 		// const location = ref(
 		// 	user.value.location ? user.value.location.city.name_ru : null
@@ -70,7 +67,7 @@ export default {
 		const selected_option = ref(options.find((o) => o.value === 1).label)
 
 		const setLocationRange = (range) => {
-			$store.commit("user/SET_LOCATION_RANGE", range.value)
+      user_store.setLocationRange(range.value)
 		}
 
 		// const loadLocation = async (query, update) => {

@@ -82,7 +82,7 @@ export default {
 	setup() {
 		const $q = useQuasar()
 		const $router = useRouter()
-    const user_store = useUserStore()
+		const user_store = useUserStore()
 		const { Storage } = Plugins
 
 		const { notifySuccess, notifyError } = useNotification()

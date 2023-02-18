@@ -24,13 +24,13 @@ export default {
 			firstDayOfWeek: 1
 		}
 
-    const showOrders = (date) => {
-      if (date === null) return
+		const showOrders = (date) => {
+			if (date === null) return
 
-      order_store.getList({
-        filter: { date }
-      })
-    }
+			order_store.getList({
+				filter: { date }
+			})
+		}
 
 		return {
 			qdate,

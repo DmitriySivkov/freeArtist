@@ -3,7 +3,7 @@ import { Plugins } from "@capacitor/core"
 import { useUserStore } from "src/stores/user"
 
 export default async ({ store }) => {
-  const user_store = useUserStore(store)
+	const user_store = useUserStore(store)
 
 	Loading.show({
 		spinnerColor: "primary",

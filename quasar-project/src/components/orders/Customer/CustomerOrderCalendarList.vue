@@ -57,7 +57,7 @@ import { computed } from "vue"
 import { useOrderStore } from "src/stores/order"
 export default {
 	setup() {
-    const order_store = useOrderStore()
+		const order_store = useOrderStore()
 		const order_list = computed(() => order_store.data)
 
 		return {

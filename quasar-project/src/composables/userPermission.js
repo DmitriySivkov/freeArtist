@@ -2,7 +2,7 @@ import { useUserStore } from "src/stores/user"
 import { useTeamStore } from "src/stores/team"
 
 export const useUserPermission = () => {
-  const user_store = useUserStore()
+	const user_store = useUserStore()
 	const team_store = useTeamStore()
 
 	const hasPermission = (team_id, permission_name) => {

@@ -29,7 +29,7 @@ import { useOrderStore } from "src/stores/order"
 export default {
 	setup() {
 		const cart_store = useCartStore()
-    const order_store = useOrderStore()
+		const order_store = useOrderStore()
 
 		const cart = computed(() => cart_store.data)
 

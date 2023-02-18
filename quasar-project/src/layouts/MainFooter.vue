@@ -56,8 +56,8 @@ import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
 		const $router = useRouter()
-    const cart_store = useCartStore()
-    const user_store = useUserStore()
+		const cart_store = useCartStore()
+		const user_store = useUserStore()
 		const route = $router.currentRoute
 		const user = computed(() => user_store.$state)
 		const cartCounter = computed(

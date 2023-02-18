@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import ProducerProductList from "src/components/producers/ProducerProductList"
-import ProducerProductSettingList from "src/components/producers/ProducerProductSettingList"
+import ProducerProductList from "src/components/producers/ProducerProductList.vue"
+import ProducerProductSettingList from "src/components/producers/ProducerProductSettingList.vue"
 import { useRoute } from "vue-router"
 import { useUserTeam } from "src/composables/userTeam"
 import { computed, ref } from "vue"
@@ -74,7 +74,7 @@ export default {
 		ProducerProductSettingList
 	},
 	setup() {
-    const user_store = useUserStore()
+		const user_store = useUserStore()
 		const $route = useRoute()
 		const { user_teams } = useUserTeam()
 		const { hasPermission } = useUserPermission()

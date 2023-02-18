@@ -6,127 +6,134 @@ import { LocalStorage } from "quasar"
 
 export const useUserStore = defineStore("user", {
 	state: () => ({
-    is_logged: false,
-    personal_tab: "user",
-    location: null,
-    location_range: 1,
-    data: {}
+		is_logged: false,
+		personal_tab: "user",
+		location: null,
+		location_range: 1,
+		data: {}
 	}),
 
 	actions: {
-    async login(payload) {
-      const team_store = useTeamStore()
-      const relation_request_store = useRelationRequestStore()
+		async login(payload) {
+			const team_store = useTeamStore()
+			const relation_request_store = useRelationRequestStore()
 
-      const response = await api.post("auth", payload)
+			const response = await api.post("auth", payload)
 
-      if (response.data.token)
-        api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
+			if (response.data.token)
+				api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
 
-      this.data = response.data.user
+			this.data = response.data.user
 
-      team_store.setUserTeams(response.data.user_teams)
+			team_store.setUserTeams(response.data.user_teams)
 
-      relation_request_store.setUserRequests(response.data.user_requests)
-      relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
+			relation_request_store.setUserRequests(response.data.user_requests)
+			relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
 
-      this.is_logged = true
+			this.is_logged = true
 
-      return response
-    },
+			return response
+		},
 
-    async signUp(payload) {
-      const response = await api.post("register", payload)
+		async signUp(payload) {
+			const response = await api.post("register", payload)
 
-      if (response.data.token)
-        api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
+			if (response.data.token)
+				api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
 
-      this.data = response.data.user
-      this.is_logged = true
+			this.data = response.data.user
+			this.is_logged = true
 
-      return response
-    },
+			return response
+		},
 
-    async logout(payload) {
-      const team_store = useTeamStore()
-      const relation_request_store = useRelationRequestStore()
+		async logout(payload) {
+			const team_store = useTeamStore()
+			const relation_request_store = useRelationRequestStore()
 
-      await api.post("personal/logout", payload)
+			await api.post("personal/logout", payload)
 
-      this.data = {}
+			this.data = {}
 
-      this.switchPersonal("user")
+			this.switchPersonal("user")
 
-      team_store.emptyUserTeams()
-      relation_request_store.emptyUserRequests()
+			team_store.emptyUserTeams()
+			relation_request_store.emptyUserRequests()
 
-      this.is_logged = false
-    },
+			this.is_logged = false
+		},
 
-    async authViaToken({ token }) {
-      if (token && token.value)
-        api.defaults.headers.common["Authorization"] = "Bearer " + token.value
+		async authViaToken({ token }) {
+			const team_store = useTeamStore()
+			const relation_request_store = useRelationRequestStore()
 
-      const response = await api.post("authViaToken")
+			if (token && token.value)
+				api.defaults.headers.common["Authorization"] = "Bearer " + token.value
 
-      if (response.data) {
-        this.data = response.data.user
-        team_store.setUserTeams(response.data.user_teams)
+			const response = await api.post("authViaToken")
 
-        relation_request_store.setUserRequests(response.data.user_requests)
-        relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
+			if (response.data) {
+				this.data = response.data.user
+				team_store.setUserTeams(response.data.user_teams)
 
-        this.is_logged = true
-      }
-    },
+				relation_request_store.setUserRequests(response.data.user_requests)
+				relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
 
-    async registerProducer(payload) {
-      const team_store = useTeamStore()
+				this.is_logged = true
+			}
+		},
 
-      const response = await api.post("personal/producers/register", { ...payload })
+		async registerProducer(payload) {
+			const team_store = useTeamStore()
 
-      team_store.setUserTeams(response.data.team)
+			const response = await api.post("personal/producers/register", { ...payload })
 
-      this.setRole(response.data.role)
-    },
+			team_store.setUserTeams(response.data.team)
 
-    switchPersonal(personal_tab) {
-      this.personal_tab = personal_tab
-      LocalStorage.set("personal_tab", personal_tab)
-    },
+			this.setRole(response.data.role)
+		},
 
-    async createRequest(payload) {
-      const relation_request_store = useRelationRequestStore()
+		switchPersonal(personal_tab) {
+			this.personal_tab = personal_tab
+			LocalStorage.set("personal_tab", personal_tab)
+		},
 
-      const response = await api.post("personal/users/relationRequests/create", { ...payload })
+		async createRequest(payload) {
+			const relation_request_store = useRelationRequestStore()
 
-      relation_request_store.setUserRequests(response.data)
-    },
+			const response = await api.post("personal/users/relationRequests/create", { ...payload })
 
-    async setRelationRequestStatus({ request_id, status_id }) {
-      const relation_request_store = useRelationRequestStore()
+			relation_request_store.setUserRequests(response.data)
+		},
 
-      const response = await api.post(
-        "personal/users/relationRequests/" + request_id + "/setStatus",
-        { status_id }
-      )
+		async setRelationRequestStatus({ request_id, status_id }) {
+			const relation_request_store = useRelationRequestStore()
 
-      relation_request_store.setUserRelationRequestStatus({
-        request_id: response.data.id,
-        status_id: response.data.status.id
-      })
-    },
+			const response = await api.post(
+				"personal/users/relationRequests/" + request_id + "/setStatus",
+				{ status_id }
+			)
 
-    async setLocation() {
-      const response = await api.get("user/location")
-      this.location = response.data
-    },
+			relation_request_store.setUserRelationRequestStatus({
+				request_id: response.data.id,
+				status_id: response.data.status.id
+			})
+		},
 
-    setRole(role) {
-      if (this.data.roles.find((r) => r.id === role.id))
-        return
+		async setLocation() {
+			const response = await api.get("user/location")
+			this.location = response.data
+		},
 
-      this.data.roles = [...this.data.roles, role]
-    }
+		setRole(role) {
+			if (this.data.roles.find((r) => r.id === role.id))
+				return
+
+			this.data.roles = [...this.data.roles, role]
+		},
+
+		setLocationRange(range) {
+			this.location_range = range
+		}
 	}
 })
