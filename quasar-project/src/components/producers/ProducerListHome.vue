@@ -32,8 +32,8 @@
 					class="row"
 				>
 					<div
-						style="height:250px"
-						class="col-3"
+						style="height:200px"
+						class="col-xs-12 col-md-3"
 					>
 						<q-img
 							style="height:100%"
