@@ -1,7 +1,5 @@
 <template>
-	<suspense>
-		<ProducerListHome />
-	</suspense>
+	<ProducerListHome />
 </template>
 
 <script>

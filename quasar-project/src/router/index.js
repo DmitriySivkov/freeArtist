@@ -14,7 +14,7 @@ import routes from "src/router/routes"
 export default route( async ({ store, ssrContext }) => {
 	const createHistory = process.env.SERVER
 		? createMemoryHistory
-		: (process.env.VUE_ROUTER_MODE === "history" ? createWebHistory : createWebHashHistory)
+		: createWebHistory
 
 	return createRouter({
 		scrollBehavior: () => ({left: 0, top: 0}),

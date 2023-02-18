@@ -67,7 +67,7 @@ export default {
 		const selected_option = ref(options.find((o) => o.value === 1).label)
 
 		const setLocationRange = (range) => {
-      user_store.setLocationRange(range.value)
+			user_store.setLocationRange(range.value)
 		}
 
 		// const loadLocation = async (query, update) => {

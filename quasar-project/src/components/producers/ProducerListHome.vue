@@ -4,47 +4,45 @@
 		:rows="producers"
 		:columns="columns"
 		row-key="id"
-		v-model:pagination="pagination"
+		:rows-per-page-options="[0]"
+		:pagination="pagination"
 		hide-header
 		@request="onRequest"
 		class="home__producers-table"
 	>
 		<template v-slot:item="props">
-			<div
-				class="q-table__grid-item col-xs-12 col-md-6"
-				style="min-height:300px"
+			<q-card
+				style="height:200px"
+				class="bg-primary text-white q-pa-xs"
+				:class="{ 'bg-light-green-2': cart.hasOwnProperty(props.row.id) }"
+				@click="show(props.row.id)"
 			>
-				<q-card
-					class="full-height bg-primary text-white q-pa-xs"
-					:class="{ 'bg-light-green-2': cart.hasOwnProperty(props.row.id) }"
-					@click="show(props.row.id)"
-				>
-					<div class="row q-mb-xs">
-						<q-card
-							flat
-							class="col-12 bg-indigo-10 q-pa-sm"
-						>
-							<span class="text-h6">{{ props.row.display_name }}</span>
-							<span v-if="cart.hasOwnProperty(props.row.id)">
-								{{ " (" + cart[props.row.id].products.length + ")" }}
-							</span>
-						</q-card>
-					</div>
-					<div class="row">
-						<q-card
-							flat
-							class="col-xs-12 col-md-4 bg-indigo-10"
-							:class="{'q-pa-xs':props.row.logo}"
-						>
-							<q-img
-								:class="{'bg-white':!props.row.logo}"
-								:src="props.row.logo ? backend_server + '/storage/' + props.row.logo : 'no-image.png'"
-								fit="contain"
-							/>
-						</q-card>
-					</div>
-				</q-card>
-			</div>
+				<div class="row q-mb-xs">
+					<q-card
+						flat
+						class="col-12 bg-indigo-10 q-pa-sm"
+					>
+						<span class="text-h6">{{ props.row.display_name }}</span>
+						<span v-if="cart.hasOwnProperty(props.row.id)">
+							{{ " (" + cart[props.row.id].products.length + ")" }}
+						</span>
+					</q-card>
+				</div>
+				<div class="row">
+					<q-card
+						style=""
+						flat
+						class="col-xs-12 col-md-4 bg-indigo-10"
+						:class="{'q-pa-xs':props.row.logo}"
+					>
+						<q-img
+							:class="{'bg-white':!props.row.logo}"
+							:src="props.row.logo ? backend_server + '/storage/' + props.row.logo : 'no-image.png'"
+							fit="cover"
+						/>
+					</q-card>
+				</div>
+			</q-card>
 		</template>
 		<template v-slot:bottom="pagination">
 			<div class="col-xs-12 col-md-7 q-pl-xs q-pr-xs">
@@ -99,7 +97,7 @@ import { Loading } from "quasar"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
 export default ({
-	async setup() {
+	setup() {
 		const cart_store = useCartStore()
 		const user_store = useUserStore()
 		const $router = useRouter()
@@ -111,10 +109,8 @@ export default ({
 		)
 
 		const producers = ref([])
-		const pagination = ref({
-			page: 1,
-			rowsPerPage: 4
-		})
+
+		const pagination = ref({ rowsPerPage: 0 })
 
 		const columns = [
 			{ name: "display_name", align: "center", label: "Название", field: row => row.display_name, sortable: true },
@@ -149,7 +145,7 @@ export default ({
 
 		watch(() => user.value.location_range, () => loadProducers())
 
-		await loadProducers()
+		loadProducers()
 
 		const onRequest = async(props) => {
 			await loadProducers(props.pagination.page)

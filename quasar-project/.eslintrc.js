@@ -65,7 +65,7 @@ module.exports = {
 
     "semi": ["error", "never"],
     "quotes": ["error", "double"],
-    // "indent": ["error", "tab"],
+    "indent": ["error", "tab"],
     "vue/max-attributes-per-line": ["error", {
       "singleline": {
         "max": 1
@@ -74,7 +74,7 @@ module.exports = {
         "max": 1
       }
     }],
-    // "vue/html-indent": ["error", "tab"],
+    "vue/html-indent": ["error", "tab"],
     "vue/html-quotes": ["error", "double"],
     "vue/html-closing-bracket-newline": ["error", {
       "singleline": "never",
