@@ -52,14 +52,14 @@
 </template>
 
 <script>
-import ProducerProductList from "src/components/producers/ProducerProductList"
-import ProducerProductSettingList from "src/components/producers/ProducerProductSettingList"
+import ProducerProductList from "src/components/producers/ProducerProductList.vue"
+import ProducerProductSettingList from "src/components/producers/ProducerProductSettingList.vue"
 import { useRoute } from "vue-router"
 import { useUserTeam } from "src/composables/userTeam"
 import { computed, ref } from "vue"
 import { Loading } from "quasar"
 import { useUserPermission } from "src/composables/userPermission"
-import { useStore } from "vuex"
+import { useUserStore } from "src/stores/user"
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		Loading.show({
@@ -74,11 +74,11 @@ export default {
 		ProducerProductSettingList
 	},
 	setup() {
-		const $store = useStore()
+		const user_store = useUserStore()
 		const $route = useRoute()
 		const { user_teams } = useUserTeam()
 		const { hasPermission } = useUserPermission()
-		const user = computed(() => $store.state.user)
+		const user = computed(() => user_store.$state)
 		const team = computed(() =>
 			user_teams.value.find((t) => t.detailed.id === parseInt($route.params.producer_id))
 		)

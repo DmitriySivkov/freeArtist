@@ -1,3 +1,7 @@
+import { useProducerStore } from "src/stores/producer"
+
 export default async ({ store }) => {
-  	await store.dispatch("producer/getList")
+	const producer_store = useProducerStore(store)
+
+	await producer_store.getList()
 }

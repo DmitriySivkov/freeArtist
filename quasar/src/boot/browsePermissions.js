@@ -1,3 +1,7 @@
+import { usePermissionStore } from "src/stores/permission"
+
 export default async ({ store }) => {
-  	await store.dispatch("permission/getList")
+	const permission_store = usePermissionStore(store)
+
+	await permission_store.getList()
 }

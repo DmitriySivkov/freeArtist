@@ -1,3 +1,7 @@
+import { useRoleStore } from "src/stores/role"
+
 export default async ({ store }) => {
-  	await store.dispatch("role/getList")
+	const role_store = useRoleStore(store)
+
+	await role_store.getList()
 }

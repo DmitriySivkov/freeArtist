@@ -107,14 +107,14 @@
 </template>
 
 <script>
-import { useStore } from "vuex"
 import { computed, ref } from "vue"
 import { useCartManager } from "src/composables/cartManager"
+import { useCartStore } from "src/stores/cart"
 export default {
 	setup() {
-		const $store = useStore()
+		const $store = useCartStore()
 		const producer = computed(() => $store.state.producer.detail)
-		const cart = computed(() => $store.state.cart.data)
+		const cart = computed(() => cart_store.data)
 		const product_composition = ref({})
 		const isCompositionVisible = ref(false)
 

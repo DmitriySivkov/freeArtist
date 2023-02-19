@@ -6,7 +6,7 @@
 import { useRoute } from "vue-router"
 import { useUserTeam } from "src/composables/userTeam"
 import { computed } from "vue"
-import ProducerProfile from "src/components/producers/ProducerProfile"
+import ProducerProfile from "src/components/producers/ProducerProfile.vue"
 export default {
 	components: { ProducerProfile },
 	setup() {

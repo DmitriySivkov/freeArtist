@@ -1,5 +1,5 @@
 import { reactive } from "vue"
-import { useStore } from "vuex"
+import { useCartStore } from "src/stores/cart"
 
 /**
  * чтобы использовать этот composable необходимо инициировать объект products
@@ -8,7 +8,7 @@ import { useStore } from "vuex"
  * в products необязательно должны лежать продукты только одного продюсера
  * */
 export const useCartManager = (productsInitObject) => {
-	const $store = useStore()
+	const cart_store = useCartStore()
 	const products = reactive(productsInitObject)
 
 	const increase = (producer, product_id) => {
@@ -16,14 +16,14 @@ export const useCartManager = (productsInitObject) => {
 		if (products[product_id] === producerProduct.amount) return
 		products[product_id]++
 
-		$store.commit("cart/ADD_TO_CART", { producer, products })
+		cart_store.addToCart({ producer, products })
 	}
 
 	const decrease = (producer, product_id) => {
 		if (products[product_id] === 0) return
 		products[product_id]--
 
-		$store.commit("cart/ADD_TO_CART", { producer, products })
+		cart_store.addToCart({ producer, products })
 	}
 
 	const orderAmountChanged = (producer, product_id, product_amount) => {
@@ -33,7 +33,7 @@ export const useCartManager = (productsInitObject) => {
 		if (product_amount > producerProduct.amount)
 			products[product_id] = producerProduct.amount
 
-		$store.commit("cart/ADD_TO_CART", { producer, products })
+		cart_store.addToCart({ producer, products })
 	}
 
 	return { products, increase, decrease, orderAmountChanged }

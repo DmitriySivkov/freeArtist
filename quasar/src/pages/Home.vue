@@ -1,11 +1,9 @@
 <template>
-	<suspense>
-		<ProducerListHome />
-	</suspense>
+	<ProducerListHome />
 </template>
 
 <script>
-import ProducerListHome from "src/components/producers/ProducerListHome"
+import ProducerListHome from "src/components/producers/ProducerListHome.vue"
 export default {
 	components: { ProducerListHome },
 }

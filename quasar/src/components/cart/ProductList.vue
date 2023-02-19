@@ -68,13 +68,13 @@
 </template>
 
 <script>
-import { useStore } from "vuex"
 import { computed } from "vue"
 import { useCartManager } from "src/composables/cartManager"
+import { useCartStore } from "src/stores/cart"
 export default {
 	setup() {
-		const $store = useStore()
-		const cart = computed(() => Object.values($store.state.cart.data))
+		const cart_store = useCartStore()
+		const cart = computed(() => Object.values(cart_store.data))
 		const { products, increase, decrease, orderAmountChanged } = useCartManager(
 			cart.value.length > 0
 				? cart.value.reduce((accum, cart_item) => ({

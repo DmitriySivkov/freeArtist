@@ -8,15 +8,18 @@
 </template>
 
 <script>
-import ProductList from "src/components/cart/ProductList"
-import OrderSummary from "src/components/cart/OrderSummary"
-import { useStore } from "vuex"
+import ProductList from "src/components/cart/ProductList.vue"
+import OrderSummary from "src/components/cart/OrderSummary.vue"
+import { useCartStore } from "src/stores/cart"
 import { computed, onMounted, ref } from "vue"
 export default {
-	components: { ProductList, OrderSummary },
+	components: {
+		ProductList,
+		OrderSummary
+	},
 	setup() {
-		const $store = useStore()
-		const cart = computed(() => Object.values($store.state.cart.data))
+		const cart_store = useCartStore()
+		const cart = computed(() => Object.values(cart_store.data))
 
 		const cartOrderSummaryComponent = ref(null)
 

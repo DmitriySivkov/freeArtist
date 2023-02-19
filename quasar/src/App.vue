@@ -1,8 +1,8 @@
 <template>
 	<router-view />
 </template>
-<script>
 
+<script>
 import { defineComponent, watch } from "vue"
 import { echo } from "boot/ws"
 import { useUser } from "src/composables/user"

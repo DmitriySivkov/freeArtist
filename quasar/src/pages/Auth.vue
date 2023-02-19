@@ -6,15 +6,17 @@
 </template>
 
 <script>
-import Login from "src/components/auth/Login"
-import Logout from "src/components/auth/Logout"
+import Login from "src/components/auth/Login.vue"
+import Logout from "src/components/auth/Logout.vue"
 import { computed } from "vue"
-import { useStore } from "vuex"
+import { useUserStore } from "src/stores/user"
 export default {
 	components: { Login, Logout },
 	setup() {
-		const $store = useStore()
-		const user = computed(() => $store.state.user)
+		const user_store = useUserStore()
+
+		const user = computed(() => user_store.$state)
+
 		return {
 			user
 		}

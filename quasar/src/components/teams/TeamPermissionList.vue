@@ -33,6 +33,7 @@
 import { useStore } from "vuex"
 import { computed } from "vue"
 import { useUserTeam } from "src/composables/userTeam"
+import { useTeamStore } from "src/stores/team"
 export default {
 	props: {
 		userId: Number,
@@ -47,6 +48,7 @@ export default {
 	},
 	setup(props) {
 		const $store = useStore()
+		const team_store = useTeamStore()
 		const { getTeamUser } = useUserTeam()
 		const all_producer_permissions = computed(() => $store.state.permission.producer)
 
@@ -58,7 +60,7 @@ export default {
 			},
 			set: (permission_ids) => {
 				let permissions = JSON.parse(JSON.stringify(all_producer_permissions.value)) // computed prop deep copy
-				$store.commit("team/SYNC_TEAM_USER_PERMISSIONS", {
+				team_store.commitTeamUserPermissions({
 					team_id: props.team.id,
 					user_id: props.userId,
 					permissions: permissions.filter((p) => permission_ids.includes(p.id))

@@ -2,7 +2,7 @@ export default [
 	{
 		name: "personal_producer",
 		path: "personal/producer",
-		component: () => import("pages/personal/producer/Profiles"),
+		component: () => import("pages/personal/producer/Profiles.vue"),
 		meta: {
 			route_name: "Список профилей"
 		}
@@ -10,7 +10,7 @@ export default [
 	{
 		name: "personal_producer_orders",
 		path: "personal/producer/orders",
-		component: () => import("pages/personal/producer/Orders"),
+		component: () => import("pages/personal/producer/Orders.vue"),
 		meta: {
 			route_name: "Список заказов"
 		}
@@ -18,7 +18,7 @@ export default [
 	{
 		name: "personal_register_producer",
 		path: "personal/register-producer",
-		component: () => import("pages/personal/RegisterProducer"),
+		component: () => import("pages/personal/RegisterProducer.vue"),
 		meta: {
 			route_name: "Зарегистрировать изготовителя"
 		}
@@ -26,7 +26,7 @@ export default [
 	{
 		name: "personal_producer_profile_detail",
 		path: "personal/producer/:producer_id/profile",
-		component: () => import("pages/personal/producer/ProfileDetail"),
+		component: () => import("pages/personal/producer/ProfileDetail.vue"),
 		meta: {
 			route_name: "Профиль"
 		}
@@ -34,7 +34,7 @@ export default [
 	{
 		name: "personal_producer_products",
 		path: "personal/producer/products",
-		component: () => import("pages/personal/producer/Products"),
+		component: () => import("pages/personal/producer/Products.vue"),
 		meta: {
 			route_name: "Настройки продуктов"
 		}
@@ -42,7 +42,7 @@ export default [
 	{
 		name: "personal_producer_products_detail",
 		path: "personal/producer/:producer_id/products",
-		component: () => import("pages/personal/producer/ProductsDetail"),
+		component: () => import("pages/personal/producer/ProductsDetail.vue"),
 		meta: {
 			route_name: "Настройки продуктов"
 		}

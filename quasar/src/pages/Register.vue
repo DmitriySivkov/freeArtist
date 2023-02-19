@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import UserRegister from "src/components/users/UserRegister"
+import UserRegister from "src/components/users/UserRegister.vue"
 export default {
 	components: { UserRegister }
 }

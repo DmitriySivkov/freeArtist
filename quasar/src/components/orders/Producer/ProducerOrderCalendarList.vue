@@ -1,8 +1,8 @@
 <template>
-	<div v-if="orderList.length > 0">
+	<div v-if="order_list.length > 0">
 		<q-virtual-scroll
 			style="max-height: 376px;"
-			:items="orderList"
+			:items="order_list"
 			separator
 		>
 			<template v-slot="{ item, index }">
@@ -43,9 +43,9 @@
 					</div>
 				</div>
 				<q-separator
-					v-if="index !== (orderList.length - 1)"
+					v-if="index !== (order_list.length - 1)"
 					class="bg-indigo-8"
-					:class="{'q-mb-sm q-mt-sm': index !== (orderList.length - 1)}"
+					:class="{'q-mb-sm q-mt-sm': index !== (order_list.length - 1)}"
 				/>
 			</template>
 		</q-virtual-scroll>
@@ -66,14 +66,14 @@
 
 <script>
 import { computed } from "vue"
-import { useStore } from "vuex"
-
+import { useOrderStore } from "src/stores/order"
 export default {
 	setup() {
-		const $store = useStore()
-		const orderList = computed(() => $store.state.order.data)
+		const order_store = useOrderStore()
+		const order_list = computed(() => order_store.data)
+
 		return {
-			orderList
+			order_list
 		}
 	}
 }

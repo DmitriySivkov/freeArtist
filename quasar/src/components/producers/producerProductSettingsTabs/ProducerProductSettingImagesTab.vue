@@ -67,7 +67,7 @@ import { useStore } from "vuex"
 import { useUserTeam } from "src/composables/userTeam"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
-import AddImageDialog from "src/components/dialogs/AddImageDialog"
+import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
 export default {
 	components: {
 		// eslint-disable-next-line vue/no-unused-components

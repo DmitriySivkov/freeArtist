@@ -24,15 +24,15 @@
 </template>
 
 <script>
-import TeamUserList from "src/components/teams/TeamUserList"
-import TeamPermissionList from "src/components/teams/TeamPermissionList"
+import TeamUserList from "src/components/teams/TeamUserList.vue"
+import TeamPermissionList from "src/components/teams/TeamPermissionList.vue"
 import { useRoute } from "vue-router"
 import { useUserTeam } from "src/composables/userTeam"
 import { Loading } from "quasar"
 import { computed, ref } from "vue"
-import { useStore } from "vuex"
 import { useUserPermission } from "src/composables/userPermission"
 import { useNotification } from "src/composables/notification"
+import { useUserStore } from "src/stores/user"
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		Loading.show({
@@ -50,8 +50,10 @@ export default {
 		const team = computed(() =>
 			user_teams.value.find((team) => team.id === parseInt($route.params.team_id))
 		)
-		const $store = useStore()
-		const user = computed(() => $store.state.user)
+
+		const user_store = useUserStore()
+
+		const user = computed(() => user_store.$state)
 		const selected_user = ref(
 			team.value.users.find((u) => u.id === user.value.data.id).id
 		)

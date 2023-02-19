@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ProducerRegister from "src/components/producers/ProducerRegister"
+import ProducerRegister from "src/components/producers/ProducerRegister.vue"
 export default {
 	components: { ProducerRegister }
 }

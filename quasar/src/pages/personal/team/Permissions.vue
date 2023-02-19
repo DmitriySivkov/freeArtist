@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import TeamList from "src/components/teams/TeamList"
+import TeamList from "src/components/teams/TeamList.vue"
 import { computed } from "vue"
 import _ from "lodash"
 import { useUserTeam } from "src/composables/userTeam"

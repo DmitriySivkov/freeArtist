@@ -13,17 +13,17 @@
 
 <script>
 import { useRouter } from "vue-router"
-import { useStore } from "vuex"
+import { useUserStore } from "src/stores/user"
 import { useNotification } from "src/composables/notification"
 import { computed } from "vue"
 export default {
 	setup() {
 		const $router = useRouter()
-		const $store = useStore()
-		const user = computed(() => $store.state.user)
+		const user_store = useUserStore()
+		const user = computed(() => user_store.$state)
 		const { notifySuccess } = useNotification()
 		const logout = () => {
-			$store.dispatch("user/logout").then(() => {
+			user_store.logout().then(() => {
 				$router.push({name: "home"})
 				notifySuccess("До свидания!")
 			})
