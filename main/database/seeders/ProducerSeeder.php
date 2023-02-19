@@ -25,7 +25,7 @@ class ProducerSeeder extends Seeder
 			->first();
 
 		User::inRandomOrder()
-			->limit(3)
+			->limit(25)
 			->get()
 			->each(function (User $user) use ($producerRole, $permissionOwner) {
 				$producer = Producer::create();

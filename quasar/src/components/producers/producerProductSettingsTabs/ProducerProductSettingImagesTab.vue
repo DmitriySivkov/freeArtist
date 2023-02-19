@@ -63,11 +63,11 @@ import { useQuasar } from "quasar"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { ref, computed } from "vue"
-import { useStore } from "vuex"
 import { useUserTeam } from "src/composables/userTeam"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
+import { useProducerStore } from "src/stores/producer"
 export default {
 	components: {
 		// eslint-disable-next-line vue/no-unused-components
@@ -82,8 +82,8 @@ export default {
 	},
 	setup(props) {
 		const $q = useQuasar()
-		const $store = useStore()
 		const $router = useRouter()
+		const producer_store = useProducerStore()
 		const image = ref(null)
 		const file_picker = ref(null)
 		const is_dragging = ref(false)
@@ -138,7 +138,7 @@ export default {
 			let form_data = new FormData()
 			form_data.append("image", image.value)
 
-			$store.dispatch("producer/addProducerProductImage", {
+			producer_store.addProducerProductImage({
 				image: form_data,
 				producer_id: parseInt($router.currentRoute.value.params.producer_id),
 				product_id: props.selectedProduct.id

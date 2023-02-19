@@ -83,11 +83,10 @@
 <script>
 import { ref, computed } from "vue"
 import _ from "lodash"
-import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { useQuasar } from "quasar"
-
+import { useProducerStore } from "src/stores/producer"
 export default {
 	props: {
 		selectedProduct: {
@@ -99,8 +98,8 @@ export default {
 	emits: ["productCreated", "productDeleted"],
 	setup(props, { emit }) {
 		const $q = useQuasar()
-		const $store = useStore()
 		const $router = useRouter()
+		const producer_store = useProducerStore()
 		const { notifySuccess, notifyError } = useNotification()
 
 		const product = ref(_.clone(props.selectedProduct))
@@ -125,24 +124,27 @@ export default {
 				return
 
 			disable_submit.value = true
+
 			if (is_empty_product.value) {
-				$store.dispatch("producer/createProducerProduct", {
+				producer_store.createProducerProduct({
 					producer_id: parseInt($router.currentRoute.value.params.producer_id),
 					settings: {
 						title: product.value.title,
 						price: parseFloat(product.value.price).toFixed(2),
 						amount: product.value.amount
 					}
-				}).then((response) => {
-					emit("productCreated", response.data.id)
-					notifySuccess("Продукт '" + product.value.title + "' успешно создан")
-					disable_submit.value = false
-				}).catch((error) => {
-					notifyError(error.response.data)
-					disable_submit.value = false
 				})
+					.then((response) => {
+						emit("productCreated", response.data.id)
+						notifySuccess("Продукт '" + product.value.title + "' успешно создан")
+						disable_submit.value = false
+					})
+					.catch((error) => {
+						notifyError(error.response.data)
+						disable_submit.value = false
+					})
 			} else {
-				$store.dispatch("producer/syncProducerProductCommonSettings", {
+				producer_store.syncProducerProductCommonSettings({
 					producer_id: parseInt($router.currentRoute.value.params.producer_id),
 					product_id: props.selectedProduct.id,
 					settings: {
@@ -150,13 +152,15 @@ export default {
 						price: parseFloat(product.value.price).toFixed(2),
 						amount: product.value.amount
 					}
-				}).then(() => {
-					notifySuccess("Настройки продукта '" + product.value.title + "' успешно изменены")
-					disable_submit.value = false
-				}).catch((error) => {
-					notifyError(error.response.data)
-					disable_submit.value = false
 				})
+					.then(() => {
+						notifySuccess("Настройки продукта '" + product.value.title + "' успешно изменены")
+						disable_submit.value = false
+					})
+					.catch((error) => {
+						notifyError(error.response.data)
+						disable_submit.value = false
+					})
 			}
 		}
 
@@ -172,15 +176,17 @@ export default {
 				message: "Удалить продукт: " + product.value.title + " ?",
 				cancel: true,
 			}).onOk(() => {
-				$store.dispatch("producer/deleteProducerProduct", {
+				producer_store.deleteProducerProduct({
 					producer_id: parseInt($router.currentRoute.value.params.producer_id),
 					product_id: props.selectedProduct.id,
-				}).then(() => {
-					notifySuccess("Продукт '" + product.value.title + "' успешно удалён")
-					emit("productDeleted", props.selectedProduct.id)
-				}).catch((error) => {
-					notifyError(error.response.data)
 				})
+					.then(() => {
+						notifySuccess("Продукт '" + product.value.title + "' успешно удалён")
+						emit("productDeleted", props.selectedProduct.id)
+					})
+					.catch((error) => {
+						notifyError(error.response.data)
+					})
 			})
 		}
 

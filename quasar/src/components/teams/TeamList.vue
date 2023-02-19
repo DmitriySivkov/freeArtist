@@ -26,7 +26,6 @@
 
 <script>
 import { useRouter } from "vue-router"
-import { useStore } from "vuex"
 import { computed } from "vue"
 import { useUserStore } from "src/stores/user"
 export default ({
@@ -43,7 +42,6 @@ export default ({
 		}
 	},
 	setup(props) {
-		const $store = useStore()
 		const user_store = useUserStore()
 		const $router = useRouter()
 

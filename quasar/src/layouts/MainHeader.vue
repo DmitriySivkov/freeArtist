@@ -4,8 +4,7 @@
 		class="header"
 	>
 		<q-toolbar
-			style="min-height:90px"
-			class="q-pa-md justify-center"
+			class="q-pa-sm justify-center"
 		>
 			<div class="col-xs-12 col-lg-8">
 				<div

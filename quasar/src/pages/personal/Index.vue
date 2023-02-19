@@ -43,11 +43,12 @@ import NavigationUser from "src/pages/personal/user/Navigation.vue"
 import NavigationProducer from "src/pages/personal/producer/Navigation.vue"
 import { useUserRole } from "src/composables/userRole"
 import { ref } from "vue"
-import { useStore } from "vuex"
+import { useUserStore } from "src/stores/user"
+
 export default {
 	components: { NavigationUser, NavigationProducer },
 	setup() {
-		const $store = useStore()
+		const user_store = useUserStore()
 		const { user, userRoles } = useUserRole()
 		const selected_tab = ref(user.value.personal_tab)
 		const tabs = [
@@ -56,10 +57,7 @@ export default {
 		]
 
 		const switchPersonal = (personal_tab) =>
-			$store.dispatch(
-				"user/switchPersonal",
-				personal_tab
-			)
+			user_store.switchPersonal(personal_tab)
 
 		return {
 			user,

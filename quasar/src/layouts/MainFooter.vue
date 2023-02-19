@@ -3,7 +3,7 @@
 		elevated
 		class="footer"
 	>
-		<q-toolbar class="q-pa-md justify-center">
+		<q-toolbar class="q-pa-sm justify-center">
 			<div class="col-xs-12 col-lg-8">
 				<div class="row q-gutter-sm">
 					<div class="col-xs-shrink">

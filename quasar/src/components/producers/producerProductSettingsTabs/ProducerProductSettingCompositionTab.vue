@@ -91,7 +91,7 @@ import { ref } from "vue"
 import _ from "lodash"
 import { useNotification } from "src/composables/notification"
 import { useRouter } from "vue-router"
-import { useStore } from "vuex"
+import { useProducerStore } from "src/stores/producer"
 export default {
 	props: {
 		selectedProduct: {
@@ -101,7 +101,7 @@ export default {
 		isAbleToManageProduct: Boolean
 	},
 	setup(props) {
-		const $store = useStore()
+		const producer_store = useProducerStore()
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
 
@@ -133,18 +133,21 @@ export default {
 				return
 
 			disable_submit.value = true
-			$store.dispatch("producer/syncProducerProductCompositionSettings", {
+
+			producer_store.syncProducerProductCompositionSettings({
 				producer_id: parseInt($router.currentRoute.value.params.producer_id),
 				product_id: props.selectedProduct.id,
 				composition: composition.value
-			}).then(() => {
-				composition.value = _.cloneDeep(props.selectedProduct.composition)
-				notifySuccess("Состав продукта '" + props.selectedProduct.title + "' успешно изменен")
-				disable_submit.value = false
-			}).catch((error) => {
-				notifyError(error.response.data)
-				disable_submit.value = false
 			})
+				.then(() => {
+					composition.value = _.cloneDeep(props.selectedProduct.composition)
+					notifySuccess("Состав продукта '" + props.selectedProduct.title + "' успешно изменен")
+					disable_submit.value = false
+				})
+				.catch((error) => {
+					notifyError(error.response.data)
+					disable_submit.value = false
+				})
 
 		}
 

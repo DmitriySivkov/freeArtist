@@ -59,12 +59,12 @@
 <script>
 import { ref } from "vue"
 import { useNotification } from "src/composables/notification"
-import { useStore } from "vuex"
 import { useUserPermission } from "src/composables/userPermission"
 import AddImageDialog from "components/dialogs/AddImageDialog"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { useQuasar } from "quasar"
 import { cameraService } from "src/services/cameraService"
+import { useProducerStore } from "src/stores/producer"
 export default {
 	props: {
 		team: {
@@ -74,7 +74,7 @@ export default {
 	},
 	setup(props) {
 		const $q = useQuasar()
-		const $store = useStore()
+		const producer_store = useProducerStore()
 		const { hasPermission } = useUserPermission()
 		const { Camera } = Plugins
 		const { base64ToBlob } = cameraService()
@@ -103,7 +103,7 @@ export default {
 			form_data.append("logo", image.value)
 
 			// todo validate with q-file help
-			$store.dispatch("producer/setProducerLogo", {
+			producer_store.setProducerLogo({
 				logo: form_data,
 				producer_id: props.team.detailed_id
 			}).then(() => {

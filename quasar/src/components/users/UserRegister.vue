@@ -87,7 +87,6 @@
 
 <script>
 import { ref } from "vue"
-import { useStore } from "vuex"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { useQuasar } from "quasar"
@@ -96,7 +95,6 @@ import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
 		const $q = useQuasar()
-		const $store = useStore()
 		const user_store = useUserStore()
 		const $router = useRouter()
 		const { notifySuccess, notifyError } = useNotification()
