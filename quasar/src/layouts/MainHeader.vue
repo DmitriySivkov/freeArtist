@@ -3,9 +3,7 @@
 		elevated
 		class="header"
 	>
-		<q-toolbar
-			class="q-pa-sm justify-center"
-		>
+		<q-toolbar class="q-pa-sm justify-center">
 			<div class="col-xs-12 col-lg-8">
 				<div
 					v-if="route.name === 'home'"
@@ -13,9 +11,10 @@
 				>
 					<div class="col-xs-12 col-md-4">
 						<q-select
+							:disable="is_fetching_producers"
 							filled
 							square
-							v-model="selected_option"
+							:model-value="selected_option"
 							:options="options"
 							bg-color="white"
 							@update:model-value="setLocationRange"
@@ -47,12 +46,14 @@
 
 <script>
 import { useRoute } from "vue-router"
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import { api } from "src/boot/axios"
 import { useUserStore } from "src/stores/user"
+import { useProducerStore } from "src/stores/producer"
 export default {
 	setup () {
 		const user_store = useUserStore()
+		const producer_store = useProducerStore()
 		const route = useRoute()
 
 		// const location = ref(
@@ -63,11 +64,17 @@ export default {
 			{ label: "Рядом с вами", value: 1 },
 			{ label: "Все", value: 2 }
 		]
-		const selected_option = ref(options.find((o) => o.value === 1).label)
+
+		const selected_option = ref(
+			options.find((o) => o.value === 1).label
+		)
 
 		const setLocationRange = (range) => {
+			selected_option.value = range.label
 			user_store.setLocationRange(range.value)
 		}
+
+		const is_fetching_producers = computed(() => producer_store.is_fetching)
 
 		// const loadLocation = async (query, update) => {
 		// 	if (query.length < 1) return
@@ -90,7 +97,8 @@ export default {
 			route,
 			selected_option,
 			options,
-			setLocationRange
+			setLocationRange,
+			is_fetching_producers
 		}
 	}
 }

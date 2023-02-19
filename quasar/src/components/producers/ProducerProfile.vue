@@ -60,7 +60,7 @@
 import { ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { useUserPermission } from "src/composables/userPermission"
-import AddImageDialog from "components/dialogs/AddImageDialog"
+import AddImageDialog from "components/dialogs/AddImageDialog.vue"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { useQuasar } from "quasar"
 import { cameraService } from "src/services/cameraService"

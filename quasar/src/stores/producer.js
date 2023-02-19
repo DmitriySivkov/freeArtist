@@ -17,7 +17,8 @@ export const useProducerStore = defineStore("producer", {
 				title: "coworker",
 				label: "партнёр"
 			}
-		]
+		],
+		is_fetching: false
 	}),
 
 	actions: {
@@ -41,7 +42,7 @@ export const useProducerStore = defineStore("producer", {
 		},
 
 		//todo - rollback on error
-		async syncProducerProductCommonSettings({commit}, { producer_id, product_id, settings }) {
+		async syncProducerProductCommonSettings({ producer_id, product_id, settings }) {
 			await api.post(
 				"personal/producers/" + producer_id + "/products/" + product_id + "/syncCommonSettings",
 				{
@@ -53,7 +54,7 @@ export const useProducerStore = defineStore("producer", {
 			team_store.syncProducerProductCommonSettings({ producer_id, product_id, settings})
 		},
 
-		async createProducerProduct({commit}, { producer_id, settings }) {
+		async createProducerProduct({ producer_id, settings }) {
 			const response = await api.post(
 				"personal/producers/" + producer_id + "/products",
 				{ settings }
@@ -69,7 +70,7 @@ export const useProducerStore = defineStore("producer", {
 			return response
 		},
 
-		async deleteProducerProduct({commit}, { producer_id, product_id }) {
+		async deleteProducerProduct({ producer_id, product_id }) {
 			await api.delete(
 				"personal/producers/" + producer_id + "/products/" + product_id,
 				{
@@ -102,7 +103,7 @@ export const useProducerStore = defineStore("producer", {
 			})
 		},
 
-		async addProducerProductImage({commit}, { producer_id, product_id, image }) {
+		async addProducerProductImage({ producer_id, product_id, image }) {
 			const response = await api.post(
 				"/personal/producers/" + producer_id + "/products/" + product_id + "/addImage",
 				image,
@@ -117,7 +118,7 @@ export const useProducerStore = defineStore("producer", {
 			})
 		},
 
-		async setProducerLogo({commit}, { producer_id, logo }) {
+		async setProducerLogo({ producer_id, logo }) {
 			const response = await api.post(
 				"/personal/producers/" + producer_id + "/setLogo",
 				logo,
@@ -129,6 +130,10 @@ export const useProducerStore = defineStore("producer", {
 				producer_id,
 				logo: response.data
 			})
+		},
+
+		setFetchingState(is_fetching) {
+			this.is_fetching = is_fetching
 		}
 	}
 })

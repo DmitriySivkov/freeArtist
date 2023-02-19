@@ -60,14 +60,19 @@ import { computed, ref } from "vue"
 import { Loading } from "quasar"
 import { useUserPermission } from "src/composables/userPermission"
 import { useUserStore } from "src/stores/user"
+import { useProducerStore } from "src/stores/producer"
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		Loading.show({
 			spinnerColor: "primary",
 		})
-		return store.dispatch(
-			"producer/getProducerProductList", parseInt(currentRoute.params.producer_id)
-		).then(() => Loading.hide())
+
+		const producer_store = useProducerStore(store)
+
+		return producer_store.getProducerProductList(parseInt(currentRoute.params.producer_id))
+			.then(() =>
+				Loading.hide()
+			)
 	},
 	components: {
 		ProducerProductList,

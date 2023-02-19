@@ -33,13 +33,19 @@ import { computed, ref } from "vue"
 import { useUserPermission } from "src/composables/userPermission"
 import { useNotification } from "src/composables/notification"
 import { useUserStore } from "src/stores/user"
+import { useTeamStore } from "src/stores/team"
 export default {
 	preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		Loading.show({
 			spinnerColor: "primary",
 		})
-		return store.dispatch("team/getUserList", parseInt(currentRoute.params.team_id))
-			.then(() => Loading.hide())
+
+		const team_store = useTeamStore(store)
+
+		return team_store.getUserList(parseInt(currentRoute.params.team_id))
+			.then(() =>
+				Loading.hide()
+			)
 	},
 	components: { TeamUserList, TeamPermissionList },
 	setup() {

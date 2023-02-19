@@ -57,10 +57,13 @@ import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
+import { useProducerStore } from "src/stores/producer"
 export default ({
 	setup() {
 		const cart_store = useCartStore()
 		const user_store = useUserStore()
+		const producer_store = useProducerStore()
+
 		const $router = useRouter()
 		const user = computed(() => user_store.$state)
 		const backend_server = process.env.BACKEND_SERVER
@@ -84,6 +87,7 @@ export default ({
 		const fetchProducers = async() => {
 			const limit = 4
 
+			producer_store.setFetchingState(true)
 			const response = await api.get("producers", {
 				params: {
 					offset: producers_length.value,
@@ -93,10 +97,13 @@ export default ({
 				}
 			})
 
-			if (response.data.length === 0)
-				scroll_component.value.stop()
-
 			producers.value = [...producers.value, ...response.data]
+
+			producer_store.setFetchingState(false)
+
+			if (response.data.length < limit && scroll_component.value) {
+				scroll_component.value.stop()
+			}
 		}
 
 		const loadProducers = async (index, done) => {
@@ -104,8 +111,9 @@ export default ({
 			done()
 		}
 
-		watch(() => user.value.location_range, async (val) => {
+		watch(() => user.value.location_range,() => {
 			producers.value = []
+			scroll_component.value.stop()
 			scroll_component.value.resume()
 			scroll_component.value.poll()
 		})

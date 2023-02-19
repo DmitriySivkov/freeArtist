@@ -33,7 +33,10 @@
 						<div class="row items-center">
 							<div
 								class="col-xs-12 col-md-7 q-pa-md cursor-pointer"
-								@click="toggleComposition(product.composition)"
+								@click="toggleComposition({
+									product_id: product.id,
+									composition: product.composition
+								})"
 							>
 								<div class="text-center">{{ product.title }}</div>
 								<div class="text-center">{{ product.price }} р.</div>
@@ -76,19 +79,13 @@
 			</q-markup-table>
 		</div>
 		<div
-			v-if="isCompositionVisible"
+			v-if="visible_composition"
 			class="col-xs-12 col-md-6"
 		>
 			<q-card
 				class="full-height bg-indigo-8"
 				dark
 			>
-				<q-card-section>
-					<q-btn
-						icon="highlight_off"
-						@click="isCompositionVisible = false"
-					/>
-				</q-card-section>
 				<q-list>
 					<q-item
 						v-for="(ingredient, index) in product_composition"
@@ -110,13 +107,15 @@
 import { computed, ref } from "vue"
 import { useCartManager } from "src/composables/cartManager"
 import { useCartStore } from "src/stores/cart"
+import { useProducerStore } from "src/stores/producer"
 export default {
 	setup() {
-		const $store = useCartStore()
-		const producer = computed(() => $store.state.producer.detail)
+		const cart_store = useCartStore()
+		const producer_store = useProducerStore()
+		const producer = computed(() => producer_store.detail)
 		const cart = computed(() => cart_store.data)
 		const product_composition = ref({})
-		const isCompositionVisible = ref(false)
+		const visible_composition = ref(null)
 
 		const { products, increase, decrease, orderAmountChanged } =
 			useCartManager(cart.value.hasOwnProperty(producer.value.id) ?
@@ -129,17 +128,21 @@ export default {
 				)
 			)
 
-		const toggleComposition = (composition) => {
+		const toggleComposition = ({product_id, composition}) => {
+			if (visible_composition.value === product_id) {
+				visible_composition.value = null
+				return
+			}
+
 			product_composition.value = composition
-			if (!isCompositionVisible.value)
-				isCompositionVisible.value = true
+			visible_composition.value = product_id
 		}
 
 		return {
 			producer,
 			products,
 			product_composition,
-			isCompositionVisible,
+			visible_composition,
 			toggleComposition,
 			increase,
 			decrease,
