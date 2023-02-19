@@ -38,8 +38,13 @@ class ProducerController extends Controller
 					$builder->where('city', 'like', '%' . $request->get('city') . '%')
 				)
 			)
+			->when(
+				$request->get('offset') && $request->get('offset') !== 0,
+				fn(Builder $builder) => $builder->offset($request->get('offset'))
+			)
+			->limit($request->get('limit'))
 			->orderBy('teams.display_name')
-			->paginate($request->get('per_page'));
+			->get();
 
 		return response()->json($producers);
 	}
