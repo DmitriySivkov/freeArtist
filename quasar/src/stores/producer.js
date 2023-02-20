@@ -38,7 +38,8 @@ export const useProducerStore = defineStore("producer", {
 			const response = await api.get("personal/producers/" + producer_id + "/products")
 
 			const team_store = useTeamStore()
-			team_store.setProducerProducts({ producer_id, products: response.data })
+
+			team_store.user_teams.find((t) => t.detailed.id === producer_id).products = response.data
 		},
 
 		//todo - rollback on error
@@ -51,7 +52,12 @@ export const useProducerStore = defineStore("producer", {
 			)
 
 			const team_store = useTeamStore()
-			team_store.syncProducerProductCommonSettings({ producer_id, product_id, settings})
+
+			const product = team_store.user_teams.find((t) => t.detailed.id === producer_id)
+				.products
+				.find((product) => product.id === product_id)
+
+			Object.assign(product, settings)
 		},
 
 		async createProducerProduct({ producer_id, settings }) {
@@ -62,10 +68,9 @@ export const useProducerStore = defineStore("producer", {
 
 			const team_store = useTeamStore()
 
-			team_store.createProducerProduct({
-				producer_id,
-				product: response.data
-			})
+			team_store.user_teams.find((t) => t.detailed.id === producer_id)
+				.products
+				.unshift(response.data)
 
 			return response
 		},
@@ -82,10 +87,9 @@ export const useProducerStore = defineStore("producer", {
 
 			const team_store = useTeamStore()
 
-			team_store.deleteProducerProduct({
-				producer_id,
-				product_id
-			})
+			const producer = team_store.user_teams.find((t) => t.detailed.id === producer_id)
+
+			producer.products = producer.products.filter((product) => product.id !== product_id)
 		},
 
 		async syncProducerProductCompositionSettings({producer_id, product_id, composition}) {
@@ -96,11 +100,10 @@ export const useProducerStore = defineStore("producer", {
 
 			const team_store = useTeamStore()
 
-			team_store.syncProductProductCompositionSettings({
-				producer_id,
-				product_id,
-				composition: response.data
-			})
+			team_store.user_teams.find((t) => t.detailed.id === producer_id)
+				.products
+				.find((product) => product.id === product_id)
+				.composition = response.data
 		},
 
 		async addProducerProductImage({ producer_id, product_id, image }) {
@@ -111,11 +114,15 @@ export const useProducerStore = defineStore("producer", {
 
 			const team_store = useTeamStore()
 
-			team_store.addProducerProductImage({
-				producer_id,
-				product_id,
-				image: response.data
-			})
+			const product = team_store.user_teams.find((t) => t.detailed.id === producer_id)
+				.products
+				.find((product) => product.id === product_id)
+
+			if (!product.hasOwnProperty("images")) {
+				product.images = [response.data]
+			} else {
+				product.images.unshift(response.data)
+			}
 		},
 
 		async setProducerLogo({ producer_id, logo }) {
@@ -126,10 +133,8 @@ export const useProducerStore = defineStore("producer", {
 
 			const team_store = useTeamStore()
 
-			team_store.setProducerLogo({
-				producer_id,
-				logo: response.data
-			})
+			team_store.user_teams.find((t) => t.detailed.id === producer_id)
+				.detailed.logo = response.data
 		},
 
 		setFetchingState(is_fetching) {

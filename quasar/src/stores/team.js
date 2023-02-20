@@ -1,5 +1,4 @@
 import { defineStore } from "pinia"
-import * as teamProducerActions from "src/stores/morph/teamProducer"
 import { api } from "src/boot/axios"
 import { useRelationRequestStore } from "src/stores/relation-request"
 
@@ -9,8 +8,6 @@ export const useTeamStore = defineStore("team", {
 	}),
 
 	actions: {
-		...teamProducerActions,
-
 		setUserTeams(team) {
 			if (this.user_teams.length > 0)
 				this.user_teams = [...this.user_teams, team]

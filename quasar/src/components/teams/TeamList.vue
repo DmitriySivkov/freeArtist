@@ -45,24 +45,27 @@ export default ({
 		const user_store = useUserStore()
 		const $router = useRouter()
 
-		const user = computed(() => user_store.$state)
-
 		const personal_types = {
 			producer: "App\\Models\\Producer"
 		}
 
-		const personal_types_to_detail = {
-			"App\\Models\\Producer": "producer_id"
-		}
-
 		const teams_filtered = computed(
-			() => props.teams.filter((t) => t.detailed_type === personal_types[user.value.personal_tab])
+			() => props.teams.filter((t) => t.detailed_type === personal_types[user_store.personal_tab])
 		)
 
-		const goToDetail = (team) => $router.push({
-			name: props.detailRouteName,
-			params: { team_id: team.id, [personal_types_to_detail[team.detailed_type]]: team.detailed.id }
-		})
+		const goToDetail = (team) => {
+			let detailed_route_param = { team_id: team.id }
+
+			if (props.detailRouteName.includes("_producer_"))
+				detailed_route_param = { producer_id: team.detailed.id}
+
+			$router.push({
+				name: props.detailRouteName,
+				params: {
+					...detailed_route_param
+				}
+			})
+		}
 
 		return {
 			goToDetail,

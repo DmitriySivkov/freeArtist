@@ -76,7 +76,7 @@ import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
 import { Plugins } from "@capacitor/core"
-import { useQuasar } from "quasar"
+import { useQuasar, Loading } from "quasar"
 import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
@@ -91,7 +91,9 @@ export default {
 		const is_pwd = ref(true)
 
 		const onSubmit = async() => {
-			user_store.login({
+			Loading.show({ spinnerColor: "primary" })
+
+			await user_store.login({
 				phone: phone.value,
 				password: password.value,
 				is_mobile: $q.platform.is.capacitor
@@ -109,6 +111,8 @@ export default {
 					.reduce((accum, val) => accum.concat(...val), [])
 				notifyError(errors)
 			})
+
+			Loading.hide()
 		}
 
 		const onReset = () => {
