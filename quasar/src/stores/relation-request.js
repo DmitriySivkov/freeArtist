@@ -1,6 +1,4 @@
 import { defineStore } from "pinia"
-import { LocalStorage } from "quasar"
-import { useNotification } from "src/composables/notification"
 
 export const useRelationRequestStore = defineStore("relation_request", {
 	state: () => ({

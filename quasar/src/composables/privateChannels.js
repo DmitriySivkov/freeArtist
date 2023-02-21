@@ -1,7 +1,6 @@
 import { echo } from "boot/ws"
 import { useUserTeam } from "src/composables/userTeam"
 import { useUser } from "src/composables/user"
-import { useRelationRequestManager } from "src/composables/relationRequestManager"
 import { useTeamStore } from "src/stores/team"
 import { useUserStore } from "src/stores/user"
 import { useRelationRequestStore } from "src/stores/relation-request"
@@ -10,7 +9,6 @@ import { useRelationRequestStore } from "src/stores/relation-request"
 export const usePrivateChannels = () => {
 	const { user_teams } = useUserTeam()
 	const { user } = useUser()
-	const { relation_request } = useRelationRequestManager()
 
 	const user_store = useUserStore()
 	const team_store = useTeamStore()
@@ -24,7 +22,7 @@ export const usePrivateChannels = () => {
 					status_id: e.model.status.id
 				})
 
-				if (e.model.status.id === relation_request.value.statuses.accepted.id) {
+				if (e.model.status.id === relation_request_store.statuses.accepted.id) {
 					user_store.setRole(e.role)
 					team_store.setUserTeams(e.team)
 					connectPermissions()

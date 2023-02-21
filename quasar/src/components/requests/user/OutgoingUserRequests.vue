@@ -81,18 +81,20 @@
 <script>
 import { useRelationRequestManager} from "src/composables/relationRequestManager"
 import { useNotification } from "src/composables/notification"
+import { useRelationRequestStore } from "src/stores/relation-request"
 export default {
 	setup() {
+		const relation_request_store = useRelationRequestStore()
+
 		const
 			{
-				relation_request,
 				user_outgoing_requests,
 				userSetRequestStatus
 			} = useRelationRequestManager()
 
 		const { notifySuccess, notifyError } = useNotification()
 		const cancelRequest = (request_id) => {
-			userSetRequestStatus(request_id, relation_request.value.statuses.rejected_by_contributor.id)
+			userSetRequestStatus(request_id, relation_request_store.statuses.rejected_by_contributor.id)
 				.then(() => {
 					notifySuccess("Заявка отменена")
 				})
@@ -101,7 +103,7 @@ export default {
 				})
 		}
 		const restoreRequest = (request_id) => {
-			userSetRequestStatus(request_id, relation_request.value.statuses.pending.id)
+			userSetRequestStatus(request_id, relation_request_store.statuses.pending.id)
 				.then(() => {
 					notifySuccess("Заявка восстановлена")
 				})
@@ -111,7 +113,6 @@ export default {
 		}
 
 		return {
-			relation_request,
 			user_outgoing_requests,
 			cancelRequest,
 			restoreRequest

@@ -22,7 +22,7 @@
 						Отправитель: {{ props.row.from.name ?? props.row.from.phone }}
 					</div>
 					<div
-						v-if="props.row.status.id !== relation_request.statuses.rejected_by_contributor.id"
+						v-if="props.row.status.id !== relation_request_store.statuses.rejected_by_contributor.id"
 						class="col-xs-12 col-md-4"
 					>
 						<div class="row q-col-gutter-sm">
@@ -88,6 +88,7 @@
 <script>
 import { useRelationRequestManager } from "src/composables/relationRequestManager"
 import { useNotification } from "src/composables/notification"
+import { useRelationRequestStore } from "src/stores/relation-request"
 export default {
 	props: {
 		team: {
@@ -96,13 +97,15 @@ export default {
 		}
 	},
 	setup(props) {
+		const relation_request_store = useRelationRequestStore()
+
 		const
 			{
-				relation_request,
 				teamAcceptRequest,
 				teamRejectRequest,
 				teamIncomingRequests
 			} = useRelationRequestManager()
+
 		const { notifySuccess, notifyError } = useNotification()
 
 		const acceptRequest = (request_id) => {
@@ -118,7 +121,7 @@ export default {
 		}
 
 		return {
-			relation_request,
+			relation_request_store,
 			teamIncomingRequests,
 			acceptRequest,
 			rejectRequest

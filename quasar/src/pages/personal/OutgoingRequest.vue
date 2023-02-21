@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import UserCreateOutgoingRequest from "components/users/UserCreateOutgoingRequest"
+import UserCreateOutgoingRequest from "components/users/UserCreateOutgoingRequest.vue"
 export default {
 	components: { UserCreateOutgoingRequest },
 }

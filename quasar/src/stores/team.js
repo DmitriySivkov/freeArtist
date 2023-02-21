@@ -63,6 +63,7 @@ export const useTeamStore = defineStore("team", {
 			const response = await api.post("personal/teams/" + team_id + "/relationRequests/" + request_id + "/reject")
 
 			const relation_request_store = useRelationRequestStore()
+
 			relation_request_store.setUserTeamRelationRequestStatus({
 				request_id: response.data.id,
 				status_id: response.data.status.id
