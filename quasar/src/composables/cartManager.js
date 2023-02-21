@@ -13,6 +13,7 @@ export const useCartManager = (productsInitObject) => {
 
 	const increase = (producer, product_id) => {
 		let producerProduct = producer.products.find((product) => product.id === product_id)
+
 		if (products[product_id] === producerProduct.amount) return
 		products[product_id]++
 

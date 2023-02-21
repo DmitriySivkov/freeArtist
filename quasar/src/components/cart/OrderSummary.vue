@@ -36,7 +36,7 @@ export default {
 		const total_price = computed(() => {
 			return Object.values(cart.value).reduce(
 				(accum, cart_item) =>
-					accum + cart_item.products.reduce((ac, product) => ac + product.data.price * product.amount, 0),
+					accum + cart_item.product_list.reduce((ac, product) => ac + product.data.price * product.amount, 0),
 				0).toFixed(2)
 		})
 

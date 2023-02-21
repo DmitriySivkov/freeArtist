@@ -23,7 +23,7 @@
 						/>
 					</div>
 					<div
-						v-if="user.is_logged"
+						v-if="is_user_logged"
 						class="col-xs-shrink"
 					>
 						<q-btn
@@ -58,17 +58,20 @@ export default {
 		const $router = useRouter()
 		const cart_store = useCartStore()
 		const user_store = useUserStore()
+
 		const route = $router.currentRoute
-		const user = computed(() => user_store.$state)
+
+		const is_user_logged = computed(() => user_store.is_logged)
+
 		const cartCounter = computed(
 			() => Object.values(cart_store.data)
-				.reduce((accum, cart_item) => accum + cart_item.products.length, 0)
+				.reduce((accum, cart_item) => accum + cart_item.product_list.length, 0)
 		)
 
 		return {
 			cartCounter,
 			route,
-			user
+			is_user_logged
 		}
 	}
 }

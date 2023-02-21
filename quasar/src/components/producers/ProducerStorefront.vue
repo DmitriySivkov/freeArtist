@@ -120,7 +120,7 @@ export default {
 		const { products, increase, decrease, orderAmountChanged } =
 			useCartManager(cart.value.hasOwnProperty(producer.value.id) ?
 				producer.value.products.reduce(function(accum, product) {
-					let cart_product = cart.value[producer.value.id].products.find((cart_product) => cart_product.data.id === product.id)
+					let cart_product = cart.value[producer.value.id].product_list.find((cart_product) => cart_product.data.id === product.id)
 					return {...accum, [product.id]: typeof cart_product !== "undefined" ? cart_product.amount : 0}
 				}, {}) :
 				producer.value.products.reduce(

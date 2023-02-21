@@ -19,8 +19,11 @@
 			>
 				<div class="col-12 bg-indigo-10 q-pa-md">
 					<span class="text-h6">{{ producer.display_name }}</span>
-					<span v-if="cart.hasOwnProperty(producer.id)">
-						{{ " (" + cart[producer.id].products.length + ")" }}
+					<span
+						v-if="cart.hasOwnProperty(producer.id)"
+						class="text-h6"
+					>
+						{{ " (" + cart[producer.id].product_list.length + ")" }}
 					</span>
 				</div>
 			</q-card-section>

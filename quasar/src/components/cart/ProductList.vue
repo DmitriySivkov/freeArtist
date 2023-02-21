@@ -10,12 +10,12 @@
 			<div class="q-pa-xs col-xs-12">
 				<q-card>
 					<q-card-section>
-						{{ props.row.producer.title }}
+						{{ props.row.producer.team.display_name }}
 					</q-card-section>
 					<q-separator />
 					<q-card-section>
 						<q-list
-							v-for="(product, index) in props.row.products"
+							v-for="(product, index) in props.row.product_list"
 							:key="index"
 						>
 							<q-item>
@@ -79,7 +79,7 @@ export default {
 			cart.value.length > 0
 				? cart.value.reduce((accum, cart_item) => ({
 					...accum,
-					...cart_item.products.reduce((ac, product) => ({
+					...cart_item.product_list.reduce((ac, product) => ({
 						...ac, [product.data.id]:product.amount
 					}), {})
 				}), {})
