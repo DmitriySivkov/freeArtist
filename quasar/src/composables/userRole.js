@@ -1,16 +1,15 @@
 import { computed } from "vue"
-import { useUserStore } from "src/stores/user"
+import { useRoleStore } from "src/stores/role"
 
 export const useUserRole = () => {
-	const user_store = useUserStore()
-	const user = computed(() => user_store.$state)
+	const role_store = useRoleStore()
 
 	const hasUserRole = (roleName) =>
-		user.value.data.roles
+		role_store.user_roles
 			.reduce((accum, role) => [...accum, role.name], [])
 			.includes(roleName)
 
-	const userRoles = computed(() => user.value.data.roles)
+	const user_roles = computed(() => role_store.user_roles)
 
-	return { user, hasUserRole, userRoles }
+	return { hasUserRole, user_roles }
 }

@@ -3,6 +3,8 @@ import { api } from "src/boot/axios"
 import { useTeamStore } from "src/stores/team"
 import { useRelationRequestStore } from "src/stores/relation-request"
 import { LocalStorage } from "quasar"
+import { usePermissionStore } from "src/stores/permission"
+import { useRoleStore } from "src/stores/role"
 
 export const useUserStore = defineStore("user", {
 	state: () => ({
@@ -17,6 +19,8 @@ export const useUserStore = defineStore("user", {
 		async login(payload) {
 			const team_store = useTeamStore()
 			const relation_request_store = useRelationRequestStore()
+			const permission_store = usePermissionStore()
+			const role_store = useRoleStore()
 
 			const response = await api.post("auth", payload)
 
@@ -24,6 +28,9 @@ export const useUserStore = defineStore("user", {
 				api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
 
 			this.data = response.data.user
+
+			role_store.setUserRoles(response.data.user_roles)
+			permission_store.setUserPermissions(response.data.user_permissions)
 
 			team_store.setUserTeams(response.data.user_teams)
 
@@ -64,6 +71,8 @@ export const useUserStore = defineStore("user", {
 		async authViaToken({ token }) {
 			const team_store = useTeamStore()
 			const relation_request_store = useRelationRequestStore()
+			const permission_store = usePermissionStore()
+			const role_store = useRoleStore()
 
 			if (token && token.value)
 				api.defaults.headers.common["Authorization"] = "Bearer " + token.value
@@ -72,6 +81,10 @@ export const useUserStore = defineStore("user", {
 
 			if (response.data) {
 				this.data = response.data.user
+
+				role_store.setUserRoles(response.data.user_roles)
+				permission_store.setUserPermissions(response.data.user_permissions)
+
 				team_store.setUserTeams(response.data.user_teams)
 
 				relation_request_store.setUserRequests(response.data.user_requests)
@@ -83,12 +96,13 @@ export const useUserStore = defineStore("user", {
 
 		async registerProducer(payload) {
 			const team_store = useTeamStore()
+			const role_store = useRoleStore()
 
 			const response = await api.post("personal/producers/register", { ...payload })
 
 			team_store.setUserTeams(response.data.team)
 
-			this.setRole(response.data.role)
+			role_store.setUserRole(response.data.role)
 		},
 
 		switchPersonal(personal_tab) {
@@ -121,13 +135,6 @@ export const useUserStore = defineStore("user", {
 		async setLocation() {
 			const response = await api.get("user/location")
 			this.location = response.data
-		},
-
-		setRole(role) {
-			if (this.data.roles.find((r) => r.id === role.id))
-				return
-
-			this.data.roles = [...this.data.roles, role]
 		},
 
 		setLocationRange(range) {

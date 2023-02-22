@@ -104,9 +104,18 @@ class ProducerService implements ProducerServiceContract
 				Producer::class => 'city'
 			]),
 			'role' => $user->roles()
+				->select([
+					'roles.id',
+					'roles.name',
+					'roles.display_name',
+					'roles.description',
+					'teams.id as team_id'
+				])
+				->leftJoin('teams', 'role_user.team_id', '=', 'teams.id')
 				->where('role_id', Role::ROLE_PRODUCER['id'])
 				->where('team_id', $team->id)
 				->first()
+				->makeHidden('pivot')
 		]);
 	}
 

@@ -68,13 +68,34 @@ class AuthService
 	 */
 	private function makeResponse(array $additional = [])
 	{
-		$this->user->load([
-			'roles',
-			'permissions'
-		]);
+		$permissions = $this->user->permissions()
+			->select([
+				'permissions.id',
+				'permissions.name',
+				'permissions.display_name',
+				'permissions.description',
+				'teams.id as team_id'
+			])
+			->leftJoin('teams', 'permission_user.team_id', '=', 'teams.id')
+			->get()
+			->makeHidden('pivot');
+
+		$roles = $this->user->roles()
+			->select([
+				'roles.id',
+				'roles.name',
+				'roles.display_name',
+				'roles.description',
+				'teams.id as team_id'
+			])
+			->leftJoin('teams', 'role_user.team_id', '=', 'teams.id')
+			->get()
+			->makeHidden('pivot');
 
 		return response()->json([
 			'user' => $this->user,
+			'user_permissions' => $permissions,
+			'user_roles' => $roles,
 			'user_teams' => $this->getUserTeams(),
 			'user_requests' => $this->getUserRequests(),
 			'user_teams_requests' => $this->getTeamRequests()

@@ -3,6 +3,7 @@ import { api } from "src/boot/axios"
 
 export const useRoleStore = defineStore("role", {
 	state: () => ({
+		user_roles: [],
 		data: {},
 		types: {
 			producer: 1,
@@ -12,6 +13,17 @@ export const useRoleStore = defineStore("role", {
 	}),
 
 	actions: {
+		setUserRole(role) {
+			if (this.user_roles.find((r) => r.id === role.id))
+				return
+
+			this.user_roles = [...this.user_roles, role]
+		},
+
+		setUserRoles(roles) {
+			this.user_roles = roles
+		},
+
 		async getList() {
 			const response = await api.get("roles")
 

@@ -1,6 +1,6 @@
 <template>
 	<q-tabs
-		v-if="userRoles.length > 0"
+		v-if="user_roles.length > 0"
 		v-model="selected_tab"
 		dense
 		inline-label
@@ -44,13 +44,12 @@ import NavigationProducer from "src/pages/personal/producer/Navigation.vue"
 import { useUserRole } from "src/composables/userRole"
 import { ref } from "vue"
 import { useUserStore } from "src/stores/user"
-
 export default {
 	components: { NavigationUser, NavigationProducer },
 	setup() {
 		const user_store = useUserStore()
-		const { user, userRoles } = useUserRole()
-		const selected_tab = ref(user.value.personal_tab)
+		const { user_roles } = useUserRole()
+		const selected_tab = ref(user_store.personal_tab)
 		const tabs = [
 			{ name: "user", icon: "account_box", label: "Пользователь" },
 			{ name: "producer", icon: "work_outline", label: "Изготовитель" }
@@ -60,10 +59,9 @@ export default {
 			user_store.switchPersonal(personal_tab)
 
 		return {
-			user,
 			tabs,
 			selected_tab,
-			userRoles,
+			user_roles,
 			switchPersonal
 		}
 	}
