@@ -104,8 +104,12 @@ export default {
 						value: response.data.token
 					})
 				}
+
 				notifySuccess("Добро пожаловать!")
+
 				$router.push({name: "personal"})
+
+				user_store.setIsLogged(true)
 			}).catch((error) => {
 				const errors = Object.values(error.response.data.errors)
 					.reduce((accum, val) => accum.concat(...val), [])

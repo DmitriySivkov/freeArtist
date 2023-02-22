@@ -30,8 +30,6 @@ export const useUserStore = defineStore("user", {
 			relation_request_store.setUserRequests(response.data.user_requests)
 			relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
 
-			this.is_logged = true
-
 			return response
 		},
 
@@ -42,7 +40,7 @@ export const useUserStore = defineStore("user", {
 				api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
 
 			this.data = response.data.user
-			this.is_logged = true
+			this.setIsLogged(true)
 
 			return response
 		},
@@ -60,7 +58,7 @@ export const useUserStore = defineStore("user", {
 			team_store.emptyUserTeams()
 			relation_request_store.emptyUserRequests()
 
-			this.is_logged = false
+			this.setIsLogged(false)
 		},
 
 		async authViaToken({ token }) {
@@ -79,7 +77,7 @@ export const useUserStore = defineStore("user", {
 				relation_request_store.setUserRequests(response.data.user_requests)
 				relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
 
-				this.is_logged = true
+				this.setIsLogged(true)
 			}
 		},
 
@@ -134,6 +132,10 @@ export const useUserStore = defineStore("user", {
 
 		setLocationRange(range) {
 			this.location_range = range
+		},
+
+		setIsLogged(is_logged) {
+			this.is_logged = is_logged
 		}
 	}
 })
