@@ -57,14 +57,14 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import { useNotification } from "src/composables/notification"
-import { useUserPermission } from "src/composables/userPermission"
 import AddImageDialog from "components/dialogs/AddImageDialog.vue"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { useQuasar } from "quasar"
 import { cameraService } from "src/services/cameraService"
 import { useProducerStore } from "src/stores/producer"
+import { usePermissionStore } from "src/stores/permission"
 export default {
 	props: {
 		team: {
@@ -75,7 +75,7 @@ export default {
 	setup(props) {
 		const $q = useQuasar()
 		const producer_store = useProducerStore()
-		const { hasPermission } = useUserPermission()
+		const permission_store = usePermissionStore()
 		const { Camera } = Plugins
 		const { base64ToBlob } = cameraService()
 
@@ -85,10 +85,12 @@ export default {
 		const is_dragging = ref(false)
 		const is_loading = ref(false)
 
-		const can_manage_logo = hasPermission(
-			parseInt(props.team.id),
-			"producer_logo"
+		const can_manage_logo = computed(() =>
+			permission_store.user_permissions.filter((p) => p.team_id === parseInt(props.team.id))
+				.map((p) => p.name)
+				.includes("producer_logo")
 		)
+
 		const backend_server = process.env.BACKEND_SERVER
 		const { notifySuccess } = useNotification()
 
