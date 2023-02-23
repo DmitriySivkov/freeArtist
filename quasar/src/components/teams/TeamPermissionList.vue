@@ -64,15 +64,6 @@ export default {
 					team_id: props.team.id,
 					user_id: props.userId,
 					permissions: permissions.filter((p) => permission_ids.includes(p.id))
-						.map((p) => {
-							p.pivot = {
-								permission_id: p.id,
-								team_id: props.team.id,
-								user_id: props.userId,
-								user_type: "App\\Models\\User"
-							}
-							return p
-						})
 				})
 			}
 		})
