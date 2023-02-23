@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 /**
- * TODO - uuid
+ * App\Models\Order
  *
  * @property int $id
  * @property int $user_id
@@ -43,6 +43,8 @@ class Order extends Model
 	const ORDER_PAYMENT_METHOD_CASH = 2;
 
     protected $guarded = [];
+
+	protected $hidden = ['pivot'];
 
     protected $casts = [
     	'products' => 'json'

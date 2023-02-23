@@ -5,11 +5,9 @@ namespace App\Models;
 
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Database\Eloquent\BroadcastsEvents;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 
 /**
  * App\Models\RelationRequest
@@ -25,25 +23,31 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $from
  * @property-read Model|\Eloquent $to
- * @method static Builder|RelationRequest newModelQuery()
- * @method static Builder|RelationRequest newQuery()
- * @method static Builder|RelationRequest query()
- * @method static Builder|RelationRequest whereCreatedAt($value)
- * @method static Builder|RelationRequest whereFromId($value)
- * @method static Builder|RelationRequest whereFromType($value)
- * @method static Builder|RelationRequest whereId($value)
- * @method static Builder|RelationRequest whereMessage($value)
- * @method static Builder|RelationRequest whereStatus($value)
- * @method static Builder|RelationRequest whereToId($value)
- * @method static Builder|RelationRequest whereToType($value)
- * @method static Builder|RelationRequest whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest query()
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereFromId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereFromType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereToId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereToType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RelationRequest whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \App\Models\User|null $lastStatusChanger
- * @method static Builder|RelationRequest whereStatusChangedByUser($value)
  */
 class RelationRequest extends Model
 {
     use BroadcastsEvents, HasFactory;
+
+    protected $guarded = [];
+
+	protected $hidden = ['pivot'];
+
+    protected $with = ['from', 'to'];
+
+	protected $appends = ['status'];
 
 	const STATUS_PENDING = [
 		'id' => 1,
@@ -68,12 +72,6 @@ class RelationRequest extends Model
 		self::STATUS_REJECTED_BY_RECIPIENT,
 		self::STATUS_REJECTED_BY_CONTRIBUTOR
 	];
-
-    protected $guarded = [];
-
-    protected $with = ['from', 'to'];
-
-	protected $appends = ['status'];
 
 	/**
 	 * Get the channels that model events should broadcast on.

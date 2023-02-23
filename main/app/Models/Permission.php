@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Laratrust\Models\LaratrustPermission;
 
-
 /**
  * App\Models\Permission
  *
@@ -34,9 +33,7 @@ class Permission extends LaratrustPermission
 {
     public $guarded = [];
 
-	protected $hidden = [
-		'pivot'
-	];
+	protected $hidden = ['pivot'];
 
 	/** producer permissions */
 	const PERMISSIONS_PRODUCER = [

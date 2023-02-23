@@ -30,6 +30,8 @@ class Role extends LaratrustRole
 {
     public $guarded = [];
 
+	protected $hidden = ['pivot'];
+
 	const ROLES = [
 		self::ROLE_PRODUCER,
 		self::ROLE_ADVERTISER,

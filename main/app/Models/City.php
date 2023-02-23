@@ -71,6 +71,8 @@ class City extends Model
 
 	protected $guarded = [];
 
+	protected $hidden = ['pivot'];
+
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
