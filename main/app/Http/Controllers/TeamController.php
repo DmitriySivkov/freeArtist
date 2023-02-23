@@ -18,9 +18,17 @@ class TeamController extends Controller
 	{
 		return $team->users->load([
 				'permissions' => function($query) use ($team) {
-					$query->where('team_id', $team->id);
+						$query->select([
+							'permissions.id',
+							'permissions.name',
+							'permissions.display_name',
+							'permissions.description',
+							'teams.id as team_id'
+						])
+						->where('permission_user.team_id', $team->id)
+						->leftJoin('teams', 'permission_user.team_id', '=', 'teams.id');
 				}
-			]);
+			])->makeHidden(['pivot']);
 	}
 
 	/**

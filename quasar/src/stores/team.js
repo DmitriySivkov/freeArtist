@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
 import { useRelationRequestStore } from "src/stores/relation-request"
+import {usePermissionStore} from "stores/permission"
 
 export const useTeamStore = defineStore("team", {
 	state: () => ({
@@ -32,8 +33,13 @@ export const useTeamStore = defineStore("team", {
 		commitTeamUserPermissions({ team_id, user_id, permissions }) {
 			const team = this.user_teams.find((team) => team.id === team_id)
 
-			if (team.hasOwnProperty("users"))
-				team.users.find((user) => user.id === user_id).permissions = permissions
+			if (team.hasOwnProperty("users")) {
+				const team_user = team.users.find((user) => user.id === user_id)
+
+				if (team_user) {
+					team_user.permissions = permissions
+				}
+			}
 		},
 
 		async syncTeamUserPermissions({ team_id, user_id, permissions }) {
@@ -53,6 +59,7 @@ export const useTeamStore = defineStore("team", {
 			const response = await api.post("personal/teams/" + team_id + "/relationRequests/" + request_id + "/accept")
 
 			const relation_request_store = useRelationRequestStore()
+
 			relation_request_store.setUserTeamRelationRequestStatus({
 				request_id: response.data.id,
 				status_id: response.data.status.id

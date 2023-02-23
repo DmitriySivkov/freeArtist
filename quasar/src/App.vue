@@ -5,7 +5,7 @@
 <script>
 import { defineComponent, watch } from "vue"
 import { echo } from "boot/ws"
-import { useUser } from "src/composables/user"
+import { useUserStore } from "src/stores/user"
 import { usePrivateChannels } from "src/composables/privateChannels"
 import { Plugins } from "@capacitor/core"
 import { useQuasar } from "quasar"
@@ -14,14 +14,14 @@ export default defineComponent({
 	setup() {
 		const $q = useQuasar()
 		const { StatusBar } = Plugins
-		const { user } = useUser()
+		const user_store = useUserStore()
 		const private_channels = usePrivateChannels()
 
 		const connectPrivateChannels = () => {
 			if (!window.Pusher.isConnected)
 				echo.connect()
 
-			if (user.value.data.id) {
+			if (user_store.data.id) {
 				private_channels.connectRelationRequestUser()
 				private_channels.connectRelationRequestTeam()
 				private_channels.connectPermissions()
@@ -40,7 +40,7 @@ export default defineComponent({
 
 		connectPrivateChannels()
 
-		watch(() => user.value.data.id, (userId) => {
+		watch(() => user_store.data.id, (userId) => {
 			if (userId) {
 				connectPrivateChannels()
 			} else {

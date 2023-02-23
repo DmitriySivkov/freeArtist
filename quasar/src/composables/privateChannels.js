@@ -4,18 +4,19 @@ import { useUser } from "src/composables/user"
 import { useTeamStore } from "src/stores/team"
 import { useUserStore } from "src/stores/user"
 import { useRelationRequestStore } from "src/stores/relation-request"
+import { usePermissionStore } from "src/stores/permission"
 
 // todo - make less WS connections ?
 export const usePrivateChannels = () => {
 	const { user_teams } = useUserTeam()
-	const { user } = useUser()
 
 	const user_store = useUserStore()
 	const team_store = useTeamStore()
 	const relation_request_store = useRelationRequestStore()
+	const permission_store = usePermissionStore()
 
 	const connectRelationRequestUser = () => {
-		echo.private("relation-requests.user." + user.value.data.id)
+		echo.private("relation-requests.user." + user_store.data.id)
 			.listen(".RelationRequestUpdated", (e) => {
 				relation_request_store.setUserRelationRequestStatus({
 					request_id: e.model.id,
@@ -57,6 +58,14 @@ export const usePrivateChannels = () => {
 							user_id: e.user.id,
 							permissions: e.permissions
 						})
+
+						if (e.user.id === user_store.data.id) {
+							permission_store.syncUserTeamPermissions({
+								team_id: e.team.id,
+								permissions: e.permissions
+							})
+						}
+
 					})
 			}
 		}

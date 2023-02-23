@@ -10,6 +10,13 @@ export const usePermissionStore = defineStore("permission", {
 	}),
 
 	actions: {
+		syncUserTeamPermissions({team_id, permissions}) {
+			this.user_permissions = [
+				...this.user_permissions.filter((p) => p.team_id !== team_id),
+				...permissions
+			]
+		},
+
 		setUserPermissions(permissions) {
 			this.user_permissions = permissions
 		},
