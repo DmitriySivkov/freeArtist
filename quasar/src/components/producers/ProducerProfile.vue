@@ -16,7 +16,7 @@
 					/>
 					<span v-else>Добавить фото</span>
 					<div
-						v-if="can_manage_logo"
+						v-if="can_manage_logo || is_team_admin"
 						class="full-height full-width absolute cursor-pointer"
 						@dragenter.prevent="is_dragging = true"
 						@dragleave.prevent="is_dragging = false"
@@ -65,6 +65,7 @@ import { useQuasar } from "quasar"
 import { cameraService } from "src/services/cameraService"
 import { useProducerStore } from "src/stores/producer"
 import { usePermissionStore } from "src/stores/permission"
+import { useUserStore } from "src/stores/user"
 export default {
 	props: {
 		team: {
@@ -74,6 +75,7 @@ export default {
 	},
 	setup(props) {
 		const $q = useQuasar()
+		const user_store = useUserStore()
 		const producer_store = useProducerStore()
 		const permission_store = usePermissionStore()
 		const { Camera } = Plugins
@@ -84,6 +86,8 @@ export default {
 		const file_picker = ref(null)
 		const is_dragging = ref(false)
 		const is_loading = ref(false)
+
+		const is_team_admin = computed(() => user_store.data.id === props.team.user_id)
 
 		const can_manage_logo = computed(() =>
 			permission_store.user_permissions.filter((p) => p.team_id === parseInt(props.team.id))
@@ -154,6 +158,7 @@ export default {
 			drop,
 			addImage,
 			can_manage_logo,
+			is_team_admin,
 			showFilePrompt,
 			file_picker
 		}

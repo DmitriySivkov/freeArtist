@@ -115,7 +115,6 @@ class ProducerService implements ProducerServiceContract
 				->where('role_id', Role::ROLE_PRODUCER['id'])
 				->where('team_id', $team->id)
 				->first()
-				->makeHidden('pivot')
 		]);
 	}
 

@@ -1,7 +1,6 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
 import { useRelationRequestStore } from "src/stores/relation-request"
-import {usePermissionStore} from "stores/permission"
 
 export const useTeamStore = defineStore("team", {
 	state: () => ({
@@ -9,6 +8,19 @@ export const useTeamStore = defineStore("team", {
 	}),
 
 	actions: {
+		setTeamFields({team_id, fields, detailed_id}) {
+			let team = this.user_teams.find((t) => t.id === team_id)
+
+			// if 'detailed_id' is not set then we update 'teams' entity
+			// otherwise we update an entity morphed to teams
+
+			if (!detailed_id) {
+				team = { ...team, ...fields }
+			} else {
+				team.detailed = { ...team.detailed, ...fields }
+			}
+		},
+
 		setUserTeams(team) {
 			if (this.user_teams.length > 0)
 				this.user_teams = [...this.user_teams, team]

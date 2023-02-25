@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Producer;
+use App\Models\Team;
+use App\Observers\ProducerObserver;
+use App\Observers\TeamObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,15 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
     ];
+
+	protected $observers = [
+		Team::class => [
+			TeamObserver::class
+		],
+		Producer::class => [
+			ProducerObserver::class
+		],
+	];
 
     /**
      * Register any events for your application.

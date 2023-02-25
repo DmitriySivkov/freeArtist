@@ -22,6 +22,7 @@ export default defineComponent({
 				echo.connect()
 
 			if (user_store.data.id) {
+				private_channels.connectTeams()
 				private_channels.connectRelationRequestUser()
 				private_channels.connectRelationRequestTeam()
 				private_channels.connectPermissions()

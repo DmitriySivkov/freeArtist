@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
+Broadcast::channel('teams.{teamId}', function (\App\Models\User $user, $teamId) {
+	$team = \App\Models\Team::find($teamId);
+	return $team->users->pluck('id')->contains($user->id);
+});
+
 Broadcast::channel('relation-requests.user.{userId}', function (\App\Models\User $user, $userId) {
 	return $user->id === (int)$userId;
 });

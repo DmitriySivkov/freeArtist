@@ -54,19 +54,20 @@
 <script>
 import { useUserRole } from "src/composables/userRole"
 import { useUserTeam } from "src/composables/userTeam"
+import { useUserStore } from "src/stores/user"
 export default {
 	setup() {
-		const { user, hasUserRole } = useUserRole()
+		const user_store = useUserStore()
+		const { hasUserRole } = useUserRole()
 		const { user_teams, user_own_team } = useUserTeam()
 
-		const user_common = Object.entries(user.value.data)
+		const user_common = Object.entries(user_store.data)
 			.filter(([prop]) => ["phone", "name", "email"].includes(prop))
 
 		return {
 			user_common,
 			user_teams,
 			user_own_team,
-			user,
 			hasUserRole
 		}
 	},

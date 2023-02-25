@@ -77,8 +77,7 @@ class AuthService
 				'teams.id as team_id'
 			])
 			->leftJoin('teams', 'permission_user.team_id', '=', 'teams.id')
-			->get()
-			->makeHidden('pivot');
+			->get();
 
 		$roles = $this->user->roles()
 			->select([
@@ -89,8 +88,7 @@ class AuthService
 				'teams.id as team_id'
 			])
 			->leftJoin('teams', 'role_user.team_id', '=', 'teams.id')
-			->get()
-			->makeHidden('pivot');
+			->get();
 
 		return response()->json([
 			'user' => $this->user,
@@ -113,7 +111,6 @@ class AuthService
 			return [];
 
 		return $this->userTeams->map(function(Team $team) {
-			$team->makeHidden('pivot');
 			$team->loadMorph('detailed', [
 				Producer::class => ['city']
 			]);

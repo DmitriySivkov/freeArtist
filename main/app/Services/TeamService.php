@@ -83,7 +83,6 @@ class TeamService implements TeamServiceContract
 				->where('permission_user.team_id', $team->id)
 				->leftJoin('teams', 'permission_user.team_id', '=', 'teams.id')
 				->get()
-				->makeHidden('pivot')
 		);
 
 		return $permissions;

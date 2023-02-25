@@ -28,7 +28,7 @@ class TeamController extends Controller
 						->where('permission_user.team_id', $team->id)
 						->leftJoin('teams', 'permission_user.team_id', '=', 'teams.id');
 				}
-			])->makeHidden(['pivot']);
+			]);
 	}
 
 	/**
