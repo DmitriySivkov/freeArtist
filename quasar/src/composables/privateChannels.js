@@ -15,6 +15,7 @@ export const usePrivateChannels = () => {
 	const permission_store = usePermissionStore()
 
 	const connectTeams = () => {
+		// todo - same for 'teams' entity - add name change to producer profile
 		if (user_teams.value.length === 0)
 			return
 

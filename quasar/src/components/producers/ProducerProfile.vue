@@ -1,8 +1,8 @@
 <template>
-	<div class="row">
+	<div class="row q-mt-md">
 		<div class="col-xs-12 col-md-3">
 			<q-card
-				class="q-ma-md bg-green-3"
+				class="q-mx-md bg-green-3"
 				:class="{'bg-green-6': is_dragging}"
 				style="height:300px"
 			>
@@ -41,17 +41,61 @@
 			/>
 		</div>
 		<div class="col-xs-12 col-md-3">
-			<q-markup-table
-				dark
-				class="bg-indigo-8 q-mt-md"
-			>
-				<tbody>
-					<tr>
-						<td class="text-left">Название</td>
-						<td class="text-left">{{ team.display_name }}</td>
-					</tr>
-				</tbody>
-			</q-markup-table>
+			<q-card>
+				<q-list class="bg-primary text-white">
+					<q-item clickable>
+						<q-item-section avatar>
+							<q-icon
+								color="white"
+								name="edit"
+							/>
+						</q-item-section>
+						<q-item-section class="text-center">
+							{{ team.display_name }}
+						</q-item-section>
+						<q-popup-edit
+							:model-value="team.display_name"
+							@update:model-value="teamPropChanged($event, 'display_name')"
+							auto-save
+							v-slot="scope"
+						>
+							<q-input
+								:model-value="scope.value"
+								@update:model-value="scope.value = $event"
+								dense
+								autofocus
+								@keyup.enter="scope.set"
+							/>
+						</q-popup-edit>
+					</q-item>
+
+					<q-item clickable>
+						<q-item-section avatar>
+							<q-icon
+								color="white"
+								name="edit"
+							/>
+						</q-item-section>
+						<q-item-section class="text-center">
+							{{ team.description }}
+						</q-item-section>
+						<q-popup-edit
+							:model-value="team.description"
+							@update:model-value="teamPropChanged($event, 'description')"
+							auto-save
+							v-slot="scope"
+						>
+							<q-input
+								:model-value="scope.value"
+								@update:model-value="scope.value = $event"
+								dense
+								autofocus
+								@keyup.enter="scope.set"
+							/>
+						</q-popup-edit>
+					</q-item>
+				</q-list>
+			</q-card>
 		</div>
 	</div>
 </template>
@@ -66,6 +110,7 @@ import { cameraService } from "src/services/cameraService"
 import { useProducerStore } from "src/stores/producer"
 import { usePermissionStore } from "src/stores/permission"
 import { useUserStore } from "src/stores/user"
+import { useTeamStore } from "src/stores/team"
 export default {
 	props: {
 		team: {
@@ -76,6 +121,7 @@ export default {
 	setup(props) {
 		const $q = useQuasar()
 		const user_store = useUserStore()
+		const team_store = useTeamStore()
 		const producer_store = useProducerStore()
 		const permission_store = usePermissionStore()
 		const { Camera } = Plugins
@@ -96,7 +142,7 @@ export default {
 		)
 
 		const backend_server = process.env.BACKEND_SERVER
-		const { notifySuccess } = useNotification()
+		const { notifySuccess, notifyError } = useNotification()
 
 		const drop = (e) => {
 			file_picker.value.addFiles([e.dataTransfer.files[0]])
@@ -150,6 +196,22 @@ export default {
 			file_picker.value.addFiles([img_file])
 		}
 
+		const teamPropChanged = (val, field) => {
+			const promise = team_store.updateTeamFields({
+				team_id: props.team.id,
+				fields: { [field]: val }
+			})
+
+			promise.catch((error) => {
+				notifyError(error.response.data.message)
+
+				team_store.setTeamFields({
+					team_id: error.response.data.team.id,
+					fields: error.response.data.team
+				})
+			})
+		}
+
 		return {
 			image,
 			backend_server,
@@ -160,7 +222,8 @@ export default {
 			can_manage_logo,
 			is_team_admin,
 			showFilePrompt,
-			file_picker
+			file_picker,
+			teamPropChanged
 		}
 	}
 }

@@ -8,6 +8,19 @@ export const useTeamStore = defineStore("team", {
 	}),
 
 	actions: {
+		updateTeamFields({team_id, fields}) {
+			this.setTeamFields({
+				team_id,
+				fields
+			})
+
+			return api.put(
+				"personal/teams/" + team_id,
+				fields
+			)
+		},
+
+		// todo - rename all NOT async 'set' methods to 'commit'
 		setTeamFields({team_id, fields, detailed_id}) {
 			let team = this.user_teams.find((t) => t.id === team_id)
 
@@ -15,7 +28,7 @@ export const useTeamStore = defineStore("team", {
 			// otherwise we update an entity morphed to teams
 
 			if (!detailed_id) {
-				team = { ...team, ...fields }
+				Object.assign(team, fields)
 			} else {
 				team.detailed = { ...team.detailed, ...fields }
 			}

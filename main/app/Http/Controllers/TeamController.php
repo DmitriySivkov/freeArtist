@@ -12,6 +12,24 @@ class TeamController extends Controller
 {
 	/**
 	 * @param Team $team
+	 * @param Request $request
+	 * @return bool|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+	 */
+	public function update(Team $team, Request $request)
+	{
+		// todo - make rollback on catch everywhere
+		try {
+			return $team->update($request->all());
+		} catch (\Throwable) {
+			return response([
+				'team' => Team::find($team->id),
+				'message' => 'Не удалось'
+			], 422);
+		}
+	}
+
+	/**
+	 * @param Team $team
 	 * @return \App\Models\User[]|\Illuminate\Database\Eloquent\Collection
 	 */
 	public function getUsers(Team $team)

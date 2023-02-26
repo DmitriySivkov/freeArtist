@@ -71,16 +71,19 @@ Route::group([
     });
 
 	Route::group(['prefix' => 'teams'], function() {
+		Route::group(['prefix' => '{team}'], function() {
+			Route::put('', [TeamController::class, 'update']);
 
-		Route::group(['prefix' => '{team}/users'], function() {
-			Route::get('', [TeamController::class, 'getUsers']);
-			Route::post('{user}/permissions/sync', [TeamController::class, 'syncUserPermissions']);
-		});
+			Route::group(['prefix' => 'users'], function() {
+				Route::get('', [TeamController::class, 'getUsers']);
+				Route::post('{user}/permissions/sync', [TeamController::class, 'syncUserPermissions']);
+			});
 
-		Route::group(['prefix' => '{team}/relationRequests'], function() {
-			Route::get('incoming', [TeamController::class, 'getIncomingRequests']);
-			Route::post('{relationRequest}/accept', [TeamController::class, 'acceptRequest']);
-			Route::post('{relationRequest}/reject', [TeamController::class, 'rejectRequest']);
+			Route::group(['prefix' => 'relationRequests'], function() {
+				Route::get('incoming', [TeamController::class, 'getIncomingRequests']);
+				Route::post('{relationRequest}/accept', [TeamController::class, 'acceptRequest']);
+				Route::post('{relationRequest}/reject', [TeamController::class, 'rejectRequest']);
+			});
 		});
 	});
 
