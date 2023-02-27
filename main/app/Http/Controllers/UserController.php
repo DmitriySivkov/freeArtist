@@ -14,13 +14,12 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
 	/**
+	 * @param Team $team
 	 * @param Request $request
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
 	 */
-	public function createRequest(Request $request)
+	public function createRequest(Team $team, Request $request)
 	{
-		$team = Team::findOrFail($request->get('team_id'));
-
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
@@ -49,14 +48,17 @@ class UserController extends Controller
 			]);
 
 		} catch (\Throwable $e) {
-			return ResponseService::error($e->getMessage());
+			return response([
+				'message' => $e->getMessage()
+			], 422);
 		}
 
 		return response()->json(
-			$outgoingRequest->load(['from'])->loadMorph('to', [
-				Producer::class => ['team']
-			])
-		);
+			$outgoingRequest->load(['from'])
+				->loadMorph('to', [
+					Producer::class => ['team']
+				])
+			);
 	}
 
 	/**
@@ -96,6 +98,9 @@ class UserController extends Controller
 			->get();
 	}
 
+	/**
+	 * @return array|false
+	 */
 	public function getLocationByIp()
 	{
 		/** @var UserService $userService */

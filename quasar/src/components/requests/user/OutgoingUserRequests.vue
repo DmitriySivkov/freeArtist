@@ -19,8 +19,25 @@
 			/>
 		</template>
 		<template v-slot:item="props">
-			<div class="col-xs-12">
-				<q-card class="q-mb-md">
+			<div class="col-12 q-mb-md">
+				<q-card v-if="!!props.row.is_creating_request">
+					<q-card-section class="text-center">
+						Статус: Загрузка ... <br/>
+						Получатель: {{ props.row.team.label }}
+
+						<q-inner-loading
+							showing
+							class="q-pl-xl"
+							style="align-items: flex-start"
+						>
+							<q-spinner-gears
+								color="primary"
+								size="42px"
+							/>
+						</q-inner-loading>
+					</q-card-section>
+				</q-card>
+				<q-card v-else>
 					<q-card-section>
 						<div class="row items-center text-center">
 							<div class="col-xs-2 col-md-1">
@@ -79,7 +96,7 @@
 </template>
 
 <script>
-import { useRelationRequestManager} from "src/composables/relationRequestManager"
+import { useRelationRequestManager } from "src/composables/relationRequestManager"
 import { useNotification } from "src/composables/notification"
 import { useRelationRequestStore } from "src/stores/relation-request"
 export default {
@@ -93,6 +110,7 @@ export default {
 			} = useRelationRequestManager()
 
 		const { notifySuccess, notifyError } = useNotification()
+
 		const cancelRequest = (request_id) => {
 			userSetRequestStatus(request_id, relation_request_store.statuses.rejected_by_contributor.id)
 				.then(() => {
@@ -102,6 +120,7 @@ export default {
 					notifyError(error)
 				})
 		}
+
 		const restoreRequest = (request_id) => {
 			userSetRequestStatus(request_id, relation_request_store.statuses.pending.id)
 				.then(() => {

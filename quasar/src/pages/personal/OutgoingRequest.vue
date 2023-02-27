@@ -1,7 +1,5 @@
 <template>
-	<q-page class="column justify-center">
-		<UserCreateOutgoingRequest />
-	</q-page>
+	<UserCreateOutgoingRequest />
 </template>
 
 <script>

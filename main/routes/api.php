@@ -105,7 +105,7 @@ Route::group([
 		Route::get('nonRelatedTeams', [UserController::class, 'getNonRelatedTeams']);
 
 		Route::group(['prefix' => 'relationRequests'], function() {
-			Route::post('create', [UserController::class, 'createRequest']);
+			Route::post('{team}/create', [UserController::class, 'createRequest']);
 			Route::post('{relationRequest}/setStatus', [UserController::class, 'setRelationRequestStatus']);
 		});
 	});

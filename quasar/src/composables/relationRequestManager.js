@@ -13,9 +13,6 @@ export const useRelationRequestManager = () => {
 			(r) => r.to_id === team.detailed_id && r.to_type === team.detailed_type
 		)
 
-	const userCreateRequest = (team_id, message) =>
-		user_store.createRequest({ team_id, message })
-
 	const userSetRequestStatus = (request_id, status_id) =>
 		user_store.setRelationRequestStatus({
 			request_id,
@@ -24,7 +21,9 @@ export const useRelationRequestManager = () => {
 
 	const user_outgoing_requests = computed(() =>
 		relation_request_store.user_requests.filter(
-			(r) => r.from_id === user_store.data.id && r.from_type === "App\\Models\\User"
+			(r) =>
+				r.from_id === user_store.data.id && r.from_type === "App\\Models\\User" ||
+				!!r.is_creating_request
 		)
 	)
 
@@ -38,7 +37,6 @@ export const useRelationRequestManager = () => {
 		team_store.rejectRequest({ team_id, request_id })
 
 	return {
-		userCreateRequest,
 		userSetRequestStatus,
 		teamIncomingRequests,
 		teamAcceptRequest,

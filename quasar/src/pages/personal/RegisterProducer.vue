@@ -1,7 +1,5 @@
 <template>
-	<q-page class="column justify-center">
-		<ProducerRegister />
-	</q-page>
+	<ProducerRegister />
 </template>
 
 <script>

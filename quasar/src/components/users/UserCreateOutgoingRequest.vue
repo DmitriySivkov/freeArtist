@@ -23,6 +23,7 @@
 					:options="team_list"
 					@filter="loadTeamList"
 					behavior="dialog"
+					lazy-rules
 					:rules="[
 						val => !!val,
 					]"
@@ -63,12 +64,14 @@ import { useRouter } from "vue-router"
 import { ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
-import { useRelationRequestManager } from "src/composables/relationRequestManager"
+import { useUserStore } from "src/stores/user"
+import { useRelationRequestStore } from "src/stores/relation-request"
 export default {
 	setup() {
 		const $router = useRouter()
+		const user_store = useUserStore()
+		const relation_request_store = useRelationRequestStore()
 		const { notifySuccess, notifyError } = useNotification()
-		const { userCreateRequest } = useRelationRequestManager()
 
 		const team = ref(null)
 		const message = ref("")
@@ -76,20 +79,35 @@ export default {
 		const team_list = ref([])
 
 		const onSubmit = () => {
-			userCreateRequest(team.value.value, message.value)
-				.then(() => {
-					notifySuccess("Заявка успешно отправлена")
-					$router.push({name: "personal_user_requests"})
-				})
-				.catch((error) => {
-					const errors = Object.values(error.response.data.errors)
-						.reduce((accum, val) => accum.concat(...val), [])
-					notifyError(errors)
-				})
+			relation_request_store.commitUserRequest({
+				is_creating_request: true,
+				team: team.value,
+				message: message.value
+			})
+
+			const promise = user_store.createRequest({
+				team: team.value,
+				message: message.value
+			})
+
+			$router.push({ name: "personal_user_requests" })
+
+			promise.then((response) => {
+				relation_request_store.commitUserRequest(response.data)
+
+				relation_request_store.removeUserCreatingRequest()
+
+				notifySuccess("Заявка успешно отправлена")
+			})
+
+			promise.catch((error) => {
+				relation_request_store.removeUserCreatingRequest()
+
+				notifyError(error.response.data.message)
+			})
 		}
 
-		const onReset = () =>
-			team.value = null
+		const onReset = () => team.value = null
 
 		const loadTeamList = async (query, update) => {
 			if (query.length < 1) return

@@ -1,6 +1,7 @@
-import { Notify } from "quasar"
+import { Notify, useQuasar } from "quasar"
 
 export const useNotification = () => {
+	const $q = useQuasar()
 
 	const notifySuccess = (message) => {
 		return Notify.create({
@@ -8,6 +9,7 @@ export const useNotification = () => {
 			textColor: "white",
 			multiLine: true,
 			icon: "cloud_done",
+			position: $q.platform.is.desktop ? "top-right" : "bottom",
 			message
 		})
 	}
@@ -18,6 +20,7 @@ export const useNotification = () => {
 			textColor: "white",
 			multiline: true,
 			icon: "warning",
+			position: $q.platform.is.desktop ? "top-right" : "bottom",
 			message
 		})
 	}

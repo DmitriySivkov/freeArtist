@@ -3,14 +3,13 @@
 </template>
 
 <script>
-import { defineComponent, watch } from "vue"
-import { echo } from "boot/ws"
+import { watch } from "vue"
+import { echo } from "src/boot/ws"
 import { useUserStore } from "src/stores/user"
 import { usePrivateChannels } from "src/composables/privateChannels"
 import { Plugins } from "@capacitor/core"
 import { useQuasar } from "quasar"
-export default defineComponent({
-	name: "App",
+export default {
 	setup() {
 		const $q = useQuasar()
 		const { StatusBar } = Plugins
@@ -49,5 +48,5 @@ export default defineComponent({
 			}
 		})
 	},
-})
+}
 </script>

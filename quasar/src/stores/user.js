@@ -34,8 +34,11 @@ export const useUserStore = defineStore("user", {
 
 			team_store.setUserTeams(response.data.user_teams)
 
-			relation_request_store.setUserRequests(response.data.user_requests)
-			relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
+			if (response.data.user_requests.length > 0)
+				relation_request_store.commitUserRequest(response.data.user_requests)
+
+			if (response.data.user_teams_requests.length > 0)
+				relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
 
 			return response
 		},
@@ -87,8 +90,11 @@ export const useUserStore = defineStore("user", {
 
 				team_store.setUserTeams(response.data.user_teams)
 
-				relation_request_store.setUserRequests(response.data.user_requests)
-				relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
+				if (response.data.user_requests.length > 0)
+					relation_request_store.commitUserRequest(response.data.user_requests)
+
+				if (response.data.user_teams_requests.length > 0)
+					relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
 
 				this.setIsLogged(true)
 			}
@@ -110,12 +116,11 @@ export const useUserStore = defineStore("user", {
 			LocalStorage.set("personal_tab", personal_tab)
 		},
 
-		async createRequest(payload) {
-			const relation_request_store = useRelationRequestStore()
-
-			const response = await api.post("personal/users/relationRequests/create", { ...payload })
-
-			relation_request_store.setUserRequests(response.data)
+		async createRequest({team, message}) {
+			return api.post(
+				"personal/users/relationRequests/" + team.value + "/create",
+				{ message }
+			)
 		},
 
 		async setRelationRequestStatus({ request_id, status_id }) {

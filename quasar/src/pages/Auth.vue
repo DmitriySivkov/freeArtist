@@ -1,8 +1,6 @@
 <template>
-	<q-page class="column justify-center">
-		<Login v-if="!user.is_logged"/>
-		<Logout v-if="user.is_logged" />
-	</q-page>
+	<Login v-if="!user.is_logged"/>
+	<Logout v-if="user.is_logged" />
 </template>
 
 <script>
