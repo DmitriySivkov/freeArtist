@@ -1,9 +1,11 @@
 .home {
-	&__producers-table {
-		& > .q-table__bottom {
-			justify-content: end;
-			padding-left: 4px;
-			padding-right: 4px;
+	&__producer-card {
+		cursor: pointer;
+		&:hover {
+			.home__producer-card_body {
+				transition: background-color 0.3s;
+				background-color:rgba(255, 255, 255, 0.07);
+			}
 		}
 	}
 }

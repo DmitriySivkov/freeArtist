@@ -6,7 +6,7 @@
 		<q-card
 			v-for="(producer, index) in producers"
 			:key="producer.id"
-			class="col-12 bg-primary text-white q-mb-sm"
+			class="col-12 bg-primary text-white q-mb-sm home__producer-card"
 			:class="{
 				'bg-light-green-2': cart.hasOwnProperty(producer.id),
 				'q-mt-sm': index === 0
@@ -29,7 +29,7 @@
 			</q-card-section>
 			<q-card-section
 				horizontal
-				class="row"
+				class="row home__producer-card_body"
 			>
 				<div
 					style="height:200px"

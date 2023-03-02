@@ -1,36 +1,28 @@
 <template>
-	<div>
-		<div
-			class="row q-col-gutter-xs q-ma-lg items-end"
-			v-if="!selected_product_id"
-		>
-			<div class="col-xs-6">
-				Выберите продукт
-			</div>
-			<div
-				v-if="is_able_to_manage_product"
-				class="col-xs-6 offset-md-4 col-md-2"
+	<q-list v-if="is_able_to_manage_product">
+		<q-item class="justify-end">
+			<q-item-section
+				side
+				class="q-pr-none"
 			>
 				<q-btn
-					size="lg"
 					icon="add"
-					color="primary"
-					class="full-width"
+					color="secondary"
 					@click="createProduct()"
 				/>
-			</div>
-		</div>
-		<ProducerProductList
-			v-model="selected_product_id"
-			:products="team.products"
-		/>
-	</div>
-	<div v-if="selected_product_id">
-		<q-item>
-			<q-item-section class="col-xs-6 col-md-8">
-				Выберите настройки
 			</q-item-section>
-			<q-item-section
+		</q-item>
+	</q-list>
+	<ProducerProductList :products="team.products" />
+	<div v-if="selected_product_id">
+		<q-card
+			flat
+			class="row"
+		>
+			<q-card-section class="col-xs-6 col-md-8">
+				Выберите настройки
+			</q-card-section>
+			<q-card-section
 				class="col-xs-6 col-md-4"
 				style="margin-left:0"
 			>
@@ -40,8 +32,8 @@
 					@click="unselectProduct"
 					class="q-pt-md q-pb-md"
 				/>
-			</q-item-section>
-		</q-item>
+			</q-card-section>
+		</q-card>
 		<ProducerProductSettingList
 			:selected-product="selected_product"
 			:is-able-to-manage-product="is_able_to_manage_product"

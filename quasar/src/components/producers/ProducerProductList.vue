@@ -1,51 +1,61 @@
 <template>
-	<q-list>
+	<q-list
+		separator
+		dark
+	>
 		<q-item
-			tag="label"
-			v-for="(product, index) in dynamicProducts"
+			v-for="(product, index) in products"
 			:key="index"
+			clickable
+			class="q-py-lg q-px-md bg-primary text-white"
+			@click="productSelected(product.id)"
 		>
 			<q-item-section
+				v-if="selected_product === product.id"
 				side
 				top
 			>
 				<q-radio
-					:model-value="modelValue"
-					@update:model-value="productChanged"
+					color="white"
 					:val="product.id"
+					:model-value="selected_product"
 				/>
 			</q-item-section>
-
+			<q-item-section avatar>
+				<q-icon name="edit" />
+			</q-item-section>
 			<q-item-section>
-				<q-item-label>{{ product.title }}</q-item-label>
+				{{ product.title }}
+			</q-item-section>
+			<q-item-section side>
+				<q-btn
+					icon="pause"
+					color="warning"
+				/>
 			</q-item-section>
 		</q-item>
 	</q-list>
 </template>
 
 <script>
-import { computed } from "vue"
+import { ref } from "vue"
 export default {
 	props: {
-		modelValue: Number,
 		products: {
 			type: Array,
 			default: () => []
 		}
 	},
-	setup(props, context) {
-		const dynamicProducts = computed(
-			() => props.modelValue ?
-				props.products.filter((p) => p.id === props.modelValue) :
-				props.products
-		)
-
-		const productChanged = (product_id) => {
-			context.emit("update:modelValue", product_id)
+	emits:["productChanged"],
+	setup(props, { emit }) {
+		const selected_product = ref(false)
+		const productSelected = (product_id) => {
+			selected_product.value = product_id
+			emit("update:modelValue", product_id)
 		}
 		return {
-			productChanged,
-			dynamicProducts
+			productSelected,
+			selected_product
 		}
 	}
 }

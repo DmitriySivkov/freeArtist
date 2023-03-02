@@ -1,6 +1,10 @@
 <template>
-	<Login v-if="!user.is_logged"/>
-	<Logout v-if="user.is_logged" />
+	<div class="q-pa-md row justify-center items-center full-height">
+		<div class="col-xs-12 col-md-6 col-lg-3">
+			<Login v-if="!user.is_logged"/>
+			<Logout v-if="user.is_logged" />
+		</div>
+	</div>
 </template>
 
 <script>

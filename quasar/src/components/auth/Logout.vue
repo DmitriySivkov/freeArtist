@@ -1,14 +1,10 @@
 <template>
-	<div class="q-pa-md row justify-center">
-		<div class="col-xs-12 col-md-6 col-lg-3">
-			<q-btn
-				label="Выйти"
-				color="primary"
-				class="q-pa-lg full-width"
-				@click="logout"
-			/>
-		</div>
-	</div>
+	<q-btn
+		label="Выйти"
+		color="primary"
+		class="q-pa-lg full-width"
+		@click="logout"
+	/>
 </template>
 
 <script>
