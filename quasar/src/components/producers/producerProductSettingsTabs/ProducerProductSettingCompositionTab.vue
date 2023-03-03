@@ -61,28 +61,28 @@
 				class="q-mt-sm q-mb-sm bg-primary"
 			/>
 		</q-card>
-		<div
-			v-if="isAbleToManageProduct"
-			class="row q-col-gutter-sm q-mt-md"
-		>
-			<div class="col-xs-12">
-				<q-btn
-					:disable="disable_submit"
-					label="Сохранить"
-					type="submit"
-					color="primary"
-					class="q-pa-lg full-width"
-				/>
-			</div>
-			<div class="col-xs-12">
-				<q-btn
-					label="Сбросить"
-					type="reset"
-					color="warning"
-					class="q-pa-lg full-width"
-				/>
-			</div>
-		</div>
+		<!--		<div-->
+		<!--			v-if="isAbleToManageProduct"-->
+		<!--			class="row q-col-gutter-sm q-mt-md"-->
+		<!--		>-->
+		<!--			<div class="col-xs-12">-->
+		<!--				<q-btn-->
+		<!--					:disable="disable_submit"-->
+		<!--					label="Сохранить"-->
+		<!--					type="submit"-->
+		<!--					color="primary"-->
+		<!--					class="q-pa-lg full-width"-->
+		<!--				/>-->
+		<!--			</div>-->
+		<!--			<div class="col-xs-12">-->
+		<!--				<q-btn-->
+		<!--					label="Сбросить"-->
+		<!--					type="reset"-->
+		<!--					color="warning"-->
+		<!--					class="q-pa-lg full-width"-->
+		<!--				/>-->
+		<!--			</div>-->
+		<!--		</div>-->
 	</q-form>
 </template>
 

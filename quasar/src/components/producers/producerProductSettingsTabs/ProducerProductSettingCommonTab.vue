@@ -41,42 +41,42 @@
 			v-model.number="product.amount"
 			:disable="!isAbleToManageProduct"
 		/>
-		<div class="row q-col-gutter-sm q-mt-md">
-			<div
-				v-if="isAbleToManageProduct"
-				class="col-xs-12"
-			>
-				<q-btn
-					:disable="disable_submit"
-					:label="is_empty_product ? 'Создать' : 'Сохранить'"
-					type="submit"
-					color="primary"
-					class="q-pa-lg full-width"
-				/>
-			</div>
-			<div
-				v-if="isAbleToManageProduct"
-				class="col-xs-12"
-			>
-				<q-btn
-					label="Сбросить"
-					type="reset"
-					color="warning"
-					class="q-pa-lg full-width"
-				/>
-			</div>
-			<div
-				v-if="!is_empty_product && isAbleToManageProduct"
-				class="col-xs-12"
-			>
-				<q-btn
-					label="Удалить продукт"
-					color="red-5"
-					class="q-pa-lg full-width"
-					@click="deleteDialog"
-				/>
-			</div>
-		</div>
+		<!--		<div class="row q-col-gutter-sm q-mt-md">-->
+		<!--			<div-->
+		<!--				v-if="isAbleToManageProduct"-->
+		<!--				class="col-xs-12"-->
+		<!--			>-->
+		<!--				<q-btn-->
+		<!--					:disable="disable_submit"-->
+		<!--					:label="is_empty_product ? 'Создать' : 'Сохранить'"-->
+		<!--					type="submit"-->
+		<!--					color="primary"-->
+		<!--					class="q-pa-lg full-width"-->
+		<!--				/>-->
+		<!--			</div>-->
+		<!--			<div-->
+		<!--				v-if="isAbleToManageProduct"-->
+		<!--				class="col-xs-12"-->
+		<!--			>-->
+		<!--				<q-btn-->
+		<!--					label="Сбросить"-->
+		<!--					type="reset"-->
+		<!--					color="warning"-->
+		<!--					class="q-pa-lg full-width"-->
+		<!--				/>-->
+		<!--			</div>-->
+		<!--			<div-->
+		<!--				v-if="!is_empty_product && isAbleToManageProduct"-->
+		<!--				class="col-xs-12"-->
+		<!--			>-->
+		<!--				<q-btn-->
+		<!--					label="Удалить продукт"-->
+		<!--					color="red-5"-->
+		<!--					class="q-pa-lg full-width"-->
+		<!--					@click="deleteDialog"-->
+		<!--				/>-->
+		<!--			</div>-->
+		<!--		</div>-->
 	</q-form>
 </template>
 

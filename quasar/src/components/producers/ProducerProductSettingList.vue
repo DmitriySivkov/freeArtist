@@ -13,13 +13,11 @@
 			class="q-pa-md"
 		/>
 		<q-tab
-			:disable="is_empty_product"
 			name="composition"
 			label="Состав"
 			class="q-pa-md"
 		/>
 		<q-tab
-			:disable="is_empty_product"
 			name="images"
 			label="Изображения"
 			class="q-pa-md"
@@ -56,7 +54,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue"
+import { ref } from "vue"
 import ProducerProductSettingCommonTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
 import ProducerProductSettingCompositionTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCompositionTab.vue"
 import ProducerProductSettingImagesTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
@@ -74,13 +72,11 @@ export default {
 		isAbleToManageProduct: Boolean
 	},
 	emits: ["productCreated", "productDeleted"],
-	setup(props) {
+	setup() {
 		const tab = ref("common")
-		const is_empty_product = computed(() => Object.keys(props.selectedProduct).length === 0)
 
 		return {
-			tab,
-			is_empty_product,
+			tab
 		}
 	}
 }

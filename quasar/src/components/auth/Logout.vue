@@ -14,7 +14,6 @@ import { computed } from "vue"
 export default {
 	setup() {
 		const user_store = useUserStore()
-		const user = computed(() => user_store.$state)
 		const { notifySuccess } = useNotification()
 		const logout = () => {
 			user_store.logout().then(() =>
@@ -22,7 +21,6 @@ export default {
 			)
 		}
 		return {
-			user,
 			logout
 		}
 	}

@@ -1,8 +1,8 @@
 <template>
 	<div class="q-pa-md row justify-center items-center full-height">
 		<div class="col-xs-12 col-md-6 col-lg-3">
-			<Login v-if="!user.is_logged"/>
-			<Logout v-if="user.is_logged" />
+			<Login v-if="!is_logged"/>
+			<Logout v-if="is_logged" />
 		</div>
 	</div>
 </template>
@@ -16,11 +16,10 @@ export default {
 	components: { Login, Logout },
 	setup() {
 		const user_store = useUserStore()
-
-		const user = computed(() => user_store.$state)
+		const is_logged = computed(() => user_store.is_logged)
 
 		return {
-			user
+			is_logged
 		}
 	}
 }

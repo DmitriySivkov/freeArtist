@@ -59,17 +59,16 @@ export default {
 
 		const user_store = useUserStore()
 
-		const user = computed(() => user_store.$state)
 		const selected_user = ref(
-			team.value.users.find((u) => u.id === user.value.data.id).id
+			team.value.users.find((u) => u.id === user_store.data.id).id
 		)
 
 		const is_able_to_edit_user_permissions = computed(() =>
 			(
 				hasPermission(team.value.id,"producer_permissions") ||
-				team.value.user_id === user.value.data.id
+				team.value.user_id === user_store.data.id
 			) &&
-			selected_user.value !== user.value.data.id &&
+			selected_user.value !== user_store.data.id &&
 			selected_user.value !== team.value.user_id
 		)
 

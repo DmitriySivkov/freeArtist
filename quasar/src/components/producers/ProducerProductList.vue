@@ -3,37 +3,53 @@
 		separator
 		dark
 	>
-		<q-item
+		<template
 			v-for="(product, index) in products"
 			:key="index"
-			clickable
-			class="q-py-lg q-px-md bg-primary text-white"
-			@click="productSelected(product.id)"
 		>
-			<q-item-section
-				v-if="selected_product === product.id"
-				side
-				top
+			<q-item
+				v-if="!selected_product || selected_product === product.id"
+				clickable
+				class="q-py-lg q-px-md bg-primary text-white"
+				@click="productSelected(product.id)"
 			>
-				<q-radio
-					color="white"
-					:val="product.id"
-					:model-value="selected_product"
-				/>
-			</q-item-section>
-			<q-item-section avatar>
-				<q-icon name="edit" />
-			</q-item-section>
-			<q-item-section>
-				{{ product.title }}
-			</q-item-section>
-			<q-item-section side>
-				<q-btn
-					icon="pause"
-					color="warning"
-				/>
-			</q-item-section>
-		</q-item>
+				<q-item-section side>
+					<q-btn
+						v-if="isAbleToManageProduct && !!selected_product"
+						icon="delete"
+						color="negative"
+					/>
+				</q-item-section>
+				<q-item-section avatar>
+					<q-icon
+						:color="selected_product === product.id ? 'secondary' : 'white'"
+						name="edit"
+					/>
+				</q-item-section>
+				<q-item-section>
+					{{ product.title }}
+				</q-item-section>
+				<q-item-section
+					v-if="isAbleToManageProduct && !!selected_product"
+					class="col-xs-3 col-md-2 col-lg-1 text-right"
+				>
+					<q-btn
+						class="q-pa-md"
+						icon="done"
+						color="secondary"
+					/>
+				</q-item-section>
+				<q-item-section
+					v-if="isAbleToManageProduct && !selected_product"
+					class="col-xs-3 col-md-2 col-lg-1 text-right"
+				>
+					<q-btn
+						icon="pause"
+						color="warning"
+					/>
+				</q-item-section>
+			</q-item>
+		</template>
 	</q-list>
 </template>
 
@@ -44,15 +60,24 @@ export default {
 		products: {
 			type: Array,
 			default: () => []
-		}
+		},
+		isAbleToManageProduct: Boolean,
 	},
-	emits:["productChanged"],
+	emits:["productSelected"],
 	setup(props, { emit }) {
-		const selected_product = ref(false)
+		const selected_product = ref(null)
+
 		const productSelected = (product_id) => {
+			if (product_id === selected_product.value) {
+				selected_product.value = null
+				emit("productSelected", null)
+				return
+			}
+
 			selected_product.value = product_id
-			emit("update:modelValue", product_id)
+			emit("productSelected", product_id)
 		}
+
 		return {
 			productSelected,
 			selected_product
