@@ -29,25 +29,22 @@
 		animated
 	>
 		<q-tab-panel name="common">
-			<ProducerProductSettingCommonTab
-				:selected-product="selectedProduct"
-				:is-able-to-manage-product="isAbleToManageProduct"
-			/>
+			<ProducerProductSettingCommonTab v-model="product" />
 		</q-tab-panel>
 
-		<q-tab-panel name="composition">
-			<ProducerProductSettingCompositionTab
-				:selected-product="selectedProduct"
-				:is-able-to-manage-product="isAbleToManageProduct"
-			/>
-		</q-tab-panel>
+		<!--		<q-tab-panel name="composition">-->
+		<!--			<ProducerProductSettingCompositionTab-->
+		<!--				:selected-product="selectedProduct"-->
+		<!--				:is-able-to-manage-product="isAbleToManageProduct"-->
+		<!--			/>-->
+		<!--		</q-tab-panel>-->
 
-		<q-tab-panel name="images">
-			<ProducerProductSettingImagesTab
-				:selected-product="selectedProduct"
-				:is-able-to-manage-product="isAbleToManageProduct"
-			/>
-		</q-tab-panel>
+		<!--		<q-tab-panel name="images">-->
+		<!--			<ProducerProductSettingImagesTab-->
+		<!--				:selected-product="selectedProduct"-->
+		<!--				:is-able-to-manage-product="isAbleToManageProduct"-->
+		<!--			/>-->
+		<!--		</q-tab-panel>-->
 	</q-tab-panels>
 </template>
 
@@ -59,8 +56,8 @@ import ProducerProductSettingImagesTab from "src/components/producers/producerPr
 export default {
 	components: {
 		ProducerProductSettingCommonTab,
-		ProducerProductSettingCompositionTab,
-		ProducerProductSettingImagesTab
+		// ProducerProductSettingCompositionTab,
+		// ProducerProductSettingImagesTab
 	},
 	props: {
 		selectedProduct: {
@@ -69,11 +66,14 @@ export default {
 		},
 		isAbleToManageProduct: Boolean
 	},
-	setup() {
+	setup(props) {
 		const tab = ref("common")
 
+		const product = ref(props.selectedProduct)
+
 		return {
-			tab
+			tab,
+			product
 		}
 	}
 }

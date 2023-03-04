@@ -23,7 +23,6 @@ module.exports = configure(function (ctx) {
 			"browseProducers",
 			"browseRoles",
 			"browsePermissions",
-			"money",
 			"ws",
 			"routes" // hide loader
 		],
@@ -40,7 +39,7 @@ module.exports = configure(function (ctx) {
 
 		build: {
 			target: {
-				browser: [ "es2019", "edge88", "firefox78", "chrome87", "safari13.1" ],
+				browser: [ "es2020" ], // todo - check if theres no problem with safari
 				node: "node16"
 			},
 

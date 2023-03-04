@@ -10,9 +10,10 @@
 			<q-item
 				v-if="!selected_product || selected_product === product.id"
 				clickable
-				class="q-py-lg q-px-md bg-primary text-white"
+				class="q-py-lg q-px-md bg-primary text-white wrap"
 				@click="productSelected(product.id)"
 				:disable="product.id === loadingProduct"
+				v-ripple
 			>
 				<q-item-section side>
 					<q-btn
@@ -28,7 +29,7 @@
 						name="edit"
 					/>
 				</q-item-section>
-				<q-item-section>
+				<q-item-section style="word-break: break-all;"> <!-- todo word-break only works through inline style -->
 					{{ product.title }}
 				</q-item-section>
 				<q-item-section
