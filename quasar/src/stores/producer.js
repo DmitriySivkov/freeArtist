@@ -75,8 +75,8 @@ export const useProducerStore = defineStore("producer", {
 			return response
 		},
 
-		async deleteProducerProduct({ producer_id, product_id }) {
-			await api.delete(
+		deleteProducerProduct({ producer_id, product_id }) {
+			return api.delete(
 				"personal/producers/" + producer_id + "/products/" + product_id,
 				{
 					data: {
@@ -84,12 +84,16 @@ export const useProducerStore = defineStore("producer", {
 						product_id
 					}
 				})
+		},
 
+		commitRemoveProducerProduct({ producer_id, product_id }) {
 			const team_store = useTeamStore()
 
-			const producer = team_store.user_teams.find((t) => t.detailed.id === producer_id)
+			let producer = team_store.user_teams.find((t) => t.detailed.id === producer_id)
 
-			producer.products = producer.products.filter((product) => product.id !== product_id)
+			const product_index = producer.products.findIndex((p) => p.id === product_id)
+
+			producer.products.splice(product_index, 1)
 		},
 
 		async syncProducerProductCompositionSettings({producer_id, product_id, composition}) {

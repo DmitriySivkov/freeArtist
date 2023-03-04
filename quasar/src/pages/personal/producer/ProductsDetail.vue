@@ -13,8 +13,10 @@
 	</q-list>
 	<ProducerProductList
 		:products="team.products"
+		:loading-product="loading_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
 		@productSelected="productSelected"
+		@productDeleted="productDeleted"
 	/>
 	<ProducerProductSettingList
 		v-if="selected_product"
@@ -26,13 +28,14 @@
 <script>
 import ProducerProductList from "src/components/producers/ProducerProductList.vue"
 import ProducerProductSettingList from "src/components/producers/ProducerProductSettingList.vue"
-import { useRoute } from "vue-router"
-import { useUserTeam } from "src/composables/userTeam"
+import { useRouter } from "vue-router"
 import { computed, ref } from "vue"
 import { Loading } from "quasar"
 import { useUserPermission } from "src/composables/userPermission"
 import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
+import { useTeamStore } from "src/stores/team"
+import { useNotification } from "src/composables/notification"
 export default {
 	async preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		Loading.show({
@@ -50,15 +53,20 @@ export default {
 	},
 	setup() {
 		const user_store = useUserStore()
-		const $route = useRoute()
-		const { user_teams } = useUserTeam()
+		const team_store = useTeamStore()
+		const producer_store = useProducerStore()
+		const $router = useRouter()
 		const { hasPermission } = useUserPermission()
+		const { notifySuccess, notifyError } = useNotification()
+
+		const user_teams = computed(() => team_store.user_teams)
 
 		const team = computed(() =>
-			user_teams.value.find((t) => t.detailed.id === parseInt($route.params.producer_id))
+			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
 		)
 
 		const selected_product = ref(null)
+		const loading_product = ref(null)
 
 		const productSelected = (product_id) => {
 			if (!product_id) {
@@ -69,6 +77,31 @@ export default {
 			selected_product.value = team.value.products.find((p) => p.id === product_id)
 		}
 
+		const productDeleted = (product) => {
+			loading_product.value = product.id
+
+			selected_product.value = null
+
+			const promise = producer_store.deleteProducerProduct({
+				producer_id: parseInt($router.currentRoute.value.params.producer_id),
+				product_id: product.id
+			})
+
+			promise.then(() => {
+				producer_store.commitRemoveProducerProduct({
+					producer_id: team.value.detailed.id,
+					product_id: product.id
+				})
+
+				notifySuccess("Продукт '" + product.title + "' успешно удалён")
+			})
+
+			promise.catch((error) => {
+				loading_product.value = null
+				notifyError(error.response.data)
+			})
+		}
+
 		const is_able_to_manage_product = computed(() =>
 			hasPermission(team.value.id,"producer_product") ||
 			team.value.user_id === user_store.data.id
@@ -77,8 +110,10 @@ export default {
 		return {
 			team,
 			selected_product,
+			loading_product,
 			is_able_to_manage_product,
-			productSelected
+			productSelected,
+			productDeleted
 		}
 	}
 }

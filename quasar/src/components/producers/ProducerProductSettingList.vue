@@ -32,8 +32,6 @@
 			<ProducerProductSettingCommonTab
 				:selected-product="selectedProduct"
 				:is-able-to-manage-product="isAbleToManageProduct"
-				@product-created="$emit('productCreated', $event)"
-				@product-deleted="$emit('productDeleted', $event)"
 			/>
 		</q-tab-panel>
 
@@ -71,7 +69,6 @@ export default {
 		},
 		isAbleToManageProduct: Boolean
 	},
-	emits: ["productCreated", "productDeleted"],
 	setup() {
 		const tab = ref("common")
 

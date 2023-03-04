@@ -1,54 +1,48 @@
 <template>
-	<div
+	<q-card
 		v-if="isAbleToManageProduct"
-		class="row"
+		bordered
+		class="col-xs-12 col-md-4 border-dashed bg-green-3 shadow-0"
+		:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
+		style="height:200px"
 	>
-		<div class="col-xs-12 col-md-4">
-			<q-card
-				bordered
-				class="border-dashed bg-green-3 shadow-0"
-				:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
-				style="height:300px"
-			>
-				<q-card-section
-					class="row flex-center full-height"
-				>
-					<span>Добавить фото</span>
-					<div
-						v-if="isAbleToManageProduct"
-						class="full-height full-width absolute cursor-pointer"
-						@dragenter.prevent="is_dragging = true"
-						@dragleave.prevent="is_dragging = false"
-						@dragover.prevent
-						@drop.prevent="drop"
-						@click="showFilePrompt"
-					></div>
-					<q-inner-loading :showing="is_loading">
-						<q-spinner-gears
-							size="50px"
-							color="primary"
-						/>
-					</q-inner-loading>
-				</q-card-section>
-			</q-card>
-		</div>
-	</div>
-	<div class="row q-mt-md q-col-gutter-sm">
-		<div
+		<q-card-section
+			class="row flex-center full-height"
+		>
+			<span>Добавить фото</span>
+			<div
+				v-if="isAbleToManageProduct"
+				class="full-height full-width absolute cursor-pointer"
+				@dragenter.prevent="is_dragging = true"
+				@dragleave.prevent="is_dragging = false"
+				@dragover.prevent
+				@drop.prevent="drop"
+				@click="showFilePrompt"
+			></div>
+			<q-inner-loading :showing="is_loading">
+				<q-spinner-gears
+					size="50px"
+					color="primary"
+				/>
+			</q-inner-loading>
+		</q-card-section>
+	</q-card>
+
+	<div class="row q-col-gutter-sm q-mt-md"> <!-- todo - all photos in one carousel -->
+		<q-card
+			flat
+			class="col-xs-12 col-md-3"
 			v-for="image in product_images"
 			:key="image.id"
-			class="col-xs-12 col-md-6 col-lg-4"
 		>
-			<q-card class="full-height">
-				<q-card-section>
-					<q-img
-						:src="backend_server + '/storage/' + image.path"
-						fit="contain"
-					/>
-				</q-card-section>
-			</q-card>
-		</div>
+			<q-img
+				:src="backend_server + '/storage/' + image.path"
+				fit="contain"
+				style="height: 200px;"
+			/>
+		</q-card>
 	</div>
+
 	<q-file
 		v-model="image"
 		ref="file_picker"

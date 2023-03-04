@@ -20,7 +20,7 @@ export const useTeamStore = defineStore("team", {
 			)
 		},
 
-		// todo - rename all NOT async 'set' methods to 'commit'
+		// todo - rename 'set' methods without server interaction to 'commit'
 		setTeamFields({team_id, fields, detailed_id}) {
 			let team = this.user_teams.find((t) => t.id === team_id)
 
@@ -100,7 +100,7 @@ export const useTeamStore = defineStore("team", {
 				request_id: response.data.id,
 				status_id: response.data.status.id
 			})
-		}
+		},
 
 	}
 })

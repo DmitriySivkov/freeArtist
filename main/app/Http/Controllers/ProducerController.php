@@ -82,23 +82,30 @@ class ProducerController extends Controller
 		]);
 	}
 
+	// todo - throw default exceptions instead of 'logic' ones everywhere
 	/**
 	 * @param Producer $producer
 	 * @param Product $product
-	 * @return void
+	 * @return bool|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|null
 	 */
 	public function deleteProducerProduct(Producer $producer, Product $product)
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $producer->team) &&
-			!$user->owns($producer->team)
-		)
-			throw new \LogicException('Доступ закрыт');
+		try {
+			if (
+				!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $producer->team) &&
+				!$user->owns($producer->team)
+			)
+				throw new \Exception('Доступ закрыт');
 
-		$product->delete();
+			return $product->delete();
+		} catch (\LogicException $e) {
+			return response("Ошибка сервера", 422);
+		} catch (\Throwable $e) {
+			return response($e->getMessage(), 422);
+		}
 	}
 
 	/**

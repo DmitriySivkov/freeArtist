@@ -12,12 +12,14 @@
 				clickable
 				class="q-py-lg q-px-md bg-primary text-white"
 				@click="productSelected(product.id)"
+				:disable="product.id === loadingProduct"
 			>
 				<q-item-section side>
 					<q-btn
 						v-if="isAbleToManageProduct && !!selected_product"
 						icon="delete"
 						color="negative"
+						@click.stop="showDeleteDialog"
 					/>
 				</q-item-section>
 				<q-item-section avatar>
@@ -37,6 +39,7 @@
 						class="q-pa-md"
 						icon="done"
 						color="secondary"
+						@click.stop="save"
 					/>
 				</q-item-section>
 				<q-item-section
@@ -48,6 +51,12 @@
 						color="warning"
 					/>
 				</q-item-section>
+				<q-inner-loading :showing="product.id === loadingProduct">
+					<q-spinner-gears
+						size="42px"
+						color="primary"
+					/>
+				</q-inner-loading>
 			</q-item>
 		</template>
 	</q-list>
@@ -55,15 +64,20 @@
 
 <script>
 import { ref } from "vue"
+import { Dialog } from "quasar"
 export default {
 	props: {
 		products: {
 			type: Array,
 			default: () => []
 		},
+		loadingProduct: Number,
 		isAbleToManageProduct: Boolean,
 	},
-	emits:["productSelected"],
+	emits:[
+		"productSelected",
+		"productDeleted"
+	],
 	setup(props, { emit }) {
 		const selected_product = ref(null)
 
@@ -78,9 +92,28 @@ export default {
 			emit("productSelected", product_id)
 		}
 
+		const save = () => {
+			console.log(123)
+		}
+
+		const showDeleteDialog = () => {
+			const product = props.products.find((p) => p.id === selected_product.value)
+
+			Dialog.create({
+				title: "Подтверждение",
+				message: "Удалить продукт: " + product.title + " ?",
+				cancel: true,
+			}).onOk(() => {
+				emit("productDeleted", product)
+				selected_product.value = null
+			})
+		}
+
 		return {
 			productSelected,
-			selected_product
+			selected_product,
+			save,
+			showDeleteDialog
 		}
 	}
 }
