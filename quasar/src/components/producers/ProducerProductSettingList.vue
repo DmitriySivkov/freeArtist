@@ -32,19 +32,13 @@
 			<ProducerProductSettingCommonTab v-model="product" />
 		</q-tab-panel>
 
-		<!--		<q-tab-panel name="composition">-->
-		<!--			<ProducerProductSettingCompositionTab-->
-		<!--				:selected-product="selectedProduct"-->
-		<!--				:is-able-to-manage-product="isAbleToManageProduct"-->
-		<!--			/>-->
-		<!--		</q-tab-panel>-->
+		<q-tab-panel name="composition">
+			<ProducerProductSettingCompositionTab v-model="product" />
+		</q-tab-panel>
 
-		<!--		<q-tab-panel name="images">-->
-		<!--			<ProducerProductSettingImagesTab-->
-		<!--				:selected-product="selectedProduct"-->
-		<!--				:is-able-to-manage-product="isAbleToManageProduct"-->
-		<!--			/>-->
-		<!--		</q-tab-panel>-->
+		<q-tab-panel name="images">
+			<ProducerProductSettingImagesTab v-model="product" />
+		</q-tab-panel>
 	</q-tab-panels>
 </template>
 
@@ -56,20 +50,24 @@ import ProducerProductSettingImagesTab from "src/components/producers/producerPr
 export default {
 	components: {
 		ProducerProductSettingCommonTab,
-		// ProducerProductSettingCompositionTab,
-		// ProducerProductSettingImagesTab
+		ProducerProductSettingCompositionTab,
+		ProducerProductSettingImagesTab
 	},
 	props: {
 		selectedProduct: {
 			type: Object,
 			default: () => ({})
 		},
-		isAbleToManageProduct: Boolean
+		isAbleToManageProduct: Boolean,
+		isCreatingProduct: {
+			type: Boolean,
+			default: false
+		}
 	},
 	setup(props) {
 		const tab = ref("common")
 
-		const product = ref(props.selectedProduct)
+		const product = ref(!props.isCreatingProduct ? props.selectedProduct : {})
 
 		return {
 			tab,

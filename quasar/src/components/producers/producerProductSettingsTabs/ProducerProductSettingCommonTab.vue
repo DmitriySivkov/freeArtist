@@ -16,7 +16,7 @@
 		@update:model-value="commonPropChanged({price: $event})"
 		label="Стоимость *"
 		class="q-pb-lg"
-		:rules="[ val => parseFloat(val) > 0 || 'Нужно указать стоимость']"
+		:rules="[ val => val > 0 || 'Нужно указать стоимость']"
 		lazy-rules
 	>
 		<template v-slot:control="{ emitValue }">

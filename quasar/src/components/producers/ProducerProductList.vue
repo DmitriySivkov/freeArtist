@@ -1,5 +1,6 @@
 <template>
 	<q-list
+		v-if="!isCreatingProduct"
 		separator
 		dark
 	>
@@ -61,6 +62,31 @@
 			</q-item>
 		</template>
 	</q-list>
+	<q-list v-else>
+		<q-item
+			clickable
+			class="q-py-lg q-px-md bg-primary text-white wrap"
+			v-ripple
+		>
+			<q-item-section avatar>
+				<q-icon
+					color="secondary"
+					name="edit"
+				/>
+			</q-item-section>
+			<q-item-section style="word-break: break-all;"> <!-- todo word-break only works through inline style -->
+				&nbsp;
+			</q-item-section>
+			<q-item-section class="col-xs-3 col-md-2 col-lg-1 text-right">
+				<q-btn
+					class="q-pa-md"
+					icon="done"
+					color="secondary"
+					@click.stop="save"
+				/>
+			</q-item-section>
+		</q-item>
+	</q-list>
 </template>
 
 <script>
@@ -73,6 +99,7 @@ export default {
 			default: () => []
 		},
 		loadingProduct: Number,
+		isCreatingProduct: Boolean,
 		isAbleToManageProduct: Boolean,
 	},
 	emits:[

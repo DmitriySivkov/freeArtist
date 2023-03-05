@@ -1,12 +1,13 @@
 <template>
 	<q-list
-		v-if="is_able_to_manage_product && !selected_product"
+		v-if="is_able_to_manage_product && !selected_product && !is_creating_product"
 	>
 		<q-item class="justify-end">
 			<q-item-section class="q-pr-none col-xs-3 col-md-2 col-lg-1">
 				<q-btn
 					icon="add"
 					color="secondary"
+					@click="createProduct"
 				/>
 			</q-item-section>
 		</q-item>
@@ -14,12 +15,14 @@
 	<ProducerProductList
 		:products="team.products"
 		:loading-product="loading_product"
+		:is-creating-product="is_creating_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
 		@productSelected="productSelected"
 		@productDeleted="productDeleted"
 	/>
 	<ProducerProductSettingList
-		v-if="selected_product"
+		v-if="selected_product || is_creating_product"
+		:is-creating-product="is_creating_product"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
 	/>
@@ -65,8 +68,13 @@ export default {
 			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
 		)
 
+		const is_creating_product = ref(false)
 		const selected_product = ref(null)
 		const loading_product = ref(null)
+
+		const createProduct = () => {
+			is_creating_product.value = true
+		}
 
 		const productSelected = (product_id) => {
 			if (!product_id) {
@@ -113,7 +121,9 @@ export default {
 			loading_product,
 			is_able_to_manage_product,
 			productSelected,
-			productDeleted
+			productDeleted,
+			createProduct,
+			is_creating_product
 		}
 	}
 }

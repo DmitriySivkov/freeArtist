@@ -1,168 +1,114 @@
 <template>
 	<q-btn
-		v-if="isAbleToManageProduct"
-		label="Добавить ингридиент"
+		icon="add"
 		color="primary"
 		class="q-mb-md"
 		@click="addIngredient"
 	/>
-	<q-form
-		@submit="submit"
-		@reset="reset"
+	<q-card
+		v-for="(ingredient, index) in modelValue.composition"
+		:key="index"
+		flat
 	>
-		<q-card
-			v-for="(ingredient, index) in composition"
-			:key="index"
-			flat
+		<q-input
+			:disable="ingredient.to_delete"
+			filled
+			label="Название ингридиента"
+			v-model="ingredient.name"
+			lazy-rules
+			:rules="[ val => !!val || 'Укажите название']"
+			class="q-pb-sm"
 		>
-			<q-input
-				:disable="ingredient.to_delete || !isAbleToManageProduct"
-				filled
-				label="Название ингридиента"
-				v-model="ingredient.name"
-				lazy-rules
-				:rules="[ val => val.length >= 2 || 'Название должно быть длиннее 2 символов']"
-				class="q-pb-lg"
-			>
-				<template
-					v-slot:after
-					v-if="isAbleToManageProduct"
-				>
+			<template v-slot:after>
+				<q-btn
+					v-if="ingredient.to_delete"
+					flat
+					square
+					icon="restore"
+					class="bg-secondary text-white full-height"
+					@click="restoreIngredient(index)"
+				/>
+				<q-btn
+					v-else
+					flat
+					square
+					icon="clear"
+					class="bg-red text-white full-height"
+					@click="removeIngredient(index)"
+				/>
 
-					<q-btn
-						v-if="ingredient.to_delete"
-						flat
-						square
-						icon="restore"
-						class="bg-secondary text-white full-height"
-						@click="restoreIngredient(index)"
-					/>
-					<q-btn
-						v-else
-						flat
-						square
-						icon="clear"
-						class="bg-red text-white full-height"
-						@click="deleteIngredient(index)"
-					/>
+			</template>
+		</q-input>
+		<q-input
+			:disable="ingredient.to_delete"
+			filled
+			type="textarea"
+			label="Описание ингридиента (необязательно)"
+			v-model="ingredient.description"
+		/>
 
-				</template>
-			</q-input>
-			<q-input
-				:disable="ingredient.to_delete || !isAbleToManageProduct"
-				filled
-				type="textarea"
-				label="Описание ингридиента (необязательно)"
-				v-model="ingredient.description"
-			/>
-
-			<q-separator
-				v-if="index !== composition.length-1"
-				class="q-mt-sm q-mb-sm bg-primary"
-			/>
-		</q-card>
-		<!--		<div-->
-		<!--			v-if="isAbleToManageProduct"-->
-		<!--			class="row q-col-gutter-sm q-mt-md"-->
-		<!--		>-->
-		<!--			<div class="col-xs-12">-->
-		<!--				<q-btn-->
-		<!--					:disable="disable_submit"-->
-		<!--					label="Сохранить"-->
-		<!--					type="submit"-->
-		<!--					color="primary"-->
-		<!--					class="q-pa-lg full-width"-->
-		<!--				/>-->
-		<!--			</div>-->
-		<!--			<div class="col-xs-12">-->
-		<!--				<q-btn-->
-		<!--					label="Сбросить"-->
-		<!--					type="reset"-->
-		<!--					color="warning"-->
-		<!--					class="q-pa-lg full-width"-->
-		<!--				/>-->
-		<!--			</div>-->
-		<!--		</div>-->
-	</q-form>
+		<q-separator
+			v-if="index !== modelValue.composition.length-1"
+			class="q-mt-sm q-mb-sm bg-primary"
+		/>
+	</q-card>
 </template>
 
 <script>
-import { ref } from "vue"
 import _ from "lodash"
-import { useNotification } from "src/composables/notification"
-import { useRouter } from "vue-router"
-import { useProducerStore } from "src/stores/producer"
 export default {
 	props: {
-		selectedProduct: {
+		modelValue: {
 			type: Object,
 			default: () => ({})
 		},
-		isAbleToManageProduct: Boolean
 	},
-	setup(props) {
-		const producer_store = useProducerStore()
-		const $router = useRouter()
-		const { notifySuccess, notifyError } = useNotification()
+	setup(props, { emit }) {
+		const addIngredient = () => {
+			let composition = _.clone(props.modelValue.composition)
 
-		const composition = ref(
-			props.selectedProduct.composition ?
-				_.cloneDeep(props.selectedProduct.composition) :
-				[]
-		)
-		const disable_submit = ref(false)
+			composition.unshift({
+				is_new: true,
+				name: "",
+				description: "",
+			})
 
-		const addIngredient = () =>
-			composition.value.unshift({name:"", description:"", is_new:true})
+			emit("update:modelValue", {...props.modelValue, composition })
+		}
 
-		const deleteIngredient = (item_index) => {
-			if (composition.value[item_index].is_new) {
-				composition.value = composition.value.filter((i, index) => index !== item_index)
+		const removeIngredient = (item_index) => {
+			if (!!props.modelValue.composition[item_index].is_new) {
+				let composition = props.modelValue.composition.filter((i, index) => index !== item_index)
+
+				emit("update:modelValue", {...props.modelValue, composition })
 				return
 			}
-			composition.value.find((i, index) => index === item_index).to_delete = true
+
+			let item = _.clone(props.modelValue.composition.find((i, index) => index === item_index))
+			item.to_delete = true
+
+			let composition = props.modelValue.composition.filter((i, index) => index !== item_index)
+
+			composition.splice(item_index, 0, item)
+
+			emit("update:modelValue", {...props.modelValue, composition })
 		}
 
-		const restoreIngredient = (item_index) =>
-			delete composition.value.find((i, index) => index === item_index).to_delete
+		const restoreIngredient = (item_index) => {
+			let item = _.clone(props.modelValue.composition.find((i, index) => index === item_index))
+			delete item.to_delete
 
-		const submit = () => {
-			if (
-				JSON.stringify(composition.value) === JSON.stringify(props.selectedProduct.composition)
-			)
-				return
+			let composition = props.modelValue.composition.filter((i, index) => index !== item_index)
 
-			disable_submit.value = true
+			composition.splice(item_index, 0, item)
 
-			producer_store.syncProducerProductCompositionSettings({
-				producer_id: parseInt($router.currentRoute.value.params.producer_id),
-				product_id: props.selectedProduct.id,
-				composition: composition.value
-			})
-				.then(() => {
-					composition.value = _.cloneDeep(props.selectedProduct.composition)
-					notifySuccess("Состав продукта '" + props.selectedProduct.title + "' успешно изменен")
-					disable_submit.value = false
-				})
-				.catch((error) => {
-					notifyError(error.response.data)
-					disable_submit.value = false
-				})
-
-		}
-
-		const reset = () => {
-			composition.value = _.cloneDeep(props.selectedProduct.composition)
+			emit("update:modelValue", {...props.modelValue, composition })
 		}
 
 		return {
-			composition,
 			addIngredient,
-			deleteIngredient,
+			removeIngredient,
 			restoreIngredient,
-			disable_submit,
-			submit,
-			reset
 		}
 	}
 }
