@@ -37,7 +37,10 @@
 		</q-tab-panel>
 
 		<q-tab-panel name="images">
-			<ProducerProductSettingImagesTab v-model="product" />
+			<ProducerProductSettingImagesTab
+				v-model="product"
+				:is-able-to-manage-product="isAbleToManageProduct"
+			/>
 		</q-tab-panel>
 	</q-tab-panels>
 </template>

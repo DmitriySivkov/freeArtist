@@ -14,7 +14,12 @@
 						:src="backend_server + '/storage/' + team.detailed.logo"
 						fit="contain"
 					/>
-					<span v-else>Добавить фото</span>
+					<span
+						v-else
+						class="text-center"
+					>
+						Выберите изображение <br /> или переместите в эту область
+					</span>
 					<div
 						v-if="can_manage_logo || is_team_admin"
 						class="full-height full-width absolute cursor-pointer"

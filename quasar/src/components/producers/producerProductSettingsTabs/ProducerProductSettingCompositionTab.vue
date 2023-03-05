@@ -8,22 +8,25 @@
 	<q-card
 		v-for="(ingredient, index) in modelValue.composition"
 		:key="index"
-		flat
+		class="composition__card border-primary"
+		:class="{'q-my-sm': index !== modelValue.composition.length-1}"
+		bordered
 	>
 		<q-input
 			:disable="ingredient.to_delete"
 			filled
+			square
 			label="Название ингридиента"
 			v-model="ingredient.name"
 			lazy-rules
 			:rules="[ val => !!val || 'Укажите название']"
-			class="q-pb-sm"
+			class="q-pb-none"
+			bg-color="grey-3"
 		>
 			<template v-slot:after>
 				<q-btn
 					v-if="ingredient.to_delete"
 					flat
-					square
 					icon="restore"
 					class="bg-secondary text-white full-height"
 					@click="restoreIngredient(index)"
@@ -31,7 +34,6 @@
 				<q-btn
 					v-else
 					flat
-					square
 					icon="clear"
 					class="bg-red text-white full-height"
 					@click="removeIngredient(index)"
@@ -39,17 +41,17 @@
 
 			</template>
 		</q-input>
+
+		<q-separator class="bg-primary q-my-xs" />
+
 		<q-input
 			:disable="ingredient.to_delete"
 			filled
+			square
+			bg-color="grey-3"
 			type="textarea"
 			label="Описание ингридиента (необязательно)"
 			v-model="ingredient.description"
-		/>
-
-		<q-separator
-			v-if="index !== modelValue.composition.length-1"
-			class="q-mt-sm q-mb-sm bg-primary"
 		/>
 	</q-card>
 </template>

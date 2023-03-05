@@ -9,7 +9,7 @@
 		<q-card-section
 			class="row flex-center full-height"
 		>
-			<span>Добавить фото</span>
+			<span class="text-center">Выберите изображение <br /> или переместите в эту область</span>
 			<div
 				v-if="isAbleToManageProduct"
 				class="full-height full-width absolute cursor-pointer"
@@ -32,7 +32,7 @@
 		<q-card
 			flat
 			class="col-xs-12 col-md-3"
-			v-for="image in product_images"
+			v-for="image in modelValue.images"
 			:key="image.id"
 		>
 			<q-img
@@ -68,7 +68,7 @@ export default {
 		AddImageDialog
 	},
 	props: {
-		selectedProduct: {
+		modelValue: {
 			type: Object,
 			default: () => ({})
 		},
@@ -85,16 +85,8 @@ export default {
 		const { base64ToBlob } = cameraService()
 		const { Camera } = Plugins
 		const { notifySuccess, notifyError } = useNotification()
-		const { user_teams } = useUserTeam()
 
 		const backend_server = process.env.BACKEND_SERVER
-
-		const product_images = computed(() =>
-			props.selectedProduct.id ?
-				user_teams.value.find((t) => t.detailed_id === parseInt($router.currentRoute.value.params.producer_id))
-					.products.find((p) => p.id === props.selectedProduct.id).images :
-				[]
-		)
 
 		const showFilePrompt = () => {
 			if ($q.platform.is.desktop) {
@@ -135,7 +127,7 @@ export default {
 			producer_store.addProducerProductImage({
 				image: form_data,
 				producer_id: parseInt($router.currentRoute.value.params.producer_id),
-				product_id: props.selectedProduct.id
+				product_id: props.modelValue.id
 			}).then(() => {
 				is_loading.value = false
 				is_dragging.value = false
@@ -152,7 +144,6 @@ export default {
 			file_picker,
 			showFilePrompt,
 			addImage,
-			product_images,
 			backend_server,
 			is_dragging,
 			is_loading,
