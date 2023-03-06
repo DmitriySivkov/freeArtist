@@ -5,6 +5,7 @@
 		class="q-mb-md"
 		@click="addIngredient"
 	/>
+
 	<q-card
 		v-for="(ingredient, index) in modelValue.composition"
 		:key="index"
@@ -21,7 +22,6 @@
 			lazy-rules
 			:rules="[ val => !!val || 'Укажите название']"
 			class="q-pb-none"
-			bg-color="grey-3"
 		>
 			<template v-slot:after>
 				<q-btn
@@ -48,7 +48,6 @@
 			:disable="ingredient.to_delete"
 			filled
 			square
-			bg-color="grey-3"
 			type="textarea"
 			label="Описание ингридиента (необязательно)"
 			v-model="ingredient.description"

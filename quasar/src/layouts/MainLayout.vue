@@ -1,10 +1,17 @@
 <template>
-	<q-layout view="lHh Lpr lFf">
+	<q-layout
+		view="lHh Lpr lFf"
+	>
 		<MainHeader />
 		<q-page-container>
-			<q-page class="row justify-center">
+
+			<q-page class="row no-wrap justify-center">
 				<div class="col-xs-12 col-lg-8 bg-white">
-					<router-view />
+					<div class="column full-height">
+						<q-scroll-area class="col">
+							<router-view />
+						</q-scroll-area>
+					</div>
 				</div>
 			</q-page>
 		</q-page-container>
