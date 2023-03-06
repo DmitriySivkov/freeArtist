@@ -17,6 +17,7 @@
 		:loading-product="loading_product"
 		:is-creating-product="is_creating_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
+		:is-product-changed="is_product_changed"
 		@productSelected="productSelected"
 		@productDeleted="productDeleted"
 	/>
@@ -25,6 +26,7 @@
 		:is-creating-product="is_creating_product"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
+		@productChanged="productChanged"
 	/>
 </template>
 
@@ -110,6 +112,12 @@ export default {
 			})
 		}
 
+		const is_product_changed = ref(false)
+
+		const productChanged = (is_changed) => {
+			is_product_changed.value = is_changed
+		}
+
 		const is_able_to_manage_product = computed(() =>
 			hasPermission(team.value.id,"producer_product") ||
 			team.value.user_id === user_store.data.id
@@ -123,7 +131,9 @@ export default {
 			productSelected,
 			productDeleted,
 			createProduct,
-			is_creating_product
+			productChanged,
+			is_creating_product,
+			is_product_changed
 		}
 	}
 }

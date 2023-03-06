@@ -46,7 +46,8 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { ref, watch } from "vue"
+import _ from "lodash"
 import ProducerProductSettingCommonTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
 import ProducerProductSettingCompositionTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCompositionTab.vue"
 import ProducerProductSettingImagesTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
@@ -67,14 +68,34 @@ export default {
 			default: false
 		}
 	},
-	setup(props) {
+	emits: ["productChanged"],
+	setup(props, { emit }) {
 		const tab = ref("common")
 
-		const product = ref(!props.isCreatingProduct ? props.selectedProduct : {})
+		// whenever new field is added to default tab -
+		// its needed to be added to 'default_product' with matching type
+		// in order for 'save' button to work accordingly
+		const product = ref(
+			!props.isCreatingProduct ?
+				props.selectedProduct :
+				{
+					title: "",
+					price: null,
+					amount: NaN
+				}
+		)
+
+		const default_product = _.cloneDeep(product.value)
+
+		watch(
+			() => product.value,
+			(val) => emit("productChanged", !_.isEqual(val, default_product)),
+			{ deep: true }
+		)
 
 		return {
 			tab,
-			product
+			product,
 		}
 	}
 }

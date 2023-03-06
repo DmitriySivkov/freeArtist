@@ -38,9 +38,10 @@
 					class="col-xs-3 col-md-2 col-lg-1 text-right"
 				>
 					<q-btn
-						class="q-pa-md"
+						unelevated
+						class="bg-secondary q-pa-md"
+						:class="{'composition__button_done_active': !!isProductChanged }"
 						icon="done"
-						color="secondary"
 						@click.stop="save"
 					/>
 				</q-item-section>
@@ -79,9 +80,10 @@
 			</q-item-section>
 			<q-item-section class="col-xs-3 col-md-2 col-lg-1 text-right">
 				<q-btn
-					class="q-pa-md"
+					unelevated
+					class="bg-secondary q-pa-md"
+					:class="{'composition__button_done_active': !!isProductChanged }"
 					icon="done"
-					color="secondary"
 					@click.stop="save"
 				/>
 			</q-item-section>
@@ -101,6 +103,7 @@ export default {
 		loadingProduct: Number,
 		isCreatingProduct: Boolean,
 		isAbleToManageProduct: Boolean,
+		isProductChanged: Boolean
 	},
 	emits:[
 		"productSelected",
