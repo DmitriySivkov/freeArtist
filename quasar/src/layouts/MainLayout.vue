@@ -8,7 +8,10 @@
 			<q-page class="row no-wrap justify-center">
 				<div class="col-xs-12 col-lg-8 bg-white">
 					<div class="column full-height">
-						<q-scroll-area class="col">
+						<q-scroll-area
+							class="col"
+							:thumb-style="{ opacity: 0 }"
+						>
 							<router-view />
 						</q-scroll-area>
 					</div>
