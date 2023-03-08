@@ -6,9 +6,7 @@
 		:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
 		style="height:200px"
 	>
-		<q-card-section
-			class="row flex-center full-height"
-		>
+		<q-card-section class="row flex-center full-height">
 			<span class="text-center">Выберите изображение <br /> или переместите в эту область</span>
 			<div
 				v-if="isAbleToManageProduct"
@@ -28,27 +26,62 @@
 		</q-card-section>
 	</q-card>
 
-	<div class="row q-col-gutter-sm q-mt-md"> <!-- todo - all photos in one carousel -->
+	<!--	&lt;!&ndash; todo - all photos in one carousel &ndash;&gt;-->
+	<!--	<div class="row q-col-gutter-sm q-mt-md"> -->
+	<!--		<q-card-->
+	<!--			flat-->
+	<!--			class="col-xs-12 col-md-3"-->
+	<!--			v-for="image in modelValue.images"-->
+	<!--			:key="image.id"-->
+	<!--		>-->
+	<!--			<q-img-->
+	<!--				:src="backend_server + '/storage/' + image.path"-->
+	<!--				fit="contain"-->
+	<!--				style="height: 200px;"-->
+	<!--			/>-->
+	<!--		</q-card>-->
+	<!--	</div>-->
+
+	<!-- todo - continue with committed images and upload it all in a bulk to the server-->
+	<div
+		v-if="modelValue.committed_images"
+		class="row q-col-gutter-sm q-mt-md"
+	>
 		<q-card
 			flat
 			class="col-xs-12 col-md-3"
-			v-for="image in modelValue.images"
-			:key="image.id"
+			v-for="image in modelValue.committed_images"
+			:key="image.key"
 		>
 			<q-img
-				:src="backend_server + '/storage/' + image.path"
+				:src="image.src"
 				fit="contain"
 				style="height: 200px;"
-			/>
+			>
+				<!-- todo - change inline style -->
+				<div
+					style="padding:8px"
+					class="absolute-top text-right"
+				>
+					<q-icon
+						class="cursor-pointer"
+						size="32px"
+						name="clear"
+						color="black"
+						@click="removeCommittedImage(image.key)"
+					/>
+				</div>
+			</q-img>
 		</q-card>
 	</div>
 
-	<q-file
-		v-model="image"
-		ref="file_picker"
-		accept=".jpg, image/*"
+	<q-uploader
+		ref="uploader"
+		accept=".jpg,image/*"
+		multiple
 		style="display:none"
-		@update:model-value="addImage"
+		@added="imageCommitted"
+		@rejected="imageRejected"
 	/>
 </template>
 
@@ -74,12 +107,13 @@ export default {
 		},
 		isAbleToManageProduct: Boolean
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const $q = useQuasar()
 		const $router = useRouter()
 		const producer_store = useProducerStore()
 		const image = ref(null)
-		const file_picker = ref(null)
+
+		const uploader = ref(null)
 		const is_dragging = ref(false)
 		const is_loading = ref(false)
 		const { base64ToBlob } = cameraService()
@@ -105,7 +139,7 @@ export default {
 		}
 
 		const fromGallery = () => {
-			file_picker.value.pickFiles()
+			uploader.value.pickFiles()
 		}
 
 		const fromCamera = async () => {
@@ -116,38 +150,93 @@ export default {
 			})
 			const blob = await base64ToBlob(img.dataUrl)
 			const img_file = new File([blob], "no-matter.jpg")
-			file_picker.value.addFiles([img_file])
+			uploader.value.addFiles([img_file])
 		}
 
-		const addImage = () => {
-			is_loading.value = true
-			let form_data = new FormData()
-			form_data.append("image", image.value)
+		const imageCommitted = (files) => {
+			const tmp_images = files.map((f) => ({
+				key: f.__key,
+				src: URL.createObjectURL(f),
+				instance: f
+			}))
 
-			producer_store.addProducerProductImage({
-				image: form_data,
-				producer_id: parseInt($router.currentRoute.value.params.producer_id),
-				product_id: props.modelValue.id
-			}).then(() => {
-				is_loading.value = false
-				is_dragging.value = false
-				notifySuccess("Изображение успешно загружено")
+			if (!props.modelValue.committed_images) {
+				emit("update:modelValue", {...props.modelValue, committed_images: tmp_images })
+				return
+			}
+
+			emit("update:modelValue", {
+				...props.modelValue,
+				committed_images: [...tmp_images, ...props.modelValue.committed_images]
+			})
+
+		}
+
+		const removeCommittedImage = (committed_image_key) => {
+			uploader.value.removeFile(
+				props.modelValue.committed_images.find((i) => i.key === committed_image_key).instance
+			)
+
+			// if deleting the last committed image
+			if (props.modelValue.committed_images.length === 1) {
+				emit(
+					"update:modelValue",
+					{
+						...Object.keys(props.modelValue)
+							.filter((prop) => prop !== "committed_images")
+							.reduce((carry, prop) => {
+								carry[prop] = props.modelValue[prop]
+								return carry
+							}, {})
+					}
+				)
+				return
+			}
+
+			emit("update:modelValue", {
+				...props.modelValue,
+				committed_images: props.modelValue.committed_images.filter((i) => i.key !== committed_image_key)
 			})
 		}
 
+		// todo rejection handling
+		const imageRejected = (rejected_entries) => {
+			console.log(rejected_entries)
+		}
+
+		// const addImage = () => {
+		// 	is_loading.value = true
+		// 	let form_data = new FormData()
+		// 	form_data.append("image", image.value)
+		//
+		// 	producer_store.addProducerProductImage({
+		// 		image: form_data,
+		// 		producer_id: parseInt($router.currentRoute.value.params.producer_id),
+		// 		product_id: props.modelValue.id
+		// 	}).then(() => {
+		// 		is_loading.value = false
+		// 		is_dragging.value = false
+		// 		notifySuccess("Изображение успешно загружено")
+		// 	})
+		// }
+
 		const drop = (e) => {
-			file_picker.value.addFiles([e.dataTransfer.files[0]])
+			is_dragging.value = false
+			uploader.value.addFiles([e.dataTransfer.files[0]])
 		}
 
 		return {
 			image,
-			file_picker,
+			uploader,
 			showFilePrompt,
-			addImage,
+			// addImage,
+			imageCommitted,
 			backend_server,
 			is_dragging,
 			is_loading,
-			drop
+			drop,
+			removeCommittedImage,
+			imageRejected
 		}
 	}
 }
