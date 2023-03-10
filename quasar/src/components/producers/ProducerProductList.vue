@@ -42,7 +42,7 @@
 						class="bg-secondary q-pa-md"
 						:class="{'composition__button_done_active': !!isProductChanged }"
 						icon="done"
-						@click.stop="save"
+						@click.stop="update"
 					/>
 				</q-item-section>
 				<q-item-section
@@ -84,7 +84,7 @@
 					class="bg-secondary q-pa-md"
 					:class="{'composition__button_done_active': !!isProductChanged }"
 					icon="done"
-					@click.stop="save"
+					@click.stop="create"
 				/>
 			</q-item-section>
 		</q-item>
@@ -107,7 +107,9 @@ export default {
 	},
 	emits:[
 		"productSelected",
-		"productDeleted"
+		"deleteProduct",
+		"updateProduct",
+		"createProduct"
 	],
 	setup(props, { emit }) {
 		const selected_product = ref(null)
@@ -123,8 +125,12 @@ export default {
 			emit("productSelected", product_id)
 		}
 
-		const save = () => {
-			console.log(123)
+		const create = () => {
+			emit("createProduct")
+		}
+
+		const update = () => {
+			emit("updateProduct", selected_product.value)
 		}
 
 		const showDeleteDialog = () => {
@@ -135,7 +141,7 @@ export default {
 				message: "Удалить продукт: " + product.title + " ?",
 				cancel: true,
 			}).onOk(() => {
-				emit("productDeleted", product)
+				emit("deleteProduct", product)
 				selected_product.value = null
 			})
 		}
@@ -143,7 +149,8 @@ export default {
 		return {
 			productSelected,
 			selected_product,
-			save,
+			create,
+			update,
 			showDeleteDialog
 		}
 	}

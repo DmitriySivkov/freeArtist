@@ -42,24 +42,6 @@ export const useProducerStore = defineStore("producer", {
 			team_store.user_teams.find((t) => t.detailed.id === producer_id).products = response.data
 		},
 
-		//todo - rollback on error
-		async syncProducerProductCommonSettings({ producer_id, product_id, settings }) {
-			await api.post(
-				"personal/producers/" + producer_id + "/products/" + product_id + "/syncCommonSettings",
-				{
-					settings: settings
-				}
-			)
-
-			const team_store = useTeamStore()
-
-			const product = team_store.user_teams.find((t) => t.detailed.id === producer_id)
-				.products
-				.find((product) => product.id === product_id)
-
-			Object.assign(product, settings)
-		},
-
 		async createProducerProduct({ producer_id, settings }) {
 			const response = await api.post(
 				"personal/producers/" + producer_id + "/products",
@@ -75,12 +57,11 @@ export const useProducerStore = defineStore("producer", {
 			return response
 		},
 
-		deleteProducerProduct({ producer_id, product_id }) {
+		deleteProducerProduct({ product_id }) {
 			return api.delete(
-				"personal/producers/" + producer_id + "/products/" + product_id,
+				"personal/products/" + product_id,
 				{
 					data: {
-						producer_id,
 						product_id
 					}
 				})
@@ -96,37 +77,11 @@ export const useProducerStore = defineStore("producer", {
 			producer.products.splice(product_index, 1)
 		},
 
-		async syncProducerProductCompositionSettings({producer_id, product_id, composition}) {
-			const response = await api.post(
-				"personal/producers/" + producer_id + "/products/" + product_id + "/syncCompositionSettings",
-				{ composition }
+		updateProducerProduct({ product }) {
+			return api.put(
+				"personal/products/" + product.id,
+				{ product }
 			)
-
-			const team_store = useTeamStore()
-
-			team_store.user_teams.find((t) => t.detailed.id === producer_id)
-				.products
-				.find((product) => product.id === product_id)
-				.composition = response.data
-		},
-
-		async addProducerProductImage({ producer_id, product_id, image }) {
-			const response = await api.post(
-				"/personal/producers/" + producer_id + "/products/" + product_id + "/addImage",
-				image,
-			)
-
-			const team_store = useTeamStore()
-
-			const product = team_store.user_teams.find((t) => t.detailed.id === producer_id)
-				.products
-				.find((product) => product.id === product_id)
-
-			if (!product.hasOwnProperty("images")) {
-				product.images = [response.data]
-			} else {
-				product.images.unshift(response.data)
-			}
 		},
 
 		async setProducerLogo({ producer_id, logo }) {

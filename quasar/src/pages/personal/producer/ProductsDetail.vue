@@ -7,26 +7,28 @@
 				<q-btn
 					icon="add"
 					color="secondary"
-					@click="createProduct"
+					@click="is_creating_product = true"
 				/>
 			</q-item-section>
 		</q-item>
 	</q-list>
 	<ProducerProductList
 		:products="team.products"
-		:loading-product="loading_product"
+		:loading-product="is_loading"
 		:is-creating-product="is_creating_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
 		:is-product-changed="is_product_changed"
 		@productSelected="productSelected"
-		@productDeleted="productDeleted"
+		@deleteProduct="deleteProduct"
+		@updateProduct="updateProduct"
+		@createProduct="createProduct"
 	/>
 	<ProducerProductSettingList
 		v-if="selected_product || is_creating_product"
 		:is-creating-product="is_creating_product"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
-		@productChanged="productChanged"
+		@productChanged="is_product_changed = $event"
 	/>
 </template>
 
@@ -72,10 +74,23 @@ export default {
 
 		const is_creating_product = ref(false)
 		const selected_product = ref(null)
-		const loading_product = ref(null)
+		const is_loading = ref(null)
+		const is_product_changed = ref(false)
 
 		const createProduct = () => {
-			is_creating_product.value = true
+			is_loading.value = true
+
+			is_loading.value = false
+		}
+
+		const updateProduct = () => {
+			is_loading.value = true
+
+			producer_store.updateProducerProduct({
+				product: selected_product.value
+			})
+
+			is_loading.value = false
 		}
 
 		const productSelected = (product_id) => {
@@ -87,13 +102,12 @@ export default {
 			selected_product.value = team.value.products.find((p) => p.id === product_id)
 		}
 
-		const productDeleted = (product) => {
-			loading_product.value = product.id
+		const deleteProduct = (product) => {
+			is_loading.value = product.id
 
 			selected_product.value = null
 
 			const promise = producer_store.deleteProducerProduct({
-				producer_id: parseInt($router.currentRoute.value.params.producer_id),
 				product_id: product.id
 			})
 
@@ -107,15 +121,9 @@ export default {
 			})
 
 			promise.catch((error) => {
-				loading_product.value = null
+				is_loading.value = null
 				notifyError(error.response.data)
 			})
-		}
-
-		const is_product_changed = ref(false)
-
-		const productChanged = (is_changed) => {
-			is_product_changed.value = is_changed
 		}
 
 		const is_able_to_manage_product = computed(() =>
@@ -126,12 +134,12 @@ export default {
 		return {
 			team,
 			selected_product,
-			loading_product,
+			is_loading,
 			is_able_to_manage_product,
 			productSelected,
-			productDeleted,
+			deleteProduct,
 			createProduct,
-			productChanged,
+			updateProduct,
 			is_creating_product,
 			is_product_changed
 		}

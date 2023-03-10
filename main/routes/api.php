@@ -93,12 +93,13 @@ Route::group([
 
 		Route::group(['prefix' => '{producer}/products'], function () {
 			Route::get('', [ProducerController::class, 'getProducerProducts']);
-			Route::post('', [ProducerController::class, 'storeProducerProduct']);
-			Route::delete('{product}', [ProducerController::class, 'deleteProducerProduct']);
-			Route::post('{product}/addImage', [ProducerController::class, 'addProducerProductImage']);
-			Route::post('{product}/syncCommonSettings', [ProducerController::class, 'syncProducerProductCommonSettings']);
-			Route::post('{product}/syncCompositionSettings', [ProducerController::class, 'syncProducerProductCompositionSettings']);
 		});
+	});
+
+	Route::group(['prefix' => 'products'], function() {
+		Route::post('', [ProducerController::class, 'storeProducerProduct']);
+		Route::put('{product}', [ProducerController::class, 'updateProducerProduct']);
+		Route::delete('{product}', [ProducerController::class, 'deleteProducerProduct']);
 	});
 
 	Route::group(['prefix' => 'users'], function() {

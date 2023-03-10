@@ -26,23 +26,6 @@
 		</q-card-section>
 	</q-card>
 
-	<!--	&lt;!&ndash; todo - all photos in one carousel &ndash;&gt;-->
-	<!--	<div class="row q-col-gutter-sm q-mt-md"> -->
-	<!--		<q-card-->
-	<!--			flat-->
-	<!--			class="col-xs-12 col-md-3"-->
-	<!--			v-for="image in modelValue.images"-->
-	<!--			:key="image.id"-->
-	<!--		>-->
-	<!--			<q-img-->
-	<!--				:src="backend_server + '/storage/' + image.path"-->
-	<!--				fit="contain"-->
-	<!--				style="height: 200px;"-->
-	<!--			/>-->
-	<!--		</q-card>-->
-	<!--	</div>-->
-
-	<!-- todo - continue with committed images and upload it all in a bulk to the server-->
 	<div
 		v-if="modelValue.committed_images"
 		class="row q-col-gutter-sm q-mt-md"
@@ -73,6 +56,20 @@
 				</div>
 			</q-img>
 		</q-card>
+
+		<q-card
+			flat
+			class="col-xs-12 col-md-3"
+			v-for="image in modelValue.images"
+			:key="image.id"
+		>
+			<q-img
+				:src="backend_server + '/storage/' + image.path"
+				fit="contain"
+				style="height: 200px;"
+			/>
+		</q-card>
+
 	</div>
 
 	<q-uploader
@@ -80,6 +77,7 @@
 		accept=".jpg,image/*"
 		multiple
 		style="display:none"
+		:factory="upload"
 		@added="imageCommitted"
 		@rejected="imageRejected"
 	/>
@@ -89,8 +87,7 @@
 import { useQuasar } from "quasar"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
-import { ref, computed } from "vue"
-import { useUserTeam } from "src/composables/userTeam"
+import { ref } from "vue"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
@@ -204,6 +201,10 @@ export default {
 			console.log(rejected_entries)
 		}
 
+		const upload = (files) => {
+
+		}
+
 		// const addImage = () => {
 		// 	is_loading.value = true
 		// 	let form_data = new FormData()
@@ -236,7 +237,8 @@ export default {
 			is_loading,
 			drop,
 			removeCommittedImage,
-			imageRejected
+			imageRejected,
+			upload
 		}
 	}
 }
