@@ -5,6 +5,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProducerController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
@@ -97,9 +98,9 @@ Route::group([
 	});
 
 	Route::group(['prefix' => 'products'], function() {
-		Route::post('', [ProducerController::class, 'storeProducerProduct']);
-		Route::put('{product}', [ProducerController::class, 'updateProducerProduct']);
-		Route::delete('{product}', [ProducerController::class, 'deleteProducerProduct']);
+		Route::post('', [ProductController::class, 'store']);
+		Route::put('{product}', [ProductController::class, 'update']);
+		Route::delete('{product}', [ProductController::class, 'delete']);
 	});
 
 	Route::group(['prefix' => 'users'], function() {

@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Permission;
-use App\Models\Producer;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\User;

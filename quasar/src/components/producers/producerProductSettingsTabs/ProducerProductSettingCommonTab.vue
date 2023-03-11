@@ -42,9 +42,6 @@
 
 <script>
 import CurrencyInput from "src/components/helpers/CurrencyInput.vue"
-import { useRouter } from "vue-router"
-import { useNotification } from "src/composables/notification"
-import { useProducerStore } from "src/stores/producer"
 export default {
 	components: {
 		CurrencyInput
@@ -56,12 +53,6 @@ export default {
 		},
 	},
 	setup(props, { emit }) {
-		const $router = useRouter()
-		const producer_store = useProducerStore()
-		const { notifySuccess, notifyError } = useNotification()
-
-		// const is_empty_product = computed(() => Object.keys(props.selectedProduct).length === 0)
-
 		const currency_config = {
 			currency: "RUB"
 		}
@@ -69,48 +60,6 @@ export default {
 		const commonPropChanged = (field) => {
 			emit("update:modelValue", Object.assign(props.modelValue, field))
 		}
-
-		// const submit = () => {
-		// 	if (
-		// 		product.value.title.trim() === props.selectedProduct.title &&
-		// 		parseFloat(product.value.price) === parseFloat(props.selectedProduct.price) &&
-		// 		product.value.amount === props.selectedProduct.amount
-		// 	)
-		// 		return
-		//
-		// 	if (is_empty_product.value) {
-		// 		producer_store.createProducerProduct({
-		// 			producer_id: parseInt($router.currentRoute.value.params.producer_id),
-		// 			settings: {
-		// 				title: product.value.title,
-		// 				price: parseFloat(product.value.price).toFixed(2),
-		// 				amount: product.value.amount
-		// 			}
-		// 		})
-		// 			.then((response) => {
-		// 				notifySuccess("Продукт '" + product.value.title + "' успешно создан")
-		// 			})
-		// 			.catch((error) => {
-		// 				notifyError(error.response.data)
-		// 			})
-		// 	} else {
-		// 		producer_store.syncProducerProductCommonSettings({
-		// 			producer_id: parseInt($router.currentRoute.value.params.producer_id),
-		// 			product_id: props.selectedProduct.id,
-		// 			settings: {
-		// 				title: product.value.title,
-		// 				price: parseFloat(product.value.price).toFixed(2),
-		// 				amount: product.value.amount
-		// 			}
-		// 		})
-		// 			.then(() => {
-		// 				notifySuccess("Настройки продукта '" + product.value.title + "' успешно изменены")
-		// 			})
-		// 			.catch((error) => {
-		// 				notifyError(error.response.data)
-		// 			})
-		// 	}
-		// }
 
 		return {
 			currency_config,

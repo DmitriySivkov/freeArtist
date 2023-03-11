@@ -1,6 +1,20 @@
 <template>
 	<q-list
-		v-if="!isCreatingProduct"
+		v-if="isAbleToManageProduct && !selected_product"
+	>
+		<q-item class="justify-end">
+			<q-item-section class="q-pr-none col-xs-3 col-md-2 col-lg-1">
+				<q-btn
+					icon="add"
+					color="secondary"
+					@click="addProduct"
+				/>
+			</q-item-section>
+		</q-item>
+	</q-list>
+
+	<q-list
+		v-if="selected_product === null"
 		separator
 		dark
 	>
@@ -9,10 +23,9 @@
 			:key="index"
 		>
 			<q-item
-				v-if="!selected_product || selected_product === product.id"
 				clickable
 				class="q-py-lg q-px-md bg-primary text-white wrap"
-				@click="productSelected(product.id)"
+				@click="selectProduct(product.id)"
 				:disable="product.id === loadingProduct"
 				v-ripple
 			>
@@ -68,6 +81,7 @@
 			clickable
 			class="q-py-lg q-px-md bg-primary text-white wrap"
 			v-ripple
+			@click="selectProduct(null)"
 		>
 			<q-item-section avatar>
 				<q-icon
@@ -76,7 +90,7 @@
 				/>
 			</q-item-section>
 			<q-item-section style="word-break: break-all;"> <!-- todo word-break only works through inline style -->
-				&nbsp;
+				{{ selected_product.title }}
 			</q-item-section>
 			<q-item-section class="col-xs-3 col-md-2 col-lg-1 text-right">
 				<q-btn
@@ -101,7 +115,6 @@ export default {
 			default: () => []
 		},
 		loadingProduct: Number,
-		isCreatingProduct: Boolean,
 		isAbleToManageProduct: Boolean,
 		isProductChanged: Boolean
 	},
@@ -114,15 +127,22 @@ export default {
 	setup(props, { emit }) {
 		const selected_product = ref(null)
 
-		const productSelected = (product_id) => {
-			if (product_id === selected_product.value) {
+		const selectProduct = (product_id) => {
+			if (!product_id) {
 				selected_product.value = null
 				emit("productSelected", null)
 				return
 			}
 
-			selected_product.value = product_id
-			emit("productSelected", product_id)
+			selected_product.value = props.products.find((p) => p.id === product_id)
+
+			emit("productSelected", selected_product.value)
+		}
+
+		const addProduct = () => {
+			selected_product.value = {}
+
+			emit("productSelected", {})
 		}
 
 		const create = () => {
@@ -147,8 +167,9 @@ export default {
 		}
 
 		return {
-			productSelected,
 			selected_product,
+			addProduct,
+			selectProduct,
 			create,
 			update,
 			showDeleteDialog

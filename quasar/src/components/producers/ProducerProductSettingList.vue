@@ -37,20 +37,17 @@
 		</q-tab-panel>
 
 		<q-tab-panel name="images">
-			<ProducerProductSettingImagesTab
-				v-model="product"
-				:is-able-to-manage-product="isAbleToManageProduct"
-			/>
+			<ProducerProductSettingImagesTab v-model="product" />
 		</q-tab-panel>
 	</q-tab-panels>
 </template>
 
 <script>
-import { ref, watch } from "vue"
-import _ from "lodash"
+import { ref, computed, watch } from "vue"
 import ProducerProductSettingCommonTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
 import ProducerProductSettingCompositionTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCompositionTab.vue"
 import ProducerProductSettingImagesTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
+import _ from "lodash"
 export default {
 	components: {
 		ProducerProductSettingCommonTab,
@@ -62,40 +59,43 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		isAbleToManageProduct: Boolean,
-		isCreatingProduct: {
-			type: Boolean,
-			default: false
-		}
+		isAbleToManageProduct: Boolean
 	},
 	emits: ["productChanged"],
 	setup(props, { emit }) {
 		const tab = ref("common")
 
+		// !_.isEqual(val, default_product)
+
+		const common_changed = ref(false)
+		const composition_changed = ref(false)
+		const images_changed = ref(false)
+
+		const default_common = {
+			title: "",
+			price: "",
+			amount: ""
+		}
+
+		const is_product_changed = computed(() =>
+			!!common_changed.value ||
+			!!composition_changed.value ||
+			!!images_changed.value
+		)
+
 		// whenever new field is added to default tab -
 		// its needed to be added to 'default_product' with matching type
 		// in order for 'save' button to work accordingly
-		const product = ref(
-			!props.isCreatingProduct ?
-				props.selectedProduct :
-				{
-					title: "",
-					price: null,
-					amount: NaN
-				}
-		)
-
-		const default_product = _.cloneDeep(product.value)
+		const product = ref(props.selectedProduct)
 
 		watch(
-			() => product.value,
-			(val) => emit("productChanged", !_.isEqual(val, default_product)),
-			{ deep: true }
+			() => is_product_changed.value,
+			(val) => emit("productChanged", val),
 		)
 
 		return {
 			tab,
-			product,
+			product
 		}
 	}
 }

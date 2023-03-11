@@ -1,6 +1,5 @@
 <template>
 	<q-card
-		v-if="isAbleToManageProduct"
 		bordered
 		class="col-xs-12 col-md-4 border-dashed bg-green-3 shadow-0"
 		:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
@@ -9,7 +8,6 @@
 		<q-card-section class="row flex-center full-height">
 			<span class="text-center">Выберите изображение <br /> или переместите в эту область</span>
 			<div
-				v-if="isAbleToManageProduct"
 				class="full-height full-width absolute cursor-pointer"
 				@dragenter.prevent="is_dragging = true"
 				@dragleave.prevent="is_dragging = false"
@@ -85,13 +83,10 @@
 
 <script>
 import { useQuasar } from "quasar"
-import { useRouter } from "vue-router"
-import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
-import { useProducerStore } from "src/stores/producer"
 export default {
 	components: {
 		// eslint-disable-next-line vue/no-unused-components
@@ -101,13 +96,10 @@ export default {
 		modelValue: {
 			type: Object,
 			default: () => ({})
-		},
-		isAbleToManageProduct: Boolean
+		}
 	},
 	setup(props, { emit }) {
 		const $q = useQuasar()
-		const $router = useRouter()
-		const producer_store = useProducerStore()
 		const image = ref(null)
 
 		const uploader = ref(null)
@@ -115,7 +107,6 @@ export default {
 		const is_loading = ref(false)
 		const { base64ToBlob } = cameraService()
 		const { Camera } = Plugins
-		const { notifySuccess, notifyError } = useNotification()
 
 		const backend_server = process.env.BACKEND_SERVER
 
@@ -205,22 +196,6 @@ export default {
 
 		}
 
-		// const addImage = () => {
-		// 	is_loading.value = true
-		// 	let form_data = new FormData()
-		// 	form_data.append("image", image.value)
-		//
-		// 	producer_store.addProducerProductImage({
-		// 		image: form_data,
-		// 		producer_id: parseInt($router.currentRoute.value.params.producer_id),
-		// 		product_id: props.modelValue.id
-		// 	}).then(() => {
-		// 		is_loading.value = false
-		// 		is_dragging.value = false
-		// 		notifySuccess("Изображение успешно загружено")
-		// 	})
-		// }
-
 		const drop = (e) => {
 			is_dragging.value = false
 			uploader.value.addFiles([e.dataTransfer.files[0]])
@@ -230,7 +205,6 @@ export default {
 			image,
 			uploader,
 			showFilePrompt,
-			// addImage,
 			imageCommitted,
 			backend_server,
 			is_dragging,

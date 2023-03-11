@@ -1,21 +1,7 @@
 <template>
-	<q-list
-		v-if="is_able_to_manage_product && !selected_product && !is_creating_product"
-	>
-		<q-item class="justify-end">
-			<q-item-section class="q-pr-none col-xs-3 col-md-2 col-lg-1">
-				<q-btn
-					icon="add"
-					color="secondary"
-					@click="is_creating_product = true"
-				/>
-			</q-item-section>
-		</q-item>
-	</q-list>
 	<ProducerProductList
 		:products="team.products"
 		:loading-product="is_loading"
-		:is-creating-product="is_creating_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
 		:is-product-changed="is_product_changed"
 		@productSelected="productSelected"
@@ -24,8 +10,7 @@
 		@createProduct="createProduct"
 	/>
 	<ProducerProductSettingList
-		v-if="selected_product || is_creating_product"
-		:is-creating-product="is_creating_product"
+		v-if="selected_product"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
 		@productChanged="is_product_changed = $event"
@@ -51,8 +36,12 @@ export default {
 
 		const producer_store = useProducerStore(store)
 
-		await producer_store.getProducerProductList(parseInt(currentRoute.params.producer_id))
-			.then(() => Loading.hide())
+		await producer_store.getProducerProductList(
+			parseInt(currentRoute.params.producer_id)
+		)
+			.then(() =>
+				Loading.hide()
+			)
 	},
 	components: {
 		ProducerProductList,
@@ -72,7 +61,6 @@ export default {
 			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
 		)
 
-		const is_creating_product = ref(false)
 		const selected_product = ref(null)
 		const is_loading = ref(null)
 		const is_product_changed = ref(false)
@@ -93,13 +81,13 @@ export default {
 			is_loading.value = false
 		}
 
-		const productSelected = (product_id) => {
-			if (!product_id) {
+		const productSelected = (product) => {
+			if (!product) {
 				selected_product.value = null
 				return
 			}
 
-			selected_product.value = team.value.products.find((p) => p.id === product_id)
+			selected_product.value = product
 		}
 
 		const deleteProduct = (product) => {
@@ -140,7 +128,6 @@ export default {
 			deleteProduct,
 			createProduct,
 			updateProduct,
-			is_creating_product,
 			is_product_changed
 		}
 	}
