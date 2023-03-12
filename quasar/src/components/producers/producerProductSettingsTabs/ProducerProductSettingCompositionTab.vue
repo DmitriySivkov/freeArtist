@@ -17,7 +17,7 @@
 			:disable="ingredient.to_delete"
 			filled
 			square
-			label="Название ингридиента"
+			label="Название ингредиента"
 			v-model="ingredient.name"
 			lazy-rules
 			:rules="[ val => !!val || 'Укажите название']"
@@ -49,7 +49,7 @@
 			filled
 			square
 			type="textarea"
-			label="Описание ингридиента (необязательно)"
+			label="Описание ингредиента (необязательно)"
 			v-model="ingredient.description"
 		/>
 	</q-card>
@@ -66,7 +66,11 @@ export default {
 	},
 	setup(props, { emit }) {
 		const addIngredient = () => {
-			let composition = _.clone(props.modelValue.composition)
+			let composition = []
+
+			if (props.modelValue.composition) {
+				composition = _.clone(props.modelValue.composition)
+			}
 
 			composition.unshift({
 				is_new: true,

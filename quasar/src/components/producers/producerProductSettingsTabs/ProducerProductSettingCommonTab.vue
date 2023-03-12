@@ -10,7 +10,6 @@
 			class="q-pb-lg"
 		/>
 
-
 		<q-field
 			filled
 			:model-value="modelValue.price"
@@ -22,7 +21,7 @@
 		>
 			<template v-slot:control="{ emitValue }">
 				<CurrencyInput
-					:model-value="parseFloat(modelValue.price)"
+					:model-value="modelValue.price"
 					@update:model-value="emitValue"
 					:options="currency_config"
 					class="q-field__input"
@@ -35,7 +34,7 @@
 			type="number"
 			label="Доступное количество"
 			:model-value="modelValue.amount"
-			@update:model-value="commonPropChanged({amount: parseInt($event)})"
+			@update:model-value="commonPropChanged({amount: Number($event)})"
 		/>
 	</q-card>
 </template>

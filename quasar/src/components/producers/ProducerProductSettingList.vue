@@ -57,7 +57,7 @@ export default {
 	props: {
 		selectedProduct: {
 			type: Object,
-			default: () => ({})
+			default: () => {}
 		},
 		isAbleToManageProduct: Boolean
 	},
@@ -65,28 +65,40 @@ export default {
 	setup(props, { emit }) {
 		const tab = ref("common")
 
-		// !_.isEqual(val, default_product)
-
-		const common_changed = ref(false)
-		const composition_changed = ref(false)
-		const images_changed = ref(false)
-
-		const default_common = {
-			title: "",
-			price: "",
-			amount: ""
-		}
-
-		const is_product_changed = computed(() =>
-			!!common_changed.value ||
-			!!composition_changed.value ||
-			!!images_changed.value
+		const product = ref(
+			Object.keys(props.selectedProduct).length === 0 ?
+				{
+					title: "",
+					price: null,
+					amount: 0
+				} :
+				props.selectedProduct
 		)
 
-		// whenever new field is added to default tab -
-		// its needed to be added to 'default_product' with matching type
-		// in order for 'save' button to work accordingly
-		const product = ref(props.selectedProduct)
+		const default_common = {
+			title: product.value.title,
+			price: product.value.price,
+			amount: product.value.amount
+		}
+
+		const default_composition = product.value.composition ? _.cloneDeep(product.value.composition) : []
+
+		const common_changed = computed(() => !_.isEqual({
+			title: product.value.title,
+			price: product.value.price,
+			amount: product.value.amount
+		}, default_common))
+
+		const composition_changed = computed(() => product.value.composition ?
+			!_.isEqual(product.value.composition, default_composition) : false
+		)
+		const images_changed = computed(() => product.value.hasOwnProperty("committed_images"))
+
+		const is_product_changed = computed(() =>
+			common_changed.value ||
+			composition_changed.value ||
+			images_changed.value
+		)
 
 		watch(
 			() => is_product_changed.value,
@@ -95,7 +107,7 @@ export default {
 
 		return {
 			tab,
-			product
+			product,
 		}
 	}
 }
