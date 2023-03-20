@@ -1,7 +1,5 @@
 <template>
-	<q-list
-		v-if="isAbleToManageProduct && !selected_product"
-	>
+	<q-list v-if="isAbleToManageProduct && !selected_product">
 		<q-item class="justify-end">
 			<q-item-section class="q-pr-none col-xs-3 col-md-2 col-lg-1">
 				<q-btn
@@ -47,18 +45,6 @@
 					{{ product.title }}
 				</q-item-section>
 				<q-item-section
-					v-if="isAbleToManageProduct && !!selected_product"
-					class="col-xs-3 col-md-2 col-lg-1 text-right"
-				>
-					<q-btn
-						unelevated
-						class="bg-secondary q-pa-md"
-						:class="{'composition__button_done_active': !!isProductChanged }"
-						icon="done"
-						@click.stop="update"
-					/>
-				</q-item-section>
-				<q-item-section
 					v-if="isAbleToManageProduct && !selected_product"
 					class="col-xs-3 col-md-2 col-lg-1 text-right"
 				>
@@ -76,6 +62,7 @@
 			</q-item>
 		</template>
 	</q-list>
+	<!-- else: if something is selected - creating or updating -->
 	<q-list v-else>
 		<q-item
 			clickable
@@ -92,13 +79,16 @@
 			<q-item-section style="word-break: break-all;"> <!-- todo word-break only works through inline style -->
 				{{ selected_product.title }}
 			</q-item-section>
-			<q-item-section class="col-xs-3 col-md-2 col-lg-1 text-right">
+			<q-item-section
+				v-if="isAbleToManageProduct"
+				class="col-xs-3 col-md-2 col-lg-1 text-right"
+			>
 				<q-btn
 					unelevated
 					class="bg-secondary q-pa-md"
 					:class="{'composition__button_done_active': !!isProductChanged }"
 					icon="done"
-					@click.stop="create"
+					@click.stop="Object.keys(selected_product).length === 0 ? create() : update()"
 				/>
 			</q-item-section>
 		</q-item>
@@ -108,6 +98,7 @@
 <script>
 import { ref } from "vue"
 import { Dialog } from "quasar"
+import _ from "lodash"
 export default {
 	props: {
 		products: {
@@ -134,7 +125,7 @@ export default {
 				return
 			}
 
-			selected_product.value = props.products.find((p) => p.id === product_id)
+			selected_product.value = _.cloneDeep(props.products.find((p) => p.id === product_id))
 
 			emit("productSelected", selected_product.value)
 		}
@@ -146,11 +137,13 @@ export default {
 		}
 
 		const create = () => {
-			emit("createProduct")
+			console.log("create")
+			// emit("createProduct")
 		}
 
 		const update = () => {
-			emit("updateProduct", selected_product.value)
+			console.log("update")
+			// emit("updateProduct")
 		}
 
 		const showDeleteDialog = () => {

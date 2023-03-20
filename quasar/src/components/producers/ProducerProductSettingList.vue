@@ -29,15 +29,24 @@
 		animated
 	>
 		<q-tab-panel name="common">
-			<ProducerProductSettingCommonTab v-model="product" />
+			<ProducerProductSettingCommonTab
+				:model-value="selectedProduct"
+				@update:model-value="$emit('commitProduct', $event)"
+			/>
 		</q-tab-panel>
 
 		<q-tab-panel name="composition">
-			<ProducerProductSettingCompositionTab v-model="product" />
+			<ProducerProductSettingCompositionTab
+				:model-value="selectedProduct"
+				@update:model-value="$emit('commitProduct', $event)"
+			/>
 		</q-tab-panel>
 
 		<q-tab-panel name="images">
-			<ProducerProductSettingImagesTab v-model="product" />
+			<ProducerProductSettingImagesTab
+				:model-value="selectedProduct"
+				@update:model-value="$emit('commitProduct', $event)"
+			/>
 		</q-tab-panel>
 	</q-tab-panels>
 </template>
@@ -61,38 +70,38 @@ export default {
 		},
 		isAbleToManageProduct: Boolean
 	},
-	emits: ["productChanged"],
+	emits: ["isProductChanged", "commitProduct"],
 	setup(props, { emit }) {
 		const tab = ref("common")
 
-		const product = ref(
-			Object.keys(props.selectedProduct).length === 0 ?
-				{
-					title: "",
-					price: null,
-					amount: 0
-				} :
-				props.selectedProduct
-		)
+		// const product = ref(
+		// 	Object.keys(props.selectedProduct).length === 0 ?
+		// 		{
+		// 			title: "",
+		// 			price: null,
+		// 			amount: 0
+		// 		} :
+		// 		props.selectedProduct
+		// )
 
 		const default_common = {
-			title: product.value.title,
-			price: product.value.price,
-			amount: product.value.amount
+			title: props.selectedProduct.title,
+			price: props.selectedProduct.price,
+			amount: props.selectedProduct.amount
 		}
 
-		const default_composition = product.value.composition ? _.cloneDeep(product.value.composition) : []
+		const default_composition = props.selectedProduct.composition ? _.cloneDeep(props.selectedProduct.composition) : []
 
 		const common_changed = computed(() => !_.isEqual({
-			title: product.value.title,
-			price: product.value.price,
-			amount: product.value.amount
+			title: props.selectedProduct.title,
+			price: props.selectedProduct.price,
+			amount: props.selectedProduct.amount
 		}, default_common))
 
-		const composition_changed = computed(() => product.value.composition ?
-			!_.isEqual(product.value.composition, default_composition) : false
+		const composition_changed = computed(() => props.selectedProduct.composition ?
+			!_.isEqual(props.selectedProduct.composition, default_composition) : false
 		)
-		const images_changed = computed(() => product.value.hasOwnProperty("committed_images"))
+		const images_changed = computed(() => props.selectedProduct.hasOwnProperty("committed_images"))
 
 		const is_product_changed = computed(() =>
 			common_changed.value ||
@@ -102,12 +111,12 @@ export default {
 
 		watch(
 			() => is_product_changed.value,
-			(val) => emit("productChanged", val),
+			(val) => emit("isProductChanged", val),
 		)
 
 		return {
 			tab,
-			product,
+			common_changed
 		}
 	}
 }

@@ -77,6 +77,7 @@ export const useProducerStore = defineStore("producer", {
 			producer.products.splice(product_index, 1)
 		},
 
+		/** todo - put everything related to a product in a separate 'product' store */
 		updateProducerProduct({ product }) {
 			return api.put(
 				"personal/products/" + product.id,

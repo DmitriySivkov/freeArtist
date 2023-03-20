@@ -13,7 +13,8 @@
 		v-if="selected_product"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
-		@productChanged="is_product_changed = $event"
+		@isProductChanged="is_product_changed = $event"
+		@commitProduct="commitProduct"
 	/>
 </template>
 
@@ -82,8 +83,9 @@ export default {
 		}
 
 		const productSelected = (product) => {
-			if (!product) {
+			if (product === null) {
 				selected_product.value = null
+				is_product_changed.value = false
 				return
 			}
 
@@ -119,6 +121,10 @@ export default {
 			team.value.user_id === user_store.data.id
 		)
 
+		const commitProduct = (new_product_value) => {
+			selected_product.value = new_product_value
+		}
+
 		return {
 			team,
 			selected_product,
@@ -128,6 +134,7 @@ export default {
 			deleteProduct,
 			createProduct,
 			updateProduct,
+			commitProduct,
 			is_product_changed
 		}
 	}
