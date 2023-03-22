@@ -1,7 +1,7 @@
 <template>
 	<ProducerProductList
 		:products="team.products"
-		:loading-product="is_loading"
+		:loading-product="loading_product_id"
 		:is-able-to-manage-product="is_able_to_manage_product"
 		:is-product-changed="is_product_changed"
 		@productSelected="productSelected"
@@ -13,7 +13,8 @@
 		v-if="selected_product"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
-		@isProductChanged="is_product_changed = $event"
+		@productChanged="productChanged"
+		@selectProduct="selectProduct"
 		@commitProduct="commitProduct"
 	/>
 </template>
@@ -63,23 +64,31 @@ export default {
 		)
 
 		const selected_product = ref(null)
-		const is_loading = ref(null)
+
+		const loading_product_id = ref(null)
 		const is_product_changed = ref(false)
+		const product_changes = ref(null)
 
 		const createProduct = () => {
-			is_loading.value = true
+			loading_product_id.value = -1
 
-			is_loading.value = false
+			loading_product_id.value = null
 		}
 
-		const updateProduct = () => {
-			is_loading.value = true
+		const updateProduct = async() => {
+			if (!product_changes.value)
+				return
 
-			producer_store.updateProducerProduct({
-				product: selected_product.value
+			loading_product_id.value = selected_product.value.id
+
+			await producer_store.updateProducerProduct({
+				product: selected_product.value,
+				changes: product_changes.value
 			})
 
-			is_loading.value = false
+			loading_product_id.value = null
+
+			notifySuccess("Успешно")
 		}
 
 		const productSelected = (product) => {
@@ -93,7 +102,7 @@ export default {
 		}
 
 		const deleteProduct = (product) => {
-			is_loading.value = product.id
+			loading_product_id.value = product.id
 
 			selected_product.value = null
 
@@ -111,7 +120,7 @@ export default {
 			})
 
 			promise.catch((error) => {
-				is_loading.value = null
+				loading_product_id.value = null
 				notifyError(error.response.data)
 			})
 		}
@@ -121,20 +130,32 @@ export default {
 			team.value.user_id === user_store.data.id
 		)
 
+		const selectProduct = (new_product_value) => {
+			selected_product.value = new_product_value
+		}
+
 		const commitProduct = (new_product_value) => {
 			selected_product.value = new_product_value
+		}
+
+		const productChanged = ({ is_changed, changes }) => {
+			is_product_changed.value = is_changed
+
+			product_changes.value = changes
 		}
 
 		return {
 			team,
 			selected_product,
-			is_loading,
+			loading_product_id,
 			is_able_to_manage_product,
 			productSelected,
 			deleteProduct,
 			createProduct,
 			updateProduct,
+			selectProduct,
 			commitProduct,
+			productChanged,
 			is_product_changed
 		}
 	}

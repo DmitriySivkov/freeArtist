@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
 import { useTeamStore } from "src/stores/team"
+import { cameraService } from "src/services/cameraService"
 
 export const useProducerStore = defineStore("producer", {
 	state: () => ({
@@ -78,10 +79,21 @@ export const useProducerStore = defineStore("producer", {
 		},
 
 		/** todo - put everything related to a product in a separate 'product' store */
-		updateProducerProduct({ product }) {
-			return api.put(
+		async updateProducerProduct({ product, changes }) {
+			if (product.committed_images) {
+				const { toBase64 } = cameraService()
+
+				await product.committed_images.forEach(async(image) =>
+					image.instance = await toBase64(image.instance)
+				)
+			}
+			// todo - rework images - it should be sent to server in separate request ( cause of headers probably )
+			await api.put(
 				"personal/products/" + product.id,
-				{ product }
+				{
+					product,
+					changes,
+				},
 			)
 		},
 

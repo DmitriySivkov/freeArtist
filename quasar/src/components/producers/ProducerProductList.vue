@@ -137,13 +137,11 @@ export default {
 		}
 
 		const create = () => {
-			console.log("create")
-			// emit("createProduct")
+			emit("createProduct")
 		}
 
 		const update = () => {
-			console.log("update")
-			// emit("updateProduct")
+			emit("updateProduct")
 		}
 
 		const showDeleteDialog = () => {

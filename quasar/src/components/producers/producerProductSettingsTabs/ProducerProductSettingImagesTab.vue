@@ -130,6 +130,7 @@ export default {
 			uploader.value.pickFiles()
 		}
 
+		// todo - check camera
 		const fromCamera = async () => {
 			const img = await Camera.getPhoto({
 				quality: 90,
@@ -142,11 +143,13 @@ export default {
 		}
 
 		const imageCommitted = (files) => {
-			const tmp_images = files.map((f) => ({
-				key: f.__key,
-				src: URL.createObjectURL(f),
-				instance: f
-			}))
+			const tmp_images = files.map((f) => {
+				return {
+					key: f.__key,
+					src: URL.createObjectURL(f),
+					instance: f
+				}
+			})
 
 			if (!props.modelValue.committed_images) {
 				emit("update:modelValue", {...props.modelValue, committed_images: tmp_images })

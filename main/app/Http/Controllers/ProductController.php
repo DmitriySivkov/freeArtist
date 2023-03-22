@@ -35,13 +35,31 @@ class ProductController extends Controller
 		]);
 	}
 
+	/**
+	 * @param Product $product
+	 * @param Request $request
+	 * @param ProductService $productService
+	 * @return bool|\Illuminate\Http\JsonResponse
+	 */
 	public function update(Product $product, Request $request, ProductService $productService)
 	{
 		try {
 			$productService->setProduct($product);
-			$productService->syncProductCommonSettings();
-			$productService->syncProductComposition();
-			$productService->syncProductImages();
+
+			if ($request->input('changes.common')) {
+				$productService->syncProductCommonSettings();
+			}
+
+			if ($request->input('changes.composition')) {
+				$productService->syncProductComposition();
+			}
+
+			if ($request->input('changes.images')) {
+				$productService->syncProductImages();
+			}
+
+			return true;
+
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);

@@ -22,104 +22,99 @@ class ProductService
 		$this->product = $product;
 	}
 
+	// todo - image deletion
 	/**
-	 * @param Product $product
-	 * @param Request $request
-	 * @return ProductImage|\Illuminate\Database\Eloquent\Model
+	 * @return void
+	 * @throws \Exception
 	 */
-	public function syncProductImages(Product $product, Request $request)
+	public function syncProductImages()
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
+		if (!$this->product->exists())
+			throw new \Exception('Продукт не задан');
+
 		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $product->producer->team) &&
-			!$user->owns($product->producer->team)
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $this->product->producer->team) &&
+			!$user->owns($this->product->producer->team)
 		)
-			throw new \LogicException('Доступ закрыт');
+			throw new \Exception('Доступ закрыт');
 
-		$basePath = 'team_' . $product->producer->team->id . '/product_images';
-		if ($request->hasFile('image')) {
-			$path = Storage::disk('public')->putFile(
-				$basePath,
-				$request->file('image')
-			);
-		} else {
-			@list($type, $fileData) = explode(';', $request->getContent());
-			@list(, $fileData) = explode(',', $fileData);
+		$basePath = 'team_' . $this->product->producer->team->id . '/product_images';
 
-			$extension = explode('/', $type);
-			$path = $basePath . '/' . \Str::random(15) . '.' . end($extension);
+		$committedImages = request()->input('product.committed_images');
 
-			Storage::disk('public')->put(
-				$path,
-				base64_decode($fileData)
-			);
+		if ($committedImages) {
+			foreach ($committedImages as $arImage) {
+
+				$path = Storage::disk('public')->putFile(
+					$basePath,
+					base64_decode($arImage['src'])
+				);
+
+				ProductImage::create([
+					'product_id' => $this->product->id,
+					'path' => $path
+				]);
+			}
 		}
 
-		return ProductImage::create([
-			'product_id' => $product->id,
-			'path' => $path
-		]);
 	}
 
+
+	// todo - request validation
 	/**
-	 * @param Product $product
-	 * @param Request $request
 	 * @return void
+	 * @throws \Exception
 	 */
-	public function syncProductCommonSettings(Product $product, Request $request)
+	public function syncProductCommonSettings()
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $product->producer->team) &&
-			!$user->owns($product->producer->team)
-		)
-			throw new \LogicException('Доступ закрыт');
+		if (!$this->product->exists())
+			throw new \Exception('Продукт не задан');
 
-		$product->update([
-			'title' => $request->input('settings.title'),
-			'price' => $request->input('settings.price'),
-			'amount' => $request->input('settings.amount')
+		if (
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $this->product->producer->team) &&
+			!$user->owns($this->product->producer->team)
+		)
+			throw new \Exception('Доступ закрыт');
+
+		$this->product->update([
+			'title' => request()->input('product.title'),
+			'price' => request()->input('product.price'),
+			'amount' => request()->input('product.amount')
 		]);
 	}
 
 	/**
-	 * @param Product $product
-	 * @param Request $request
-	 * @return array
+	 * @return void
+	 * @throws \Exception
 	 */
-	public function syncProductComposition(Product $product, Request $request)
+	public function syncProductComposition()
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
+		if (!$this->product->exists())
+			throw new \Exception('Продукт не задан');
+
 		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $product->producer->team) &&
-			!$user->owns($product->producer->team)
+			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $this->product->producer->team) &&
+			!$user->owns($this->product->producer->team)
 		)
-			throw new \LogicException('Доступ закрыт');
+			throw new \Exception('Доступ закрыт');
 
 		$composition = array_values(
-			collect($request->get('composition'))
-				->filter(function($ingredient) {
-					return !array_key_exists("to_delete", $ingredient);
-				})
-				->map(function($ingredient) {
-					return [
-						"name" => $ingredient["name"],
-						"description" => $ingredient["description"]
-					];
-				})
+			collect(request()->input('composition'))
+				->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
 				->toArray()
 		);
 
-		$product->update([
+		$this->product->update([
 			'composition' => $composition
 		]);
-
-		return $composition;
 	}
 }

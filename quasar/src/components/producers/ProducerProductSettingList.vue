@@ -70,19 +70,9 @@ export default {
 		},
 		isAbleToManageProduct: Boolean
 	},
-	emits: ["isProductChanged", "commitProduct"],
+	emits: ["productChanged", "selectProduct", "commitProduct"],
 	setup(props, { emit }) {
 		const tab = ref("common")
-
-		// const product = ref(
-		// 	Object.keys(props.selectedProduct).length === 0 ?
-		// 		{
-		// 			title: "",
-		// 			price: null,
-		// 			amount: 0
-		// 		} :
-		// 		props.selectedProduct
-		// )
 
 		const default_common = {
 			title: props.selectedProduct.title,
@@ -90,33 +80,37 @@ export default {
 			amount: props.selectedProduct.amount
 		}
 
-		const default_composition = props.selectedProduct.composition ? _.cloneDeep(props.selectedProduct.composition) : []
+		const default_composition = props.selectedProduct.composition ?
+			_.cloneDeep(props.selectedProduct.composition) :
+			[]
 
-		const common_changed = computed(() => !_.isEqual({
+		const is_common_changed = computed(() => !_.isEqual({
 			title: props.selectedProduct.title,
 			price: props.selectedProduct.price,
 			amount: props.selectedProduct.amount
 		}, default_common))
 
-		const composition_changed = computed(() => props.selectedProduct.composition ?
+		const is_composition_changed = computed(() => props.selectedProduct.composition ?
 			!_.isEqual(props.selectedProduct.composition, default_composition) : false
 		)
-		const images_changed = computed(() => props.selectedProduct.hasOwnProperty("committed_images"))
-
-		const is_product_changed = computed(() =>
-			common_changed.value ||
-			composition_changed.value ||
-			images_changed.value
-		)
+		const is_images_changed = computed(() => props.selectedProduct.hasOwnProperty("committed_images"))
 
 		watch(
-			() => is_product_changed.value,
-			(val) => emit("isProductChanged", val),
+			[is_common_changed, is_composition_changed, is_images_changed],
+			([common_changed, composition_changed, images_changed]) => {
+				emit("productChanged", {
+					is_changed: common_changed || composition_changed || images_changed,
+					changes: {
+						common: common_changed,
+						composition: composition_changed,
+						images: images_changed
+					}
+				})
+			}
 		)
 
 		return {
-			tab,
-			common_changed
+			tab
 		}
 	}
 }
