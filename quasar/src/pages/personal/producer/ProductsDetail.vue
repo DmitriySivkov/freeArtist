@@ -81,14 +81,53 @@ export default {
 
 			loading_product_id.value = selected_product.value.id
 
-			await producer_store.updateProducerProduct({
+			const promise = producer_store.updateProducerProduct({
 				product: selected_product.value,
 				changes: product_changes.value
 			})
 
-			loading_product_id.value = null
+			promise.then((response) => {
+				let fields = {}
 
-			notifySuccess("Успешно")
+				if (!!response.data.changes.common) {
+					fields = {
+						...fields,
+						title: response.data.product.title,
+						price: response.data.product.price,
+						amount: response.data.product.amount
+					}
+				}
+
+				if (!!response.data.changes.composition) {
+					fields = {
+						...fields,
+						composition: response.data.product.composition,
+					}
+				}
+
+				if (!!response.data.changes.images) {
+					fields = {
+						...fields,
+						images: response.data.product.images,
+					}
+				}
+
+				producer_store.commitProducerProductFields({
+					producer_id: response.data.product.producer_id,
+					product_id: response.data.product.id,
+					fields
+				})
+
+				loading_product_id.value = null
+
+				notifySuccess("Успешно")
+			})
+
+			promise.catch(() => {
+				loading_product_id.value = null
+
+				notifyError("Не удалось")
+			})
 		}
 
 		const productSelected = (product) => {

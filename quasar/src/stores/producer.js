@@ -1,7 +1,6 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
 import { useTeamStore } from "src/stores/team"
-import { cameraService } from "src/services/cameraService"
 
 export const useProducerStore = defineStore("producer", {
 	state: () => ({
@@ -43,6 +42,16 @@ export const useProducerStore = defineStore("producer", {
 			team_store.user_teams.find((t) => t.detailed.id === producer_id).products = response.data
 		},
 
+		commitProducerProductFields({ producer_id, product_id, fields }) {
+			const team_store = useTeamStore()
+
+			let team = team_store.user_teams.find((t) => t.detailed.id === producer_id)
+
+			let product = team.products.find((p) => p.id === product_id)
+
+			Object.assign(product, fields)
+		},
+
 		async createProducerProduct({ producer_id, settings }) {
 			const response = await api.post(
 				"personal/producers/" + producer_id + "/products",
@@ -78,23 +87,18 @@ export const useProducerStore = defineStore("producer", {
 			producer.products.splice(product_index, 1)
 		},
 
-		/** todo - put everything related to a product in a separate 'product' store */
-		async updateProducerProduct({ product, changes }) {
-			if (product.committed_images) {
-				const { toBase64 } = cameraService()
+		updateProducerProduct({ product, changes }) {
+			let data = new FormData()
+			data.append("product", JSON.stringify(product))
+			data.append("changes", JSON.stringify(changes))
 
-				await product.committed_images.forEach(async(image) =>
-					image.instance = await toBase64(image.instance)
-				)
+			if (product.committed_images) {
+				for (let i in product.committed_images) {
+					data.append("images[]", product.committed_images[i].instance)
+				}
 			}
-			// todo - rework images - it should be sent to server in separate request ( cause of headers probably )
-			await api.put(
-				"personal/products/" + product.id,
-				{
-					product,
-					changes,
-				},
-			)
+
+			return api.post("personal/products/" + product.id, data)
 		},
 
 		async setProducerLogo({ producer_id, logo }) {

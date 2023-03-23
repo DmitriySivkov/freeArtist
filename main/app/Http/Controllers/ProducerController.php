@@ -3,19 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProducerRegisterRequest;
-use App\Models\Permission;
 use App\Models\Producer;
-use App\Models\Product;
-use App\Models\ProductImage;
 use App\Models\User;
 use App\Services\ProducerService;
-use App\Services\ProductService;
 use App\Services\ResponseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProducerController extends Controller
 {

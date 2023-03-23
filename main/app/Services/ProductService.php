@@ -6,7 +6,6 @@ use App\Models\Permission;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProductService
@@ -43,14 +42,14 @@ class ProductService
 
 		$basePath = 'team_' . $this->product->producer->team->id . '/product_images';
 
-		$committedImages = request()->input('product.committed_images');
+		$committedImages = request()->file('images');
 
 		if ($committedImages) {
-			foreach ($committedImages as $arImage) {
+			foreach ($committedImages as $image) {
 
 				$path = Storage::disk('public')->putFile(
 					$basePath,
-					base64_decode($arImage['src'])
+					$image
 				);
 
 				ProductImage::create([
@@ -82,10 +81,12 @@ class ProductService
 		)
 			throw new \Exception('Доступ закрыт');
 
+		$data = json_decode(request()->input('product'),true);
+
 		$this->product->update([
-			'title' => request()->input('product.title'),
-			'price' => request()->input('product.price'),
-			'amount' => request()->input('product.amount')
+			'title' => $data['title'],
+			'price' => $data['price'],
+			'amount' => $data['amount']
 		]);
 	}
 
@@ -107,8 +108,12 @@ class ProductService
 		)
 			throw new \Exception('Доступ закрыт');
 
+		$data = json_decode(request()->input('product'),true);
+
+		$composition = json_decode($data['composition'],true);
+
 		$composition = array_values(
-			collect(request()->input('composition'))
+			collect($composition)
 				->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
 				->toArray()
 		);
@@ -116,5 +121,13 @@ class ProductService
 		$this->product->update([
 			'composition' => $composition
 		]);
+	}
+
+	/**
+	 * @return Product
+	 */
+	public function getProduct()
+	{
+		return $this->product;
 	}
 }

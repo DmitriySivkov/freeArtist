@@ -54,7 +54,9 @@
 				</div>
 			</q-img>
 		</q-card>
+	</div>
 
+	<div class="row q-col-gutter-sm q-mt-md">
 		<q-card
 			flat
 			class="col-xs-12 col-md-3"
@@ -67,7 +69,6 @@
 				style="height: 200px;"
 			/>
 		</q-card>
-
 	</div>
 
 	<q-uploader

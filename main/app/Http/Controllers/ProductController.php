@@ -35,30 +35,36 @@ class ProductController extends Controller
 		]);
 	}
 
+
 	/**
 	 * @param Product $product
 	 * @param Request $request
 	 * @param ProductService $productService
-	 * @return bool|\Illuminate\Http\JsonResponse
+	 * @return array|\Illuminate\Http\JsonResponse
 	 */
 	public function update(Product $product, Request $request, ProductService $productService)
 	{
+		$changes = json_decode($request->input('changes'),true);
+
 		try {
 			$productService->setProduct($product);
 
-			if ($request->input('changes.common')) {
+			if ($changes['common']) {
 				$productService->syncProductCommonSettings();
 			}
 
-			if ($request->input('changes.composition')) {
+			if ($changes['composition']) {
 				$productService->syncProductComposition();
 			}
 
-			if ($request->input('changes.images')) {
+			if ($changes['images']) {
 				$productService->syncProductImages();
 			}
 
-			return true;
+			return [
+				'changes' => $changes,
+				'product' => $productService->getProduct()->load('images')
+			];
 
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
@@ -66,7 +72,6 @@ class ProductController extends Controller
 		}
 	}
 
-	// todo - throw default exceptions instead of 'logic' ones everywhere
 	/**
 	 * @param Product $product
 	 * @return bool|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|null
