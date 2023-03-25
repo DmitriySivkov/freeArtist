@@ -110,10 +110,8 @@ class ProductService
 
 		$data = json_decode(request()->input('product'),true);
 
-		$composition = json_decode($data['composition'],true);
-
 		$composition = array_values(
-			collect($composition)
+			collect($data['composition'])
 				->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
 				->toArray()
 		);

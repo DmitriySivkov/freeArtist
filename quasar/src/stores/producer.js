@@ -89,6 +89,14 @@ export const useProducerStore = defineStore("producer", {
 
 		updateProducerProduct({ product, changes }) {
 			let data = new FormData()
+
+			if (!!changes.composition) {
+				product.composition = product.composition.map((ingredient) => {
+					delete ingredient["is_new"]
+					return ingredient
+				})
+			}
+
 			data.append("product", JSON.stringify(product))
 			data.append("changes", JSON.stringify(changes))
 

@@ -1,20 +1,21 @@
 <template>
 	<ProducerProductList
+		:model-value="selected_product"
+		@update:model-value="selectProduct"
 		:products="team.products"
 		:loading-product="loading_product_id"
 		:is-able-to-manage-product="is_able_to_manage_product"
 		:is-product-changed="is_product_changed"
-		@productSelected="productSelected"
 		@deleteProduct="deleteProduct"
 		@updateProduct="updateProduct"
 		@createProduct="createProduct"
 	/>
 	<ProducerProductSettingList
 		v-if="selected_product"
+		:key="producer_product_setting_list_component_key"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
 		@productChanged="productChanged"
-		@selectProduct="selectProduct"
 		@commitProduct="commitProduct"
 	/>
 </template>
@@ -30,6 +31,7 @@ import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
 import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
+import _ from "lodash"
 export default {
 	async preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		Loading.show({
@@ -54,6 +56,7 @@ export default {
 		const team_store = useTeamStore()
 		const producer_store = useProducerStore()
 		const $router = useRouter()
+
 		const { hasPermission } = useUserPermission()
 		const { notifySuccess, notifyError } = useNotification()
 
@@ -62,6 +65,8 @@ export default {
 		const team = computed(() =>
 			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
 		)
+
+		const producer_product_setting_list_component_key = ref(Math.random()) // to update 'default' values after update
 
 		const selected_product = ref(null)
 
@@ -118,7 +123,13 @@ export default {
 					fields
 				})
 
+				selected_product.value = team.value.products.find((p) => p.id === response.data.product.id)
+
 				loading_product_id.value = null
+
+				is_product_changed.value = false
+
+				producer_product_setting_list_component_key.value = Math.random()
 
 				notifySuccess("Успешно")
 			})
@@ -130,14 +141,10 @@ export default {
 			})
 		}
 
-		const productSelected = (product) => {
-			if (product === null) {
-				selected_product.value = null
-				is_product_changed.value = false
-				return
-			}
+		const selectProduct = (product) => {
+			is_product_changed.value = false
 
-			selected_product.value = product
+			selected_product.value = product ? _.cloneDeep(product) : null
 		}
 
 		const deleteProduct = (product) => {
@@ -169,10 +176,6 @@ export default {
 			team.value.user_id === user_store.data.id
 		)
 
-		const selectProduct = (new_product_value) => {
-			selected_product.value = new_product_value
-		}
-
 		const commitProduct = (new_product_value) => {
 			selected_product.value = new_product_value
 		}
@@ -188,14 +191,14 @@ export default {
 			selected_product,
 			loading_product_id,
 			is_able_to_manage_product,
-			productSelected,
+			selectProduct,
 			deleteProduct,
 			createProduct,
 			updateProduct,
-			selectProduct,
 			commitProduct,
 			productChanged,
-			is_product_changed
+			is_product_changed,
+			producer_product_setting_list_component_key
 		}
 	}
 }

@@ -50,7 +50,7 @@
 		</q-tab-panel>
 	</q-tab-panels>
 </template>
-
+<!-- todo - figure how to update reactively after update from backend -->
 <script>
 import { ref, computed, watch } from "vue"
 import ProducerProductSettingCommonTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
@@ -70,7 +70,10 @@ export default {
 		},
 		isAbleToManageProduct: Boolean
 	},
-	emits: ["productChanged", "selectProduct", "commitProduct"],
+	emits: [
+		"productChanged",
+		"commitProduct"
+	],
 	setup(props, { emit }) {
 		const tab = ref("common")
 
@@ -93,6 +96,7 @@ export default {
 		const is_composition_changed = computed(() => props.selectedProduct.composition ?
 			!_.isEqual(props.selectedProduct.composition, default_composition) : false
 		)
+
 		const is_images_changed = computed(() => props.selectedProduct.hasOwnProperty("committed_images"))
 
 		watch(

@@ -66,19 +66,13 @@ export default {
 	},
 	setup(props, { emit }) {
 		const addIngredient = () => {
-			let composition = []
-
-			if (props.modelValue.composition) {
-				composition = _.clone(props.modelValue.composition)
-			}
-
-			composition.unshift({
-				is_new: true,
-				name: "",
-				description: "",
+			emit("update:modelValue", {
+				...props.modelValue,
+				composition: [
+					{ is_new: true, name: "", description: "" },
+					...props.modelValue.composition
+				]
 			})
-
-			emit("update:modelValue", {...props.modelValue, composition })
 		}
 
 		const removeIngredient = (item_index) => {
