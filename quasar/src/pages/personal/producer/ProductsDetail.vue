@@ -13,8 +13,10 @@
 	<ProducerProductSettingList
 		v-if="selected_product"
 		:key="producer_product_setting_list_component_key"
+		:tab="producer_product_settings_tab"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
+		@changeTab="producer_product_settings_tab = $event"
 		@productChanged="productChanged"
 		@commitProduct="commitProduct"
 	/>
@@ -60,6 +62,8 @@ export default {
 		const { hasPermission } = useUserPermission()
 		const { notifySuccess, notifyError } = useNotification()
 
+		const producer_product_settings_tab = ref("common")
+
 		const user_teams = computed(() => team_store.user_teams)
 
 		const team = computed(() =>
@@ -80,7 +84,7 @@ export default {
 			loading_product_id.value = null
 		}
 
-		const updateProduct = async() => {
+		const updateProduct = () => {
 			if (!product_changes.value)
 				return
 
@@ -123,12 +127,14 @@ export default {
 					fields
 				})
 
+				// actually update current component product
 				selected_product.value = team.value.products.find((p) => p.id === response.data.product.id)
 
 				loading_product_id.value = null
 
 				is_product_changed.value = false
 
+				// for updating non-reactive 'default' values in settings component
 				producer_product_setting_list_component_key.value = Math.random()
 
 				notifySuccess("Успешно")
@@ -198,7 +204,8 @@ export default {
 			commitProduct,
 			productChanged,
 			is_product_changed,
-			producer_product_setting_list_component_key
+			producer_product_setting_list_component_key,
+			producer_product_settings_tab
 		}
 	}
 }

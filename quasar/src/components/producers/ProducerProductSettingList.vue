@@ -1,6 +1,7 @@
 <template>
 	<q-tabs
-		v-model="tab"
+		:model-value="tab"
+		@update:model-value="changeTab"
 		active-color="white"
 		active-bg-color="secondary"
 		indicator-color="transparent"
@@ -25,7 +26,7 @@
 	</q-tabs>
 
 	<q-tab-panels
-		v-model="tab"
+		:model-value="tab"
 		animated
 	>
 		<q-tab-panel name="common">
@@ -50,9 +51,9 @@
 		</q-tab-panel>
 	</q-tab-panels>
 </template>
-<!-- todo - figure how to update reactively after update from backend -->
+
 <script>
-import { ref, computed, watch } from "vue"
+import { computed, watch } from "vue"
 import ProducerProductSettingCommonTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
 import ProducerProductSettingCompositionTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCompositionTab.vue"
 import ProducerProductSettingImagesTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
@@ -68,14 +69,18 @@ export default {
 			type: Object,
 			default: () => {}
 		},
-		isAbleToManageProduct: Boolean
+		isAbleToManageProduct: Boolean,
+		tab: String
 	},
 	emits: [
 		"productChanged",
-		"commitProduct"
+		"commitProduct",
+		"changeTab"
 	],
 	setup(props, { emit }) {
-		const tab = ref("common")
+		const changeTab = (tab) => {
+			emit("changeTab", tab)
+		}
 
 		const default_common = {
 			title: props.selectedProduct.title,
@@ -114,7 +119,7 @@ export default {
 		)
 
 		return {
-			tab
+			changeTab
 		}
 	}
 }
