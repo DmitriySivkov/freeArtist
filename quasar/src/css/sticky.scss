@@ -1,0 +1,9 @@
+.sticky {
+	&__common {
+			&_top {
+				position: sticky;
+				z-index: 9999;
+				top:0
+			}
+	}
+}

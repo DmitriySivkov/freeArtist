@@ -1,7 +1,7 @@
 <template>
 	<q-card
 		bordered
-		class="col-xs-12 col-md-4 border-dashed bg-green-3 shadow-0"
+		class="col-xs-12 col-md-4 border-dashed bg-green-3 shadow-0 q-mb-md"
 		:class="{'text-white bg-green-6 border-white': is_dragging, 'border-black': !is_dragging}"
 		style="height:200px"
 	>
@@ -56,7 +56,12 @@
 		</q-card>
 	</div>
 
-	<div class="row q-col-gutter-sm q-mt-md">
+	<q-separator
+		v-if="modelValue.committed_images && modelValue.images"
+		class="q-my-md bg-primary"
+	/>
+
+	<div class="row q-col-gutter-sm">
 		<q-card
 			flat
 			class="col-xs-12 col-md-3"
@@ -67,7 +72,23 @@
 				:src="backend_server + '/storage/' + image.path"
 				fit="contain"
 				style="height: 200px;"
-			/>
+			>
+				<!-- todo - change inline style -->
+				<div
+					style="padding:8px"
+					class="absolute-top text-right"
+					:class="{'full-height': !!image.to_delete}"
+					:style="{'background-color': !image.to_delete ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.7)'}"
+				>
+					<q-icon
+						class="cursor-pointer"
+						size="32px"
+						:name="!image.to_delete ? 'clear' : 'restore'"
+						:color="!image.to_delete ? 'black' : 'white'"
+						@click="toggleImageRemoval(image.id)"
+					/>
+				</div>
+			</q-img>
 		</q-card>
 	</div>
 
@@ -88,6 +109,7 @@ import { ref } from "vue"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
+import _ from "lodash"
 export default {
 	components: {
 		// eslint-disable-next-line vue/no-unused-components
@@ -191,11 +213,31 @@ export default {
 			})
 		}
 
+		const toggleImageRemoval = (image_id) => {
+			let images = _.clone(props.modelValue.images)
+			let image_index = images.findIndex((i) => i.id === image_id)
+			let image = images.find((i) => i.id === image_id)
+
+			if (image.hasOwnProperty("to_delete")) {
+				delete image.to_delete
+			} else {
+				image.to_delete = 1
+			}
+
+			images[image_index] = image
+
+			emit("update:modelValue", {
+				...props.modelValue,
+				images
+			})
+		}
+
 		// todo rejection handling
 		const imageRejected = (rejected_entries) => {
 			console.log(rejected_entries)
 		}
 
+		// todo - bind uploading to this method
 		const upload = (files) => {
 
 		}
@@ -216,7 +258,8 @@ export default {
 			drop,
 			removeCommittedImage,
 			imageRejected,
-			upload
+			upload,
+			toggleImageRemoval
 		}
 	}
 }

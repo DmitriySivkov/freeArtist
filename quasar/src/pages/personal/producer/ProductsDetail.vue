@@ -1,22 +1,51 @@
 <template>
-	<ProducerProductList
-		:model-value="selected_product"
-		@update:model-value="selectProduct"
-		:products="team.products"
-		:loading-product="loading_product_id"
-		:is-able-to-manage-product="is_able_to_manage_product"
-		:is-product-changed="is_product_changed"
-		@deleteProduct="deleteProduct"
-		@updateProduct="updateProduct"
-		@createProduct="createProduct"
-	/>
+	<div :class="{'sticky__common_top': selected_product}">
+		<ProducerProductList
+			:model-value="selected_product"
+			@update:model-value="selectProduct"
+			:products="team.products"
+			:loading-product="loading_product_id"
+			:is-able-to-manage-product="is_able_to_manage_product"
+			:is-product-changed="is_product_changed"
+			@deleteProduct="deleteProduct"
+			@updateProduct="updateProduct"
+			@createProduct="createProduct"
+		/>
+
+		<q-tabs
+			v-if="selected_product"
+			:model-value="tab"
+			@update:model-value="tab = $event"
+			active-color="white"
+			active-bg-color="secondary"
+			indicator-color="transparent"
+			align="justify"
+			class="text-white bg-indigo-10"
+		>
+			<q-tab
+				name="common"
+				label="Общие"
+				class="q-pa-md"
+			/>
+			<q-tab
+				name="composition"
+				label="Состав"
+				class="q-pa-md"
+			/>
+			<q-tab
+				name="images"
+				label="Изображения"
+				class="q-pa-md"
+			/>
+		</q-tabs>
+	</div>
+
 	<ProducerProductSettingList
 		v-if="selected_product"
 		:key="producer_product_setting_list_component_key"
-		:tab="producer_product_settings_tab"
+		:tab="tab"
 		:selected-product="selected_product"
 		:is-able-to-manage-product="is_able_to_manage_product"
-		@changeTab="producer_product_settings_tab = $event"
 		@productChanged="productChanged"
 		@commitProduct="commitProduct"
 	/>
@@ -27,13 +56,13 @@ import ProducerProductList from "src/components/producers/ProducerProductList.vu
 import ProducerProductSettingList from "src/components/producers/ProducerProductSettingList.vue"
 import { useRouter } from "vue-router"
 import { computed, ref } from "vue"
+import _ from "lodash"
 import { Loading } from "quasar"
 import { useUserPermission } from "src/composables/userPermission"
 import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
 import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
-import _ from "lodash"
 export default {
 	async preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		Loading.show({
@@ -62,7 +91,7 @@ export default {
 		const { hasPermission } = useUserPermission()
 		const { notifySuccess, notifyError } = useNotification()
 
-		const producer_product_settings_tab = ref("common")
+		const tab = ref("common")
 
 		const user_teams = computed(() => team_store.user_teams)
 
@@ -205,7 +234,7 @@ export default {
 			productChanged,
 			is_product_changed,
 			producer_product_setting_list_component_key,
-			producer_product_settings_tab
+			tab
 		}
 	}
 }

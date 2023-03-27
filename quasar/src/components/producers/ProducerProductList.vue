@@ -66,7 +66,7 @@
 	<q-list v-else>
 		<q-item
 			clickable
-			class="q-py-lg q-px-md bg-primary text-white wrap"
+			class="q-py-md q-px-md bg-primary text-white wrap"
 			v-ripple
 			:disable="modelValue.id === loadingProduct"
 			@click="selectProduct(null)"

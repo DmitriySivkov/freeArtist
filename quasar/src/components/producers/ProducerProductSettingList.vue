@@ -1,30 +1,4 @@
 <template>
-	<q-tabs
-		:model-value="tab"
-		@update:model-value="changeTab"
-		active-color="white"
-		active-bg-color="secondary"
-		indicator-color="transparent"
-		align="justify"
-		class="text-white bg-indigo-10"
-	>
-		<q-tab
-			name="common"
-			label="Общие"
-			class="q-pa-md"
-		/>
-		<q-tab
-			name="composition"
-			label="Состав"
-			class="q-pa-md"
-		/>
-		<q-tab
-			name="images"
-			label="Изображения"
-			class="q-pa-md"
-		/>
-	</q-tabs>
-
 	<q-tab-panels
 		:model-value="tab"
 		animated
@@ -75,13 +49,8 @@ export default {
 	emits: [
 		"productChanged",
 		"commitProduct",
-		"changeTab"
 	],
 	setup(props, { emit }) {
-		const changeTab = (tab) => {
-			emit("changeTab", tab)
-		}
-
 		const default_common = {
 			title: props.selectedProduct.title,
 			price: props.selectedProduct.price,
@@ -90,6 +59,10 @@ export default {
 
 		const default_composition = props.selectedProduct.composition ?
 			_.cloneDeep(props.selectedProduct.composition) :
+			[]
+
+		const default_images = props.selectedProduct.images ?
+			_.cloneDeep(props.selectedProduct.images) :
 			[]
 
 		const is_common_changed = computed(() => !_.isEqual({
@@ -102,7 +75,10 @@ export default {
 			!_.isEqual(props.selectedProduct.composition, default_composition) : false
 		)
 
-		const is_images_changed = computed(() => props.selectedProduct.hasOwnProperty("committed_images"))
+		const is_images_changed = computed(() =>
+			(props.selectedProduct.images ? !_.isEqual(props.selectedProduct.images, default_images) : false) ||
+			props.selectedProduct.hasOwnProperty("committed_images")
+		)
 
 		watch(
 			[is_common_changed, is_composition_changed, is_images_changed],
@@ -117,10 +93,6 @@ export default {
 				})
 			}
 		)
-
-		return {
-			changeTab
-		}
 	}
 }
 </script>
