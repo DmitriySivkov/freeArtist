@@ -21,10 +21,9 @@ class ProductService
 		$this->product = $product;
 	}
 
-	// todo - image deletion
 	/**
 	 * @return void
-	 * @throws \Exception
+	 * @throws \Throwable
 	 */
 	public function syncProductImages()
 	{
@@ -40,32 +39,61 @@ class ProductService
 		)
 			throw new \Exception('Доступ закрыт');
 
-		$basePath = 'team_' . $this->product->producer->team->id . '/product_images';
+		try {
+			$basePath = 'team_' . $this->product->producer->team->id . '/product_images';
 
-		$committedImages = request()->file('images');
+			$product = json_decode(request()->input('product'), true);
 
-		if ($committedImages) {
-			foreach ($committedImages as $image) {
+			$removeImages = collect([]);
 
-				$path = Storage::disk('public')->putFile(
-					$basePath,
-					$image
+			if ($product['images']) {
+				$removeImages = collect($product['images'])
+					->filter(fn($image) => array_key_exists('to_delete', $image));
+			}
+
+			if ($removeImages->isNotEmpty()) {
+				Storage::disk('public')->delete(
+					$removeImages->map(fn($image) => $image['path'])
+						->toArray()
 				);
 
-				ProductImage::create([
-					'product_id' => $this->product->id,
-					'path' => $path
-				]);
+				ProductImage::destroy(
+					$removeImages->map(fn($image) => $image['id'])
+						->toArray()
+				);
 			}
+
+			$committedImages = request()->file('images');
+
+			if ($committedImages) {
+				foreach ($committedImages as $image) {
+
+					$path = Storage::disk('public')->putFile(
+						$basePath,
+						$image
+					);
+
+					ProductImage::create([
+						'product_id' => $this->product->id,
+						'path' => $path
+					]);
+				}
+			}
+
+			\DB::commit();
+		} catch (\Throwable) {
+			\DB::rollBack();
+			throw new \Exception('Не удалось обновить изображения продукта');
 		}
 
 	}
 
 
 	// todo - request validation
+
 	/**
 	 * @return void
-	 * @throws \Exception
+	 * @throws \Throwable
 	 */
 	public function syncProductCommonSettings()
 	{
@@ -81,18 +109,26 @@ class ProductService
 		)
 			throw new \Exception('Доступ закрыт');
 
-		$data = json_decode(request()->input('product'),true);
+		try {
+			\DB::beginTransaction();
+			$data = json_decode(request()->input('product'), true);
 
-		$this->product->update([
-			'title' => $data['title'],
-			'price' => $data['price'],
-			'amount' => $data['amount']
-		]);
+			$this->product->update([
+				'title' => $data['title'],
+				'price' => $data['price'],
+				'amount' => $data['amount']
+			]);
+			\DB::commit();
+		} catch (\Throwable) {
+			\DB::rollBack();
+			throw new \Exception('Не удалось обновить общие настройки продукта');
+		}
 	}
+
 
 	/**
 	 * @return void
-	 * @throws \Exception
+	 * @throws \Throwable
 	 */
 	public function syncProductComposition()
 	{
@@ -108,17 +144,25 @@ class ProductService
 		)
 			throw new \Exception('Доступ закрыт');
 
-		$data = json_decode(request()->input('product'),true);
+		try {
+			\DB::beginTransaction();
+			$data = json_decode(request()->input('product'), true);
 
-		$composition = array_values(
-			collect($data['composition'])
-				->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
-				->toArray()
-		);
+			$composition = array_values(
+				collect($data['composition'])
+					->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
+					->toArray()
+			);
 
-		$this->product->update([
-			'composition' => $composition
-		]);
+			$this->product->update([
+				'composition' => $composition
+			]);
+
+			\DB::commit();
+		} catch (\Throwable) {
+			\DB::rollBack();
+			throw new \Exception('Не удалось обновить состав продукта');
+		}
 	}
 
 	/**

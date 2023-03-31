@@ -169,10 +169,10 @@ export default {
 				notifySuccess("Успешно")
 			})
 
-			promise.catch(() => {
+			promise.catch((error) => {
 				loading_product_id.value = null
 
-				notifyError("Не удалось")
+				notifyError(error.response.data)
 			})
 		}
 
