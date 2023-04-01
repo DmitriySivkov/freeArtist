@@ -6,7 +6,7 @@
 			:products="team.products"
 			:loading-product="loading_product_id"
 			:is-able-to-manage-product="is_able_to_manage_product"
-			:is-product-changed="is_product_changed"
+			:is-product-changed="!!product_changes"
 			@deleteProduct="deleteProduct"
 			@updateProduct="updateProduct"
 			@createProduct="createProduct"
@@ -104,7 +104,7 @@ export default {
 		const selected_product = ref(null)
 
 		const loading_product_id = ref(null)
-		const is_product_changed = ref(false)
+
 		const product_changes = ref(null)
 
 		const createProduct = () => {
@@ -161,7 +161,7 @@ export default {
 
 				loading_product_id.value = null
 
-				is_product_changed.value = false
+				product_changes.value = null
 
 				// for updating non-reactive 'default' values in settings component
 				producer_product_setting_list_component_key.value = Math.random()
@@ -177,7 +177,7 @@ export default {
 		}
 
 		const selectProduct = (product) => {
-			is_product_changed.value = false
+			product_changes.value = null
 
 			selected_product.value = product ? _.cloneDeep(product) : null
 		}
@@ -215,8 +215,12 @@ export default {
 			selected_product.value = new_product_value
 		}
 
-		const productChanged = ({ is_changed, changes }) => {
-			is_product_changed.value = is_changed
+		const productChanged = (changes) => {
+			// if product value is default
+			if (Object.values(changes).filter((c) => !!c).length === 0) {
+				product_changes.value = null
+				return
+			}
 
 			product_changes.value = changes
 		}
@@ -232,9 +236,9 @@ export default {
 			updateProduct,
 			commitProduct,
 			productChanged,
-			is_product_changed,
 			producer_product_setting_list_component_key,
-			tab
+			tab,
+			product_changes
 		}
 	}
 }

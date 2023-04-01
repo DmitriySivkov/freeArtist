@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Permission;
 use App\Models\Product;
-use App\Models\ProductImage;
+use App\Models\Image;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -57,7 +57,7 @@ class ProductService
 						->toArray()
 				);
 
-				ProductImage::destroy(
+				Image::destroy(
 					$removeImages->map(fn($image) => $image['id'])
 						->toArray()
 				);
@@ -73,8 +73,9 @@ class ProductService
 						$image
 					);
 
-					ProductImage::create([
-						'product_id' => $this->product->id,
+					Image::create([
+						'imageable_id' => $this->product->id,
+						'imageable_type' => Product::class,
 						'path' => $path
 					]);
 				}

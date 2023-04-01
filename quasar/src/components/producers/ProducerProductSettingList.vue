@@ -84,12 +84,9 @@ export default {
 			[is_common_changed, is_composition_changed, is_images_changed],
 			([common_changed, composition_changed, images_changed]) => {
 				emit("productChanged", {
-					is_changed: common_changed || composition_changed || images_changed,
-					changes: {
-						common: common_changed,
-						composition: composition_changed,
-						images: images_changed
-					}
+					common: common_changed,
+					composition: composition_changed,
+					images: images_changed
 				})
 			}
 		)

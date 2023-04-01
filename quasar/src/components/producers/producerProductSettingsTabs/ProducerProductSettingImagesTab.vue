@@ -30,29 +30,29 @@
 	>
 		<q-card
 			flat
-			class="col-xs-12 col-md-3"
+			class="col-xs-12 col-md-6"
 			v-for="image in modelValue.committed_images"
 			:key="image.key"
 		>
-			<q-img
-				:src="image.src"
-				fit="contain"
-				style="height: 200px;"
+			<q-card-section
+				horizontal
+				class="justify-end bg-indigo-5 q-mb-xs q-pa-xs"
 			>
-				<!-- todo - change inline style -->
-				<div
-					style="padding:8px"
-					class="absolute-top text-right"
-				>
-					<q-icon
-						class="cursor-pointer"
-						size="32px"
-						name="clear"
-						color="black"
-						@click="removeCommittedImage(image.key)"
-					/>
-				</div>
-			</q-img>
+				<q-icon
+					class="cursor-pointer"
+					size="32px"
+					name="clear"
+					color="red-3"
+					@click="removeCommittedImage(image.key)"
+				/>
+			</q-card-section>
+			<q-card-section horizontal>
+				<q-img
+					:src="image.src"
+					fit="contain"
+					style="height: 200px;"
+				/>
+			</q-card-section>
 		</q-card>
 	</div>
 
@@ -64,31 +64,29 @@
 	<div class="row q-col-gutter-sm">
 		<q-card
 			flat
-			class="col-xs-12 col-md-3"
+			class="col-xs-12 col-md-6"
 			v-for="image in modelValue.images"
 			:key="image.id"
 		>
-			<q-img
-				:src="backend_server + '/storage/' + image.path"
-				fit="contain"
-				style="height: 200px;"
+			<q-card-section
+				horizontal
+				class="justify-end bg-indigo-7 q-mb-xs q-pa-xs"
 			>
-				<!-- todo - change inline style -->
-				<div
-					style="padding:8px"
-					class="absolute-top text-right"
-					:class="{'full-height': !!image.to_delete}"
-					:style="{'background-color': !image.to_delete ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.7)'}"
-				>
-					<q-icon
-						class="cursor-pointer"
-						size="32px"
-						:name="!image.to_delete ? 'clear' : 'restore'"
-						:color="!image.to_delete ? 'black' : 'white'"
-						@click="toggleImageRemoval(image.id)"
-					/>
-				</div>
-			</q-img>
+				<q-icon
+					class="cursor-pointer"
+					size="32px"
+					:name="!image.to_delete ? 'clear' : 'restore'"
+					:color="!image.to_delete ? 'red-3' : 'white'"
+					@click="toggleImageRemoval(image.id)"
+				/>
+			</q-card-section>
+			<q-card-section horizontal>
+				<q-img
+					:src="backend_server + '/storage/' + image.path"
+					fit="contain"
+					style="height: 200px;"
+				/>
+			</q-card-section>
 		</q-card>
 	</div>
 
