@@ -24,7 +24,7 @@
 				clickable
 				class="q-py-lg q-px-md bg-primary text-white wrap"
 				@click="selectProduct(product.id)"
-				:disable="product.id === loadingProduct"
+				:class="{'no-pointer-events': product.id === loadingProduct}"
 				v-ripple
 			>
 				<q-item-section side>
@@ -68,7 +68,7 @@
 			clickable
 			class="q-py-md q-px-md bg-primary text-white wrap"
 			v-ripple
-			:disable="modelValue.id === loadingProduct"
+			:class="{'no-pointer-events': modelValue.id === loadingProduct}"
 			@click="selectProduct(null)"
 		>
 			<q-item-section avatar>
