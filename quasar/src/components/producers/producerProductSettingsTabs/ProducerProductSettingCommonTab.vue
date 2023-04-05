@@ -17,7 +17,7 @@
 				@update:model-value="commonPropChanged({price: $event})"
 				label="Стоимость *"
 				class="q-pb-lg"
-				:rules="[ val => val > 0 || 'Нужно указать стоимость']"
+				:rules="[ val => val > 0 ]"
 				lazy-rules="ondemand"
 			>
 				<template v-slot:control="{ emitValue }">
