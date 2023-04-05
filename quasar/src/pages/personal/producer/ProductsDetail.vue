@@ -42,6 +42,7 @@
 
 	<ProducerProductSettingList
 		v-if="selected_product"
+		ref="producer_product_setting_list"
 		:key="producer_product_setting_list_component_key"
 		:tab="tab"
 		:selected-product="selected_product"
@@ -49,6 +50,7 @@
 		@productChanged="productChanged"
 		@commitProduct="commitProduct"
 	/>
+
 </template>
 
 <script>
@@ -93,6 +95,8 @@ export default {
 
 		const tab = ref("common")
 
+		const producer_product_setting_list = ref(null)
+
 		const user_teams = computed(() => team_store.user_teams)
 
 		const team = computed(() =>
@@ -117,62 +121,69 @@ export default {
 			if (!product_changes.value)
 				return
 
-			loading_product_id.value = selected_product.value.id
+			let validation = producer_product_setting_list.value.validate()
 
-			const promise = producer_store.updateProducerProduct({
-				product: selected_product.value,
-				changes: product_changes.value
-			})
+			validation.then((tab_validations) => {
+				if (tab_validations.includes(false))
+					return
 
-			promise.then((response) => {
-				let fields = {}
+				loading_product_id.value = selected_product.value.id
 
-				if (!!response.data.changes.common) {
-					fields = {
-						...fields,
-						title: response.data.product.title,
-						price: response.data.product.price,
-						amount: response.data.product.amount
-					}
-				}
-
-				if (!!response.data.changes.composition) {
-					fields = {
-						...fields,
-						composition: response.data.product.composition,
-					}
-				}
-
-				if (!!response.data.changes.images) {
-					fields = {
-						...fields,
-						images: response.data.product.images,
-					}
-				}
-
-				producer_store.commitProducerProductFields({
-					producer_id: response.data.product.producer_id,
-					product_id: response.data.product.id,
-					fields
+				const promise = producer_store.updateProducerProduct({
+					product: selected_product.value,
+					changes: product_changes.value
 				})
 
-				// actually update current component product
-				selected_product.value = team.value.products.find((p) => p.id === response.data.product.id)
+				promise.then((response) => {
+					let fields = {}
 
-				loading_product_id.value = null
+					if (!!response.data.changes.common) {
+						fields = {
+							...fields,
+							title: response.data.product.title,
+							price: response.data.product.price,
+							amount: response.data.product.amount
+						}
+					}
 
-				product_changes.value = null
+					if (!!response.data.changes.composition) {
+						fields = {
+							...fields,
+							composition: response.data.product.composition,
+						}
+					}
 
-				// for updating non-reactive 'default' values in settings component
-				producer_product_setting_list_component_key.value = Math.random()
+					if (!!response.data.changes.images) {
+						fields = {
+							...fields,
+							images: response.data.product.images,
+						}
+					}
 
-				notifySuccess("Успешно")
-			})
+					producer_store.commitProducerProductFields({
+						producer_id: response.data.product.producer_id,
+						product_id: response.data.product.id,
+						fields
+					})
 
-			promise.catch((error) => {
-				loading_product_id.value = null
+					// actually update current component product
+					selected_product.value = team.value.products.find((p) => p.id === response.data.product.id)
 
-				notifyError(error.response.data)
+					loading_product_id.value = null
+
+					product_changes.value = null
+
+					// for updating non-reactive 'default' values in settings component
+					producer_product_setting_list_component_key.value = Math.random()
+
+					notifySuccess("Успешно")
+				})
+
+				promise.catch((error) => {
+					loading_product_id.value = null
+
+					notifyError(error.response.data)
+				})
 			})
 		}
 
@@ -238,7 +249,8 @@ export default {
 			productChanged,
 			producer_product_setting_list_component_key,
 			tab,
-			product_changes
+			product_changes,
+			producer_product_setting_list
 		}
 	}
 }

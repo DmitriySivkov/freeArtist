@@ -2,9 +2,11 @@
 	<q-tab-panels
 		:model-value="tab"
 		animated
+		keep-alive
 	>
 		<q-tab-panel name="common">
 			<ProducerProductSettingCommonTab
+				ref="producer_product_setting_common_tab"
 				:model-value="selectedProduct"
 				@update:model-value="$emit('commitProduct', $event)"
 			/>
@@ -12,6 +14,7 @@
 
 		<q-tab-panel name="composition">
 			<ProducerProductSettingCompositionTab
+				ref="producer_product_setting_composition_tab"
 				:model-value="selectedProduct"
 				@update:model-value="$emit('commitProduct', $event)"
 			/>
@@ -27,7 +30,7 @@
 </template>
 
 <script>
-import { computed, watch } from "vue"
+import { ref, computed, watch } from "vue"
 import ProducerProductSettingCommonTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
 import ProducerProductSettingCompositionTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCompositionTab.vue"
 import ProducerProductSettingImagesTab from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
@@ -51,6 +54,16 @@ export default {
 		"commitProduct",
 	],
 	setup(props, { emit }) {
+		const producer_product_setting_common_tab = ref(null)
+		const producer_product_setting_composition_tab = ref(null)
+
+		const validate = () => {
+			return Promise.all([
+				producer_product_setting_common_tab.value.validate(),
+				producer_product_setting_composition_tab.value.validate()
+			])
+		}
+
 		const default_common = {
 			title: props.selectedProduct.title,
 			price: props.selectedProduct.price,
@@ -90,6 +103,12 @@ export default {
 				})
 			}
 		)
+
+		return {
+			producer_product_setting_common_tab,
+			producer_product_setting_composition_tab,
+			validate
+		}
 	}
 }
 </script>

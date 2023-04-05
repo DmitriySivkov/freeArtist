@@ -6,56 +6,59 @@
 		@click="addIngredient"
 	/>
 
-	<q-card
-		v-for="(ingredient, index) in modelValue.composition"
-		:key="index"
-		class="composition__card border-primary"
-		:class="{'q-my-sm': index !== modelValue.composition.length-1}"
-		bordered
-	>
-		<q-input
-			:disable="ingredient.to_delete"
-			filled
-			square
-			label="Название ингредиента"
-			v-model="ingredient.name"
-			lazy-rules
-			:rules="[ val => !!val || 'Укажите название']"
-			class="q-pb-none"
+	<q-form ref="form">
+		<q-card
+			v-for="(ingredient, index) in modelValue.composition"
+			:key="index"
+			class="composition__card border-primary"
+			:class="{'q-my-sm': index !== modelValue.composition.length-1}"
+			bordered
 		>
-			<template v-slot:after>
-				<q-btn
-					v-if="ingredient.to_delete"
-					flat
-					icon="restore"
-					class="bg-secondary text-white full-height"
-					@click="restoreIngredient(index)"
-				/>
-				<q-btn
-					v-else
-					flat
-					icon="clear"
-					class="bg-red text-white full-height"
-					@click="removeIngredient(index)"
-				/>
+			<q-input
+				:disable="ingredient.to_delete"
+				filled
+				square
+				label="Название ингредиента"
+				v-model="ingredient.name"
+				:rules="[ val => !!val || 'Укажите название']"
+				lazy-rules="ondemand"
+				class="q-pb-none"
+			>
+				<template v-slot:after>
+					<q-btn
+						v-if="ingredient.to_delete"
+						flat
+						icon="restore"
+						class="bg-secondary text-white full-height"
+						@click="restoreIngredient(index)"
+					/>
+					<q-btn
+						v-else
+						flat
+						icon="clear"
+						class="bg-red text-white full-height"
+						@click="removeIngredient(index)"
+					/>
 
-			</template>
-		</q-input>
+				</template>
+			</q-input>
 
-		<q-separator class="bg-primary q-my-xs" />
+			<q-separator class="bg-primary q-my-xs" />
 
-		<q-input
-			:disable="ingredient.to_delete"
-			filled
-			square
-			type="textarea"
-			label="Описание ингредиента (необязательно)"
-			v-model="ingredient.description"
-		/>
-	</q-card>
+			<q-input
+				:disable="ingredient.to_delete"
+				filled
+				square
+				type="textarea"
+				label="Описание ингредиента (необязательно)"
+				v-model="ingredient.description"
+			/>
+		</q-card>
+	</q-form>
 </template>
 
 <script>
+import { ref } from "vue"
 import _ from "lodash"
 export default {
 	props: {
@@ -65,13 +68,22 @@ export default {
 		},
 	},
 	setup(props, { emit }) {
+		const form = ref(null)
+
+		const validate = () => {
+			return form.value.validate()
+		}
+
 		const addIngredient = () => {
+			let composition = [{ is_new: true, name: "", description: "" }]
+
+			if (!!props.modelValue.composition) {
+				composition = [...composition, ...props.modelValue.composition]
+			}
+
 			emit("update:modelValue", {
 				...props.modelValue,
-				composition: [
-					{ is_new: true, name: "", description: "" },
-					...props.modelValue.composition
-				]
+				composition
 			})
 		}
 
@@ -108,6 +120,8 @@ export default {
 			addIngredient,
 			removeIngredient,
 			restoreIngredient,
+			validate,
+			form
 		}
 	}
 }
