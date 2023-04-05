@@ -20,7 +20,7 @@
 				square
 				label="Название ингредиента"
 				v-model="ingredient.name"
-				:rules="[ val => !!val || 'Укажите название']"
+				:rules="[ val => !!val ]"
 				lazy-rules="ondemand"
 				class="q-pb-none"
 			>

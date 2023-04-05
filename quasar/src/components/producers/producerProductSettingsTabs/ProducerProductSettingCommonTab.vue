@@ -7,7 +7,7 @@
 				:model-value="modelValue.title"
 				@update:model-value="commonPropChanged({title: $event})"
 				lazy-rules="ondemand"
-				:rules="[ val => !!val || 'Укажите название']"
+				:rules="[ val => !!val ]"
 				class="q-pb-lg"
 			/>
 
