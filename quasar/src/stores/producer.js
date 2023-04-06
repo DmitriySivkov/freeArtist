@@ -52,19 +52,12 @@ export const useProducerStore = defineStore("producer", {
 			Object.assign(product, fields)
 		},
 
-		async createProducerProduct({ producer_id, settings }) {
-			const response = await api.post(
-				"personal/producers/" + producer_id + "/products",
-				{ settings }
-			)
-
+		commitProducerNewProduct({ producer_id, product }) {
 			const team_store = useTeamStore()
 
-			team_store.user_teams.find((t) => t.detailed.id === producer_id)
-				.products
-				.unshift(response.data)
+			let team = team_store.user_teams.find((t) => t.detailed.id === producer_id)
 
-			return response
+			team.products.unshift(product)
 		},
 
 		deleteProducerProduct({ product_id }) {
@@ -85,6 +78,29 @@ export const useProducerStore = defineStore("producer", {
 			const product_index = producer.products.findIndex((p) => p.id === product_id)
 
 			producer.products.splice(product_index, 1)
+		},
+
+		createProducerProduct({ team_id, product, changes }) {
+			let data = new FormData()
+
+			if (!!changes.composition) {
+				product.composition = product.composition.map((ingredient) => {
+					delete ingredient["is_new"]
+					return ingredient
+				})
+			}
+
+			data.append("product", JSON.stringify(product))
+			data.append("changes", JSON.stringify(changes))
+			data.append("team_id", team_id)
+
+			if (product.committed_images) {
+				for (let i in product.committed_images) {
+					data.append("images[]", product.committed_images[i].instance)
+				}
+			}
+
+			return api.post("personal/products", data)
 		},
 
 		updateProducerProduct({ product, changes }) {

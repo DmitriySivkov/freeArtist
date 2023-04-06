@@ -89,7 +89,7 @@
 					class="bg-secondary q-pa-md"
 					:class="{'composition__button_done_active': !!isProductChanged }"
 					icon="done"
-					@click.stop="Object.keys(modelValue).length === 0 ? create() : update()"
+					@click.stop="modelValue.id > 0 ? update() : create() "
 				/>
 			</q-item-section>
 			<q-inner-loading :showing="modelValue.id === loadingProduct">
@@ -134,7 +134,14 @@ export default {
 		}
 
 		const addProduct = () => {
-			emit("update:modelValue", {})
+			emit("update:modelValue", {
+				id: -1,
+				title: "",
+				price: null,
+				amount: 0,
+				composition: [],
+				images: []
+			})
 		}
 
 		const create = () => {

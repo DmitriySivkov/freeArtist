@@ -112,7 +112,11 @@ export default {
 		return {
 			producer_product_setting_common_tab,
 			producer_product_setting_composition_tab,
-			validate
+			validate,
+			default_common,
+			is_common_changed,
+			is_composition_changed,
+			is_images_changed
 		}
 	}
 }

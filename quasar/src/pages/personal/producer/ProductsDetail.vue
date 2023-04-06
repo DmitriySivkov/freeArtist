@@ -112,9 +112,48 @@ export default {
 		const product_changes = ref(null)
 
 		const createProduct = () => {
-			loading_product_id.value = -1
+			if (!product_changes.value)
+				return
 
-			loading_product_id.value = null
+			let validation = producer_product_setting_list.value.validate()
+
+			validation.then((tab_validations) => {
+				if (tab_validations.includes(false))
+					return
+
+				loading_product_id.value = selected_product.value.id
+
+				const promise = producer_store.createProducerProduct({
+					product: selected_product.value,
+					changes: product_changes.value,
+					team_id: team.value.id
+				})
+
+				promise.then((response) => {
+					producer_store.commitProducerNewProduct({
+						producer_id: response.data.producer_id,
+						product: response.data
+					})
+
+					// actually update current component product
+					selected_product.value = team.value.products.find((p) => p.id === response.data.id)
+
+					loading_product_id.value = null
+
+					product_changes.value = null
+
+					// for updating non-reactive 'default' values in settings component
+					producer_product_setting_list_component_key.value = Math.random()
+
+					notifySuccess("Успешно")
+				})
+
+				promise.catch((error) => {
+					loading_product_id.value = null
+
+					notifyError(error.response.data)
+				})
+			})
 		}
 
 		const updateProduct = () => {
