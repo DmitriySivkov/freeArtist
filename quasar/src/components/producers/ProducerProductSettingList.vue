@@ -58,10 +58,15 @@ export default {
 		const producer_product_setting_composition_tab = ref(null)
 
 		const validate = () => {
-			return Promise.all([
-				producer_product_setting_common_tab.value.validate(),
-				producer_product_setting_composition_tab.value.validate()
-			])
+			let validations = []
+
+			if (!!producer_product_setting_common_tab.value)
+				validations.push(producer_product_setting_common_tab.value.validate())
+
+			if (!!producer_product_setting_composition_tab.value)
+				validations.push(producer_product_setting_composition_tab.value.validate())
+
+			return Promise.all(validations)
 		}
 
 		const default_common = {

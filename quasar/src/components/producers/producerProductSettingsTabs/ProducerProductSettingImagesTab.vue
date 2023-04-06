@@ -126,6 +126,7 @@ export default {
 		const uploader = ref(null)
 		const is_dragging = ref(false)
 		const is_loading = ref(false)
+
 		const { base64ToBlob } = cameraService()
 		const { Camera } = Plugins
 
