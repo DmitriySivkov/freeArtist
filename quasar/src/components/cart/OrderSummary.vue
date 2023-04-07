@@ -1,25 +1,17 @@
 <template>
-	<q-page-sticky
-		expand
-		position="bottom"
-		class="row q-pa-xs"
-	>
-		<div class="col-xs-12">
-			<q-card>
-				<q-card-section class="text-center">
-					Стоимость: {{ total_price }} р.
-				</q-card-section>
-				<q-separator />
-				<q-card-actions align="center">
-					<q-btn
-						label="Оформить заказ"
-						color="primary"
-						@click="makeNewOrder"
-					/>
-				</q-card-actions>
-			</q-card>
-		</div>
-	</q-page-sticky>
+	<q-card class="full-height">
+		<q-card-section class="text-center">
+			Стоимость: {{ total_price }} р.
+		</q-card-section>
+		<q-separator />
+		<q-card-section class="text-center">
+			<q-btn
+				label="Оформить заказ"
+				color="primary"
+				@click="makeNewOrder"
+			/>
+		</q-card-section>
+	</q-card>
 </template>
 
 <script>

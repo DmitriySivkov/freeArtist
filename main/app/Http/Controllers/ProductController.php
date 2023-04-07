@@ -19,7 +19,9 @@ class ProductController extends Controller
 		try {
 			$productService->setProduct(new Product());
 
-			return $productService->storeProduct();
+			$product = $productService->storeProduct();
+
+			return $product->load(['images']);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);

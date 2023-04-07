@@ -1,10 +1,19 @@
 <template>
-	<ProductList :style="{marginBottom: cartPageMargin + 'px'}"/>
-	<OrderSummary
-		ref="cartOrderSummaryComponent"
-		v-if="cart.length > 0"
-	/>
-	<router-view />
+	<q-page class="row no-wrap justify-center">
+		<div class="col-12 bg-white">
+			<div class="column full-height">
+				<q-scroll-area
+					visible
+					class="col-10"
+				>
+					<ProductList />
+				</q-scroll-area>
+				<div class="col-2">
+					<OrderSummary v-if="cart.length > 0" />
+				</div>
+			</div>
+		</div>
+	</q-page>
 </template>
 
 <script>
@@ -21,20 +30,8 @@ export default {
 		const cart_store = useCartStore()
 		const cart = computed(() => Object.values(cart_store.data))
 
-		const cartOrderSummaryComponent = ref(null)
-
-		const cartPageMargin = ref(0)
-
-		onMounted(() => {
-			if (cartOrderSummaryComponent.value)
-				cartPageMargin.value = cartOrderSummaryComponent.value.$el.clientHeight
-		})
-
-
 		return {
-			cart,
-			cartOrderSummaryComponent,
-			cartPageMargin
+			cart
 		}
 	}
 }

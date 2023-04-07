@@ -63,6 +63,9 @@ class ProductService
 				]);
 			}
 
+			$this->product->save();
+
+			// todo - validate that incoming file is a picture
 			if ($changes['images']) {
 				$basePath = 'team_' . $team->id . '/product_images';
 
@@ -84,8 +87,6 @@ class ProductService
 					}
 				}
 			}
-
-			$this->product->save();
 
 			\DB::commit();
 		} catch (\Throwable $e) {
@@ -159,6 +160,7 @@ class ProductService
 	 */
 	public function syncProductImages()
 	{
+		// todo - validate that incoming file is a picture
 		$this->checkProduct();
 		$this->checkPermission($this->product->producer->team);
 
