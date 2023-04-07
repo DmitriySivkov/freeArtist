@@ -4,11 +4,11 @@
 			<div class="column full-height">
 				<q-scroll-area
 					visible
-					class="col-10"
+					class="col-xs-9 col-md-10"
 				>
 					<ProductList />
 				</q-scroll-area>
-				<div class="col-2">
+				<div class="col-xs-3 col-md-2">
 					<OrderSummary v-if="cart.length > 0" />
 				</div>
 			</div>
