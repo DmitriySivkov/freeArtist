@@ -9,7 +9,7 @@ use App\Http\Requests\ProducerNewOrderRequest;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Orders\ProducerOrderService;
-use App\Services\Orders\CustomerOrderService;
+use App\Services\Orders\UserOrderService;
 use Illuminate\Support\ServiceProvider;
 
 class OrderServiceProvider extends ServiceProvider
@@ -25,7 +25,7 @@ class OrderServiceProvider extends ServiceProvider
 			/** @var User $user */
 			$user = auth('sanctum')->user();
 			switch ($user->role_id) {
-				case Role::PRODUCER:
+				case Role::ROLE_PRODUCER:
 					return new ProducerNewOrderRequest();
 				default:
 					return new UserNewOrderRequest();
@@ -36,10 +36,10 @@ class OrderServiceProvider extends ServiceProvider
 			/** @var User $user */
 			$user = auth('sanctum')->user();
 			switch ($user->role_id) {
-				case Role::PRODUCER:
+				case Role::ROLE_PRODUCER:
 					return new ProducerOrderService();
 				default:
-					return new CustomerOrderService();
+					return new UserOrderService();
 			}
 		});
     }

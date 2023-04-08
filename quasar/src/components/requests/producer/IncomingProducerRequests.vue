@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { useRelationRequestManager } from "src/composables/relationRequestManager"
+import { useRelationRequest } from "src/composables/relationRequest"
 import { useNotification } from "src/composables/notification"
 import { useRelationRequestStore } from "src/stores/relation-request"
 export default {
@@ -104,7 +104,7 @@ export default {
 				teamAcceptRequest,
 				teamRejectRequest,
 				teamIncomingRequests
-			} = useRelationRequestManager()
+			} = useRelationRequest()
 
 		const { notifySuccess, notifyError } = useNotification()
 

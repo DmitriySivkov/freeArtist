@@ -14,12 +14,13 @@ class ProducerOrderService extends OrderService
 	/**
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	public function getList()
+	public function getOrderList()
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
-		$query = Order::where('producer_id', $user->producer_id);;
+		$query = Order::where('producer_id', $user->producer_id)
+			->orderBy('id', 'desc');
 
 		if (request()->has('filter')) {
 
@@ -32,18 +33,6 @@ class ProducerOrderService extends OrderService
 		}
 
 		$orders = $query->get();
-
-		$orders->map(function(Order $order) {
-			$order->created_at_parts = [
-				'hi' => Carbon::parse($order->created_at)->format('H:i'),
-				'date' => Carbon::parse($order->created_at)->format('d-m-Y')
-			];
-			$order->updated_at_parts = [
-				'hi' => Carbon::parse($order->updated_at)->format('H:i'),
-				'date' => Carbon::parse($order->updated_at)->format('d-m-Y')
-			];
-			return $order;
-		});
 
 		return $orders;
 	}

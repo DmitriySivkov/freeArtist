@@ -27,7 +27,7 @@ export default {
 		const showOrders = (date) => {
 			if (date === null) return
 
-			order_store.getList({
+			order_store.getOrders({
 				filter: { date }
 			})
 		}

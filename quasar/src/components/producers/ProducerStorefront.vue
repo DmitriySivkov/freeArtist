@@ -105,7 +105,7 @@
 
 <script>
 import { computed, ref } from "vue"
-import { useCartManager } from "src/composables/cartManager"
+import { useCart } from "src/composables/cart"
 import { useCartStore } from "src/stores/cart"
 import { useProducerStore } from "src/stores/producer"
 export default {
@@ -118,7 +118,7 @@ export default {
 		const visible_composition = ref(null)
 
 		const { products, increase, decrease, orderAmountChanged } =
-			useCartManager(cart.value.hasOwnProperty(producer.value.id) ?
+			useCart(cart.value.hasOwnProperty(producer.value.id) ?
 				producer.value.products.reduce(function(accum, product) {
 					let cart_product = cart.value[producer.value.id].product_list.find((cart_product) => cart_product.data.id === product.id)
 					return {...accum, [product.id]: typeof cart_product !== "undefined" ? cart_product.amount : 0}

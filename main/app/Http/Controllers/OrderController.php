@@ -10,7 +10,7 @@ class OrderController extends Controller
 {
     public function index(OrderServiceContract $orderService)
     {
-        return response()->json($orderService->getList());
+        return response()->json($orderService->getOrderList());
     }
 
     public function store(NewOrderRequestContract $request, OrderServiceContract $orderService)

@@ -1,5 +1,6 @@
 import { reactive } from "vue"
 import { useCartStore } from "src/stores/cart"
+import {LocalStorage} from "quasar"
 
 /**
  * чтобы использовать этот composable необходимо инициировать объект products
@@ -7,7 +8,7 @@ import { useCartStore } from "src/stores/cart"
  * либо пустой объект - {}
  * в products необязательно должны лежать продукты только одного продюсера
  * */
-export const useCartManager = (productsInitObject) => {
+export const useCart = (productsInitObject) => {
 	const cart_store = useCartStore()
 	const products = reactive(productsInitObject)
 
@@ -37,6 +38,17 @@ export const useCartManager = (productsInitObject) => {
 		cart_store.addToCart({ producer, products })
 	}
 
-	return { products, increase, decrease, orderAmountChanged }
+	const clearCart = () => {
+		cart_store.setCart({})
+		LocalStorage.set("cart", {})
+	}
+
+	return {
+		products,
+		increase,
+		decrease,
+		orderAmountChanged,
+		clearCart
+	}
 
 }

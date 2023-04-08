@@ -7,14 +7,16 @@ export const useOrderStore = defineStore("order", {
 	}),
 
 	actions: {
-		async getList(payload) {
+		async getOrders(filter) {
 			const response = await api.get("personal/orders", {
-				params: payload
+				params: filter
 			})
-			this.data = payload
+
+			this.data = response.data
 		},
-		async create(payload) {
-			const response = await api.post("personal/orders", {
+
+		create(payload) {
+			return api.post("personal/orders", {
 				cart: payload
 			})
 		}

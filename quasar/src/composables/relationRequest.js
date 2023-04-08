@@ -3,7 +3,7 @@ import { useUserStore } from "src/stores/user"
 import { useRelationRequestStore } from "src/stores/relation-request"
 import { useTeamStore } from "src/stores/team"
 
-export const useRelationRequestManager = () => {
+export const useRelationRequest = () => {
 	const user_store = useUserStore()
 	const relation_request_store = useRelationRequestStore()
 	const team_store = useTeamStore()

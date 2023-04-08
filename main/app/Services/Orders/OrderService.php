@@ -16,7 +16,7 @@ abstract class OrderService implements OrderServiceContract
 			Order::create([
 				'user_id' => $orderData['user_id'],
 				'producer_id' => $cartItem['producer']['id'],
-				'products' => collect($cartItem['products'])->map(function($product) {
+				'products' => collect($cartItem['product_list'])->map(function($product) {
 					return [
 						'product_id' => $product['data']['id'],
 						'amount' => $product['amount']
@@ -28,5 +28,5 @@ abstract class OrderService implements OrderServiceContract
 		}
 	}
 
-	abstract public function getList();
+	abstract public function getOrderList();
 }

@@ -9,17 +9,18 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
-class CustomerOrderService extends OrderService
+class UserOrderService extends OrderService
 {
 	/**
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	public function getList()
+	public function getOrderList()
 	{
 		/** @var User $user */
 		$user = auth('sanctum')->user();
 
 		$query = Order::where('user_id', $user->id)
+			->orderBy('id', 'desc')
 			->withCasts([
 				'created_at' => 'datetime:Y-m-d H:i:s',
 				'updated_at' => 'datetime:Y-m-d H:i:s'
@@ -35,19 +36,10 @@ class CustomerOrderService extends OrderService
 			}
 		}
 
-		$orders = $query->with(['producer', 'products'])->get();
-
-		$orders->map(function(Order $order) {
-			$order->created_at_parts = [
-				'hi' => Carbon::parse($order->created_at)->format('H:i'),
-				'date' => Carbon::parse($order->created_at)->format('d-m-Y')
-			];
-			$order->updated_at_parts = [
-				'hi' => Carbon::parse($order->updated_at)->format('H:i'),
-				'date' => Carbon::parse($order->updated_at)->format('d-m-Y')
-			];
-			return $order;
-		});
+		$orders = $query->with([
+			'producer.team',
+			'products.images'
+		])->get();
 
 		return $orders;
 	}

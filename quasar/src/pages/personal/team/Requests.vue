@@ -12,11 +12,11 @@ import TeamList from "src/components/teams/TeamList.vue"
 import { computed } from "vue"
 import _ from "lodash"
 import { useUserTeam } from "src/composables/userTeam"
-import { useRelationRequestManager } from "src/composables/relationRequestManager"
+import { useRelationRequest } from "src/composables/relationRequest"
 export default {
 	components: { TeamList },
 	setup() {
-		const { teamPendingRequestCount } = useRelationRequestManager()
+		const { teamPendingRequestCount } = useRelationRequest()
 		const { user_teams } = useUserTeam()
 		const teams = computed(() => _.orderBy(
 			user_teams.value,

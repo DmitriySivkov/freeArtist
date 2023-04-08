@@ -69,13 +69,13 @@
 
 <script>
 import { computed } from "vue"
-import { useCartManager } from "src/composables/cartManager"
+import { useCart } from "src/composables/cart"
 import { useCartStore } from "src/stores/cart"
 export default {
 	setup() {
 		const cart_store = useCartStore()
 		const cart = computed(() => Object.values(cart_store.data))
-		const { products, increase, decrease, orderAmountChanged } = useCartManager(
+		const { products, increase, decrease, orderAmountChanged } = useCart(
 			cart.value.length > 0
 				? cart.value.reduce((accum, cart_item) => ({
 					...accum,

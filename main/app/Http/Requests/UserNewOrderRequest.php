@@ -38,9 +38,9 @@ class UserNewOrderRequest extends FormRequest implements NewOrderRequestContract
         return [
             'user_id' => ['required', 'exists:users,id'],
 			'cart.*.producer.id' => ['required', 'exists:producers,id'],
-			'cart.*.products' => ['required'],
-			'cart.*.products.*.amount' => ['gt:0'],
-			'cart.*.products.*.data.id' => ['exists:products,id'],
+			'cart.*.product_list' => ['required'],
+			'cart.*.product_list.*.amount' => ['gt:0'],
+			'cart.*.product_list.*.data.id' => ['exists:products,id'],
 			'payment_method' => ['required'],
 			'status' => ['required']
         ];
