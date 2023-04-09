@@ -14,9 +14,7 @@ export default {
 			spinnerColor: "primary",
 		})
 
-		return order_store.getOrders({
-			filter: { date: date.formatDate(Date.now(), "DD.MM.YYYY") }
-		}).then(() =>
+		return order_store.getOrders().then(() =>
 			Loading.hide()
 		)
 	},

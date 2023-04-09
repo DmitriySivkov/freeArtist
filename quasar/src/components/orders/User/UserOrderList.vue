@@ -4,28 +4,33 @@
 		:key="item.id"
 		class="row bg-primary text-white q-ma-md"
 	>
-		<q-card-section class="col-12">
-			Номер заказа {{ item.id }}
-		</q-card-section>
-		<q-card-section
-			class="col-12"
-			horizontal
-			bordered
-		>
-			<q-card-section class="col-6">
-				<q-card-section
+		<q-card-section class="col-xs-12 col-md-8">
+			<q-list>
+				<q-item
 					v-for="product in item.products"
 					:key="product.product_id"
 				>
-					{{ product.title }}
-				</q-card-section>
-			</q-card-section>
-			<!-- todo - format date -->
-			<q-card-section class="col-6">
-				<div>создан: <span>{{ item.created_at }}</span></div>
-				<div>обновлен: <span>{{ item.updated_at }}</span></div>
-				<div>исполнитель: <span>{{ item.producer.team.display_name }}</span></div>
-			</q-card-section>
+					<q-item-section avatar>
+						<q-img
+							:src="product.images.length > 0 ? backend_server + '/storage/' + product.images[0].path : 'no-image.png'"
+						/>
+					</q-item-section>
+
+					<q-item-section>
+						<q-item-label>{{ product.title }}</q-item-label>
+					</q-item-section>
+
+				</q-item>
+			</q-list>
+		</q-card-section>
+		<q-card-section class="col-xs-12 col-md-4">
+			<q-list dense>
+				<!-- todo - format date -->
+				<q-item>Номер заказа {{ item.id }}</q-item>
+				<q-item>создан: {{ item.created_at }}</q-item>
+				<q-item>обновлен: {{ item.updated_at }}</q-item>
+				<q-item>исполнитель: {{ item.producer.team.display_name }}</q-item>
+			</q-list>
 		</q-card-section>
 	</q-card>
 </template>
@@ -38,8 +43,11 @@ export default {
 		const order_store = useOrderStore()
 		const order_list = computed(() => order_store.data)
 
+		const backend_server = process.env.BACKEND_SERVER
+
 		return {
-			order_list
+			order_list,
+			backend_server
 		}
 	}
 }
