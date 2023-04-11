@@ -72,7 +72,8 @@ export default {
 		const default_common = {
 			title: props.selectedProduct.title,
 			price: props.selectedProduct.price,
-			amount: props.selectedProduct.amount
+			amount: props.selectedProduct.amount,
+			thumbnail_id: props.selectedProduct.thumbnail_id
 		}
 
 		const default_composition = props.selectedProduct.composition ?
@@ -86,7 +87,8 @@ export default {
 		const is_common_changed = computed(() => !_.isEqual({
 			title: props.selectedProduct.title,
 			price: props.selectedProduct.price,
-			amount: props.selectedProduct.amount
+			amount: props.selectedProduct.amount,
+			thumbnail_id: props.selectedProduct.thumbnail_id
 		}, default_common))
 
 		const is_composition_changed = computed(() => props.selectedProduct.composition ?

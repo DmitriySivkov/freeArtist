@@ -181,7 +181,8 @@ export default {
 							...fields,
 							title: response.data.product.title,
 							price: response.data.product.price,
-							amount: response.data.product.amount
+							amount: response.data.product.amount,
+							thumbnail_id: response.data.product.thumbnail_id
 						}
 					}
 

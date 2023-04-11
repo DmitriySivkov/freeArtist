@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
-
 /**
  * App\Models\Product
  *
@@ -16,12 +15,14 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @property array|null $composition
  * @property float $price
  * @property int|null $amount
+ * @property int|null $thumbnail_id
  * @property int $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Image[] $images
  * @property-read int|null $images_count
  * @property-read \App\Models\Producer|null $producer
+ * @property-read \App\Models\Image|null $thumbnail
  * @method static \Database\Factories\ProductFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
@@ -33,6 +34,7 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereIsActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereProducerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereThumbnailId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  * @mixin \Eloquent
@@ -64,6 +66,14 @@ class Product extends Model
 	public function images()
 	{
 		return $this->morphMany(Image::class, 'imageable');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function thumbnail()
+	{
+		return $this->belongsTo(Image::class);
 	}
 
 }

@@ -11,8 +11,11 @@ use Illuminate\Support\Arr;
 
 class UserOrderService extends OrderService
 {
+
 	/**
-	 * @return \Illuminate\Database\Eloquent\Collection
+	 * @return Order[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
+	 * @throws \Psr\Container\ContainerExceptionInterface
+	 * @throws \Psr\Container\NotFoundExceptionInterface
 	 */
 	public function getOrderList()
 	{
@@ -38,7 +41,8 @@ class UserOrderService extends OrderService
 
 		$orders = $query->with([
 			'producer.team',
-			'products.images'
+			'products.images',
+			'products.thumbnail'
 		])->get();
 
 		return $orders;

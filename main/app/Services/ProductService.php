@@ -114,8 +114,10 @@ class ProductService
 			$this->product->update([
 				'title' => $data['title'],
 				'price' => $data['price'],
-				'amount' => $data['amount']
+				'amount' => $data['amount'],
+				'thumbnail_id' => $data['thumbnail_id']
 			]);
+
 			\DB::commit();
 		} catch (\Throwable) {
 			\DB::rollBack();

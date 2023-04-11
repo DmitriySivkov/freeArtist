@@ -61,9 +61,11 @@ class ProducerController extends Controller
 	public function getProducerProducts(Producer $producer)
 	{
 		return $producer->products()
-			->with(['images' => function($query) {
-				$query->orderByDesc('created_at');
-			}])
+			->with([
+				'images' => fn($query) =>
+					$query->orderByDesc('created_at'),
+				'thumbnail'
+			])
 			->orderByDesc('title')
 			->get();
 	}

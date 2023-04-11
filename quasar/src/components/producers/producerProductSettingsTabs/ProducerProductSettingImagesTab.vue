@@ -70,15 +70,26 @@
 		>
 			<q-card-section
 				horizontal
-				class="justify-end bg-indigo-7 q-mb-xs q-pa-xs"
+				class="bg-indigo-7 q-mb-xs q-pa-xs"
 			>
-				<q-icon
-					class="cursor-pointer"
-					size="32px"
-					:name="!image.to_delete ? 'clear' : 'restore'"
-					:color="!image.to_delete ? 'red-3' : 'white'"
-					@click="toggleImageRemoval(image.id)"
-				/>
+				<div class="col text-left">
+					<q-icon
+						class="cursor-pointer"
+						size="32px"
+						name="wallpaper"
+						:color="modelValue.thumbnail_id === image.id ? 'white' : 'black'"
+						@click="toggleImageThumbnail(image.id)"
+					/>
+				</div>
+				<div class="col self-end text-right">
+					<q-icon
+						class="cursor-pointer"
+						size="32px"
+						:name="!image.to_delete ? 'clear' : 'restore'"
+						:color="!image.to_delete ? 'black' : 'white'"
+						@click="toggleImageRemoval(image.id)"
+					/>
+				</div>
 			</q-card-section>
 			<q-card-section horizontal>
 				<q-img
@@ -231,6 +242,12 @@ export default {
 			})
 		}
 
+		const toggleImageThumbnail = (image_id) => {
+			let thumbnail_id = props.modelValue.thumbnail_id === image_id ? null : image_id
+
+			emit("update:modelValue", Object.assign(props.modelValue, { thumbnail_id }))
+		}
+
 		// todo rejection handling
 		const imageRejected = (rejected_entries) => {
 			console.log(rejected_entries)
@@ -258,7 +275,8 @@ export default {
 			removeCommittedImage,
 			imageRejected,
 			upload,
-			toggleImageRemoval
+			toggleImageRemoval,
+			toggleImageThumbnail
 		}
 	}
 }

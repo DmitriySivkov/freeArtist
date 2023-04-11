@@ -22,6 +22,8 @@ class CreateProductsTable extends Migration
             $table->decimal('price', 9, 2);
             $table->unsignedInteger('amount')
 				->nullable();
+			$table->unsignedInteger('thumbnail_id')
+				->nullable();
 			$table->unsignedTinyInteger('is_active')
 				->default(1);
             $table->timestamps();
