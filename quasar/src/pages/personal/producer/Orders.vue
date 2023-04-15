@@ -1,9 +1,9 @@
 <template>
-	<div class="q-pa-md row q-col-gutter-sm">
+	<div class="q-pa-sm row q-col-gutter-sm">
 		<div class="col-xs-12 col-md-6 col-lg-3">
 			<OrderCalendar />
 		</div>
-		<div class="col-xs-12 col-md-6">
+		<div class="col-xs-12 col-md-6 col-lg-9">
 			<ProducerOrderCalendarList />
 		</div>
 	</div>

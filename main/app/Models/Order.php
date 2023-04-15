@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
+
 /**
  * App\Models\Order
  *
@@ -17,8 +18,8 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $customer
  * @property-read \App\Models\Producer|null $producer
+ * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\OrderFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
@@ -50,7 +51,10 @@ class Order extends Model
     	'products' => 'json'
 	];
 
-    public function customer()
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function user()
     {
         /** for some reason laravel does not see user_id as a default foreign key.
          * So its specified.
@@ -58,12 +62,18 @@ class Order extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function producer()
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function producer()
     {
         return $this->belongsTo(Producer::class);
     }
 
-    public function products()
+	/**
+	 * @return \Staudenmeir\EloquentJsonRelations\Relations\BelongsToJson
+	 */
+	public function products()
 	{
 		return $this->belongsToJson(Product::class, 'products[]->product_id');
 	}
