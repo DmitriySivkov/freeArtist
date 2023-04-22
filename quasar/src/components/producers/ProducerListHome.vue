@@ -1,48 +1,57 @@
 <template>
 	<q-infinite-scroll
 		ref="scroll_component"
+		class="column no-wrap absolute full-height full-width q-mt-sm"
 		@load="loadProducers"
+		:offset="250"
 	>
-		<q-card
-			v-for="(producer, index) in producers"
+		<div
+			v-for="producer in producers"
 			:key="producer.id"
-			class="col-12 bg-primary text-white q-mb-sm home__producer-card"
-			:class="{
-				'bg-light-green-2': cart.hasOwnProperty(producer.id),
-				'q-mt-sm': index === 0
-			}"
-			@click="show(producer.id)"
+			class="col-4"
 		>
-			<q-card-section
-				horizontal
-				class="row"
-			>
-				<div class="col-12 bg-indigo-10 q-pa-md">
-					<span class="text-h6">{{ producer.display_name }}</span>
-					<span
-						v-if="cart.hasOwnProperty(producer.id)"
-						class="text-h6"
-					>
-						{{ " (" + cart[producer.id].product_list.length + ")" }}
-					</span>
-				</div>
-			</q-card-section>
-			<q-card-section
-				horizontal
-				class="row home__producer-card_body"
-			>
-				<div
-					style="height:200px"
-					class="col-xs-12 col-md-3"
+			<div class="row full-height">
+				<q-card
+					class="col-12 bg-primary home__producer-card text-white q-pa-sm q-mb-sm"
+					:class="{ 'bg-light-green-2': cart.hasOwnProperty(producer.id) }"
+					@click="show(producer.id)"
 				>
-					<q-img
-						style="height:100%"
-						:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"
-						fit="contain"
-					/>
-				</div>
-			</q-card-section>
-		</q-card>
+					{{ producer.display_name }}
+					<!--			<q-card-section-->
+					<!--				horizontal-->
+					<!--				class="row"-->
+					<!--			>-->
+					<!--				<div class="col-12 bg-indigo-10 q-pa-md">-->
+					<!--					<span class="text-h6">{{ producer.display_name }}</span>-->
+					<!--					<span-->
+					<!--						v-if="cart.hasOwnProperty(producer.id)"-->
+					<!--						class="text-h6"-->
+					<!--					>-->
+					<!--						{{ " (" + cart[producer.id].product_list.length + ")" }}-->
+					<!--					</span>-->
+					<!--				</div>-->
+					<!--			</q-card-section>-->
+					<!--				<q-img-->
+					<!--					:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"-->
+					<!--					fit="scale-down"-->
+					<!--				/>-->
+					<!--			<q-card-section-->
+					<!--				horizontal-->
+					<!--				class="home__producer-card_body"-->
+					<!--			>-->
+					<!--				<div-->
+					<!--					style="height:200px"-->
+					<!--					class="col-xs-12 col-md-3"-->
+					<!--				>-->
+					<!--					<q-img-->
+					<!--						:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"-->
+					<!--						fit="contain"-->
+					<!--					/>-->
+					<!--				</div>-->
+					<!--			</q-card-section>-->
+				</q-card>
+			</div>
+		</div>
 		<template v-slot:loading>
 			<div class="row justify-center q-my-md">
 				<q-spinner-dots
@@ -88,7 +97,7 @@ export default ({
 		const producers_length = computed(() => producers.value.length)
 
 		const fetchProducers = async() => {
-			const limit = 4
+			const limit = 5
 
 			producer_store.setFetchingState(true)
 			const response = await api.get("producers", {
