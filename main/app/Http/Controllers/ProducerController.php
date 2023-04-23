@@ -19,10 +19,16 @@ class ProducerController extends Controller
 	 */
 	public function index(Request $request)
 	{
-		$producers = Producer::select([
-			'producers.*',
-			'teams.display_name'
-		])
+		$producers = Producer::query()
+			->select([
+				'producers.*',
+				'teams.display_name'
+			])
+			->with([
+				'products' => function($query) {
+					$query->with('thumbnail')->whereHas('thumbnail');
+				}
+			])
 			->leftJoin('teams', function(JoinClause $join) {
 				$join->on('teams.detailed_id', '=', 'producers.id')
 					->where('teams.detailed_type', Producer::class);

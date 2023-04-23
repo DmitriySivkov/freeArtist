@@ -1,54 +1,72 @@
 <template>
 	<q-infinite-scroll
 		ref="scroll_component"
-		class="column no-wrap absolute full-height full-width q-mt-sm"
+		class="column no-wrap absolute full-height full-width q-mt-xs q-gutter-xs"
 		@load="loadProducers"
 		:offset="250"
 	>
 		<div
 			v-for="producer in producers"
 			:key="producer.id"
-			class="col-4"
+			class="col-4 home__producer-card"
 		>
 			<div class="row full-height">
 				<q-card
-					class="col-12 bg-primary home__producer-card text-white q-pa-sm q-mb-sm"
+					class="col-12 bg-primary text-white q-pa-xs"
 					:class="{ 'bg-light-green-2': cart.hasOwnProperty(producer.id) }"
 					@click="show(producer.id)"
 				>
-					{{ producer.display_name }}
-					<!--			<q-card-section-->
-					<!--				horizontal-->
-					<!--				class="row"-->
-					<!--			>-->
-					<!--				<div class="col-12 bg-indigo-10 q-pa-md">-->
-					<!--					<span class="text-h6">{{ producer.display_name }}</span>-->
-					<!--					<span-->
-					<!--						v-if="cart.hasOwnProperty(producer.id)"-->
-					<!--						class="text-h6"-->
+					<q-card-section class="row q-col-gutter-xs full-height q-pa-none">
+						<div class="col-4 column">
+							<div class="col-12">
+								<q-img
+									:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"
+									height="100%"
+									fit="cover"
+									class="rounded-borders"
+								/>
+							</div>
+						</div>
+						<div class="col-8 column">
+							<div class="col-auto">
+								<span>{{ producer.display_name }}</span>
+								<span v-if="cart.hasOwnProperty(producer.id)">
+									{{ " (" + cart[producer.id].product_list.length + ")" }}
+								</span>
+							</div>
+							<div class="col-grow">
+								<q-carousel
+									v-if="producer.products.length > 0"
+									swipeable
+									animated
+									v-model="carousel"
+									thumbnails
+									infinite
+								>
+									<q-carousel-slide
+										v-for="product in producer.products"
+										:key="product.id"
+										:name="carousel"
+										:img-src="backend_server + '/storage/' + product.thumbnail.path"
+									/>
+								</q-carousel>
+							</div>
+						</div>
+					</q-card-section>
+					<!--					<q-card-section-->
+					<!--						horizontal-->
+					<!--						class="home__producer-card_body"-->
 					<!--					>-->
-					<!--						{{ " (" + cart[producer.id].product_list.length + ")" }}-->
-					<!--					</span>-->
-					<!--				</div>-->
-					<!--			</q-card-section>-->
-					<!--				<q-img-->
-					<!--					:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"-->
-					<!--					fit="scale-down"-->
-					<!--				/>-->
-					<!--			<q-card-section-->
-					<!--				horizontal-->
-					<!--				class="home__producer-card_body"-->
-					<!--			>-->
-					<!--				<div-->
-					<!--					style="height:200px"-->
-					<!--					class="col-xs-12 col-md-3"-->
-					<!--				>-->
-					<!--					<q-img-->
-					<!--						:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"-->
-					<!--						fit="contain"-->
-					<!--					/>-->
-					<!--				</div>-->
-					<!--			</q-card-section>-->
+					<!--						<div-->
+					<!--							style="height:200px"-->
+					<!--							class="col-xs-12 col-md-3"-->
+					<!--						>-->
+					<!--							<q-img-->
+					<!--								:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"-->
+					<!--								fit="contain"-->
+					<!--							/>-->
+					<!--						</div>-->
+					<!--					</q-card-section>-->
 				</q-card>
 			</div>
 		</div>
@@ -85,6 +103,7 @@ export default ({
 		)
 
 		const producers = ref([])
+		const carousel = ref({})
 
 		const cart = computed(() => cart_store.data)
 
@@ -100,6 +119,7 @@ export default ({
 			const limit = 5
 
 			producer_store.setFetchingState(true)
+
 			const response = await api.get("producers", {
 				params: {
 					offset: producers_length.value,
@@ -136,7 +156,8 @@ export default ({
 			show,
 			backend_server,
 			loadProducers,
-			scroll_component
+			scroll_component,
+			carousel
 		}
 	}
 })
