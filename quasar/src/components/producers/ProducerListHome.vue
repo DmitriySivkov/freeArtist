@@ -1,23 +1,23 @@
 <template>
 	<q-infinite-scroll
 		ref="scroll_component"
-		class="column no-wrap absolute full-height full-width q-mt-xs q-gutter-xs"
+		class="column no-wrap absolute full-height full-width q-mt-xs q-col-gutter-xs"
 		@load="loadProducers"
 		:offset="250"
 	>
 		<div
 			v-for="producer in producers"
 			:key="producer.id"
-			class="col-4 home__producer-card"
+			class="col-6 home__producer-card q-pl-none"
 		>
 			<div class="row full-height">
 				<q-card
-					class="col-12 bg-primary text-white q-pa-xs"
+					class="col-12 bg-primary text-white"
 					:class="{ 'bg-light-green-2': cart.hasOwnProperty(producer.id) }"
 					@click="show(producer.id)"
 				>
-					<q-card-section class="row q-col-gutter-xs full-height q-pa-none">
-						<div class="col-4 column">
+					<q-card-section class="row full-height q-pa-none">
+						<div class="col-3 column">
 							<div class="col-12">
 								<q-img
 									:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"
@@ -27,8 +27,8 @@
 								/>
 							</div>
 						</div>
-						<div class="col-8 column">
-							<div class="col-auto">
+						<div class="col-9 column q-pl-xs">
+							<div class="col-auto text-body1">
 								<span>{{ producer.display_name }}</span>
 								<span v-if="cart.hasOwnProperty(producer.id)">
 									{{ " (" + cart[producer.id].product_list.length + ")" }}
@@ -37,6 +37,7 @@
 							<div class="col-grow">
 								<q-carousel
 									v-if="producer.products.length > 0"
+									class="full-height rounded-borders"
 									swipeable
 									animated
 									v-model="carousel"
@@ -53,20 +54,6 @@
 							</div>
 						</div>
 					</q-card-section>
-					<!--					<q-card-section-->
-					<!--						horizontal-->
-					<!--						class="home__producer-card_body"-->
-					<!--					>-->
-					<!--						<div-->
-					<!--							style="height:200px"-->
-					<!--							class="col-xs-12 col-md-3"-->
-					<!--						>-->
-					<!--							<q-img-->
-					<!--								:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"-->
-					<!--								fit="contain"-->
-					<!--							/>-->
-					<!--						</div>-->
-					<!--					</q-card-section>-->
 				</q-card>
 			</div>
 		</div>

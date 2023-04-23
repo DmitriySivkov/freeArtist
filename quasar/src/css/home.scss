@@ -1,7 +1,6 @@
 .home {
 	&__producer-card {
 		cursor: pointer;
-		margin-left: 0;
 		&:hover {
 			transition: background-color 0.3s;
 			background-color:rgba(255, 255, 255, 0.07);
