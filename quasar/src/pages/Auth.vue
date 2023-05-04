@@ -1,5 +1,5 @@
 <template>
-	<div class="q-pa-md row justify-center items-center full-height">
+	<div class="q-pa-md row justify-center items-center full-height full-width absolute">
 		<div class="col-xs-12 col-md-6 col-lg-3">
 			<Login v-if="!is_logged"/>
 			<Logout v-if="is_logged" />

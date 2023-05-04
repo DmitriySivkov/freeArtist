@@ -15,7 +15,11 @@ return new class extends Migration
     {
         Schema::create('producers', function (Blueprint $table) {
             $table->id();
-			$table->string('logo')
+			$table->string('logo_id')
+				->nullable();
+			$table->unsignedInteger('city_id')
+				->nullable();
+			$table->json('storefront') // { image_id, position }
 				->nullable();
             $table->timestamps();
         });

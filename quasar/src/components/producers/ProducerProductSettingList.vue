@@ -7,23 +7,23 @@
 		<q-tab-panel name="common">
 			<ProducerProductSettingCommonTab
 				ref="producer_product_setting_common_tab"
-				:model-value="selectedProduct"
-				@update:model-value="$emit('commitProduct', $event)"
+				:model-value="product"
+				@update:model-value="product = $event"
 			/>
 		</q-tab-panel>
 
 		<q-tab-panel name="composition">
 			<ProducerProductSettingCompositionTab
 				ref="producer_product_setting_composition_tab"
-				:model-value="selectedProduct"
-				@update:model-value="$emit('commitProduct', $event)"
+				:model-value="product"
+				@update:model-value="product = $event"
 			/>
 		</q-tab-panel>
 
 		<q-tab-panel name="images">
 			<ProducerProductSettingImagesTab
-				:model-value="selectedProduct"
-				@update:model-value="$emit('commitProduct', $event)"
+				:model-value="product"
+				@update:model-value="product = $event"
 			/>
 		</q-tab-panel>
 	</q-tab-panels>
@@ -44,7 +44,7 @@ export default {
 	props: {
 		selectedProduct: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		},
 		isAbleToManageProduct: Boolean,
 		tab: String
@@ -54,6 +54,8 @@ export default {
 		"commitProduct",
 	],
 	setup(props, { emit }) {
+		const product = ref({})
+
 		const producer_product_setting_common_tab = ref(null)
 		const producer_product_setting_composition_tab = ref(null)
 
@@ -70,34 +72,34 @@ export default {
 		}
 
 		const default_common = {
-			title: props.selectedProduct.title,
-			price: props.selectedProduct.price,
-			amount: props.selectedProduct.amount,
-			thumbnail_id: props.selectedProduct.thumbnail_id
+			title: product.value.title,
+			price: product.value.price,
+			amount: product.value.amount,
+			thumbnail_id: product.value.thumbnail_id
 		}
 
-		const default_composition = props.selectedProduct.composition ?
-			_.cloneDeep(props.selectedProduct.composition) :
+		const default_composition = product.value.composition ?
+			_.cloneDeep(product.value.composition) :
 			[]
 
-		const default_images = props.selectedProduct.images ?
-			_.cloneDeep(props.selectedProduct.images) :
+		const default_images = product.value.images ?
+			_.cloneDeep(product.value.images) :
 			[]
 
 		const is_common_changed = computed(() => !_.isEqual({
-			title: props.selectedProduct.title,
-			price: props.selectedProduct.price,
-			amount: props.selectedProduct.amount,
-			thumbnail_id: props.selectedProduct.thumbnail_id
+			title: product.value.title,
+			price: product.value.price,
+			amount: product.value.amount,
+			thumbnail_id: product.value.thumbnail_id
 		}, default_common))
 
-		const is_composition_changed = computed(() => props.selectedProduct.composition ?
-			!_.isEqual(props.selectedProduct.composition, default_composition) : false
+		const is_composition_changed = computed(() => product.value.composition ?
+			!_.isEqual(product.value.composition, default_composition) : false
 		)
 
 		const is_images_changed = computed(() =>
-			(props.selectedProduct.images ? !_.isEqual(props.selectedProduct.images, default_images) : false) ||
-			props.selectedProduct.hasOwnProperty("committed_images")
+			(product.value.images ? !_.isEqual(product.value.images, default_images) : false) ||
+			product.value.hasOwnProperty("committed_images")
 		)
 
 		watch(
@@ -115,10 +117,10 @@ export default {
 			producer_product_setting_common_tab,
 			producer_product_setting_composition_tab,
 			validate,
-			default_common,
 			is_common_changed,
 			is_composition_changed,
-			is_images_changed
+			is_images_changed,
+			product
 		}
 	}
 }

@@ -35,23 +35,16 @@ class ProductService
 
 			$this->checkPermission($team);
 
-			$changes = json_decode(request()->input('changes'),true);
-
 			$data = json_decode(request()->input('product'), true);
 
 			$this->product->fill([
-				'producer_id' => $team->detailed_id
+				'producer_id' => $team->detailed_id,
+				'title' => $data['title'],
+				'price' => $data['price'],
+				'amount' => !$data['amount'] ? 0 : $data['amount']
 			]);
 
-			if ($changes['common']) {
-				$this->product->fill([
-					'title' => $data['title'],
-					'price' => $data['price'],
-					'amount' => $data['amount']
-				]);
-			}
-
-			if ($changes['composition']) {
+			if ($data['composition']) {
 				$composition = array_values(
 					collect($data['composition'])
 						->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
@@ -66,7 +59,7 @@ class ProductService
 			$this->product->save();
 
 			// todo - validate that incoming file is a picture
-			if ($changes['images']) {
+			if ($data['images']) {
 				$basePath = 'team_' . $team->id . '/product_images';
 
 				$committedImages = request()->file('images');

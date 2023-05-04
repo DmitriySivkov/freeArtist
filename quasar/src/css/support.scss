@@ -6,3 +6,9 @@
 		border-color: black
 	}
 }
+
+.transform {
+	&-none {
+		transform: none !important;
+	}
+}

@@ -1,11 +1,12 @@
 <template>
 	<q-btn
+		round
+		size="1.5em"
 		icon="add"
 		color="primary"
 		class="q-mb-md"
 		@click="addIngredient"
 	/>
-
 	<q-form ref="form">
 		<q-card
 			v-for="(ingredient, index) in modelValue.composition"

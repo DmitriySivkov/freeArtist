@@ -47,4 +47,20 @@ export default [
 			route_name: "Настройки продуктов"
 		}
 	},
+	{
+		name: "personal_producer_products_detail_show",
+		path: "personal/producer/:producer_id/products/:product_id",
+		component: () => import("pages/personal/producer/ProductShow.vue"),
+		meta: {
+			route_name: "Настройки продуктов"
+		}
+	},
+	{
+		name: "personal_producer_products_detail_create",
+		path: "personal/producer/:producer_id/products/create",
+		component: () => import("pages/personal/producer/ProductCreate.vue"),
+		meta: {
+			route_name: "Настройки продуктов"
+		}
+	},
 ]

@@ -34,7 +34,7 @@
 			type="number"
 			label="Доступное количество"
 			:model-value="modelValue.amount"
-			@update:model-value="commonPropChanged({amount: Number($event)})"
+			@update:model-value="commonPropChanged({amount: $event})"
 		/>
 
 	</q-form>

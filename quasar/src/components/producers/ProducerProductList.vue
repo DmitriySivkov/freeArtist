@@ -1,105 +1,63 @@
 <template>
-	<q-list v-if="isAbleToManageProduct && !modelValue">
-		<q-item class="justify-end">
-			<q-item-section class="q-pr-none col-xs-3 col-md-2 col-lg-1">
-				<q-btn
-					icon="add"
-					color="secondary"
-					@click="addProduct"
-				/>
-			</q-item-section>
-		</q-item>
-	</q-list>
-
-	<q-list
-		v-if="modelValue === null"
-		separator
-		dark
-	>
-		<template
-			v-for="(product, index) in products"
-			:key="index"
+	<div class="column full-height">
+		<q-list
+			v-if="modelValue === null"
+			class="col"
+			separator
+			dark
 		>
-			<q-item
-				clickable
-				class="q-py-lg q-px-md bg-primary text-white wrap"
-				@click="selectProduct(product.id)"
-				:class="{'no-pointer-events': product.id === loadingProduct}"
-				v-ripple
+			<template
+				v-for="(product, index) in products"
+				:key="index"
 			>
-				<q-item-section side>
-					<q-btn
-						v-if="isAbleToManageProduct && !!modelValue"
-						icon="delete"
-						color="negative"
-						@click.stop="showDeleteDialog"
-					/>
-				</q-item-section>
-				<q-item-section avatar>
-					<q-icon
-						:color="!!modelValue && modelValue.id === product.id ? 'secondary' : 'white'"
-						name="edit"
-					/>
-				</q-item-section>
-				<q-item-section style="word-break: break-all;"> <!-- todo word-break only works through inline style -->
-					{{ product.title }}
-				</q-item-section>
-				<q-item-section
-					v-if="isAbleToManageProduct && !modelValue"
-					class="col-xs-3 col-md-2 col-lg-1 text-right"
+				<q-item
+					clickable
+					class="q-py-lg q-px-md bg-primary text-white wrap"
+					@click="selectProduct(product.id)"
+					:class="{'no-pointer-events': product.id === loadingProduct}"
+					v-ripple
 				>
-					<q-btn
-						icon="pause"
-						color="warning"
-					/>
-				</q-item-section>
-				<q-inner-loading :showing="product.id === loadingProduct">
-					<q-spinner-gears
-						size="42px"
-						color="primary"
-					/>
-				</q-inner-loading>
-			</q-item>
-		</template>
-	</q-list>
-	<!-- else: if something is selected - creating or updating -->
-	<q-list v-else>
-		<q-item
-			clickable
-			class="q-py-md q-px-md bg-primary text-white wrap"
-			v-ripple
-			:class="{'no-pointer-events': modelValue.id === loadingProduct}"
-			@click="selectProduct(null)"
+					<q-item-section side>
+						<q-btn
+							v-if="isAbleToManageProduct && !!modelValue"
+							icon="delete"
+							color="negative"
+							@click.stop="showDeleteDialog"
+						/>
+					</q-item-section>
+					<q-item-section avatar>
+						<q-icon
+							:color="!!modelValue && modelValue.id === product.id ? 'secondary' : 'white'"
+							name="edit"
+						/>
+					</q-item-section>
+					<q-item-section style="word-break: break-all;"> <!-- todo word-break only works through inline style -->
+						{{ product.title }}
+					</q-item-section>
+					<q-inner-loading :showing="product.id === loadingProduct">
+						<q-spinner-gears
+							size="42px"
+							color="primary"
+						/>
+					</q-inner-loading>
+				</q-item>
+			</template>
+		</q-list>
+		<q-page-sticky
+			v-if="isAbleToManageProduct"
+			position="bottom-right"
+			class="transform-none"
+			:offset="[18,18]"
 		>
-			<q-item-section avatar>
-				<q-icon
-					color="secondary"
-					name="edit"
-				/>
-			</q-item-section>
-			<q-item-section style="word-break: break-all;"> <!-- todo word-break only works through inline style -->
-				{{ modelValue.title }}
-			</q-item-section>
-			<q-item-section
-				v-if="isAbleToManageProduct"
-				class="col-xs-3 col-md-2 col-lg-1 text-right"
-			>
-				<q-btn
-					unelevated
-					class="bg-secondary q-pa-md"
-					:class="{'composition__button_done_active': !!isProductChanged }"
-					icon="done"
-					@click.stop="modelValue.id > 0 ? update() : create() "
-				/>
-			</q-item-section>
-			<q-inner-loading :showing="modelValue.id === loadingProduct">
-				<q-spinner-gears
-					size="42px"
-					color="primary"
-				/>
-			</q-inner-loading>
-		</q-item>
-	</q-list>
+			<q-btn
+				:to="{name:'personal_producer_products_detail_create'}"
+				round
+				size="1.5em"
+				icon="add"
+				color="secondary"
+			/>
+		</q-page-sticky>
+	</div>
 </template>
 
 <script>
@@ -133,17 +91,6 @@ export default {
 			emit("update:modelValue", props.products.find((p) => p.id === product_id))
 		}
 
-		const addProduct = () => {
-			emit("update:modelValue", {
-				id: -1,
-				title: "",
-				price: null,
-				amount: 0,
-				composition: [],
-				images: []
-			})
-		}
-
 		const create = () => {
 			emit("createProduct")
 		}
@@ -165,7 +112,6 @@ export default {
 		}
 
 		return {
-			addProduct,
 			selectProduct,
 			create,
 			update,

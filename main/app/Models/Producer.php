@@ -10,13 +10,15 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Producer
  *
  * @property int $id
- * @property string|null $logo
+ * @property string|null $logo_id
  * @property int|null $city_id
+ * @property array|null $storefront
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\City|null $city
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingRelationRequests
  * @property-read int|null $incoming_relation_requests_count
+ * @property-read \App\Models\Image|null $logo
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
  * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingRelationRequests
@@ -30,7 +32,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereCityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Producer whereLogo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Producer whereLogoId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Producer whereStorefront($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
  */
@@ -39,6 +42,18 @@ class Producer extends Model
 	protected $guarded = [];
 
 	protected $hidden = ['pivot'];
+
+	protected $casts = [
+		'storefront' => 'array'
+	];
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function logo()
+	{
+		return $this->belongsTo(Image::class, 'logo_id');
+	}
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany

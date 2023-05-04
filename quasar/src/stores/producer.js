@@ -80,10 +80,10 @@ export const useProducerStore = defineStore("producer", {
 			producer.products.splice(product_index, 1)
 		},
 
-		createProducerProduct({ team_id, product, changes }) {
+		createProducerProduct({ team_id, product }) {
 			let data = new FormData()
 
-			if (!!changes.composition) {
+			if (product.composition.length > 0) {
 				product.composition = product.composition.map((ingredient) => {
 					delete ingredient["is_new"]
 					return ingredient
@@ -91,7 +91,6 @@ export const useProducerStore = defineStore("producer", {
 			}
 
 			data.append("product", JSON.stringify(product))
-			data.append("changes", JSON.stringify(changes))
 			data.append("team_id", team_id)
 
 			if (product.committed_images) {

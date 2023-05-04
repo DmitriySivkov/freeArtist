@@ -1,5 +1,5 @@
 <template>
-	<div :class="{'sticky__common_top': selected_product}">
+	<div class="absolute full-width full-height sticky__common_top">
 		<ProducerProductList
 			:model-value="selected_product"
 			@update:model-value="selectProduct"
@@ -11,46 +11,7 @@
 			@updateProduct="updateProduct"
 			@createProduct="createProduct"
 		/>
-
-		<q-tabs
-			v-if="selected_product"
-			:model-value="tab"
-			@update:model-value="tab = $event"
-			active-color="white"
-			active-bg-color="secondary"
-			indicator-color="transparent"
-			align="justify"
-			class="text-white bg-indigo-10"
-		>
-			<q-tab
-				name="common"
-				label="Общие"
-				class="q-pa-md"
-			/>
-			<q-tab
-				name="composition"
-				label="Состав"
-				class="q-pa-md"
-			/>
-			<q-tab
-				name="images"
-				label="Изображения"
-				class="q-pa-md"
-			/>
-		</q-tabs>
 	</div>
-
-	<ProducerProductSettingList
-		v-if="selected_product"
-		ref="producer_product_setting_list"
-		:key="producer_product_setting_list_component_key"
-		:tab="tab"
-		:selected-product="selected_product"
-		:is-able-to-manage-product="is_able_to_manage_product"
-		@productChanged="productChanged"
-		@commitProduct="commitProduct"
-	/>
-
 </template>
 
 <script>
@@ -81,8 +42,7 @@ export default {
 			)
 	},
 	components: {
-		ProducerProductList,
-		ProducerProductSettingList
+		ProducerProductList
 	},
 	setup() {
 		const user_store = useUserStore()
