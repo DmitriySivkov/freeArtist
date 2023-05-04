@@ -4,7 +4,6 @@
 	>
 		<MainHeader />
 		<q-page-container>
-
 			<q-page class="row no-wrap justify-center">
 				<div class="col-xs-12 col-lg-8 bg-white">
 					<div class="column full-height">
@@ -12,7 +11,17 @@
 							class="col"
 							:thumb-style="{ opacity: 0 }"
 						>
-							<router-view />
+							<router-view v-slot="{ Component }">
+								<!-- todo -->
+								<!--								<transition-->
+								<!--									enter-active-class="animated slideInRight"-->
+								<!--									leave-active-class="animated slideOutRight"-->
+								<!--									appear-->
+								<!--									:duration="300"-->
+								<!--								>-->
+								<component :is="Component" />
+								<!--								</transition>-->
+							</router-view>
 						</q-scroll-area>
 					</div>
 				</div>
