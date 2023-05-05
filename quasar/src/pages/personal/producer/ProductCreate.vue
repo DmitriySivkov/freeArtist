@@ -126,6 +126,19 @@ export default {
 				if (tab_validations.includes(false))
 					return
 
+				let tmp_uuid = crypto.randomUUID()
+
+				producer_store.commitProducerNewProduct({
+					producer_id: parseInt($router.currentRoute.value.params.producer_id),
+					product: {...product.value, tmp_uuid },
+				})
+
+				$router.push({
+					name: "personal_producer_products_detail",
+					params: { producer_id: $router.currentRoute.value.params.producer_id },
+					query: { no_fetch: true }
+				})
+
 				const promise = producer_store.createProducerProduct({
 					product: product.value,
 					team_id: team.value.id
@@ -134,7 +147,8 @@ export default {
 				promise.then((response) => {
 					producer_store.commitProducerNewProduct({
 						producer_id: response.data.producer_id,
-						product: response.data
+						product: response.data,
+						tmp_uuid
 					})
 
 					notifySuccess("Успешно")

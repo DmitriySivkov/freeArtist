@@ -1,7 +1,6 @@
 <template>
 	<div class="column full-height">
 		<q-list
-			v-if="modelValue === null"
 			class="col"
 			separator
 			dark
@@ -16,25 +15,33 @@
 					@click="selectProduct(product.id)"
 					:class="{'no-pointer-events': product.id === loadingProduct}"
 					v-ripple
+					:disable="product.id === loadingProduct || !!product.tmp_uuid"
 				>
-					<q-item-section side>
-						<q-btn
-							v-if="isAbleToManageProduct && !!modelValue"
-							icon="delete"
-							color="negative"
-							@click.stop="showDeleteDialog"
-						/>
-					</q-item-section>
+					<!--					<q-item-section side>-->
+					<!--						&lt;!&ndash; todo - move to three vertical dot menu at the end of the item &ndash;&gt;-->
+					<!--						<q-btn-->
+					<!--							v-if="isAbleToManageProduct"-->
+					<!--							icon="delete"-->
+					<!--							color="negative"-->
+					<!--							@click.stop="showDeleteDialog"-->
+					<!--						/>-->
+					<!--					</q-item-section>-->
 					<q-item-section avatar>
 						<q-icon
-							:color="!!modelValue && modelValue.id === product.id ? 'secondary' : 'white'"
+							color="white"
 							name="edit"
 						/>
 					</q-item-section>
 					<q-item-section style="word-break: break-all;"> <!-- todo word-break only works through inline style -->
 						{{ product.title }}
 					</q-item-section>
-					<q-inner-loading :showing="product.id === loadingProduct">
+					<q-item-section side>
+						<q-icon
+							name="more_vert"
+							color="white"
+						/>
+					</q-item-section>
+					<q-inner-loading :showing="product.id === loadingProduct || !!product.tmp_uuid">
 						<q-spinner-gears
 							size="42px"
 							color="primary"
@@ -71,15 +78,11 @@ export default {
 		loadingProduct: Number,
 		isAbleToManageProduct: Boolean,
 		isProductChanged: Boolean,
-		modelValue: {
-			required: false
-		}
 	},
 	emits:[
 		"deleteProduct",
 		"updateProduct",
 		"createProduct",
-		"update:modelValue"
 	],
 	setup(props, { emit }) {
 		const selectProduct = (product_id) => {

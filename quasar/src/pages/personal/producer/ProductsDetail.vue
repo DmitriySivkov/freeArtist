@@ -1,8 +1,6 @@
 <template>
 	<div class="absolute full-width full-height sticky__common_top">
 		<ProducerProductList
-			:model-value="selected_product"
-			@update:model-value="selectProduct"
 			:products="team.products"
 			:loading-product="loading_product_id"
 			:is-able-to-manage-product="is_able_to_manage_product"
@@ -28,6 +26,8 @@ import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
 export default {
 	async preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+		if (currentRoute.query.no_fetch) return
+
 		Loading.show({
 			spinnerColor: "primary",
 		})

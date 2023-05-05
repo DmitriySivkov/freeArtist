@@ -52,10 +52,20 @@ export const useProducerStore = defineStore("producer", {
 			Object.assign(product, fields)
 		},
 
-		commitProducerNewProduct({ producer_id, product }) {
+		commitProducerNewProduct({ producer_id, product, tmp_uuid }) {
 			const team_store = useTeamStore()
 
 			let team = team_store.user_teams.find((t) => t.detailed.id === producer_id)
+
+			if (tmp_uuid) {
+				let index = team.products.findIndex((p) => p.tmp_uuid === tmp_uuid)
+
+				if (index !== -1) {
+					team.products[index] = product
+				}
+
+				return
+			}
 
 			team.products.unshift(product)
 		},
