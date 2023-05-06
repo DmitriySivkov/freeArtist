@@ -151,7 +151,7 @@ export default {
 						tmp_uuid
 					})
 
-					notifySuccess("Успешно")
+					notifySuccess("Продукт «" + product.value.title + "» успешно создан")
 				})
 
 				promise.catch((error) => {

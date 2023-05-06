@@ -7,14 +7,12 @@
 			:is-product-changed="!!product_changes"
 			@deleteProduct="deleteProduct"
 			@updateProduct="updateProduct"
-			@createProduct="createProduct"
 		/>
 	</div>
 </template>
 
 <script>
 import ProducerProductList from "src/components/producers/ProducerProductList.vue"
-import ProducerProductSettingList from "src/components/producers/ProducerProductSettingList.vue"
 import { useRouter } from "vue-router"
 import { computed, ref } from "vue"
 import _ from "lodash"
@@ -63,58 +61,11 @@ export default {
 			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
 		)
 
-		const producer_product_setting_list_component_key = ref(Math.random()) // to update 'default' values after update
-
 		const selected_product = ref(null)
 
 		const loading_product_id = ref(null)
 
 		const product_changes = ref(null)
-
-		const createProduct = () => {
-			if (!product_changes.value)
-				return
-
-			let validation = producer_product_setting_list.value.validate()
-
-			validation.then((tab_validations) => {
-				if (tab_validations.includes(false))
-					return
-
-				loading_product_id.value = selected_product.value.id
-
-				const promise = producer_store.createProducerProduct({
-					product: selected_product.value,
-					changes: product_changes.value,
-					team_id: team.value.id
-				})
-
-				promise.then((response) => {
-					producer_store.commitProducerNewProduct({
-						producer_id: response.data.producer_id,
-						product: response.data
-					})
-
-					// actually update current component product
-					selected_product.value = team.value.products.find((p) => p.id === response.data.id)
-
-					loading_product_id.value = null
-
-					product_changes.value = null
-
-					// for updating non-reactive 'default' values in settings component
-					producer_product_setting_list_component_key.value = Math.random()
-
-					notifySuccess("Успешно")
-				})
-
-				promise.catch((error) => {
-					loading_product_id.value = null
-
-					notifyError(error.response.data)
-				})
-			})
-		}
 
 		const updateProduct = () => {
 			if (!product_changes.value)
@@ -173,9 +124,6 @@ export default {
 
 					product_changes.value = null
 
-					// for updating non-reactive 'default' values in settings component
-					producer_product_setting_list_component_key.value = Math.random()
-
 					notifySuccess("Успешно")
 				})
 
@@ -208,7 +156,7 @@ export default {
 					product_id: product.id
 				})
 
-				notifySuccess("Продукт '" + product.title + "' успешно удалён")
+				notifySuccess("Продукт «" + product.title + "» успешно удалён")
 			})
 
 			promise.catch((error) => {
@@ -243,11 +191,9 @@ export default {
 			is_able_to_manage_product,
 			selectProduct,
 			deleteProduct,
-			createProduct,
 			updateProduct,
 			commitProduct,
 			productChanged,
-			producer_product_setting_list_component_key,
 			tab,
 			product_changes,
 			producer_product_setting_list
