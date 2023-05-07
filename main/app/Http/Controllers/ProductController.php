@@ -10,10 +10,6 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-	/**
-	 * @param ProductService $productService
-	 * @return Product|\Illuminate\Http\JsonResponse
-	 */
 	public function store(ProductService $productService)
 	{
 		try {
@@ -28,36 +24,14 @@ class ProductController extends Controller
 		}
 	}
 
-	/**
-	 * @param Product $product
-	 * @param Request $request
-	 * @param ProductService $productService
-	 * @return array|\Illuminate\Http\JsonResponse
-	 */
-	public function update(Product $product, Request $request, ProductService $productService)
+	public function update(Product $product, ProductService $productService)
 	{
-		$changes = json_decode($request->input('changes'),true);
-
 		try {
 			$productService->setProduct($product);
 
-			if ($changes['common']) {
-				$productService->syncProductCommonSettings();
-			}
+			$product = $productService->updateProduct();
 
-			if ($changes['composition']) {
-				$productService->syncProductComposition();
-			}
-
-			if ($changes['images']) {
-				$productService->syncProductImages();
-			}
-
-			return [
-				'changes' => $changes,
-				'product' => $productService->getProduct()->load('images')
-			];
-
+			return $product->load(['images']);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);

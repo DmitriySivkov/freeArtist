@@ -42,12 +42,16 @@ export const useProducerStore = defineStore("producer", {
 			team_store.user_teams.find((t) => t.detailed.id === producer_id).products = response.data
 		},
 
-		commitProducerProductFields({ producer_id, product_id, fields }) {
+		commitProducerProductFields({ producer_id, product_id, fields, tmp_uuid }) {
 			const team_store = useTeamStore()
 
 			let team = team_store.user_teams.find((t) => t.detailed.id === producer_id)
 
 			let product = team.products.find((p) => p.id === product_id)
+
+			if (tmp_uuid) {
+				delete product.tmp_uuid
+			}
 
 			Object.assign(product, fields)
 		},
@@ -80,12 +84,18 @@ export const useProducerStore = defineStore("producer", {
 				})
 		},
 
-		commitRemoveProducerProduct({ producer_id, product_id }) {
+		commitRemoveProducerProduct({ producer_id, product_id, tmp_uuid }) {
 			const team_store = useTeamStore()
 
 			let producer = team_store.user_teams.find((t) => t.detailed.id === producer_id)
 
-			const product_index = producer.products.findIndex((p) => p.id === product_id)
+			let product_index
+
+			if (product_id) {
+				product_index = producer.products.findIndex((p) => p.id === product_id)
+			} else {
+				product_index = producer.products.findIndex((p) => p.tmp_uuid === tmp_uuid)
+			}
 
 			producer.products.splice(product_index, 1)
 		},
@@ -112,23 +122,13 @@ export const useProducerStore = defineStore("producer", {
 			return api.post("personal/products", data)
 		},
 
-		updateProducerProduct({ product, changes }) {
+		updateProducerProduct({ product }) {
 			let data = new FormData()
 
-			if (!!changes.composition) {
-				product.composition = product.composition.map((ingredient) => {
-					delete ingredient["is_new"]
-					return ingredient
-				})
-			}
-
 			data.append("product", JSON.stringify(product))
-			data.append("changes", JSON.stringify(changes))
 
-			if (product.committed_images) {
-				for (let i in product.committed_images) {
-					data.append("images[]", product.committed_images[i].instance)
-				}
+			for (let i in product.committed_images) {
+				data.append("images[]", product.committed_images[i].instance)
 			}
 
 			return api.post("personal/products/" + product.id, data)

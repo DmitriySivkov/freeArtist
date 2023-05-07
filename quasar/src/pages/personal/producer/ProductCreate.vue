@@ -120,6 +120,8 @@ export default {
 		const isProductChanged = computed(() => !_.isEqual(product.value, defaultProduct))
 
 		const storeProduct = () => {
+			if (!isProductChanged.value) return
+
 			let validation = validate()
 
 			validation.then((tab_validations) => {
@@ -136,7 +138,6 @@ export default {
 				$router.push({
 					name: "personal_producer_products_detail",
 					params: { producer_id: $router.currentRoute.value.params.producer_id },
-					query: { no_fetch: true }
 				})
 
 				const promise = producer_store.createProducerProduct({
@@ -146,7 +147,7 @@ export default {
 
 				promise.then((response) => {
 					producer_store.commitProducerNewProduct({
-						producer_id: response.data.producer_id,
+						producer_id: parseInt($router.currentRoute.value.params.producer_id),
 						product: response.data,
 						tmp_uuid
 					})
@@ -155,6 +156,11 @@ export default {
 				})
 
 				promise.catch((error) => {
+
+					producer_store.commitRemoveProducerProduct({
+						producer_id: parseInt($router.currentRoute.value.params.producer_id),
+						tmp_uuid
+					})
 
 					notifyError(error.response.data)
 				})

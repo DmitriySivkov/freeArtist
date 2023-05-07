@@ -31,6 +31,8 @@ class ProductService
 		try {
 			\DB::beginTransaction();
 
+			$this->checkProduct();
+
 			$team = Team::find(request()->input('team_id'));
 
 			$this->checkPermission($team);
@@ -90,122 +92,73 @@ class ProductService
 		return $this->product;
 	}
 
-	// todo - request validation
 	/**
-	 * @return void
+	 * @return Product
 	 * @throws \Throwable
 	 */
-	public function syncProductCommonSettings()
+	public function updateProduct()
 	{
-		$this->checkProduct();
-		$this->checkPermission($this->product->producer->team);
-
 		try {
 			\DB::beginTransaction();
+
+			$this->checkProduct();
+			$this->checkPermission($this->product->zxc->team);
+
 			$data = json_decode(request()->input('product'), true);
 
-			$this->product->update([
+			$this->product->fill([
+				'producer_id' => $this->product->producer->team->detailed_id,
 				'title' => $data['title'],
 				'price' => $data['price'],
-				'amount' => $data['amount'],
-				'thumbnail_id' => $data['thumbnail_id']
+				'amount' => !$data['amount'] ? 0 : $data['amount']
 			]);
 
-			\DB::commit();
-		} catch (\Throwable) {
-			\DB::rollBack();
-			throw new \Exception('Не удалось обновить общие настройки продукта');
-		}
-	}
+			$composition = [];
 
+			if ($data['composition']) {
+				$composition = array_values(
+					collect($data['composition'])
+						->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
+						->toArray()
+				);
+			}
 
-	/**
-	 * @return void
-	 * @throws \Throwable
-	 */
-	public function syncProductComposition()
-	{
-		$this->checkProduct();
-		$this->checkPermission($this->product->producer->team);
-
-		try {
-			\DB::beginTransaction();
-			$data = json_decode(request()->input('product'), true);
-
-			$composition = array_values(
-				collect($data['composition'])
-					->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
-					->toArray()
-			);
-
-			$this->product->update([
+			$this->product->fill([
 				'composition' => $composition
 			]);
 
-			\DB::commit();
-		} catch (\Throwable) {
-			\DB::rollBack();
-			throw new \Exception('Не удалось обновить состав продукта');
-		}
-	}
+			$this->product->save();
 
-	/**
-	 * @return void
-	 * @throws \Throwable
-	 */
-	public function syncProductImages()
-	{
-		// todo - validate that incoming file is a picture
-		$this->checkProduct();
-		$this->checkPermission($this->product->producer->team);
-
-		try {
-			$basePath = 'team_' . $this->product->producer->team->id . '/product_images';
-
-			$data = json_decode(request()->input('product'), true);
-
-			$removeImages = collect([]);
-
+			// todo - validate that incoming file is a picture
 			if ($data['images']) {
-				$removeImages = collect($data['images'])
-					->filter(fn($image) => array_key_exists('to_delete', $image));
-			}
+				$basePath = 'team_' . $this->product->producer->team->id . '/product_images';
 
-			if ($removeImages->isNotEmpty()) {
-				Storage::disk('public')->delete(
-					$removeImages->map(fn($image) => $image['path'])
-						->toArray()
-				);
+				$committedImages = request()->file('images');
 
-				Image::destroy(
-					$removeImages->map(fn($image) => $image['id'])
-						->toArray()
-				);
-			}
+				if ($committedImages) {
+					foreach ($committedImages as $image) {
 
-			$committedImages = request()->file('images');
+						$path = Storage::disk('public')->putFile(
+							$basePath,
+							$image
+						);
 
-			if ($committedImages) {
-				foreach ($committedImages as $image) {
-
-					$path = Storage::disk('public')->putFile(
-						$basePath,
-						$image
-					);
-
-					Image::create([
-						'imageable_id' => $this->product->id,
-						'imageable_type' => Product::class,
-						'path' => $path
-					]);
+						Image::create([
+							'imageable_id' => $this->product->id,
+							'imageable_type' => Product::class,
+							'path' => $path
+						]);
+					}
 				}
 			}
 
 			\DB::commit();
-		} catch (\Throwable) {
+		} catch (\Throwable $e) {
 			\DB::rollBack();
-			throw new \Exception('Не удалось обновить изображения продукта');
+			throw new \Exception($e->getMessage());
 		}
+
+		return $this->product;
 	}
 
 	/**

@@ -4,9 +4,7 @@
 			:products="team.products"
 			:loading-product="loading_product_id"
 			:is-able-to-manage-product="is_able_to_manage_product"
-			:is-product-changed="!!product_changes"
 			@deleteProduct="deleteProduct"
-			@updateProduct="updateProduct"
 		/>
 	</div>
 </template>
@@ -24,7 +22,13 @@ import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
 export default {
 	async preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-		if (currentRoute.query.no_fetch) return
+		if (
+			[
+				"personal_producer_products_detail_show",
+				"personal_producer_products_detail_create"
+			].includes(previousRoute.name)
+		)
+			return
 
 		Loading.show({
 			spinnerColor: "primary",
@@ -66,74 +70,6 @@ export default {
 		const loading_product_id = ref(null)
 
 		const product_changes = ref(null)
-
-		const updateProduct = () => {
-			if (!product_changes.value)
-				return
-
-			let validation = producer_product_setting_list.value.validate()
-
-			validation.then((tab_validations) => {
-				if (tab_validations.includes(false))
-					return
-
-				loading_product_id.value = selected_product.value.id
-
-				const promise = producer_store.updateProducerProduct({
-					product: selected_product.value,
-					changes: product_changes.value
-				})
-
-				promise.then((response) => {
-					let fields = {}
-
-					if (!!response.data.changes.common) {
-						fields = {
-							...fields,
-							title: response.data.product.title,
-							price: response.data.product.price,
-							amount: response.data.product.amount,
-							thumbnail_id: response.data.product.thumbnail_id
-						}
-					}
-
-					if (!!response.data.changes.composition) {
-						fields = {
-							...fields,
-							composition: response.data.product.composition,
-						}
-					}
-
-					if (!!response.data.changes.images) {
-						fields = {
-							...fields,
-							images: response.data.product.images,
-						}
-					}
-
-					producer_store.commitProducerProductFields({
-						producer_id: response.data.product.producer_id,
-						product_id: response.data.product.id,
-						fields
-					})
-
-					// actually update current component product
-					selected_product.value = team.value.products.find((p) => p.id === response.data.product.id)
-
-					loading_product_id.value = null
-
-					product_changes.value = null
-
-					notifySuccess("Успешно")
-				})
-
-				promise.catch((error) => {
-					loading_product_id.value = null
-
-					notifyError(error.response.data)
-				})
-			})
-		}
 
 		const selectProduct = (product) => {
 			product_changes.value = null
@@ -191,7 +127,6 @@ export default {
 			is_able_to_manage_product,
 			selectProduct,
 			deleteProduct,
-			updateProduct,
 			commitProduct,
 			productChanged,
 			tab,

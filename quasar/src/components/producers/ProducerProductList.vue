@@ -13,6 +13,7 @@
 						horizontal
 						class="justify-between"
 						:class="{'no-pointer-events': product.id === loadingProduct || !!product.tmp_uuid}"
+						@click="show(product)"
 					>
 						<div class="col-xs-9 col-md-11 cursor-pointer q-hoverable">
 							<span class="q-focus-helper"></span>
@@ -83,6 +84,7 @@
 
 <script>
 import { Dialog } from "quasar"
+import { useRouter } from "vue-router"
 export default {
 	props: {
 		products: {
@@ -91,24 +93,20 @@ export default {
 		},
 		loadingProduct: Number,
 		isAbleToManageProduct: Boolean,
-		isProductChanged: Boolean,
 	},
 	emits:[
 		"deleteProduct",
-		"updateProduct",
 	],
 	setup(props, { emit }) {
-		const selectProduct = (product_id) => {
-			if (!product_id) {
-				emit("update:modelValue", null)
-				return
-			}
+		const $router = useRouter()
 
-			emit("update:modelValue", props.products.find((p) => p.id === product_id))
-		}
-
-		const update = () => {
-			emit("updateProduct")
+		const show = (product) => {
+			$router.push({
+				name:"personal_producer_products_detail_show",
+				params: {
+					product_id: product.id
+				}
+			})
 		}
 
 		const showDeleteDialog = (product) => {
@@ -122,8 +120,7 @@ export default {
 		}
 
 		return {
-			selectProduct,
-			update,
+			show,
 			showDeleteDialog
 		}
 	}
