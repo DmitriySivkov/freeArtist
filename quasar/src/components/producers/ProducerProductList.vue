@@ -12,10 +12,12 @@
 					<q-card-section
 						horizontal
 						class="justify-between"
-						:class="{'no-pointer-events': product.id === loadingProduct || !!product.tmp_uuid}"
-						@click="show(product)"
+						:class="{'no-pointer-events': !!product.tmp_uuid}"
 					>
-						<div class="col-xs-9 col-md-11 cursor-pointer q-hoverable">
+						<div
+							class="col-xs-9 col-md-11 cursor-pointer q-hoverable"
+							@click="show(product)"
+						>
 							<span class="q-focus-helper"></span>
 							<div class="row full-height items-center">
 								<div class="col-xs-3 col-md-1 text-center">
@@ -54,7 +56,7 @@
 								</q-menu>
 							</q-btn>
 						</div>
-						<q-inner-loading :showing="product.id === loadingProduct || !!product.tmp_uuid">
+						<q-inner-loading :showing="!!product.tmp_uuid">
 							<q-spinner-gears
 								size="42px"
 								color="primary"
@@ -85,20 +87,20 @@
 <script>
 import { Dialog } from "quasar"
 import { useRouter } from "vue-router"
+import { useProducerStore } from "src/stores/producer"
+import { useNotification } from "src/composables/notification"
 export default {
 	props: {
 		products: {
 			type: Array,
 			default: () => []
 		},
-		loadingProduct: Number,
 		isAbleToManageProduct: Boolean,
 	},
-	emits:[
-		"deleteProduct",
-	],
-	setup(props, { emit }) {
+	setup() {
 		const $router = useRouter()
+		const producer_store = useProducerStore()
+		const { notifySuccess, notifyError } = useNotification()
 
 		const show = (product) => {
 			$router.push({
@@ -115,7 +117,38 @@ export default {
 				message: "Удалить: " + product.title + " ?",
 				cancel: true,
 			}).onOk(() => {
-				emit("deleteProduct", product)
+				let tmp_uuid = crypto.randomUUID()
+				let producer_id = $router.currentRoute.value.params.producer_id
+
+				producer_store.commitProducerProductFields({
+					producer_id: parseInt(producer_id),
+					product_id: product.id,
+					fields: { tmp_uuid }
+				})
+
+				const promise = producer_store.deleteProducerProduct({
+					product_id: product.id
+				})
+
+				promise.then(() => {
+					producer_store.commitRemoveProducerProduct({
+						producer_id: parseInt(producer_id),
+						product_id: product.id
+					})
+
+					notifySuccess("Продукт «" + product.title + "» успешно удалён")
+				})
+
+				promise.catch((error) => {
+					producer_store.commitProducerProductFields({
+						producer_id: parseInt(producer_id),
+						product_id: product.id,
+						tmp_uuid,
+						fields: {}
+					})
+
+					notifyError(error.response.data)
+				})
 			})
 		}
 

@@ -51,6 +51,7 @@ export const useProducerStore = defineStore("producer", {
 
 			if (tmp_uuid) {
 				delete product.tmp_uuid
+				delete product.committed_images
 			}
 
 			Object.assign(product, fields)
@@ -103,20 +104,11 @@ export const useProducerStore = defineStore("producer", {
 		createProducerProduct({ team_id, product }) {
 			let data = new FormData()
 
-			if (product.composition.length > 0) {
-				product.composition = product.composition.map((ingredient) => {
-					delete ingredient["is_new"]
-					return ingredient
-				})
-			}
-
 			data.append("product", JSON.stringify(product))
 			data.append("team_id", team_id)
 
-			if (product.committed_images) {
-				for (let i in product.committed_images) {
-					data.append("images[]", product.committed_images[i].instance)
-				}
+			for (let i in product.committed_images) {
+				data.append("images[]", product.committed_images[i].instance)
 			}
 
 			return api.post("personal/products", data)

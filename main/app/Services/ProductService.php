@@ -50,6 +50,10 @@ class ProductService
 				$composition = array_values(
 					collect($data['composition'])
 						->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
+						->map(function($ingredient) {
+							unset ($ingredient['is_new']);
+							return $ingredient;
+						})
 						->toArray()
 				);
 
@@ -61,26 +65,25 @@ class ProductService
 			$this->product->save();
 
 			// todo - validate that incoming file is a picture
-			if ($data['images']) {
+			$committedImages = request()->file('images');
+
+			if ($committedImages) {
 				$basePath = 'team_' . $team->id . '/product_images';
 
-				$committedImages = request()->file('images');
+				foreach ($committedImages as $image) {
 
-				if ($committedImages) {
-					foreach ($committedImages as $image) {
+					$path = Storage::disk('public')->putFile(
+						$basePath,
+						$image
+					);
 
-						$path = Storage::disk('public')->putFile(
-							$basePath,
-							$image
-						);
-
-						Image::create([
-							'imageable_id' => $this->product->id,
-							'imageable_type' => Product::class,
-							'path' => $path
-						]);
-					}
+					Image::create([
+						'imageable_id' => $this->product->id,
+						'imageable_type' => Product::class,
+						'path' => $path
+					]);
 				}
+
 			}
 
 			\DB::commit();
@@ -102,7 +105,7 @@ class ProductService
 			\DB::beginTransaction();
 
 			$this->checkProduct();
-			$this->checkPermission($this->product->zxc->team);
+			$this->checkPermission($this->product->producer->team);
 
 			$data = json_decode(request()->input('product'), true);
 
@@ -113,42 +116,61 @@ class ProductService
 				'amount' => !$data['amount'] ? 0 : $data['amount']
 			]);
 
-			$composition = [];
-
-			if ($data['composition']) {
+			if (\Arr::exists($data, 'composition')) {
 				$composition = array_values(
 					collect($data['composition'])
-						->filter(fn($ingredient) => !\Arr::exists($ingredient, "to_delete"))
+						->filter(fn($ingredient) => !\Arr::exists($ingredient, 'to_delete'))
+						->map(function($ingredient) {
+							unset ($ingredient['is_new']);
+							return $ingredient;
+						})
 						->toArray()
 				);
-			}
 
-			$this->product->fill([
-				'composition' => $composition
-			]);
+				$this->product->fill([
+					'composition' => $composition
+				]);
+			}
 
 			$this->product->save();
 
 			// todo - validate that incoming file is a picture
+			$removeImages = collect([]);
+
 			if ($data['images']) {
+				$removeImages = collect($data['images'])
+					->filter(fn($image) => array_key_exists('to_delete', $image));
+			}
+
+			if ($removeImages->isNotEmpty()) {
+				Storage::disk('public')->delete(
+					$removeImages->map(fn($image) => $image['path'])
+						->toArray()
+				);
+
+				Image::destroy(
+					$removeImages->map(fn($image) => $image['id'])
+						->toArray()
+				);
+			}
+
+			$committedImages = request()->file('images');
+
+			if ($committedImages) {
 				$basePath = 'team_' . $this->product->producer->team->id . '/product_images';
 
-				$committedImages = request()->file('images');
+				foreach ($committedImages as $image) {
 
-				if ($committedImages) {
-					foreach ($committedImages as $image) {
+					$path = Storage::disk('public')->putFile(
+						$basePath,
+						$image
+					);
 
-						$path = Storage::disk('public')->putFile(
-							$basePath,
-							$image
-						);
-
-						Image::create([
-							'imageable_id' => $this->product->id,
-							'imageable_type' => Product::class,
-							'path' => $path
-						]);
-					}
+					Image::create([
+						'imageable_id' => $this->product->id,
+						'imageable_type' => Product::class,
+						'path' => $path
+					]);
 				}
 			}
 
@@ -159,6 +181,34 @@ class ProductService
 		}
 
 		return $this->product;
+	}
+
+	/**
+	 * @return bool|null
+	 * @throws \Throwable
+	 */
+	public function deleteProduct()
+	{
+		try {
+			$images = $this->product->images;
+
+			if ($images->isNotEmpty()) {
+				Storage::disk('public')->delete(
+					$images->pluck('path')->toArray()
+				);
+			}
+
+			$this->product->images()->delete();
+
+			$isProductDeleted = $this->product->delete();
+
+			\DB::commit();
+		} catch (\Throwable $e) {
+			\DB::rollBack();
+			throw new \Exception($e->getMessage());
+		}
+
+		return $isProductDeleted;
 	}
 
 	/**

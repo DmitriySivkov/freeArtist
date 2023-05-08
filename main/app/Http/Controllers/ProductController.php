@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+	/**
+	 * @param ProductService $productService
+	 * @return Product|\Illuminate\Http\JsonResponse
+	 */
 	public function store(ProductService $productService)
 	{
 		try {
@@ -24,6 +28,11 @@ class ProductController extends Controller
 		}
 	}
 
+	/**
+	 * @param Product $product
+	 * @param ProductService $productService
+	 * @return Product|\Illuminate\Http\JsonResponse
+	 */
 	public function update(Product $product, ProductService $productService)
 	{
 		try {
@@ -40,25 +49,18 @@ class ProductController extends Controller
 
 	/**
 	 * @param Product $product
-	 * @return bool|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|null
+	 * @param ProductService $productService
+	 * @return bool|\Illuminate\Http\JsonResponse|null
 	 */
-	public function delete(Product $product)
+	public function delete(Product $product, ProductService $productService)
 	{
-		/** @var User $user */
-		$user = auth('sanctum')->user();
-
 		try {
-			if (
-				!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $product->producer->team) &&
-				!$user->owns($product->producer->team)
-			)
-				throw new \Exception('Доступ закрыт');
+			$productService->setProduct($product);
 
-			return $product->delete();
-		} catch (\LogicException) {
-			return response("Удаление не выполнено. Ошибка сервера", 422);
+			return $productService->deleteProduct();
 		} catch (\Throwable $e) {
-			return response($e->getMessage(), 422);
+			return response()->json($e->getMessage())
+				->setStatusCode(422);
 		}
 	}
 }

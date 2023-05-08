@@ -145,19 +145,17 @@ export default {
 				})
 
 				promise.then((response) => {
-					let fields = {}
-
 					producer_store.commitProducerProductFields({
 						producer_id: parseInt(producer_id),
-						product_id: response.data.product.id,
-						fields
+						product_id: response.data.id,
+						tmp_uuid,
+						fields: response.data
 					})
 
-					notifySuccess("Успешно")
+					notifySuccess("Продукт «" + product.value.title + "» успешно обновлён")
 				})
 
 				promise.catch((error) => {
-					console.log(defaultProduct)
 					producer_store.commitProducerProductFields({
 						producer_id: parseInt(producer_id),
 						product_id: product.value.id,
