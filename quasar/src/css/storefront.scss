@@ -1,0 +1,9 @@
+.storefront {
+	&__setup-box {
+		&:hover {
+			background-color: $green-6;
+			color: white;
+			transition: 0.3s ease;
+		}
+	}
+}

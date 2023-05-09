@@ -63,4 +63,21 @@ export default [
 			route_name: "Настройки продуктов"
 		}
 	},
+	{
+		name: "personal_producer_storefront",
+		path: "personal/producer/storefront",
+		component: () => import("pages/personal/producer/Storefront.vue"),
+		meta: {
+			route_name: "Настройки витрины"
+		}
+	},
+	{
+		name: "personal_producer_storefront_detail",
+		path: "personal/producer/:producer_id/storefront",
+		component: () => import("pages/personal/producer/StorefrontDetail.vue"),
+		meta: {
+			route_name: "Настройки витрины"
+		}
+	},
+
 ]

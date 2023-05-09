@@ -1,22 +1,19 @@
 <template>
-	<div class="absolute full-width full-height sticky__common_top">
-		<ProducerProductList
-			:products="team.products"
-			:is-able-to-manage-product="is_able_to_manage_product"
-		/>
-	</div>
+	<ProducerProductList
+		:products="team.products"
+		:is-able-to-manage-product="is_able_to_manage_product"
+	/>
 </template>
 
 <script>
 import ProducerProductList from "src/components/producers/ProducerProductList.vue"
 import { useRouter } from "vue-router"
-import { computed, ref } from "vue"
+import { computed } from "vue"
 import { Loading } from "quasar"
 import { useUserPermission } from "src/composables/userPermission"
 import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
 import { useTeamStore } from "src/stores/team"
-import { useNotification } from "src/composables/notification"
 export default {
 	async preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
 		if (
@@ -35,10 +32,7 @@ export default {
 
 		await producer_store.getProducerProductList(
 			parseInt(currentRoute.params.producer_id)
-		)
-			.then(() =>
-				Loading.hide()
-			)
+		).then(() => Loading.hide())
 	},
 	components: {
 		ProducerProductList
@@ -46,20 +40,12 @@ export default {
 	setup() {
 		const user_store = useUserStore()
 		const team_store = useTeamStore()
-		const producer_store = useProducerStore()
 		const $router = useRouter()
 
 		const { hasPermission } = useUserPermission()
-		const { notifySuccess, notifyError } = useNotification()
-
-		const tab = ref("common")
-
-		const producer_product_setting_list = ref(null)
-
-		const user_teams = computed(() => team_store.user_teams)
 
 		const team = computed(() =>
-			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
+			team_store.user_teams.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
 		)
 
 		const is_able_to_manage_product = computed(() =>
@@ -69,9 +55,7 @@ export default {
 
 		return {
 			team,
-			is_able_to_manage_product,
-			tab,
-			producer_product_setting_list
+			is_able_to_manage_product
 		}
 	}
 }
