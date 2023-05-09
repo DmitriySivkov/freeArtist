@@ -6,12 +6,10 @@
 				:class="{'bg-green-6': is_dragging}"
 				style="height:300px"
 			>
-				<q-card-section
-					class="row flex-center full-height"
-				>
+				<q-card-section class="row flex-center full-height">
 					<q-img
 						v-if="team.detailed.logo"
-						:src="backend_server + '/storage/' + team.detailed.logo"
+						:src="backend_server + '/storage/' + team.detailed.logo.path"
 						fit="contain"
 					/>
 					<span
@@ -132,7 +130,7 @@ export default {
 		const { Camera } = Plugins
 		const { base64ToBlob } = cameraService()
 
-		const image = ref(props.team.detailed.logo)
+		const image = ref(null)
 
 		const file_picker = ref(null)
 		const is_dragging = ref(false)
@@ -160,13 +158,30 @@ export default {
 			form_data.append("logo", image.value)
 
 			// todo validate with q-file help
-			producer_store.setProducerLogo({
+			const promise = producer_store.setProducerLogo({
 				logo: form_data,
 				producer_id: props.team.detailed_id
-			}).then(() => {
+			})
+
+			promise.then((response) => {
+				team_store.setTeamFields({
+					team_id: props.team.id,
+					fields: {
+						logo: response.data
+					},
+					detailed_id: props.team.detailed_id
+				})
+
+				notifySuccess("Изображение успешно загружено")
+			})
+
+			promise.catch((error) => {
+				notifyError(error.response.data)
+			})
+
+			promise.finally(() => {
 				is_loading.value = false
 				is_dragging.value = false
-				notifySuccess("Изображение успешно загружено")
 			})
 		}
 

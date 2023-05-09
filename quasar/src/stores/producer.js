@@ -127,15 +127,10 @@ export const useProducerStore = defineStore("producer", {
 		},
 
 		async setProducerLogo({ producer_id, logo }) {
-			const response = await api.post(
+			return api.post(
 				"/personal/producers/" + producer_id + "/setLogo",
 				logo,
 			)
-
-			const team_store = useTeamStore()
-
-			team_store.user_teams.find((t) => t.detailed.id === producer_id)
-				.detailed.logo = response.data
 		},
 
 		setFetchingState(is_fetching) {

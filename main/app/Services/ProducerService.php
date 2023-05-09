@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\ProducerServiceContract;
+use App\Models\Image;
 use App\Models\Permission;
 use App\Models\Producer;
 use App\Models\Role;
@@ -27,36 +28,53 @@ class ProducerService implements ProducerServiceContract
 
 	/**
 	 * @param Producer $producer
-	 * @return string
+	 * @return Image|\Illuminate\Database\Eloquent\Model
+	 * @throws \Exception
 	 */
 	public function setLogo(Producer $producer)
 	{
-		/** @var User $user */
-		$user = auth('sanctum')->user();
+		try {
+			/** @var User $user */
+			$user = auth('sanctum')->user();
 
-		if (
-			!$user->hasPermission(Permission::PERMISSION_PRODUCER_LOGO['name'], $producer->team) &&
-			!$user->owns($producer->team)
-		)
-			throw new \LogicException('Доступ закрыт');
+			if (
+				!$user->hasPermission(Permission::PERMISSION_PRODUCER_LOGO['name'], $producer->team) &&
+				!$user->owns($producer->team)
+			)
+				throw new \Exception('Доступ закрыт');
 
-		$basePath = 'team_' . $producer->team->id . '/logo';
+			$basePath = 'team_' . $producer->team->id;
 
-		if (Storage::disk('public')->exists($basePath))
-			Storage::disk('public')->deleteDirectory($basePath);
+			if ($producer->logo) {
+				Storage::disk('public')->delete($producer->logo->path);
 
-		$path = Storage::disk('public')->putFile(
-			$basePath,
-			request()->file('logo'),
-		);
+				Image::find($producer->logo_id)->delete();
+			}
 
-		if (!$path)
-			throw new \LogicException('Ошибка сервиса');
+			$path = Storage::disk('public')->putFileAs(
+				$basePath,
+				request()->file('logo'),
+				'logo-' . now()->timestamp . '.' . request()->file('logo')->extension()
+			);
 
-		$producer->logo = $path;
-		$producer->save();
+			$image = Image::create([
+				'imageable_id' => $producer->id,
+				'imageable_type' => Producer::class,
+				'path' => $path
+			]);
 
-		return $path;
+			if (!$path)
+				throw new \Exception('Ошибка сервиса');
+
+			$producer->logo_id = $image->id;
+
+			$producer->save();
+
+		} catch (\Throwable $e) {
+			throw new \Exception($e->getMessage());
+		}
+
+		return $image;
 	}
 
 	/**
