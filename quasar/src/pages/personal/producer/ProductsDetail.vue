@@ -20,7 +20,7 @@ export default {
 			[
 				"personal_producer_products_detail_show",
 				"personal_producer_products_detail_create"
-			].includes(previousRoute.name)
+			].includes(previousRoute.name) && !currentRoute.query.force_load
 		)
 			return
 
