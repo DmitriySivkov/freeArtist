@@ -113,7 +113,8 @@ class ProductService
 				'producer_id' => $this->product->producer->team->detailed_id,
 				'title' => $data['title'],
 				'price' => $data['price'],
-				'amount' => !$data['amount'] ? 0 : $data['amount']
+				'amount' => !$data['amount'] ? 0 : $data['amount'],
+				'thumbnail_id' => $data['thumbnail_id']
 			]);
 
 			if (\Arr::exists($data, 'composition')) {
@@ -132,8 +133,6 @@ class ProductService
 				]);
 			}
 
-			$this->product->save();
-
 			// todo - validate that incoming file is a picture
 			$removeImages = collect([]);
 
@@ -143,15 +142,17 @@ class ProductService
 			}
 
 			if ($removeImages->isNotEmpty()) {
-				Storage::disk('public')->delete(
-					$removeImages->map(fn($image) => $image['path'])
-						->toArray()
-				);
+				$removeImagePaths = $removeImages->map(fn($image) => $image['path']);
+				Storage::disk('public')->delete($removeImagePaths->toArray());
 
-				Image::destroy(
-					$removeImages->map(fn($image) => $image['id'])
-						->toArray()
-				);
+				$removeImageIds = $removeImages->map(fn($image) => $image['id']);
+				Image::destroy($removeImageIds->toArray());
+
+				if ($this->product->thumbnail_id && $removeImageIds->contains($this->product->thumbnail_id)) {
+					$this->product->fill([
+						'thumbnail_id' => null
+					]);
+				}
 			}
 
 			$committedImages = request()->file('images');
@@ -173,6 +174,8 @@ class ProductService
 					]);
 				}
 			}
+
+			$this->product->save();
 
 			\DB::commit();
 		} catch (\Throwable $e) {
