@@ -13,7 +13,12 @@ export default ({ store, router }) => {
 			return
 		}
 
-		if (to.name === "personal_producer_products_detail_show" && !from.name) {
+		if (
+			[
+				"personal_producer_products_detail_show",
+				"personal_producer_products_detail_create"
+			].includes(to.name) && !from.name
+		) {
 			next({
 				name: "personal_producer_products_detail",
 				params: {
