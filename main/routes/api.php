@@ -94,6 +94,7 @@ Route::group([
 
 		Route::group(['prefix' => '{producer}/products'], function () {
 			Route::get('', [ProducerController::class, 'getProducerProducts']);
+			Route::get('thumbnails', [ProducerController::class, 'getProducerProductThumbnails']);
 		});
 	});
 

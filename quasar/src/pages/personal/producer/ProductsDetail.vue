@@ -27,7 +27,7 @@ export default {
 		Loading.show({
 			spinnerColor: "primary",
 		})
-
+		// todo - try to fetch products locally - not bounding to pinia
 		const producer_store = useProducerStore(store)
 
 		await producer_store.getProducerProductList(

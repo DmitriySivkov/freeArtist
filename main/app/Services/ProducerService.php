@@ -90,7 +90,7 @@ class ProducerService implements ProducerServiceContract
 			$user = auth('sanctum')->user();
 
 			if ($user->ownProducer()->exists())
-				throw new \LogicException('Вы уже являетесь изготовителем-владельцем');
+				throw new \Exception('Вы уже являетесь изготовителем-владельцем');
 
 			$producer = Producer::create([
 				'city_id' => $producerData['city_id']
@@ -114,7 +114,7 @@ class ProducerService implements ProducerServiceContract
 			DB::commit();
 		} catch (\Throwable $e) {
 			DB::rollBack();
-			throw new \LogicException($e->getMessage());
+			throw new \Exception($e->getMessage());
 		}
 
 		return response()->json([
@@ -142,7 +142,7 @@ class ProducerService implements ProducerServiceContract
 	public function getIncomingRequests()
 	{
 		if (!$this->producer)
-			throw new \LogicException('Изготовитель не задан');
+			throw new \Exception('Изготовитель не задан');
 
 		/** @var User $user */
 		$user = auth('sanctum')->user();
@@ -166,7 +166,7 @@ class ProducerService implements ProducerServiceContract
 	public function getOutgoingRequests()
 	{
 		if (!$this->producer)
-			throw new \LogicException('Изготовитель не задан');
+			throw new \Exception('Изготовитель не задан');
 
 		/** @var User $user */
 		$user = auth('sanctum')->user();

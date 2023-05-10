@@ -101,8 +101,30 @@ class ProducerController extends Controller
 		try {
 			return $producerService->register($request->validated());
 		} catch (\Throwable $e) {
-			// todo - bring errors to this view everywhere (upd: very doubtly - rather remove it)
+			// todo - bring dis bullshit to common format
 			return ResponseService::error($e->getMessage());
+		}
+	}
+
+	/**
+	 * @param Producer $producer
+	 * @return \App\Models\Product[]|\Illuminate\Database\Eloquent\Collection|JsonResponse|\Illuminate\Support\Collection
+	 */
+	public function getProducerProductThumbnails(Producer $producer)
+	{
+		try {
+			return $producer->products()->whereHas('thumbnail')
+				->with(['thumbnail'])
+				->get()
+				->map(fn(\App\Models\Product $product) =>
+					[
+						'id' => $product['thumbnail']['id'],
+						'path' => $product['thumbnail']['path']
+					]
+				);
+		} catch (\Throwable $e) {
+			return response()->json($e->getMessage())
+				->setStatusCode(422);
 		}
 	}
 }

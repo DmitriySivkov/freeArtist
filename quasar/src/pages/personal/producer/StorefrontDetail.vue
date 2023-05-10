@@ -85,14 +85,56 @@
 			</q-card-section>
 		</q-card-section>
 	</q-card>
-<!--	<q-file-->
-<!--		v-model="image"-->
-<!--		multiple-->
-<!--		ref="file_picker"-->
-<!--		accept=".jpg, image/*"-->
-<!--		style="display:none"-->
-<!--		@update:model-value="addImage"-->
-<!--	/>-->
+	<!--	<q-file-->
+	<!--		v-model="image"-->
+	<!--		multiple-->
+	<!--		ref="file_picker"-->
+	<!--		accept=".jpg, image/*"-->
+	<!--		style="display:none"-->
+	<!--		@update:model-value="addImage"-->
+	<!--	/>-->
+
+	<q-card
+		class="q-ma-md"
+		style="height: 300px"
+	>
+		<q-card-section class="q-pa-none full-height">
+			<q-carousel
+				v-if="!is_fetching_thumbnails && thumbnails.length > 0"
+				swipeable
+				animated
+				v-model="selectedThumbnail"
+				infinite
+				height="300px"
+				class="rounded-borders"
+			>
+				<q-carousel-slide
+					v-for="thumbnail in thumbnails"
+					:key="thumbnail.id"
+					:name="thumbnail.id"
+					class="q-pa-none height"
+				>
+					<q-img
+						height="300px"
+						fit="contain"
+						:src="backendServer + '/storage/' + thumbnail.path"
+					/>
+				</q-carousel-slide>
+			</q-carousel>
+			<div
+				v-else-if="!is_fetching_thumbnails"
+				class="full-height flex flex-center"
+			>
+				Выберите заставки своим продуктам чтобы составить витрину
+			</div>
+			<q-inner-loading :showing="is_fetching_thumbnails">
+				<q-spinner-gears
+					color="primary"
+					size="50px"
+				/>
+			</q-inner-loading>
+		</q-card-section>
+	</q-card>
 </template>
 
 <script>
@@ -103,6 +145,7 @@ import { usePermissionStore } from "src/stores/permission"
 import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
+import { api } from "src/boot/axios"
 export default {
 	setup() {
 		const $router = useRouter()
@@ -110,6 +153,8 @@ export default {
 		const team_store = useTeamStore()
 		const producer_store = useProducerStore()
 		const permission_store = usePermissionStore()
+
+		const backendServer = process.env.BACKEND_SERVER
 
 		const team = computed(() =>
 			team_store.user_teams.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
@@ -179,6 +224,36 @@ export default {
 			is_dragging.value = 0
 		}
 
+		const thumbnails = ref([])
+
+		const is_fetching_thumbnails = ref(false)
+
+		const fetchThumbnails = () => {
+			is_fetching_thumbnails.value = true
+
+			const promise = api.get(
+				"personal/producers/" + $router.currentRoute.value.params.producer_id + "/products/thumbnails"
+			)
+
+			promise.then((response) => {
+				if (response.data.length === 0) return
+
+				thumbnails.value = response.data
+
+				selectedThumbnail.value = thumbnails.value[0].id
+			})
+
+			promise.catch((error) => {
+				notifyError(error.response.data)
+			})
+
+			promise.finally(() => is_fetching_thumbnails.value = false)
+		}
+
+		fetchThumbnails()
+
+		const selectedThumbnail = ref(null)
+
 		return {
 			image,
 			backend_server,
@@ -190,7 +265,11 @@ export default {
 			is_team_admin,
 			showFilePrompt,
 			file_picker,
-			onDragLeave
+			onDragLeave,
+			selectedThumbnail,
+			thumbnails,
+			backendServer,
+			is_fetching_thumbnails
 		}
 	}
 }
