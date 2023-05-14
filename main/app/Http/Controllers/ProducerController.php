@@ -27,7 +27,8 @@ class ProducerController extends Controller
 			->with([
 				'products' => function($query) {
 					$query->with('thumbnail')->whereHas('thumbnail');
-				}
+				},
+				'storefrontImage'
 			])
 			->leftJoin('teams', function(JoinClause $join) {
 				$join->on('teams.detailed_id', '=', 'producers.id')

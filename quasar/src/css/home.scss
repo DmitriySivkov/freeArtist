@@ -1,9 +1,10 @@
 .home {
 	&__producer-card {
 		cursor: pointer;
+		background-color: $primary;
 		&:hover {
 			transition: background-color 0.3s;
-			background-color:rgba(255, 255, 255, 0.07);
+			background-color:rgba($primary, 0.9);
 		}
 	}
 }

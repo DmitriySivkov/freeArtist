@@ -1,49 +1,50 @@
 <template>
 	<div class="row q-pa-md">
-		<div class="col-12">
+		<q-responsive
+			:ratio="16/9"
+			class="col"
+			style="max-height: 300px"
+		>
 			<q-card
-				class="bg-green-3"
+				class="column bg-green-3"
 				:class="{'bg-green-6 text-white': is_dragging}"
-				style="height:300px"
 			>
-				<q-card-section class="row flex-center full-height q-pa-none">
-					<q-img
-						v-if="team.detailed.storefront_image"
-						:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
-						fit="contain"
-						height="300px"
+				<!-- todo - bring to this format all picture boxes (remove q-card-section container) -->
+				<q-img
+					v-if="team.detailed.storefront_image"
+					:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
+					fit="contain"
+				/>
+				<span
+					v-else
+					class="text-center"
+				>
+					Выберите изображение <br /> или переместите в эту область
+				</span>
+				<div
+					v-if="can_manage_storefront || is_team_admin"
+					class="full-height full-width absolute cursor-pointer"
+					@dragenter.prevent="is_dragging = true"
+					@dragleave.prevent="is_dragging = false"
+					@dragover.prevent
+					@drop.prevent="drop"
+					@click="showFilePrompt"
+				></div>
+				<q-inner-loading :showing="is_loading">
+					<q-spinner-gears
+						size="50px"
+						color="primary"
 					/>
-					<span
-						v-else
-						class="text-center"
-					>
-						Выберите изображение <br /> или переместите в эту область
-					</span>
-					<div
-						v-if="can_manage_storefront || is_team_admin"
-						class="full-height full-width absolute cursor-pointer"
-						@dragenter.prevent="is_dragging = true"
-						@dragleave.prevent="is_dragging = false"
-						@dragover.prevent
-						@drop.prevent="drop"
-						@click="showFilePrompt"
-					></div>
-					<q-inner-loading :showing="is_loading">
-						<q-spinner-gears
-							size="50px"
-							color="primary"
-						/>
-					</q-inner-loading>
-				</q-card-section>
+				</q-inner-loading>
 			</q-card>
-			<q-file
-				v-model="image"
-				ref="file_picker"
-				accept=".jpg, image/*"
-				style="display:none"
-				@update:model-value="addImage"
-			/>
-		</div>
+		</q-responsive>
+		<q-file
+			v-model="image"
+			ref="file_picker"
+			accept=".jpg, image/*"
+			style="display:none"
+			@update:model-value="addImage"
+		/>
 	</div>
 
 

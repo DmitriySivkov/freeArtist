@@ -1,61 +1,29 @@
 <template>
 	<q-infinite-scroll
 		ref="scroll_component"
-		class="column no-wrap absolute full-height full-width q-mt-xs q-col-gutter-xs"
 		@load="loadProducers"
 		:offset="250"
+		class="absolute column full-height full-width q-pt-md"
 	>
-		<div
-			v-for="producer in producers"
-			:key="producer.id"
-			class="col-6 home__producer-card q-pl-none"
-		>
-			<div class="row full-height">
+		<div class="col-6 row">
+			<q-responsive
+				:ratio="16/9"
+				class="col"
+			>
 				<q-card
-					class="col-12 bg-primary text-white"
+					v-for="producer in producers"
+					:key="producer.id"
+					class="column home__producer-card text-white justify-center"
 					:class="{ 'bg-light-green-2': cart.hasOwnProperty(producer.id) }"
 					@click="show(producer.id)"
 				>
-					<q-card-section class="row full-height q-pa-none">
-						<div class="col-3 column">
-							<div class="col-12">
-								<q-img
-									:src="producer.logo ? backend_server + '/storage/' + producer.logo : 'no-image.png'"
-									height="100%"
-									fit="cover"
-									class="rounded-borders"
-								/>
-							</div>
-						</div>
-						<div class="col-9 column q-pl-xs">
-							<div class="col-auto text-body1">
-								<span>{{ producer.display_name }}</span>
-								<span v-if="cart.hasOwnProperty(producer.id)">
-									{{ " (" + cart[producer.id].product_list.length + ")" }}
-								</span>
-							</div>
-							<div class="col-grow">
-								<q-carousel
-									v-if="producer.products.length > 0"
-									class="full-height rounded-borders"
-									swipeable
-									animated
-									v-model="carousel"
-									thumbnails
-									infinite
-								>
-									<q-carousel-slide
-										v-for="product in producer.products"
-										:key="product.id"
-										:name="carousel"
-										:img-src="backend_server + '/storage/' + product.thumbnail.path"
-									/>
-								</q-carousel>
-							</div>
-						</div>
-					</q-card-section>
+					<q-img
+						:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
+						fit="contain"
+						class="col"
+					/>
 				</q-card>
-			</div>
+			</q-responsive>
 		</div>
 		<template v-slot:loading>
 			<div class="row justify-center q-my-md">
