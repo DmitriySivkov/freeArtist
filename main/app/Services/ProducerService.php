@@ -78,6 +78,57 @@ class ProducerService implements ProducerServiceContract
 	}
 
 	/**
+	 * @param Producer $producer
+	 * @return Image|\Illuminate\Database\Eloquent\Model
+	 * @throws \Exception
+	 */
+	public function setStorefrontImage(Producer $producer)
+	{
+		try {
+			/** @var User $user */
+			$user = auth('sanctum')->user();
+
+			if (
+				!$user->hasPermission(Permission::PERMISSION_PRODUCER_STOREFRONT['name'], $producer->team) &&
+				!$user->owns($producer->team)
+			)
+				throw new \Exception('Доступ закрыт');
+
+			$basePath = 'team_' . $producer->team->id;
+
+			if ($producer->storefrontImage) {
+				Storage::disk('public')->delete($producer->storefrontImage->path);
+
+				Image::find($producer->storefront_image_id)->delete();
+			}
+
+			$path = Storage::disk('public')->putFileAs(
+				$basePath,
+				request()->file('storefront_image'),
+				'storefront-' . now()->timestamp . '.' . request()->file('storefront_image')->extension()
+			);
+
+			$image = Image::create([
+				'imageable_id' => $producer->id,
+				'imageable_type' => Producer::class,
+				'path' => $path
+			]);
+
+			if (!$path)
+				throw new \Exception('Ошибка сервиса');
+
+			$producer->storefront_image_id = $image->id;
+
+			$producer->save();
+
+		} catch (\Throwable $e) {
+			throw new \Exception($e->getMessage());
+		}
+
+		return $image;
+	}
+
+	/**
 	 * @param $producerData
 	 * @return JsonResponse
 	 * @throws \Throwable

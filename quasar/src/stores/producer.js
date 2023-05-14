@@ -133,6 +133,13 @@ export const useProducerStore = defineStore("producer", {
 			)
 		},
 
+		async setProducerStorefrontImage({ producer_id, storefront_image }) {
+			return api.post(
+				"/personal/producers/" + producer_id + "/setStorefrontImage",
+				storefront_image,
+			)
+		},
+
 		setFetchingState(is_fetching) {
 			this.is_fetching = is_fetching
 		}

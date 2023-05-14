@@ -1,140 +1,95 @@
 <template>
-	<q-card
-		class="q-ma-md bg-green-3"
-		style="height:300px"
-	>
-		<q-card-section
-			horizontal
-			class="full-height"
-		>
-			<q-card-section class="col-6 q-pa-none">
-				<div
-					v-if="can_manage_storefront || is_team_admin"
-					class="full-height full-width absolute cursor-pointer flex flex-center storefront__setup-box"
-					:class="{'bg-green-6 text-white': is_dragging === 1}"
-					style="border-right:1px dashed black"
-					@dragenter.prevent="is_dragging = 1"
-					@dragleave.prevent="onDragLeave"
-					@dragover.prevent
-					@drop.prevent="drop"
-					@click="showFilePrompt"
-				>
+	<div class="row q-pa-md">
+		<div class="col-12">
+			<q-card
+				class="bg-green-3"
+				:class="{'bg-green-6 text-white': is_dragging}"
+				style="height:300px"
+			>
+				<q-card-section class="row flex-center full-height q-pa-none">
+					<q-img
+						v-if="team.detailed.storefront_image"
+						:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
+						fit="contain"
+						height="300px"
+					/>
 					<span
+						v-else
 						class="text-center"
 					>
-						1
+						Выберите изображение <br /> или переместите в эту область
 					</span>
-				</div>
-				<q-inner-loading :showing="is_loading === 1">
-					<q-spinner-gears
-						size="50px"
-						color="primary"
-					/>
-				</q-inner-loading>
-			</q-card-section>
-			<q-card-section class="col-6 column q-pa-none">
-				<div class="col-6 relative-position">
 					<div
 						v-if="can_manage_storefront || is_team_admin"
-						class="full-height full-width absolute cursor-pointer flex flex-center storefront__setup-box"
-						:class="{'bg-green-6 text-white': is_dragging === 2}"
-						style="border-bottom:1px dashed black"
-						@dragenter.prevent="is_dragging = 2"
-						@dragleave.prevent="onDragLeave"
+						class="full-height full-width absolute cursor-pointer"
+						@dragenter.prevent="is_dragging = true"
+						@dragleave.prevent="is_dragging = false"
 						@dragover.prevent
 						@drop.prevent="drop"
 						@click="showFilePrompt"
-					>
-						<span
-							class="text-center"
-						>
-							2
-						</span>
-					</div>
-					<q-inner-loading :showing="is_loading === 2">
+					></div>
+					<q-inner-loading :showing="is_loading">
 						<q-spinner-gears
 							size="50px"
 							color="primary"
 						/>
 					</q-inner-loading>
-				</div>
-				<div class="col-grow relative-position">
-					<div
-						v-if="can_manage_storefront || is_team_admin"
-						class="full-height full-width absolute cursor-pointer flex flex-center storefront__setup-box"
-						:class="{'bg-green-6 text-white': is_dragging === 3}"
-						@dragenter.prevent="is_dragging = 3"
-						@dragleave.prevent="onDragLeave"
-						@dragover.prevent
-						@drop.prevent="drop"
-						@click="showFilePrompt"
-					>
-						<span
-							class="text-center"
-						>
-							3
-						</span>
-					</div>
-					<q-inner-loading :showing="is_loading === 3">
-						<q-spinner-gears
-							size="50px"
-							color="primary"
-						/>
-					</q-inner-loading>
-				</div>
-			</q-card-section>
-		</q-card-section>
-	</q-card>
-	<!--	<q-file-->
-	<!--		v-model="image"-->
-	<!--		multiple-->
-	<!--		ref="file_picker"-->
-	<!--		accept=".jpg, image/*"-->
-	<!--		style="display:none"-->
-	<!--		@update:model-value="addImage"-->
-	<!--	/>-->
+				</q-card-section>
+			</q-card>
+			<q-file
+				v-model="image"
+				ref="file_picker"
+				accept=".jpg, image/*"
+				style="display:none"
+				@update:model-value="addImage"
+			/>
+		</div>
+	</div>
 
-	<q-card
-		class="q-ma-md"
-		style="height: 300px"
-	>
-		<q-card-section class="q-pa-none full-height">
-			<q-carousel
-				v-if="!is_fetching_thumbnails && thumbnails.length > 0"
-				swipeable
-				animated
-				v-model="selectedThumbnail"
-				infinite
-				height="300px"
-				class="rounded-borders"
-			>
-				<q-carousel-slide
-					v-for="thumbnail in thumbnails"
-					:key="thumbnail.id"
-					:name="thumbnail.id"
-					class="q-pa-none height"
-				>
-					<q-img
-						height="300px"
-						fit="contain"
-						:src="backendServer + '/storage/' + thumbnail.path"
-					/>
-				</q-carousel-slide>
-			</q-carousel>
-			<div
-				v-else-if="!is_fetching_thumbnails"
-				class="full-height flex flex-center"
-			>
-				Выберите заставки своим продуктам чтобы составить витрину
-			</div>
-			<q-inner-loading :showing="is_fetching_thumbnails">
-				<q-spinner-gears
-					color="primary"
-					size="50px"
-				/>
-			</q-inner-loading>
-		</q-card-section>
-	</q-card>
+
+<!--	<q-carousel-->
+<!--		v-if="!is_fetching_thumbnails && thumbnails.length > 0"-->
+<!--		v-model="slide"-->
+<!--		transition-prev="slide-right"-->
+<!--		transition-next="slide-left"-->
+<!--		swipeable-->
+<!--		animated-->
+<!--		control-color="white"-->
+<!--		infinite-->
+<!--		padding-->
+<!--		arrows-->
+<!--		class="q-mt-md q-mx-md bg-primary rounded-borders"-->
+<!--	>-->
+<!--		<q-carousel-slide-->
+<!--			v-for="i in Math.ceil(thumbnails.length/3)"-->
+<!--			:key="i"-->
+<!--			:name="i"-->
+<!--			class="q-pa-none column no-wrap"-->
+<!--		>-->
+<!--			<div class="row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap">-->
+<!--				<q-img-->
+<!--					v-for="thumbnail in thumbnails.slice((i-1)*3, i*3)"-->
+<!--					:key="thumbnail.id"-->
+<!--					class="col-4 full-height"-->
+<!--					fit="contain"-->
+<!--					:src="backendServer + '/storage/' + thumbnail.path"-->
+<!--				/>-->
+<!--			</div>-->
+<!--		</q-carousel-slide>-->
+<!--	</q-carousel>-->
+<!--	<div-->
+<!--		v-else-if="!is_fetching_thumbnails"-->
+<!--		class="full-height flex flex-center"-->
+<!--	>-->
+<!--		Выберите заставки своим продуктам чтобы добавить картинки витрине-->
+<!--	</div>-->
+<!--	<q-inner-loading :showing="is_fetching_thumbnails">-->
+<!--		<q-spinner-gears-->
+<!--			color="primary"-->
+<!--			size="50px"-->
+<!--		/>-->
+<!--	</q-inner-loading>-->
+
 </template>
 
 <script>
@@ -145,7 +100,6 @@ import { usePermissionStore } from "src/stores/permission"
 import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
-import { api } from "src/boot/axios"
 export default {
 	setup() {
 		const $router = useRouter()
@@ -163,8 +117,8 @@ export default {
 		const image = ref(null)
 
 		const file_picker = ref(null)
-		const is_dragging = ref(0)
-		const is_loading = ref(0)
+		const is_dragging = ref(false)
+		const is_loading = ref(false)
 
 		const is_team_admin = computed(() => user_store.data.id === team.value.user_id)
 
@@ -185,11 +139,11 @@ export default {
 			is_loading.value = true
 
 			let form_data = new FormData()
-			form_data.append("logo", image.value)
+			form_data.append("storefront_image", image.value)
 
 			// todo validate with q-file help
-			const promise = producer_store.setProducerLogo({
-				logo: form_data,
+			const promise = producer_store.setProducerStorefrontImage({
+				storefront_image: form_data,
 				producer_id: team.value.detailed_id
 			})
 
@@ -197,7 +151,7 @@ export default {
 				team_store.setTeamFields({
 					team_id: team.value.id,
 					fields: {
-						logo: response.data
+						storefront_image: response.data
 					},
 					detailed_id: team.value.detailed_id
 				})
@@ -210,8 +164,8 @@ export default {
 			})
 
 			promise.finally(() => {
-				is_loading.value = 0
-				is_dragging.value = 0
+				is_loading.value = false
+				is_dragging.value = false
 			})
 		}
 
@@ -219,42 +173,36 @@ export default {
 			file_picker.value.pickFiles()
 		}
 
-		const onDragLeave = (e) => {
-			if (e.relatedTarget.classList.contains("storefront__setup-box")) return
-			is_dragging.value = 0
-		}
-
-		const thumbnails = ref([])
-
-		const is_fetching_thumbnails = ref(false)
-
-		const fetchThumbnails = () => {
-			is_fetching_thumbnails.value = true
-
-			const promise = api.get(
-				"personal/producers/" + $router.currentRoute.value.params.producer_id + "/products/thumbnails"
-			)
-
-			promise.then((response) => {
-				if (response.data.length === 0) return
-
-				thumbnails.value = response.data
-
-				selectedThumbnail.value = thumbnails.value[0].id
-			})
-
-			promise.catch((error) => {
-				notifyError(error.response.data)
-			})
-
-			promise.finally(() => is_fetching_thumbnails.value = false)
-		}
-
-		fetchThumbnails()
-
-		const selectedThumbnail = ref(null)
+		// const thumbnails = ref([])
+		//
+		// const is_fetching_thumbnails = ref(false)
+		//
+		// const fetchThumbnails = () => {
+		// 	is_fetching_thumbnails.value = true
+		//
+		// 	const promise = api.get(
+		// 		"personal/producers/" + $router.currentRoute.value.params.producer_id + "/products/thumbnails"
+		// 	)
+		//
+		// 	promise.then((response) => {
+		// 		if (response.data.length === 0) return
+		//
+		// 		thumbnails.value = response.data
+		// 	})
+		//
+		// 	promise.catch((error) => {
+		// 		notifyError(error.response.data)
+		// 	})
+		//
+		// 	promise.finally(() => is_fetching_thumbnails.value = false)
+		// }
+		//
+		// fetchThumbnails()
+		//
+		// const slide = ref(1)
 
 		return {
+			team,
 			image,
 			backend_server,
 			is_loading,
@@ -265,11 +213,7 @@ export default {
 			is_team_admin,
 			showFilePrompt,
 			file_picker,
-			onDragLeave,
-			selectedThumbnail,
-			thumbnails,
-			backendServer,
-			is_fetching_thumbnails
+			backendServer
 		}
 	}
 }

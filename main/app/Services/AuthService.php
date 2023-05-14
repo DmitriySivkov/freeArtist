@@ -112,7 +112,11 @@ class AuthService
 
 		return $this->userTeams->map(function(Team $team) {
 			$team->loadMorph('detailed', [
-				Producer::class => ['city', 'logo']
+				Producer::class => [
+					'city',
+					'logo',
+					'storefrontImage'
+				]
 			]);
 			return $team;
 		});

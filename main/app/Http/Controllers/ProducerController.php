@@ -92,6 +92,21 @@ class ProducerController extends Controller
 	}
 
 	/**
+	 * @param Producer $producer
+	 * @param ProducerService $producerService
+	 * @return \App\Models\Image|\Illuminate\Database\Eloquent\Model|JsonResponse
+	 */
+	public function setProducerStorefrontImage(Producer $producer, ProducerService $producerService)
+	{
+		try {
+			return $producerService->setStorefrontImage($producer);
+		} catch (\Throwable $e) {
+			return response()->json($e->getMessage())
+				->setStatusCode(422);
+		}
+	}
+
+	/**
 	 * @param ProducerRegisterRequest $request
 	 * @param ProducerService $producerService
 	 * @return JsonResponse
