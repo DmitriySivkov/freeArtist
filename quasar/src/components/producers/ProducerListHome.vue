@@ -3,28 +3,55 @@
 		ref="scroll_component"
 		@load="loadProducers"
 		:offset="250"
-		class="absolute column full-height full-width q-pt-md"
+		class="absolute column full-height full-width"
 	>
-		<div class="col-6 row">
+		<!-- todo - figure how to make it 6 column -->
+		<div
+			v-for="producer in producers"
+			:key="producer.id"
+			class="col-6 row items-start full-width"
+			style="border:1px dashed black"
+		>
 			<q-responsive
 				:ratio="16/9"
-				class="col"
+				class="col-12"
+				style="max-height:70%; border:1px solid red"
 			>
 				<q-card
-					v-for="producer in producers"
-					:key="producer.id"
-					class="column home__producer-card text-white justify-center"
-					:class="{ 'bg-light-green-2': cart.hasOwnProperty(producer.id) }"
-					@click="show(producer.id)"
+					flat
+					class="column"
 				>
 					<q-img
+						class="col"
 						:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
 						fit="contain"
-						class="col"
 					/>
 				</q-card>
 			</q-responsive>
+			<div class="col-12">
+				123
+			</div>
 		</div>
+		<!--				<div class="col-6 row">-->
+		<!--					<q-responsive-->
+		<!--						:ratio="16/9"-->
+		<!--						class="col"-->
+		<!--					>-->
+		<!--						<q-card-->
+		<!--							v-for="producer in producers"-->
+		<!--							:key="producer.id"-->
+		<!--							class="column home__producer-card text-white justify-center"-->
+		<!--							:class="{ 'bg-light-green-2': cart.hasOwnProperty(producer.id) }"-->
+		<!--							@click="show(producer.id)"-->
+		<!--						>-->
+		<!--							<q-img-->
+		<!--								:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"-->
+		<!--								fit="contain"-->
+		<!--								class="col"-->
+		<!--							/>-->
+		<!--						</q-card>-->
+		<!--					</q-responsive>-->
+		<!--				</div>-->
 		<template v-slot:loading>
 			<div class="row justify-center q-my-md">
 				<q-spinner-dots
