@@ -3,9 +3,8 @@
 		ref="scroll_component"
 		@load="loadProducers"
 		:offset="250"
-		class="absolute column full-height full-width"
+		class="absolute column no-wrap full-height full-width"
 	>
-		<!-- todo - figure how to make it 6 column -->
 		<div
 			v-for="producer in producers"
 			:key="producer.id"
@@ -28,30 +27,40 @@
 					/>
 				</q-card>
 			</q-responsive>
-			<div class="col-12">
-				123
-			</div>
+
+			<q-carousel
+				v-if="producer.products.length > 0"
+				v-model="slide"
+				class="col-12"
+				transition-prev="slide-right"
+				transition-next="slide-left"
+				swipeable
+				animated
+				control-color="white"
+				infinite
+				padding
+				arrows
+				height="30%"
+			>
+				<q-carousel-slide
+					v-for="i in Math.ceil(producer.products.length/2)"
+					:key="i"
+					:name="i"
+					class="q-pa-none column no-wrap"
+				>
+					<div class="row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap">
+						<q-img
+							v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
+							:key="thumbnail.id"
+							class="col-1"
+							fit="contain"
+							:src="backend_server + '/storage/' + thumbnail.path"
+						/>
+					</div>
+				</q-carousel-slide>
+			</q-carousel>
+
 		</div>
-		<!--				<div class="col-6 row">-->
-		<!--					<q-responsive-->
-		<!--						:ratio="16/9"-->
-		<!--						class="col"-->
-		<!--					>-->
-		<!--						<q-card-->
-		<!--							v-for="producer in producers"-->
-		<!--							:key="producer.id"-->
-		<!--							class="column home__producer-card text-white justify-center"-->
-		<!--							:class="{ 'bg-light-green-2': cart.hasOwnProperty(producer.id) }"-->
-		<!--							@click="show(producer.id)"-->
-		<!--						>-->
-		<!--							<q-img-->
-		<!--								:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"-->
-		<!--								fit="contain"-->
-		<!--								class="col"-->
-		<!--							/>-->
-		<!--						</q-card>-->
-		<!--					</q-responsive>-->
-		<!--				</div>-->
 		<template v-slot:loading>
 			<div class="row justify-center q-my-md">
 				<q-spinner-dots
@@ -86,6 +95,7 @@ export default ({
 
 		const producers = ref([])
 		const carousel = ref({})
+		const slide = ref(1)
 
 		const cart = computed(() => cart_store.data)
 
@@ -100,6 +110,7 @@ export default ({
 		const fetchProducers = async() => {
 			const limit = 5
 
+			// todo - wtf is fetching state
 			producer_store.setFetchingState(true)
 
 			const response = await api.get("producers", {
@@ -139,7 +150,8 @@ export default ({
 			backend_server,
 			loadProducers,
 			scroll_component,
-			carousel
+			carousel,
+			slide
 		}
 	}
 })
