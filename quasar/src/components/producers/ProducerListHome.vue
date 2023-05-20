@@ -3,22 +3,22 @@
 		ref="scroll_component"
 		@load="loadProducers"
 		:offset="250"
-		class="absolute column no-wrap full-height full-width"
+		class="absolute column no-wrap full-height full-width q-mt-xs"
 	>
 		<div
 			v-for="producer in producers"
 			:key="producer.id"
-			class="col-6 row items-start full-width"
-			style="border:1px dashed black"
+			class="col-6 row items-start full-width q-mb-xs"
 		>
 			<q-responsive
 				:ratio="16/9"
 				class="col-12"
-				style="max-height:70%; border:1px solid red"
+				:style="{height: producer.products.length > 0 ? '70%' : '100%'}"
 			>
 				<q-card
 					flat
-					class="column"
+					square
+					class="column bg-primary"
 				>
 					<q-img
 						class="col"
@@ -31,31 +31,31 @@
 			<q-carousel
 				v-if="producer.products.length > 0"
 				v-model="slide"
-				class="col-12"
-				transition-prev="slide-right"
-				transition-next="slide-left"
+				class="col-12 bg-secondary"
+				transition-prev="fade"
+				transition-next="fade"
 				swipeable
 				animated
 				control-color="white"
 				infinite
-				padding
-				arrows
 				height="30%"
 			>
 				<q-carousel-slide
-					v-for="i in Math.ceil(producer.products.length/2)"
+					v-for="i in Math.ceil(producer.products.length/3)"
 					:key="i"
 					:name="i"
-					class="q-pa-none column no-wrap"
+					class="q-pa-none"
 				>
-					<div class="row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap">
-						<q-img
-							v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
-							:key="thumbnail.id"
-							class="col-1"
-							fit="contain"
-							:src="backend_server + '/storage/' + thumbnail.path"
-						/>
+					<div class="column fit">
+						<div class="col row">
+							<q-img
+								v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*3, i*3)"
+								:key="thumbnail.id"
+								class="col-4 full-height"
+								fit="contain"
+								:src="backend_server + '/storage/' + thumbnail.path"
+							/>
+						</div>
 					</div>
 				</q-carousel-slide>
 			</q-carousel>
