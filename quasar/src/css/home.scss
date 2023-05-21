@@ -1,4 +1,5 @@
 .home {
+
 	&__producer-card {
 		cursor: pointer;
 		background-color: $primary;
@@ -7,4 +8,18 @@
 			background-color:rgba($primary, 0.9);
 		}
 	}
+
+	&__producer-card-carousel {
+		& .q-carousel__prev-arrow--horizontal {
+			@media (max-width: $breakpoint-xs-max) {
+				left: 2px;
+			}
+		}
+		& .q-carousel__next-arrow--horizontal {
+			@media (max-width: $breakpoint-xs-max) {
+				right: 2px;
+			}
+		}
+	}
 }
+

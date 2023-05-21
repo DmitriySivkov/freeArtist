@@ -31,13 +31,14 @@
 			<q-carousel
 				v-if="producer.products.length > 0"
 				v-model="slide"
-				class="col-12 bg-secondary"
+				class="col-12 bg-secondary home__producer-card-carousel"
 				transition-prev="fade"
 				transition-next="fade"
 				swipeable
 				animated
 				control-color="white"
 				infinite
+				:arrows="producer.products.length > 3"
 				height="30%"
 			>
 				<q-carousel-slide
@@ -47,19 +48,23 @@
 					class="q-pa-none"
 				>
 					<div class="column fit">
-						<div class="col row">
-							<q-img
-								v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*3, i*3)"
-								:key="thumbnail.id"
-								class="col-4 full-height"
-								fit="contain"
-								:src="backend_server + '/storage/' + thumbnail.path"
-							/>
+						<div class="col row full-height justify-center">
+							<div class="col-xs-9 col-md-6 full-height">
+								<div class="row full-height justify-center q-gutter-xs no-wrap">
+									<q-img
+										v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*3, i*3)"
+										:key="thumbnail.id"
+										class="col-4 full-height bg-white"
+										style="border:1px dashed black"
+										fit="contain"
+										:src="backend_server + '/storage/' + thumbnail.path"
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 				</q-carousel-slide>
 			</q-carousel>
-
 		</div>
 		<template v-slot:loading>
 			<div class="row justify-center q-my-md">
@@ -94,7 +99,6 @@ export default ({
 		)
 
 		const producers = ref([])
-		const carousel = ref({})
 		const slide = ref(1)
 
 		const cart = computed(() => cart_store.data)
@@ -150,7 +154,6 @@ export default ({
 			backend_server,
 			loadProducers,
 			scroll_component,
-			carousel,
 			slide
 		}
 	}
