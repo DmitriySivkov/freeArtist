@@ -10,17 +10,29 @@
 				:class="{'bg-green-6 text-white': is_dragging}"
 			>
 				<!-- todo - bring to this format all picture boxes (remove q-card-section container) -->
+				<cropper
+					v-if="tmp_image"
+					ref="cropper"
+					class="cropper full-width"
+					backgroundClass="bg-green-4"
+					:src="tmp_image"
+					:stencil-props="{aspectRatio: 16/9}"
+					style="z-index:9999"
+				/>
+
 				<q-img
-					v-if="team.detailed.storefront_image"
+					v-else-if="team.detailed.storefront_image"
 					:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
 					fit="contain"
 				/>
+
 				<span
 					v-else
 					class="text-center"
 				>
 					Выберите изображение <br /> или переместите в эту область
 				</span>
+
 				<div
 					v-if="can_manage_storefront || is_team_admin"
 					class="full-height full-width absolute cursor-pointer"
@@ -30,7 +42,10 @@
 					@drop.prevent="drop"
 					@click="showFilePrompt"
 				></div>
-				<q-inner-loading :showing="is_loading">
+				<q-inner-loading
+					:showing="is_loading"
+					style="z-index:99999"
+				>
 					<q-spinner-gears
 						size="50px"
 						color="primary"
@@ -38,14 +53,35 @@
 				</q-inner-loading>
 			</q-card>
 		</q-responsive>
-		<q-file
-			v-model="image"
-			ref="file_picker"
-			accept=".jpg, image/*"
-			style="display:none"
-			@update:model-value="addImage"
-		/>
 	</div>
+	<div
+		v-if="tmp_image"
+		class="row q-col-gutter-md q-px-md"
+	>
+		<div class="col-6">
+			<q-btn
+				color="secondary"
+				icon="done"
+				class="q-pa-lg full-height full-width"
+				@click="loadImage"
+			/>
+		</div>
+		<div class="col-6">
+			<q-btn
+				color="red"
+				icon="clear"
+				class="q-pa-lg full-height full-width"
+				@click="cancelImage"
+			/>
+		</div>
+	</div>
+	<q-file
+		v-model="image"
+		ref="file_picker"
+		accept=".jpg, image/*"
+		style="display:none"
+		@update:model-value="addImage"
+	/>
 
 
 <!--	<q-carousel-->
@@ -101,7 +137,9 @@ import { usePermissionStore } from "src/stores/permission"
 import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
+import { Cropper } from "vue-advanced-cropper"
 export default {
+	components: { Cropper },
 	setup() {
 		const $router = useRouter()
 		const user_store = useUserStore()
@@ -116,6 +154,8 @@ export default {
 		)
 
 		const image = ref(null)
+
+		const cropper = ref(null)
 
 		const file_picker = ref(null)
 		const is_dragging = ref(false)
@@ -133,14 +173,31 @@ export default {
 		const { notifySuccess, notifyError } = useNotification()
 
 		const drop = (e) => {
+			is_dragging.value = false
 			file_picker.value.addFiles([e.dataTransfer.files[0]])
 		}
 
+		const tmp_image = ref(null)
+
 		const addImage = () => {
+			tmp_image.value = URL.createObjectURL(image.value)
+		}
+
+		const cancelImage = () => {
+			tmp_image.value = null
+			image.value = null
+		}
+
+		const loadImage = async() => {
 			is_loading.value = true
 
+			const { canvas } = cropper.value.getResult()
+
 			let form_data = new FormData()
-			form_data.append("storefront_image", image.value)
+
+			const blob = await new Promise(resolve => canvas.toBlob(resolve))
+
+			form_data.append("storefront_image", blob)
 
 			// todo validate with q-file help
 			const promise = producer_store.setProducerStorefrontImage({
@@ -167,6 +224,7 @@ export default {
 			promise.finally(() => {
 				is_loading.value = false
 				is_dragging.value = false
+				tmp_image.value = null
 			})
 		}
 
@@ -174,47 +232,27 @@ export default {
 			file_picker.value.pickFiles()
 		}
 
-		// const thumbnails = ref([])
-		//
-		// const is_fetching_thumbnails = ref(false)
-		//
-		// const fetchThumbnails = () => {
-		// 	is_fetching_thumbnails.value = true
-		//
-		// 	const promise = api.get(
-		// 		"personal/producers/" + $router.currentRoute.value.params.producer_id + "/products/thumbnails"
-		// 	)
-		//
-		// 	promise.then((response) => {
-		// 		if (response.data.length === 0) return
-		//
-		// 		thumbnails.value = response.data
-		// 	})
-		//
-		// 	promise.catch((error) => {
-		// 		notifyError(error.response.data)
-		// 	})
-		//
-		// 	promise.finally(() => is_fetching_thumbnails.value = false)
-		// }
-		//
-		// fetchThumbnails()
-		//
-		// const slide = ref(1)
+		const onCropperChange = ({ canvas }) => {
+			this.image = canvas.toDataURL()
+		}
 
 		return {
 			team,
 			image,
+			cropper,
 			backend_server,
 			is_loading,
 			is_dragging,
 			drop,
 			addImage,
+			loadImage,
+			cancelImage,
 			can_manage_storefront,
 			is_team_admin,
 			showFilePrompt,
 			file_picker,
-			backendServer
+			backendServer,
+			tmp_image
 		}
 	}
 }

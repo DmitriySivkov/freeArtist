@@ -23,6 +23,7 @@
     "pusher-js": "^7.4.0",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
+    "vue-advanced-cropper": "^2.8.8",
     "vue-currency-input": "^3.0.3",
     "vue-router": "^4.0.0"
   },
