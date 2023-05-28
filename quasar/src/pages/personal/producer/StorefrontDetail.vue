@@ -1,80 +1,84 @@
 <template>
-	<div class="row q-pa-md">
-		<q-responsive
-			:ratio="16/9"
-			class="col"
-			style="max-height: 300px"
-		>
-			<q-card
-				class="column bg-green-3"
-				:class="{'bg-green-6 text-white': is_dragging}"
+	<div class="absolute column no-wrap full-height full-width q-mt-xs">
+		<div class="col-6 row items-start full-width q-mb-xs">
+			<q-responsive
+				:ratio="16/9"
+				class="col"
 			>
-				<!-- todo - bring to this format all picture boxes (remove q-card-section container) -->
-				<cropper
-					v-if="tmp_image"
-					ref="cropper"
-					class="cropper full-width"
-					backgroundClass="bg-green-4"
-					:src="tmp_image"
-					:stencil-props="{aspectRatio: 16/9}"
-					style="z-index:9999"
-				/>
-
-				<q-img
-					v-else-if="team.detailed.storefront_image"
-					:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
-					fit="contain"
-				/>
-
-				<span
-					v-else
-					class="text-center"
+				<q-card
+					flat
+					square
+					class="column bg-green-3"
+					:class="{'bg-green-6 text-white': is_dragging}"
 				>
-					Выберите изображение <br /> или переместите в эту область
-				</span>
-
-				<div
-					v-if="can_manage_storefront || is_team_admin"
-					class="full-height full-width absolute cursor-pointer"
-					@dragenter.prevent="is_dragging = true"
-					@dragleave.prevent="is_dragging = false"
-					@dragover.prevent
-					@drop.prevent="drop"
-					@click="showFilePrompt"
-				></div>
-				<q-inner-loading
-					:showing="is_loading"
-					style="z-index:99999"
-				>
-					<q-spinner-gears
-						size="50px"
-						color="primary"
+					<!-- todo - bring to this format all picture boxes (remove q-card-section container) -->
+					<cropper
+						v-if="tmp_image"
+						ref="cropper"
+						class="cropper full-width"
+						backgroundClass="bg-green-4"
+						:src="tmp_image"
+						:stencil-props="{aspectRatio: 16/9}"
+						style="z-index:9999"
 					/>
-				</q-inner-loading>
-			</q-card>
-		</q-responsive>
-	</div>
-	<div
-		v-if="tmp_image"
-		class="row q-col-gutter-md q-px-md"
-	>
-		<div class="col-6">
-			<q-btn
-				color="secondary"
-				icon="done"
-				class="q-pa-lg full-height full-width"
-				@click="loadImage"
-			/>
+
+					<q-img
+						v-else-if="team.detailed.storefront_image"
+						:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
+						fit="contain"
+					/>
+
+					<span
+						v-else
+						class="text-center"
+					>
+						Выберите изображение <br /> или переместите в эту область
+					</span>
+
+					<div
+						v-if="can_manage_storefront || is_team_admin"
+						class="full-height full-width absolute cursor-pointer"
+						@dragenter.prevent="is_dragging = true"
+						@dragleave.prevent="is_dragging = false"
+						@dragover.prevent
+						@drop.prevent="drop"
+						@click="showFilePrompt"
+					></div>
+					<q-inner-loading
+						:showing="is_loading"
+						style="z-index:99999"
+					>
+						<q-spinner-gears
+							size="50px"
+							color="primary"
+						/>
+					</q-inner-loading>
+				</q-card>
+			</q-responsive>
 		</div>
-		<div class="col-6">
-			<q-btn
-				color="red"
-				icon="clear"
-				class="q-pa-lg full-height full-width"
-				@click="cancelImage"
-			/>
+		<div
+			v-if="tmp_image"
+			class="row q-col-gutter-md q-px-md"
+		>
+			<div class="col-6">
+				<q-btn
+					color="secondary"
+					icon="done"
+					class="q-pa-lg full-height full-width"
+					@click="loadImage"
+				/>
+			</div>
+			<div class="col-6">
+				<q-btn
+					color="red"
+					icon="clear"
+					class="q-pa-lg full-height full-width"
+					@click="cancelImage"
+				/>
+			</div>
 		</div>
 	</div>
+
 	<q-file
 		v-model="image"
 		ref="file_picker"
@@ -82,51 +86,6 @@
 		style="display:none"
 		@update:model-value="addImage"
 	/>
-
-
-<!--	<q-carousel-->
-<!--		v-if="!is_fetching_thumbnails && thumbnails.length > 0"-->
-<!--		v-model="slide"-->
-<!--		transition-prev="slide-right"-->
-<!--		transition-next="slide-left"-->
-<!--		swipeable-->
-<!--		animated-->
-<!--		control-color="white"-->
-<!--		infinite-->
-<!--		padding-->
-<!--		arrows-->
-<!--		class="q-mt-md q-mx-md bg-primary rounded-borders"-->
-<!--	>-->
-<!--		<q-carousel-slide-->
-<!--			v-for="i in Math.ceil(thumbnails.length/3)"-->
-<!--			:key="i"-->
-<!--			:name="i"-->
-<!--			class="q-pa-none column no-wrap"-->
-<!--		>-->
-<!--			<div class="row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap">-->
-<!--				<q-img-->
-<!--					v-for="thumbnail in thumbnails.slice((i-1)*3, i*3)"-->
-<!--					:key="thumbnail.id"-->
-<!--					class="col-4 full-height"-->
-<!--					fit="contain"-->
-<!--					:src="backendServer + '/storage/' + thumbnail.path"-->
-<!--				/>-->
-<!--			</div>-->
-<!--		</q-carousel-slide>-->
-<!--	</q-carousel>-->
-<!--	<div-->
-<!--		v-else-if="!is_fetching_thumbnails"-->
-<!--		class="full-height flex flex-center"-->
-<!--	>-->
-<!--		Выберите заставки своим продуктам чтобы добавить картинки витрине-->
-<!--	</div>-->
-<!--	<q-inner-loading :showing="is_fetching_thumbnails">-->
-<!--		<q-spinner-gears-->
-<!--			color="primary"-->
-<!--			size="50px"-->
-<!--		/>-->
-<!--	</q-inner-loading>-->
-
 </template>
 
 <script>

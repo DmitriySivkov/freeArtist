@@ -8,12 +8,12 @@
 		<div
 			v-for="producer in producers"
 			:key="producer.id"
-			class="col-6 row items-start full-width q-mb-xs"
+			class="col-6 row items-start q-mb-xs"
 		>
 			<q-responsive
 				:ratio="16/9"
-				class="col-12"
-				:style="{height: producer.products.length > 0 ? '70%' : '100%'}"
+				class="col-xs-12 col-md-8"
+				:style="{height: producer.products.length > 0 && !isWidthThreshold ? '70%' : '100%'}"
 			>
 				<q-card
 					flat
@@ -31,7 +31,8 @@
 			<q-carousel
 				v-if="producer.products.length > 0"
 				v-model="slide"
-				class="col-12 bg-secondary home__producer-card-carousel"
+				:vertical="isWidthThreshold"
+				class="col-xs-12 col-md-grow bg-secondary home__producer-card-carousel"
 				transition-prev="fade"
 				transition-next="fade"
 				swipeable
@@ -39,7 +40,7 @@
 				control-color="white"
 				infinite
 				:arrows="producer.products.length > 3"
-				height="30%"
+				:height="isWidthThreshold ? '100%' : '30%'"
 			>
 				<q-carousel-slide
 					v-for="i in Math.ceil(producer.products.length/3)"
@@ -47,21 +48,37 @@
 					:name="i"
 					class="q-pa-none"
 				>
-					<div class="column fit">
+					<div
+						v-if="!isWidthThreshold"
+						class="column fit"
+					>
 						<div class="col row full-height justify-center">
 							<div class="col-xs-9 col-md-6 full-height">
 								<div class="row full-height justify-center q-gutter-xs no-wrap">
 									<q-img
 										v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*3, i*3)"
 										:key="thumbnail.id"
+										no-spinner
 										class="col-4 full-height bg-white"
-										style="border:1px dashed black"
 										fit="contain"
 										:src="backend_server + '/storage/' + thumbnail.path"
 									/>
 								</div>
 							</div>
 						</div>
+					</div>
+					<div
+						v-else
+						class="column fit justify-center q-gutter-xs q-mx-none"
+					>
+						<q-img
+							v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*3, i*3)"
+							:key="thumbnail.id"
+							no-spinner
+							class="col-3 bg-white q-mx-none"
+							fit="contain"
+							:src="backend_server + '/storage/' + thumbnail.path"
+						/>
 					</div>
 				</q-carousel-slide>
 			</q-carousel>
@@ -84,8 +101,10 @@ import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
+import { useQuasar } from "quasar"
 export default ({
 	setup() {
+		const $q = useQuasar()
 		const cart_store = useCartStore()
 		const user_store = useUserStore()
 		const producer_store = useProducerStore()
@@ -147,6 +166,8 @@ export default ({
 			scroll_component.value.poll()
 		})
 
+		const isWidthThreshold = computed(() => $q.screen.width > $q.screen.sizes.md)
+
 		return {
 			producers,
 			cart,
@@ -154,7 +175,8 @@ export default ({
 			backend_server,
 			loadProducers,
 			scroll_component,
-			slide
+			slide,
+			isWidthThreshold
 		}
 	}
 })
