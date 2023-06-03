@@ -13,23 +13,23 @@
 
 		& .q-carousel__prev-arrow--horizontal {
 			@media (max-width: $breakpoint-xs-max) {
-				left: 2px;
+				left: 1px;
 			}
 		}
 
 		& .q-carousel__next-arrow--horizontal {
 			@media (max-width: $breakpoint-xs-max) {
-				right: 2px;
+				right: 1px;
 			}
 		}
 
-		& .q-carousel__prev-arrow--vertical {
-			top: 5px;
-		}
-
-		& .q-carousel__next-arrow--vertical {
-			bottom: 5px;
-		}
+		//& .q-carousel__prev-arrow--vertical {
+		//	top: -2px;
+		//}
+		//
+		//& .q-carousel__next-arrow--vertical {
+		//	bottom: -2px;
+		//}
 	}
 }
 

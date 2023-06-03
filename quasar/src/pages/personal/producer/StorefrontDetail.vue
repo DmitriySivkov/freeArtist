@@ -8,10 +8,11 @@
 				<q-card
 					flat
 					square
-					class="column bg-green-3"
+					class="column bg-green-3 flex-center"
 					:class="{'bg-green-6 text-white': is_dragging}"
 				>
 					<!-- todo - bring to this format all picture boxes (remove q-card-section container) -->
+					<!-- todo - figure how to make 'default-size' 100% instead of '9999' -->
 					<cropper
 						v-if="tmp_image"
 						ref="cropper"
@@ -189,10 +190,6 @@ export default {
 
 		const showFilePrompt = () => {
 			file_picker.value.pickFiles()
-		}
-
-		const onCropperChange = ({ canvas }) => {
-			this.image = canvas.toDataURL()
 		}
 
 		return {

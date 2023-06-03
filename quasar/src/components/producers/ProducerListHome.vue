@@ -3,43 +3,36 @@
 		ref="scroll_component"
 		@load="loadProducers"
 		:offset="250"
-		class="absolute column no-wrap full-height full-width q-mt-xs"
+		class="absolute column q-col-gutter-y-xs no-wrap full-height full-width"
 	>
 		<div
 			v-for="producer in producers"
 			:key="producer.id"
-			class="col-6 row items-start q-mb-xs"
+			class="col-6 row items-start"
 		>
 			<q-responsive
 				:ratio="16/9"
-				class="col-xs-12 col-md-8"
+				class="col-xs-12 col-sm-8"
 				:style="{height: producer.products.length > 0 && !isWidthThreshold ? '70%' : '100%'}"
 			>
-				<q-card
-					flat
-					square
-					class="column bg-primary"
-				>
-					<q-img
-						class="col"
-						:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
-						fit="contain"
-					/>
-				</q-card>
+				<q-img
+					:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
+					fit="cover"
+				/>
 			</q-responsive>
 
 			<q-carousel
 				v-if="producer.products.length > 0"
-				v-model="slide"
+				v-model="slide[producer.id]"
 				:vertical="isWidthThreshold"
-				class="col-xs-12 col-md-grow bg-secondary home__producer-card-carousel"
+				class="col-xs-12 col-sm-grow bg-secondary home__producer-card-carousel"
 				transition-prev="fade"
 				transition-next="fade"
 				swipeable
 				animated
 				control-color="white"
 				infinite
-				:arrows="producer.products.length > 3"
+				:arrows="producer.products.length > 2"
 				:height="isWidthThreshold ? '100%' : '30%'"
 			>
 				<q-carousel-slide
@@ -56,11 +49,11 @@
 							<div class="col-xs-9 col-md-6 full-height">
 								<div class="row full-height justify-center q-gutter-xs no-wrap">
 									<q-img
-										v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*3, i*3)"
+										v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
 										:key="thumbnail.id"
 										no-spinner
-										class="col-4 full-height bg-white"
-										fit="contain"
+										class="col-6 full-height"
+										fit="cover"
 										:src="backend_server + '/storage/' + thumbnail.path"
 									/>
 								</div>
@@ -72,11 +65,11 @@
 						class="column fit justify-center q-gutter-xs q-mx-none"
 					>
 						<q-img
-							v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*3, i*3)"
+							v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
 							:key="thumbnail.id"
 							no-spinner
-							class="col-3 bg-white q-mx-none"
-							fit="contain"
+							class="col-4 q-mx-none"
+							fit="cover"
 							:src="backend_server + '/storage/' + thumbnail.path"
 						/>
 					</div>
@@ -118,7 +111,7 @@ export default ({
 		)
 
 		const producers = ref([])
-		const slide = ref(1)
+		const slide = ref({})
 
 		const cart = computed(() => cart_store.data)
 
@@ -147,6 +140,13 @@ export default ({
 
 			producers.value = [...producers.value, ...response.data]
 
+			slide.value = {
+				...slide.value,
+				...response.data.reduce(
+					(carry, i) => ({...carry, [i.id]: 1}), {}
+				)
+			}
+
 			producer_store.setFetchingState(false)
 
 			if (response.data.length < limit && scroll_component.value) {
@@ -166,7 +166,7 @@ export default ({
 			scroll_component.value.poll()
 		})
 
-		const isWidthThreshold = computed(() => $q.screen.width > $q.screen.sizes.md)
+		const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
 
 		return {
 			producers,
