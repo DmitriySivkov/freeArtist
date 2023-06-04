@@ -33,8 +33,8 @@ module.exports = configure(function (ctx) {
 
 		extras: [
 			"fontawesome-v5",
-			"roboto-font",
-			"material-icons",
+			// "roboto-font",
+			"material-icons"
 		],
 
 		build: {

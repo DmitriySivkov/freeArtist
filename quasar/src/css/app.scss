@@ -4,6 +4,12 @@
 @import "sticky";
 @import "storefront.scss";
 @import "cropper";
+
+@font-face{
+	font-family: Circe;
+	src:url(src/fonts/Circe-Regular.woff) format("woff")
+}
+
 // app global css in SCSS form
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
