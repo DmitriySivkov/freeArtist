@@ -15,7 +15,8 @@ module.exports = configure(function (ctx) {
 		preFetch: true,
 
 		boot: [
-			"authViaToken", // show loader
+			"stores", // keep first
+			"authViaToken",
 			"axios",
 			"setLocation",
 			"setCartFromLocalStorage",
@@ -24,7 +25,7 @@ module.exports = configure(function (ctx) {
 			"browseRoles",
 			"browsePermissions",
 			"ws",
-			"routes" // hide loader
+			"routes" // keep at the end
 		],
 
 		css: [
@@ -32,7 +33,7 @@ module.exports = configure(function (ctx) {
 		],
 
 		extras: [
-			"fontawesome-v5",
+			"fontawesome-v6",
 			// "roboto-font",
 			"material-icons"
 		],

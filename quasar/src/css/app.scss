@@ -4,6 +4,7 @@
 @import "sticky";
 @import "storefront.scss";
 @import "cropper";
+@import "loading-screen";
 
 @font-face{
 	font-family: Circe;
@@ -20,7 +21,7 @@ input[type="number"] {
 	-moz-appearance: textfield;
 }
 
-body {
+#q-app {
 	overflow: hidden;
 	background-image: url("src/assets/body.jpg");
 	background-size: 20%;

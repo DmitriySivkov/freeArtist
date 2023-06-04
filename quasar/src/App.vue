@@ -8,19 +8,20 @@ import { echo } from "src/boot/ws"
 import { useUserStore } from "src/stores/user"
 import { usePrivateChannels } from "src/composables/privateChannels"
 import { Plugins } from "@capacitor/core"
-import { useQuasar } from "quasar"
+import { Platform } from "quasar"
 export default {
 	setup() {
-		const $q = useQuasar()
+		const userStore = useUserStore()
+
 		const { StatusBar } = Plugins
-		const user_store = useUserStore()
+
 		const private_channels = usePrivateChannels()
 
 		const connectPrivateChannels = () => {
 			if (!window.Pusher.isConnected)
 				echo.connect()
 
-			if (user_store.data.id) {
+			if (userStore.data.id) {
 				private_channels.connectTeams()
 				private_channels.connectRelationRequestUser()
 				private_channels.connectRelationRequestTeam()
@@ -34,19 +35,19 @@ export default {
 			})
 		}
 
-		if ($q.platform.is.capacitor) {
+		if (Platform.is.capacitor) {
 			setStatusBar()
 		}
 
 		connectPrivateChannels()
 
-		watch(() => user_store.data.id, (userId) => {
+		watch(() => userStore.data.id, (userId) => {
 			if (userId) {
 				connectPrivateChannels()
 			} else {
 				echo.disconnect()
 			}
 		})
-	},
+	}
 }
 </script>
