@@ -1,4 +1,3 @@
-import { Loading } from "quasar"
 import { useUserStore } from "src/stores/user"
 
 export default ({ store, router }) => {
@@ -35,5 +34,5 @@ export default ({ store, router }) => {
 		next()
 	})
 
-	Loading.hide()
+	document.getElementById("loading-screen").remove()
 }

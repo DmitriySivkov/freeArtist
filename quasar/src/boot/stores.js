@@ -1,4 +1,3 @@
-import { Loading } from "quasar"
 import { useUserStore } from "src/stores/user"
 import { usePermissionStore } from "src/stores/permission"
 import { useProducerStore } from "src/stores/producer"
@@ -8,13 +7,6 @@ import { useRelationRequestStore } from "src/stores/relation-request"
 import { useTeamStore } from "src/stores/team"
 
 export default async ({ store }) => {
-	Loading.show({
-		html: true,
-		message: "<h1>Quasar app</h1>",
-		boxClass: "loading-screen",
-		spinnerColor: "white",
-	})
-
 	const _userStore = useUserStore(store)
 	const _permissionStore = usePermissionStore(store)
 	const _producerStore = useProducerStore(store)

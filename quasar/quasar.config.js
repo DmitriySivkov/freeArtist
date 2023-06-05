@@ -15,7 +15,7 @@ module.exports = configure(function (ctx) {
 		preFetch: true,
 
 		boot: [
-			"stores", // keep first
+			"stores",
 			"authViaToken",
 			"axios",
 			"setLocation",
@@ -33,7 +33,7 @@ module.exports = configure(function (ctx) {
 		],
 
 		extras: [
-			"fontawesome-v6",
+			// "fontawesome-v6",
 			// "roboto-font",
 			"material-icons"
 		],
