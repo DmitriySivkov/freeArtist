@@ -5,7 +5,7 @@
 		<!--		<MainHeader />-->
 		<q-page-container>
 			<q-page class="row no-wrap justify-center">
-				<div class="col-xs-12 col-lg-8 bg-white">
+				<div class="col-xs-12 col-md-8 col-xl-7 bg-white">
 					<div class="column full-height">
 						<q-scroll-area
 							class="col"

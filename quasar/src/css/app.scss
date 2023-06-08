@@ -22,9 +22,5 @@ input[type="number"] {
 
 #q-app {
 	overflow: hidden;
-	background-image: url("src/assets/body.jpg");
-	background-size: 20%;
-	@media (max-device-width: $breakpoint-md-max) {
-		background-size: 100%;
-	}
+	background-color: #dce1e6;
 }
