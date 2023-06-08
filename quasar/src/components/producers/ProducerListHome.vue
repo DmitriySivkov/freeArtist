@@ -3,79 +3,90 @@
 		ref="scroll_component"
 		@load="loadProducers"
 		:offset="250"
-		class="absolute column q-col-gutter-y-xs no-wrap full-height full-width"
+		class="absolute column no-wrap full-height full-width"
 	>
-		<div
+		<q-card
 			v-for="producer in producers"
 			:key="producer.id"
-			class="col-6 row items-start"
+			class="col-6 row home__card"
+			:class="`home__card_${isWidthThreshold ? 'expand' : 'shrink'}`"
 		>
-			<q-responsive
-				:ratio="16/9"
-				class="col-xs-12 col-sm-8"
-				:style="{height: producer.products.length > 0 && !isWidthThreshold ? '70%' : '100%'}"
-			>
-				<q-img
-					:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
-					fit="cover"
-				/>
-			</q-responsive>
-
-			<q-carousel
-				v-if="producer.products.length > 0"
-				v-model="slide[producer.id]"
-				:vertical="isWidthThreshold"
-				class="col-xs-12 col-sm-grow bg-secondary home__producer-card-carousel"
-				transition-prev="fade"
-				transition-next="fade"
-				swipeable
-				animated
-				control-color="white"
-				infinite
-				:arrows="producer.products.length > 2"
-				:height="isWidthThreshold ? '100%' : '30%'"
-			>
-				<q-carousel-slide
-					v-for="i in Math.ceil(producer.products.length/3)"
-					:key="i"
-					:name="i"
-					class="q-pa-none"
-				>
-					<div
-						v-if="!isWidthThreshold"
-						class="column fit"
-					>
-						<div class="col row full-height justify-center">
-							<div class="col-xs-9 col-md-6 full-height">
-								<div class="row full-height justify-center q-gutter-xs no-wrap">
-									<q-img
-										v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
-										:key="thumbnail.id"
-										no-spinner
-										class="col-6 full-height"
-										fit="cover"
-										:src="backend_server + '/storage/' + thumbnail.path"
-									/>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						v-else
-						class="column fit justify-center q-gutter-xs q-mx-none"
+			<div class="column fit">
+				<div class="col-10 row">
+					<q-responsive
+						:ratio="16/9"
+						class="col-xs-12 col-sm-8"
+						:style="{height: producer.products.length > 0 && !isWidthThreshold ? '70%' : '100%'}"
 					>
 						<q-img
-							v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
-							:key="thumbnail.id"
-							no-spinner
-							class="col-4 q-mx-none"
+							class="home__card-image"
+							:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
 							fit="cover"
-							:src="backend_server + '/storage/' + thumbnail.path"
 						/>
-					</div>
-				</q-carousel-slide>
-			</q-carousel>
-		</div>
+					</q-responsive>
+
+					<q-carousel
+						v-if="producer.products.length > 0"
+						v-model="slide[producer.id]"
+						:vertical="isWidthThreshold"
+						class="col-xs-12 col-sm-grow bg-secondary home__card-carousel"
+						transition-prev="fade"
+						transition-next="fade"
+						swipeable
+						animated
+						control-color="white"
+						infinite
+						:arrows="producer.products.length > 2"
+						:height="isWidthThreshold ? '100%' : '30%'"
+					>
+						<q-carousel-slide
+							v-for="i in Math.ceil(producer.products.length/3)"
+							:key="i"
+							:name="i"
+							class="q-pa-none"
+						>
+							<div
+								v-if="!isWidthThreshold"
+								class="column fit"
+							>
+								<div class="col row full-height justify-center">
+									<div class="col-xs-9 col-md-6 full-height">
+										<div class="row full-height justify-center q-gutter-xs no-wrap">
+											<q-img
+												v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
+												:key="thumbnail.id"
+												no-spinner
+												class="col-6 full-height"
+												fit="cover"
+												:src="backend_server + '/storage/' + thumbnail.path"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div
+								v-else
+								class="column fit justify-center q-gutter-xs q-mx-none"
+							>
+								<q-img
+									v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
+									:key="thumbnail.id"
+									no-spinner
+									class="col-4 q-mx-none"
+									fit="cover"
+									:src="backend_server + '/storage/' + thumbnail.path"
+								/>
+							</div>
+						</q-carousel-slide>
+					</q-carousel>
+				</div>
+				<div class="col-2 row">
+
+					<span class="text-h6 q-pa-md">{{ producer.display_name }}</span>
+
+				</div>
+			</div>
+		</q-card>
 		<template v-slot:loading>
 			<div class="row justify-center q-my-md">
 				<q-spinner-dots

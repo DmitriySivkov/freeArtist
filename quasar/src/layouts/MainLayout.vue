@@ -2,7 +2,7 @@
 	<q-layout
 		view="lHh Lpr lFf"
 	>
-		<MainHeader />
+		<!--		<MainHeader />-->
 		<q-page-container>
 			<q-page class="row no-wrap justify-center">
 				<div class="col-xs-12 col-lg-8 bg-white">

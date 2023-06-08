@@ -1,15 +1,32 @@
 .home {
 
-	&__producer-card {
+	&__card {
 		cursor: pointer;
-		background-color: $primary;
-		&:hover {
-			transition: background-color 0.3s;
-			background-color:rgba($primary, 0.9);
+		margin: 0 16px 16px 16px;
+		border-radius: 8px;
+
+		&_expand {
+			& .home__card-image {
+				border-radius: 8px 0 0 8px;
+			}
+
+			& .home__card-carousel {
+				border-radius: 0 8px 8px 0 !important;
+			}
+		}
+
+		&_shrink {
+			& .home__card-image {
+				border-radius: 8px 8px 0 0;
+			}
+
+			& .home__card-carousel {
+				border-radius: 0 0 8px 8px !important;
+			}
 		}
 	}
 
-	&__producer-card-carousel {
+	&__card-carousel {
 
 		& .q-carousel__prev-arrow--horizontal {
 			@media (max-width: $breakpoint-xs-max) {
