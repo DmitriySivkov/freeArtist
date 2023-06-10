@@ -1,9 +1,15 @@
 <template>
 	<q-layout view="lHh Lpr lFr">
 		<q-page-container>
-			<q-page class="row no-wrap justify-center">
+			<q-page class="row no-wrap">
 				<div
-					class="col-xs-12 col-md-8 col-xl-7"
+					v-if="$q.screen.width >= $q.screen.sizes.md"
+					class="col-md-3 col-lg-2"
+				>
+					<MenuMain />
+				</div>
+				<div
+					class="col-xs-12 col-md-grow"
 					:class="$router.currentRoute.value.name === 'home' ? 'bg-primary' : 'bg-white'"
 				>
 					<div class="column full-height">
@@ -24,7 +30,9 @@
 							</router-view>
 						</q-scroll-area>
 					</div>
-					<MainFooter />
+
+					<MainFooter v-if="$q.screen.width < $q.screen.sizes.md" />
+
 				</div>
 			</q-page>
 		</q-page-container>
@@ -32,11 +40,8 @@
 	</q-layout>
 </template>
 
-<script>
+<script setup>
 import MainFooter from "src/layouts/MainFooter.vue"
-import MainHeader from "src/layouts/MainHeader.vue"
-export default {
-	name: "MainLayout",
-	components: { MainHeader, MainFooter },
-}
+import MenuMain from "src/components/menus/MenuMain.vue"
+
 </script>

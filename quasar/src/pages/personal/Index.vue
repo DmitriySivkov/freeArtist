@@ -6,7 +6,7 @@
 			dense
 			inline-label
 			active-color="white"
-			active-bg-color="secondary"
+			active-bg-color="primary"
 			indicator-color="transparent"
 			align="justify"
 			class="text-white bg-indigo-10"
