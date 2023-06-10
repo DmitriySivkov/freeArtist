@@ -2,7 +2,10 @@
 	<q-layout view="lHh Lpr lFr">
 		<q-page-container>
 			<q-page class="row no-wrap justify-center">
-				<div class="col-xs-12 col-md-8 col-xl-7 bg-white">
+				<div
+					class="col-xs-12 col-md-8 col-xl-7"
+					:class="$router.currentRoute.value.name === 'home' ? 'bg-primary' : 'bg-white'"
+				>
 					<div class="column full-height">
 						<q-scroll-area
 							class="col"
