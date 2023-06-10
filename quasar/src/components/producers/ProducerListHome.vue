@@ -34,7 +34,7 @@
 						transition-next="fade"
 						swipeable
 						animated
-						control-color="white"
+						control-color="dark"
 						infinite
 						:arrows="producer.products.length > 2"
 						:height="isWidthThreshold ? '100%' : '30%'"

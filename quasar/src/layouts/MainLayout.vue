@@ -1,8 +1,5 @@
 <template>
-	<q-layout
-		view="lHh Lpr lFf"
-	>
-		<!--		<MainHeader />-->
+	<q-layout view="lHh Lpr lFr">
 		<q-page-container>
 			<q-page class="row no-wrap justify-center">
 				<div class="col-xs-12 col-md-8 col-xl-7 bg-white">
@@ -24,10 +21,11 @@
 							</router-view>
 						</q-scroll-area>
 					</div>
+					<MainFooter />
 				</div>
 			</q-page>
 		</q-page-container>
-		<MainFooter />
+
 	</q-layout>
 </template>
 
