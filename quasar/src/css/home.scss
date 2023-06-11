@@ -30,22 +30,30 @@
 
 		& .q-carousel__prev-arrow--horizontal {
 			@media (max-width: $breakpoint-xs-max) {
-				left: 1px;
+				left: 5px
 			}
 		}
 
 		& .q-carousel__next-arrow--horizontal {
 			@media (max-width: $breakpoint-xs-max) {
-				right: 1px;
+				right: 5px;
 			}
 		}
 
 		& .q-carousel__prev-arrow--vertical {
 			top: 0;
+
+			@media (min-width: $breakpoint-lg-min) {
+				top: 5px;
+			}
 		}
 
 		& .q-carousel__next-arrow--vertical {
 			bottom: 0;
+
+			@media (min-width: $breakpoint-lg-min) {
+				bottom: 5px;
+			}
 		}
 	}
 }

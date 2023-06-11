@@ -3,7 +3,7 @@
 		<div class="col-3">
 			<ProducerFilterHome />
 		</div>
-		<div class="col-9">
+		<div class="col-grow">
 			<ProducerListHome />
 		</div>
 	</div>
