@@ -3,33 +3,27 @@
 		ref="scroll_component"
 		@load="loadProducers"
 		:offset="250"
-		class="absolute column no-wrap full-height full-width"
+		class="column no-wrap full-height full-width"
 	>
 		<q-card
 			v-for="producer in producers"
 			:key="producer.id"
-			class="col-6 row home__card"
+			class="col-grow row home__card"
 			:class="`home__card_${isWidthThreshold ? 'expand' : 'shrink'}`"
 		>
-			<div class="column fit">
-				<div class="col-10 row">
-					<q-responsive
+			<div class="column no-wrap fit">
+				<div class="col-grow row">
+					<q-img
+						class="col-xs-12 col-sm home__card-image"
+						:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
+						fit="cover"
 						:ratio="16/9"
-						class="col-xs-12 col-sm-8"
-						:style="{height: producer.products.length > 0 && !isWidthThreshold ? '70%' : '100%'}"
-					>
-						<q-img
-							class="home__card-image"
-							:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
-							fit="cover"
-						/>
-					</q-responsive>
-
+					/>
 					<q-carousel
 						v-if="producer.products.length > 0"
 						v-model="slide[producer.id]"
 						:vertical="isWidthThreshold"
-						class="col-xs-12 col-sm-grow bg-secondary home__card-carousel"
+						class="col-xs-12 col-sm-4 bg-secondary home__card-carousel"
 						transition-prev="fade"
 						transition-next="fade"
 						swipeable
@@ -37,7 +31,6 @@
 						control-color="dark"
 						infinite
 						:arrows="producer.products.length > 2"
-						:height="isWidthThreshold ? '100%' : '30%'"
 					>
 						<q-carousel-slide
 							v-for="i in Math.ceil(producer.products.length/3)"
@@ -47,17 +40,17 @@
 						>
 							<div
 								v-if="!isWidthThreshold"
-								class="column fit"
+								class="column no-wrap"
 							>
-								<div class="col row full-height justify-center">
-									<div class="col-xs-9 col-md-6 full-height">
-										<div class="row full-height justify-center q-gutter-xs no-wrap">
+								<div class="col-4 row justify-center">
+									<div class="col-xs-9">
+										<div class="row justify-center q-col-gutter-x-xs no-wrap">
 											<q-img
 												v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
 												:key="thumbnail.id"
 												no-spinner
-												class="col-6 full-height"
-												fit="cover"
+												class="col-6"
+												fit="contain"
 												:src="backend_server + '/storage/' + thumbnail.path"
 											/>
 										</div>
