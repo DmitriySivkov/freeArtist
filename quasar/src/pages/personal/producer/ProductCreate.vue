@@ -3,7 +3,7 @@
 		:model-value="tab"
 		@update:model-value="tab = $event"
 		active-color="white"
-		active-bg-color="secondary"
+		active-bg-color="primary"
 		indicator-color="transparent"
 		align="justify"
 		class="text-white bg-indigo-10"
@@ -64,7 +64,7 @@
 			size="1.5em"
 			:class="{'composition__button_done_active': isProductChanged}"
 			icon="done"
-			color="secondary"
+			color="primary"
 			@click="storeProduct"
 		/>
 	</q-page-sticky>

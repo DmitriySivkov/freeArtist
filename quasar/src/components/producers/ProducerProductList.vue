@@ -78,7 +78,7 @@
 				round
 				size="1.5em"
 				icon="add"
-				color="secondary"
+				color="primary"
 			/>
 		</q-page-sticky>
 	</div>

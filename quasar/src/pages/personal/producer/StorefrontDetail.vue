@@ -63,7 +63,7 @@
 		>
 			<div class="col-6">
 				<q-btn
-					color="secondary"
+					color="primary"
 					icon="done"
 					class="q-pa-lg full-height full-width"
 					@click="loadImage"
