@@ -23,37 +23,53 @@
 			label="Изображения"
 			class="q-pa-md"
 		/>
+		<q-tab
+			name="tags"
+			label="Теги"
+			class="q-pa-md"
+		/>
 	</q-tabs>
 
-	<q-tab-panels
-		:model-value="tab"
-		animated
-		keep-alive
-	>
-		<q-tab-panel name="common">
-			<ProducerProductSettingCommonTab
-				ref="commonTab"
-				:model-value="product"
-				@update:model-value="product = $event"
-			/>
-		</q-tab-panel>
+	<q-page-container>
+		<q-page>
+			<q-tab-panels
+				:model-value="tab"
+				animated
+				keep-alive
+			>
+				<q-tab-panel name="common">
+					<ProducerProductSettingCommonTab
+						ref="commonTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
 
-		<q-tab-panel name="composition">
-			<ProducerProductSettingCompositionTab
-				ref="compositionTab"
-				:model-value="product"
-				@update:model-value="product = $event"
-			/>
-		</q-tab-panel>
+				<q-tab-panel name="composition">
+					<ProducerProductSettingCompositionTab
+						ref="compositionTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
 
-		<q-tab-panel name="images">
-			<ProducerProductSettingImagesTab
-				:model-value="product"
-				@update:model-value="product = $event"
-			/>
-		</q-tab-panel>
-	</q-tab-panels>
+				<q-tab-panel name="images">
+					<ProducerProductSettingImagesTab
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
 
+				<q-tab-panel name="tags">
+					<ProducerProductSettingTagsTab
+						ref="tagsTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
+			</q-tab-panels>
+		</q-page>
+	</q-page-container>
 	<q-page-sticky
 		position="bottom-right"
 		class="transform-none"
@@ -82,12 +98,16 @@ import ProducerProductSettingCompositionTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCompositionTab.vue"
 import ProducerProductSettingImagesTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
+import ProducerProductSettingTagsTab
+	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingTagsTab.vue"
+// todo - replace all '_' lodash imports for specific functions
 import _ from "lodash"
 export default {
 	components: {
 		ProducerProductSettingCommonTab,
 		ProducerProductSettingCompositionTab,
-		ProducerProductSettingImagesTab
+		ProducerProductSettingImagesTab,
+		ProducerProductSettingTagsTab
 	},
 	setup() {
 		const team_store = useTeamStore()
@@ -114,6 +134,7 @@ export default {
 
 		const commonTab = ref(null)
 		const compositionTab = ref(null)
+		const tagsTab = ref(null)
 
 		const isProductChanged = computed(() => !_.isEqual(product.value, defaultProduct))
 
@@ -188,7 +209,8 @@ export default {
 			isProductChanged,
 			defaultProduct,
 			commonTab,
-			compositionTab
+			compositionTab,
+			tagsTab
 		}
 	}
 }
