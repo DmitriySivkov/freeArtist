@@ -1,0 +1,7 @@
+.scroll-area {
+	&__main {
+		& .q-scrollarea__content {
+			max-width: 100%;
+		}
+	}
+}

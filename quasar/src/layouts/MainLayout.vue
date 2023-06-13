@@ -1,7 +1,7 @@
 <template>
 	<q-layout view="lHh Lpr lFr">
 		<q-page-container>
-			<q-page class="row no-wrap">
+			<q-page class="row">
 				<div
 					v-if="$q.screen.width >= $q.screen.sizes.md"
 					class="col-md-3 col-lg-2"
@@ -14,7 +14,7 @@
 				>
 					<div class="column full-height">
 						<q-scroll-area
-							class="col"
+							class="col scroll-area__main"
 							:thumb-style="{ opacity: 0 }"
 						>
 							<router-view v-slot="{ Component }">
