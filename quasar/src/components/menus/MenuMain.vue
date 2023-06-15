@@ -31,7 +31,6 @@ const logout = () => {
 </script>
 <template>
 	<q-list bordered>
-
 		<q-item
 			v-if="!is_user_logged"
 			clickable
@@ -43,20 +42,19 @@ const logout = () => {
 				<q-icon name="login" />
 			</q-item-section>
 
-			<q-item-section>{{ !is_user_logged ? 'Войти' : 'Выйти' }}</q-item-section>
+			<q-item-section>Войти</q-item-section>
 		</q-item>
 		<q-item
 			v-if="is_user_logged"
 			clickable
 			v-ripple
 			@click="logout"
-			:class="{'bg-primary text-white': ['login', 'register'].includes(route.name)}"
 		>
 			<q-item-section avatar>
 				<q-icon name="login" />
 			</q-item-section>
 
-			<q-item-section>{{ !is_user_logged ? 'Войти' : 'Выйти' }}</q-item-section>
+			<q-item-section>Выйти</q-item-section>
 		</q-item>
 		<q-item
 			clickable
