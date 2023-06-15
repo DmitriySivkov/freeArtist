@@ -71,7 +71,8 @@ class ProducerController extends Controller
 			->with([
 				'images' => fn($query) =>
 					$query->orderByDesc('created_at'),
-				'thumbnail'
+				'thumbnail',
+				'tags'
 			])
 			->orderByDesc('title')
 			->get();

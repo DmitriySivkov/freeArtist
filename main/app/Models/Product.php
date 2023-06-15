@@ -76,4 +76,17 @@ class Product extends Model
 		return $this->belongsTo(Image::class);
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function tags()
+	{
+		return $this->belongsToMany(
+			ProducerTag::class,
+			'product_tag',
+			'product_id',
+			'tag_id'
+		);
+	}
+
 }
