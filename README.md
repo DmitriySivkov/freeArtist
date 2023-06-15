@@ -47,8 +47,8 @@ https://stackoverflow.com/questions/47239251/install-failed-user-restricted-andr
 windows blocks connection to itself. Need to turn off some param on windows defender. Brutally - turn off public network defender
 
 ### q-card
-q-card inside v-for with columns works this way: 
-dont add gutters to row. 
+q-card inside v-for with columns works this way:
+dont add gutters to row.
 Pull margin classes from q-card to wrapper
 
 ### create new DB with postgres
@@ -71,6 +71,7 @@ make cache
 
 ### cant connect to websockets locally
 Its self-signed certificate problem. Manually enter websocket url and accept certificate
+https://api.freeartist.loc/laravel-websockets
 
 ### start websockets
 make ws

@@ -7,22 +7,21 @@
 	/>
 </template>
 
-<script>
+<script setup>
 import { useUserStore } from "src/stores/user"
 import { useNotification } from "src/composables/notification"
-import { computed } from "vue"
-export default {
-	setup() {
-		const user_store = useUserStore()
-		const { notifySuccess } = useNotification()
-		const logout = () => {
-			user_store.logout().then(() =>
-				notifySuccess("До свидания!")
-			)
-		}
-		return {
-			logout
-		}
+import {useRouter} from "vue-router"
+
+const user_store = useUserStore()
+const { notifySuccess } = useNotification()
+const $router = useRouter()
+const logout = () => {
+	user_store.logout().then(() =>
+	{
+		notifySuccess("До свидания!")
+		$router.push({"name": "home"})
 	}
+	)
 }
+
 </script>
