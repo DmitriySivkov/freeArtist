@@ -7,6 +7,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Broadcast;
@@ -112,6 +113,10 @@ Route::group([
 			Route::post('{team}/create', [UserController::class, 'createRequest']);
 			Route::post('{relationRequest}/setStatus', [UserController::class, 'setRelationRequestStatus']);
 		});
+	});
+
+	Route::group(['prefix' => 'tags'], function() {
+		Route::get('', [TagController::class, 'index']);
 	});
 
 });
