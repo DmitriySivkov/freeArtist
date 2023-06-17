@@ -38,6 +38,8 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
+ * @property-read int|null $tags_count
  */
 class Product extends Model
 {
@@ -81,12 +83,7 @@ class Product extends Model
 	 */
 	public function tags()
 	{
-		return $this->belongsToMany(
-			ProducerTag::class,
-			'product_tag',
-			'product_id',
-			'tag_id'
-		);
+		return $this->belongsToMany(Tag::class);
 	}
 
 }
