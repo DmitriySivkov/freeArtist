@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * App\Models\ProductTag
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|ProductTag query()
  * @mixin \Eloquent
  */
-class ProductTag extends Model
+class ProductTag extends Pivot
 {
     use HasFactory;
 
