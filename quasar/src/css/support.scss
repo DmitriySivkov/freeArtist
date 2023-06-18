@@ -12,3 +12,9 @@
 		transform: none !important;
 	}
 }
+
+.word-break {
+	&_all {
+		word-break: break-all;
+	}
+}

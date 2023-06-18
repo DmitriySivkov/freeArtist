@@ -17,8 +17,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('product_id');
 			$table->unsignedInteger('tag_id');
-			$table->unsignedInteger('tag_producer_id')
-				->nullable();
         });
     }
 

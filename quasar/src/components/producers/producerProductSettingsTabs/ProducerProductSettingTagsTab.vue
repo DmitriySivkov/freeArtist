@@ -1,6 +1,5 @@
 <script setup>
-import { ref, computed } from "vue"
-import { api } from "src/boot/axios"
+import { computed } from "vue"
 import { useNotification } from "src/composables/notification"
 
 const props = defineProps({
@@ -16,39 +15,32 @@ const emit = defineEmits([
 
 const { notifyError } = useNotification()
 
-const options = ref([])
-
 const defaultTags = computed(() => props.modelValue.tags.filter((t) => !t.is_new))
 const newTags = computed(() => props.modelValue.tags.filter((t) => t.is_new))
 
-const addTag = ({ value }) => {
-	if (props.modelValue.tags.length === 5) {
+const createTag = (tag, doneFn) => {
+	if (props.modelValue.tags.length === 7) {
 		notifyError("Нельзя добавить больше тегов")
 		return
 	}
 
-	if (typeof value === "string") {
+	if (props.modelValue.tags.find((t) => t.name === tag))
+		return
 
-		if (props.modelValue.tags.find((t) => t.name === value))
-			return
+	// 'add-unique' does not work for current case
+	doneFn(tag, "add-unique")
 
-		value = {
-			id: crypto.randomUUID(),
-			name: value,
-			is_new: 1,
-			is_created: 1
-		}
-	} else {
-		value = {...value, is_new: 1}
+	tag = {
+		id: crypto.randomUUID(),
+		name: tag,
+		is_new: 1
 	}
 
 	emit(
 		"update:modelValue",
 		Object.assign(
 			props.modelValue,
-			{
-				tags: [...props.modelValue.tags, value]
-			}
+			{tags: [...props.modelValue.tags, tag]}
 		)
 	)
 }
@@ -62,83 +54,54 @@ const removeOptionById = (tagId) => {
 		)
 	)
 }
-
-const loadTags = async (query, update) => {
-	if (query.length < 1) return
-
-	const response = await api.get("personal/tags", {
-		params: { query }
-	})
-
-	update(() => {
-		options.value = response.data.map((tag) => {
-			return {
-				id: tag.id,
-				name: tag.name
-			}
-		})
-	})
-}
 </script>
 
 <template>
 	<div class="row">
 		<div class="col-xs-12 col-lg-8">
 			<q-select
-				label="Выберите тег или создайте собственный"
+				ref="select"
+				label="Введите название"
+				hint="Нажмите 'enter' чтобы добавить (максимум 7)"
 				filled
 				class="q-mb-sm"
 				:model-value="modelValue.tags"
 				use-input
-				multiple
 				hide-dropdown-icon
 				input-debounce="1000"
-				:options="options"
 				option-value="id"
 				option-label="name"
 				options-selected-class="primary"
-				new-value-mode="add-unique"
 				hide-selected
-				@filter="loadTags"
-				@add="addTag"
+				@add="createTag"
+				@new-value="createTag"
 				@remove="removeOptionById($event.value.id)"
-			>
-				<template #option="scope">
-					<q-item v-bind="scope.itemProps">
-						<q-item-section>
-							<q-item-label>{{ scope.opt.name }}</q-item-label>
-						</q-item-section>
-					</q-item>
-				</template>
-				<template #no-option>
-					<q-item>
-						<q-item-section class="text-grey">
-							Теги не найдены
-						</q-item-section>
-					</q-item>
-				</template>
-			</q-select>
+			/>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-6 col-lg-4">
-			<q-list>
-				<q-item-label header>
-					Имеющиеся
-				</q-item-label>
+			<q-item-label header>
+				Имеющиеся
+			</q-item-label>
+			<q-list separator>
 				<q-item
 					v-for="tag in defaultTags"
 					:key="tag.id"
 					clickable
+					class="bg-primary text-white"
 				>
 					<q-item-section
 						side
 						@click="removeOptionById(tag.id)"
 					>
-						<q-icon name="clear" />
+						<q-icon
+							name="clear"
+							color="white"
+						/>
 					</q-item-section>
-					<q-item-section>
-						<q-item-label> {{ tag.name }} </q-item-label>
+					<q-item-section class="word-break_all">
+						{{ tag.name }}
 					</q-item-section>
 				</q-item>
 			</q-list>
@@ -148,25 +111,27 @@ const loadTags = async (query, update) => {
 			class="q-mt-sm"
 		/>
 		<div class="col-xs-grow col-lg-4">
-			<q-list>
-				<q-item-label header>
-					Добавить
-				</q-item-label>
+			<q-item-label header>
+				Добавить
+			</q-item-label>
+			<q-list separator>
 				<q-item
 					v-for="tag in newTags"
 					:key="tag.id"
 					clickable
+					class="bg-teal-4 text-white"
 				>
 					<q-item-section
 						side
 						@click="removeOptionById(tag.id)"
 					>
-						<q-icon name="clear" />
+						<q-icon
+							name="clear"
+							color="white"
+						/>
 					</q-item-section>
-					<q-item-section>
-						<q-item-label>
-							{{ tag.name }}
-						</q-item-label>
+					<q-item-section class="word-break_all">
+						{{ tag.name }}
 					</q-item-section>
 				</q-item>
 			</q-list>
