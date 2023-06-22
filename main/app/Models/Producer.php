@@ -37,8 +37,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereStorefrontImageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
- * @property-read int|null $tags_count
  */
 class Producer extends Model
 {
@@ -112,19 +110,6 @@ class Producer extends Model
 	public function city()
 	{
 		return $this->belongsTo(City::class);
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-	 */
-	public function tags()
-	{
-		return $this->hasManyThrough(
-			Tag::class,
-			ProductTag::class,
-			'tag_producer_id',
-			'id'
-		);
 	}
 
 }

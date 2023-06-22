@@ -40,9 +40,12 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
  * @property-read int|null $tags_count
+ * @property array|null $keywords
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereKeywords($value)
  */
 class Product extends Model
 {
+	// todo - set maximum product amount for producer
     use HasFactory, HasJsonRelationships;
 
 	protected $guarded = [];
@@ -51,6 +54,7 @@ class Product extends Model
 
 	protected $casts = [
 		'composition' => 'array',
+		'keywords' => 'array',
 		'price' => 'float'
 	];
 

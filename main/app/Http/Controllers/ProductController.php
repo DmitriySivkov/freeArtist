@@ -40,7 +40,10 @@ class ProductController extends Controller
 
 			$product = $productService->updateProduct();
 
-			return $product->load(['images']);
+			return $product->load([
+				'images',
+				'tags'
+			]);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);

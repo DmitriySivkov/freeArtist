@@ -175,6 +175,8 @@ class ProductService
 				}
 			}
 
+
+
 			$this->product->save();
 
 			\DB::commit();

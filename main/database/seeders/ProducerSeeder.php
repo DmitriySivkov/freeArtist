@@ -41,8 +41,6 @@ class ProducerSeeder extends Seeder
 
 				$user->attachRole($producerRole, $team);
 				$user->attachPermission($permissionOwner, $team);
-
-
 		});
 
     }

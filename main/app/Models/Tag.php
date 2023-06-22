@@ -25,5 +25,5 @@ class Tag extends Model
 {
     use HasFactory;
 
-	protected $hidden = ['laravel_through_key'];
+	protected $guarded = [];
 }
