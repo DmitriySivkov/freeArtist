@@ -34,14 +34,6 @@ export const useProducerStore = defineStore("producer", {
 			this.detail = response.data
 		},
 
-		async getProducerProductList (producer_id) {
-			const response = await api.get("personal/producers/" + producer_id + "/products")
-
-			const team_store = useTeamStore()
-
-			team_store.user_teams.find((t) => t.detailed.id === producer_id).products = response.data
-		},
-
 		commitProducerProductFields({ producer_id, product_id, fields, tmp_uuid }) {
 			const team_store = useTeamStore()
 

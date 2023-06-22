@@ -86,9 +86,9 @@
 	</q-page-sticky>
 </template>
 
-<script>
+<script setup>
 import { useRouter } from "vue-router"
-import { computed, ref } from "vue"
+import {computed, defineComponent, ref} from "vue"
 import { useProducerStore } from "src/stores/producer"
 import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
@@ -102,116 +102,108 @@ import ProducerProductSettingTagsTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingTagsTab.vue"
 // todo - replace all '_' lodash imports for specific functions
 import _ from "lodash"
-export default {
-	components: {
-		ProducerProductSettingCommonTab,
-		ProducerProductSettingCompositionTab,
-		ProducerProductSettingImagesTab,
-		ProducerProductSettingTagsTab
-	},
-	setup() {
-		const team_store = useTeamStore()
-		const producer_store = useProducerStore()
-		const $router = useRouter()
 
-		const { notifySuccess, notifyError } = useNotification()
+defineComponent({
+	ProducerProductSettingCommonTab,
+	ProducerProductSettingCompositionTab,
+	ProducerProductSettingImagesTab,
+	ProducerProductSettingTagsTab
+})
 
-		const user_teams = computed(() => team_store.user_teams)
+const props = defineProps({
+	product: Object
+})
 
-		const team = computed(() =>
-			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
-		)
+const team_store = useTeamStore()
+const producer_store = useProducerStore()
+const $router = useRouter()
 
-		const defaultProduct = _.cloneDeep(
-			team.value.products.find((p) =>
-				p.id === parseInt($router.currentRoute.value.params.product_id)
-			)
-		)
+const { notifySuccess, notifyError } = useNotification()
 
-		const product = ref(_.cloneDeep(defaultProduct))
+const user_teams = computed(() => team_store.user_teams)
 
-		const tab = ref("common")
+const team = computed(() =>
+	user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
+)
 
-		const commonTab = ref(null)
-		const compositionTab = ref(null)
-		const tagsTab = ref(null)
+const defaultProduct = _.cloneDeep(
+	team.value.products.find((p) =>
+		p.id === parseInt($router.currentRoute.value.params.product_id)
+	)
+)
 
-		const isProductChanged = computed(() => !_.isEqual(product.value, defaultProduct))
+const product = ref(_.cloneDeep(defaultProduct))
 
-		const updateProduct = () => {
-			if (!isProductChanged.value) return
+const tab = ref("common")
 
-			let validation = validate()
+const commonTab = ref(null)
+const compositionTab = ref(null)
+const tagsTab = ref(null)
 
-			validation.then((tab_validations) => {
-				if (tab_validations.includes(false))
-					return
+const isProductChanged = computed(() => !_.isEqual(product.value, defaultProduct))
 
-				let tmp_uuid = crypto.randomUUID()
-				let producer_id = $router.currentRoute.value.params.producer_id
+const updateProduct = () => {
+	if (!isProductChanged.value) return
 
-				producer_store.commitProducerProductFields({
-					producer_id: parseInt(producer_id),
-					product_id: product.value.id,
-					fields: { ...product.value, tmp_uuid }
-				})
+	let validation = validate()
 
-				$router.push({
-					name: "personal_producer_products_detail",
-					params: { producer_id },
-				})
+	validation.then((tab_validations) => {
+		if (tab_validations.includes(false))
+			return
 
-				const promise = producer_store.updateProducerProduct({
-					product: product.value,
-				})
+		let tmp_uuid = crypto.randomUUID()
+		let producer_id = $router.currentRoute.value.params.producer_id
 
-				promise.then((response) => {
-					producer_store.commitProducerProductFields({
-						producer_id: parseInt(producer_id),
-						product_id: response.data.id,
-						tmp_uuid,
-						fields: response.data
-					})
+		producer_store.commitProducerProductFields({
+			producer_id: parseInt(producer_id),
+			product_id: product.value.id,
+			fields: { ...product.value, tmp_uuid }
+		})
 
-					notifySuccess("Продукт «" + product.value.title + "» успешно обновлён")
-				})
+		$router.push({
+			name: "personal_producer_products_detail",
+			params: { producer_id },
+		})
 
-				promise.catch((error) => {
-					producer_store.commitProducerProductFields({
-						producer_id: parseInt(producer_id),
-						product_id: product.value.id,
-						tmp_uuid,
-						fields: {...defaultProduct}
-					})
+		const promise = producer_store.updateProducerProduct({
+			product: product.value,
+		})
 
-					notifyError(error.response.data)
-				})
+		promise.then((response) => {
+			producer_store.commitProducerProductFields({
+				producer_id: parseInt(producer_id),
+				product_id: response.data.id,
+				tmp_uuid,
+				fields: response.data
 			})
-		}
 
-		const validate = () => {
-			let validations = []
+			notifySuccess("Продукт «" + product.value.title + "» успешно обновлён")
+		})
 
-			if (!!commonTab.value)
-				validations.push(commonTab.value.validate())
+		promise.catch((error) => {
+			producer_store.commitProducerProductFields({
+				producer_id: parseInt(producer_id),
+				product_id: product.value.id,
+				tmp_uuid,
+				fields: {...defaultProduct}
+			})
 
-			if (!!compositionTab.value)
-				validations.push(compositionTab.value.validate())
-
-			return Promise.all(validations)
-		}
-
-		return {
-			team,
-			updateProduct,
-			product,
-			tab,
-			isProductChanged,
-			defaultProduct,
-			commonTab,
-			compositionTab,
-			tagsTab
-		}
-	}
+			notifyError(error.response.data)
+		})
+	})
 }
+
+const validate = () => {
+	let validations = []
+
+	if (!!commonTab.value)
+		validations.push(commonTab.value.validate())
+
+	if (!!compositionTab.value)
+		validations.push(compositionTab.value.validate())
+
+	return Promise.all(validations)
+}
+
+
 </script>

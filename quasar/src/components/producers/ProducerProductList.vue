@@ -1,6 +1,9 @@
 <template>
-	<div class="column full-height">
-		<div class="col">
+	<div class="absolute column fit">
+		<div
+			v-if="isInitialized"
+			class="col"
+		>
 			<q-card
 				square
 				class="bg-primary"
@@ -66,96 +69,124 @@
 					<q-separator dark />
 				</template>
 			</q-card>
+			<q-page-sticky
+				v-if="isAbleToManageProduct"
+				position="bottom-right"
+				class="transform-none"
+				:offset="[18,18]"
+			>
+				<q-btn
+					:to="{name:'personal_producer_products_detail_create'}"
+					round
+					size="1.5em"
+					icon="add"
+					color="primary"
+				/>
+			</q-page-sticky>
 		</div>
-		<q-page-sticky
-			v-if="isAbleToManageProduct"
-			position="bottom-right"
-			class="transform-none"
-			:offset="[18,18]"
+		<q-card
+			v-else
+			square
+			class="col column"
 		>
-			<q-btn
-				:to="{name:'personal_producer_products_detail_create'}"
-				round
-				size="1.5em"
-				icon="add"
-				color="primary"
-			/>
-		</q-page-sticky>
+			<q-card-section
+				v-for="n in 6"
+				:key="n"
+				class="col row bg-primary"
+			>
+				<q-skeleton
+					height="70%"
+					width="100%"
+				/>
+				<q-separator
+					class="full-width"
+					color="white"
+				/>
+			</q-card-section>
+		</q-card>
 	</div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from "vue"
 import { Dialog } from "quasar"
 import { useRouter } from "vue-router"
 import { useProducerStore } from "src/stores/producer"
 import { useNotification } from "src/composables/notification"
-export default {
-	props: {
-		products: {
-			type: Array,
-			default: () => []
-		},
-		isAbleToManageProduct: Boolean,
-	},
-	setup() {
-		const $router = useRouter()
-		const producer_store = useProducerStore()
-		const { notifySuccess, notifyError } = useNotification()
+import { api } from "src/boot/axios"
 
-		const show = (product) => {
-			$router.push({
-				name:"personal_producer_products_detail_show",
-				params: {
-					product_id: product.id
-				}
-			})
+const props = defineProps({
+	isAbleToManageProduct: Boolean
+})
+
+const $router = useRouter()
+const producer_store = useProducerStore()
+const { notifySuccess, notifyError } = useNotification()
+
+const products = ref([])
+const isInitialized = ref(false)
+
+const show = (product) => {
+	$router.push({
+		name:"personal_producer_products_detail_show",
+		params: {
+			product: product.id
 		}
-
-		const showDeleteDialog = (product) => {
-			Dialog.create({
-				title: "Подтверждение",
-				message: "Удалить: " + product.title + " ?",
-				cancel: true,
-			}).onOk(() => {
-				let tmp_uuid = crypto.randomUUID()
-				let producer_id = $router.currentRoute.value.params.producer_id
-
-				producer_store.commitProducerProductFields({
-					producer_id: parseInt(producer_id),
-					product_id: product.id,
-					fields: { tmp_uuid }
-				})
-
-				const promise = producer_store.deleteProducerProduct({
-					product_id: product.id
-				})
-
-				promise.then(() => {
-					producer_store.commitRemoveProducerProduct({
-						producer_id: parseInt(producer_id),
-						product_id: product.id
-					})
-
-					notifySuccess("Продукт «" + product.title + "» успешно удалён")
-				})
-
-				promise.catch((error) => {
-					producer_store.commitProducerProductFields({
-						producer_id: parseInt(producer_id),
-						product_id: product.id,
-						tmp_uuid,
-						fields: {}
-					})
-
-					notifyError(error.response.data)
-				})
-			})
-		}
-
-		return {
-			show,
-			showDeleteDialog
-		}
-	}
+	})
 }
+
+const showDeleteDialog = (product) => {
+	Dialog.create({
+		title: "Подтверждение",
+		message: "Удалить: " + product.title + " ?",
+		cancel: true,
+	}).onOk(() => {
+		let tmp_uuid = crypto.randomUUID()
+		let producer_id = $router.currentRoute.value.params.producer_id
+
+		producer_store.commitProducerProductFields({
+			producer_id: parseInt(producer_id),
+			product_id: product.id,
+			fields: { tmp_uuid }
+		})
+
+		const promise = producer_store.deleteProducerProduct({
+			product_id: product.id
+		})
+
+		promise.then(() => {
+			producer_store.commitRemoveProducerProduct({
+				producer_id: parseInt(producer_id),
+				product_id: product.id
+			})
+
+			notifySuccess("Продукт «" + product.title + "» успешно удалён")
+		})
+
+		promise.catch((error) => {
+			producer_store.commitProducerProductFields({
+				producer_id: parseInt(producer_id),
+				product_id: product.id,
+				tmp_uuid,
+				fields: {}
+			})
+
+			notifyError(error.response.data)
+		})
+	})
+}
+
+onMounted(() => {
+	const promise = api.get("personal/producers/" + $router.currentRoute.value.params.producer_id + "/products")
+
+	promise.then((response) => {
+		products.value = response.data
+		isInitialized.value = true
+	})
+
+	promise.catch((error) => {
+		notifyError(error.response.data)
+	})
+})
+
 </script>
