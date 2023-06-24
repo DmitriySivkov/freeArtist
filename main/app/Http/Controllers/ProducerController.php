@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProducerRegisterRequest;
 use App\Models\Producer;
+use App\Models\Product;
 use App\Models\User;
 use App\Services\ProducerService;
 use App\Services\ResponseService;
@@ -68,14 +69,19 @@ class ProducerController extends Controller
 	public function getProducerProducts(Producer $producer)
 	{
 		return $producer->products()
-			->with([
-				'images' => fn($query) =>
-					$query->orderByDesc('created_at'),
-				'thumbnail',
-				'tags'
-			])
-			->orderByDesc('title')
+			->select(['id', 'title'])
+			->orderBy('created_at', 'desc')
 			->get();
+	}
+
+	public function getProducerProduct(Producer $producer, Product $product)
+	{
+		return $product->load([
+			'images' => fn($query) =>
+				$query->orderByDesc('created_at'),
+			'thumbnail',
+			'tags'
+		]);
 	}
 
 	/**

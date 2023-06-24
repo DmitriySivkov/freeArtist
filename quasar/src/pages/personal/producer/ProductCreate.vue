@@ -23,56 +23,73 @@
 			label="Изображения"
 			class="q-pa-md"
 		/>
+		<q-tab
+			name="tags"
+			label="Теги"
+			class="q-pa-md"
+		/>
 	</q-tabs>
 
-	<q-tab-panels
-		:model-value="tab"
-		animated
-		keep-alive
-	>
-		<q-tab-panel name="common">
-			<ProducerProductSettingCommonTab
-				ref="commonTab"
-				:model-value="product"
-				@update:model-value="product = $event"
-			/>
-		</q-tab-panel>
+	<q-page-container>
+		<q-page>
+			<q-tab-panels
+				:model-value="tab"
+				animated
+				keep-alive
+			>
+				<q-tab-panel name="common">
+					<ProducerProductSettingCommonTab
+						ref="commonTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
 
-		<q-tab-panel name="composition">
-			<ProducerProductSettingCompositionTab
-				ref="compositionTab"
-				:model-value="product"
-				@update:model-value="product = $event"
-			/>
-		</q-tab-panel>
+				<q-tab-panel name="composition">
+					<ProducerProductSettingCompositionTab
+						ref="compositionTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
 
-		<q-tab-panel name="images">
-			<ProducerProductSettingImagesTab
-				:model-value="product"
-				@update:model-value="product = $event"
-			/>
-		</q-tab-panel>
-	</q-tab-panels>
+				<q-tab-panel name="images">
+					<ProducerProductSettingImagesTab
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
 
-	<q-page-sticky
-		position="bottom-right"
-		class="transform-none"
-		:offset="[18,18]"
-	>
-		<q-btn
-			round
-			size="1.5em"
-			:class="{'composition__button_done_active': isProductChanged}"
-			icon="done"
-			color="primary"
-			@click="storeProduct"
-		/>
-	</q-page-sticky>
+				<q-tab-panel name="tags">
+					<ProducerProductSettingTagsTab
+						ref="tagsTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
+			</q-tab-panels>
+			<q-page-sticky
+				position="bottom-right"
+				class="transform-none"
+				:offset="[18,18]"
+			>
+				<q-btn
+					round
+					size="1.5em"
+					:class="{'composition__button_done_active': isProductChanged}"
+					icon="done"
+					:loading="isLoading"
+					color="primary"
+					@click="storeProduct"
+				/>
+			</q-page-sticky>
+		</q-page>
+	</q-page-container>
 </template>
 
-<script>
+<script setup>
 import { useRouter } from "vue-router"
-import { computed, ref } from "vue"
+import { computed, ref, defineComponent } from "vue"
 import { useProducerStore } from "src/stores/producer"
 import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
@@ -82,113 +99,104 @@ import ProducerProductSettingCompositionTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCompositionTab.vue"
 import ProducerProductSettingImagesTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
+import ProducerProductSettingTagsTab
+	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingTagsTab.vue"
 import _ from "lodash"
-export default {
-	components: {
-		ProducerProductSettingCommonTab,
-		ProducerProductSettingCompositionTab,
-		ProducerProductSettingImagesTab
-	},
-	setup() {
-		const team_store = useTeamStore()
-		const producer_store = useProducerStore()
-		const $router = useRouter()
+import { api } from "src/boot/axios"
 
-		const { notifySuccess, notifyError } = useNotification()
+defineComponent({
+	ProducerProductSettingCommonTab,
+	ProducerProductSettingCompositionTab,
+	ProducerProductSettingImagesTab,
+	ProducerProductSettingTagsTab
+})
 
-		const defaultProduct = {
-			title: "",
-			price: null,
-			amount: "",
-			composition: [],
-			images: []
-		}
+const teamStore = useTeamStore()
+const producerStore = useProducerStore()
+const $router = useRouter()
 
-		const product = ref({...defaultProduct})
+const { notifySuccess, notifyError } = useNotification()
 
-		const tab = ref("common")
+const isLoading = ref(false)
 
-		const commonTab = ref(null)
-		const compositionTab = ref(null)
+const defaultProduct = {
+	title: "",
+	price: null,
+	amount: "",
+	composition: [],
+	images: [],
+	tags: []
+}
 
-		const user_teams = computed(() => team_store.user_teams)
+const product = ref({...defaultProduct})
 
-		const team = computed(() =>
-			user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
-		)
+const tab = ref("common")
+const commonTab = ref(null)
+const compositionTab = ref(null)
+const tagsTab = ref(null)
 
-		const isProductChanged = computed(() => !_.isEqual(product.value, defaultProduct))
+const user_teams = computed(() => teamStore.user_teams)
 
-		const storeProduct = () => {
-			if (!isProductChanged.value) return
+const team = computed(() =>
+	user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
+)
 
-			let validation = validate()
+const isProductChanged = computed(() =>
+	!_.isEqual(product.value, defaultProduct)
+)
 
-			validation.then((tab_validations) => {
-				if (tab_validations.includes(false))
-					return
+const storeProduct = () => {
+	if (!isProductChanged.value) return
 
-				let tmp_uuid = crypto.randomUUID()
+	let validation = validate()
 
-				producer_store.commitProducerNewProduct({
-					producer_id: parseInt($router.currentRoute.value.params.producer_id),
-					product: {...product.value, tmp_uuid },
-				})
+	validation.then((tab_validations) => {
+		if (tab_validations.includes(false))
+			return
 
-				$router.push({
-					name: "personal_producer_products_detail",
-					params: { producer_id: $router.currentRoute.value.params.producer_id },
-				})
+		isLoading.value = true
 
-				const promise = producer_store.createProducerProduct({
-					product: product.value,
-					team_id: team.value.id
-				})
+		const promise = store()
 
-				promise.then((response) => {
-					producer_store.commitProducerNewProduct({
-						producer_id: parseInt($router.currentRoute.value.params.producer_id),
-						product: response.data,
-						tmp_uuid
-					})
-
-					notifySuccess("Продукт «" + product.value.title + "» успешно создан")
-				})
-
-				promise.catch((error) => {
-
-					producer_store.commitRemoveProducerProduct({
-						producer_id: parseInt($router.currentRoute.value.params.producer_id),
-						tmp_uuid
-					})
-
-					notifyError(error.response.data)
-				})
+		promise.then(() => {
+			$router.push({
+				name: "personal_producer_products_detail",
+				params: { producer_id: $router.currentRoute.value.params.producer_id },
 			})
-		}
 
-		const validate = () => {
-			let validations = []
+			notifySuccess(`Продукт «${product.value.title}» успешно создан`)
+		})
 
-			if (!!commonTab.value)
-				validations.push(commonTab.value.validate())
+		promise.catch((error) => {
+			notifyError(error.response.data)
+		})
 
-			if (!!compositionTab.value)
-				validations.push(compositionTab.value.validate())
+		promise.finally(() => isLoading.value = false)
+	})
+}
 
-			return Promise.all(validations)
-		}
+const store = () => {
+	let data = new FormData()
 
-		return {
-			team,
-			storeProduct,
-			product,
-			tab,
-			isProductChanged,
-			defaultProduct,
-			commonTab,
-			compositionTab
-		}
+	data.append("product", JSON.stringify(product.value))
+	data.append("team_id", team.value.id)
+
+	for (let i in product.value.committed_images) {
+		data.append("images[]", product.value.committed_images[i].instance)
 	}
+
+	return api.post("personal/products", data)
+}
+
+const validate = () => {
+	let validations = []
+
+	if (!!commonTab.value)
+		validations.push(commonTab.value.validate())
+
+	if (!!compositionTab.value)
+		validations.push(compositionTab.value.validate())
+
+	return Promise.all(validations)
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
 	<div class="absolute column fit">
 		<div
-			v-if="isInitialized"
+			v-if="!isLoading"
 			class="col"
 		>
 			<q-card
@@ -124,13 +124,13 @@ const producer_store = useProducerStore()
 const { notifySuccess, notifyError } = useNotification()
 
 const products = ref([])
-const isInitialized = ref(false)
+const isLoading = ref(true)
 
 const show = (product) => {
 	$router.push({
 		name:"personal_producer_products_detail_show",
 		params: {
-			product: product.id
+			product_id: product.id
 		}
 	})
 }
@@ -143,7 +143,7 @@ const showDeleteDialog = (product) => {
 	}).onOk(() => {
 		let tmp_uuid = crypto.randomUUID()
 		let producer_id = $router.currentRoute.value.params.producer_id
-
+		// todo - removal
 		producer_store.commitProducerProductFields({
 			producer_id: parseInt(producer_id),
 			product_id: product.id,
@@ -181,12 +181,13 @@ onMounted(() => {
 
 	promise.then((response) => {
 		products.value = response.data
-		isInitialized.value = true
 	})
 
 	promise.catch((error) => {
 		notifyError(error.response.data)
 	})
+
+	promise.finally(() => isLoading.value = false)
 })
 
 </script>

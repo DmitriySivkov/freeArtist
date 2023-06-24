@@ -12,25 +12,6 @@ export default ({ store, router }) => {
 			return
 		}
 
-		if (
-			[
-				"personal_producer_products_detail_show",
-				"personal_producer_products_detail_create"
-			].includes(to.name) && !from.name
-		) {
-			next({
-				name: "personal_producer_products_detail",
-				params: {
-					producer_id: to.params.producer_id
-				},
-				query: {
-					force_load: 1
-				}
-			})
-
-			return
-		}
-
 		next()
 	})
 

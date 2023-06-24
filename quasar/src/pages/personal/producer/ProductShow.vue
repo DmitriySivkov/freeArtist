@@ -31,7 +31,7 @@
 	</q-tabs>
 
 	<q-page-container>
-		<q-page>
+		<q-page v-if="product">
 			<q-tab-panels
 				:model-value="tab"
 				animated
@@ -68,27 +68,29 @@
 					/>
 				</q-tab-panel>
 			</q-tab-panels>
+			<q-page-sticky
+				position="bottom-right"
+				class="transform-none"
+				:offset="[18,18]"
+			>
+				<q-btn
+					round
+					size="1.5em"
+					:class="{'composition__button_done_active': isProductChanged}"
+					icon="done"
+					:loading="isLoading"
+					color="primary"
+					@click="updateProduct"
+				/>
+			</q-page-sticky>
 		</q-page>
 	</q-page-container>
-	<q-page-sticky
-		position="bottom-right"
-		class="transform-none"
-		:offset="[18,18]"
-	>
-		<q-btn
-			round
-			size="1.5em"
-			:class="{'composition__button_done_active': isProductChanged}"
-			icon="done"
-			color="primary"
-			@click="updateProduct"
-		/>
-	</q-page-sticky>
+
 </template>
 
 <script setup>
 import { useRouter } from "vue-router"
-import {computed, defineComponent, ref} from "vue"
+import { computed, defineComponent, ref, onMounted } from "vue"
 import { useProducerStore } from "src/stores/producer"
 import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
@@ -102,16 +104,13 @@ import ProducerProductSettingTagsTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingTagsTab.vue"
 // todo - replace all '_' lodash imports for specific functions
 import _ from "lodash"
+import { api } from "src/boot/axios"
 
 defineComponent({
 	ProducerProductSettingCommonTab,
 	ProducerProductSettingCompositionTab,
 	ProducerProductSettingImagesTab,
 	ProducerProductSettingTagsTab
-})
-
-const props = defineProps({
-	product: Object
 })
 
 const team_store = useTeamStore()
@@ -126,21 +125,19 @@ const team = computed(() =>
 	user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
 )
 
-const defaultProduct = _.cloneDeep(
-	team.value.products.find((p) =>
-		p.id === parseInt($router.currentRoute.value.params.product_id)
-	)
-)
+const isLoading = ref(false)
 
-const product = ref(_.cloneDeep(defaultProduct))
+const defaultProduct = ref(null)
+const product = ref(null)
 
 const tab = ref("common")
-
 const commonTab = ref(null)
 const compositionTab = ref(null)
 const tagsTab = ref(null)
 
-const isProductChanged = computed(() => !_.isEqual(product.value, defaultProduct))
+const isProductChanged = computed(() =>
+	!_.isEqual(product.value, defaultProduct.value)
+)
 
 const updateProduct = () => {
 	if (!isProductChanged.value) return
@@ -151,46 +148,37 @@ const updateProduct = () => {
 		if (tab_validations.includes(false))
 			return
 
-		let tmp_uuid = crypto.randomUUID()
-		let producer_id = $router.currentRoute.value.params.producer_id
+		isLoading.value = true
 
-		producer_store.commitProducerProductFields({
-			producer_id: parseInt(producer_id),
-			product_id: product.value.id,
-			fields: { ...product.value, tmp_uuid }
-		})
-
-		$router.push({
-			name: "personal_producer_products_detail",
-			params: { producer_id },
-		})
-
-		const promise = producer_store.updateProducerProduct({
-			product: product.value,
-		})
+		const promise = update()
 
 		promise.then((response) => {
-			producer_store.commitProducerProductFields({
-				producer_id: parseInt(producer_id),
-				product_id: response.data.id,
-				tmp_uuid,
-				fields: response.data
-			})
+			product.value = response.data
+			defaultProduct.value = _.cloneDeep(product.value)
 
-			notifySuccess("Продукт «" + product.value.title + "» успешно обновлён")
+			notifySuccess(`Продукт «${product.value.title}» успешно обновлён`)
 		})
 
 		promise.catch((error) => {
-			producer_store.commitProducerProductFields({
-				producer_id: parseInt(producer_id),
-				product_id: product.value.id,
-				tmp_uuid,
-				fields: {...defaultProduct}
-			})
+			product.value = defaultProduct.value
 
 			notifyError(error.response.data)
 		})
+
+		promise.finally(() => isLoading.value = false)
 	})
+}
+
+const update = () => {
+	let data = new FormData()
+
+	data.append("product", JSON.stringify(product.value))
+
+	for (let i in product.value.committed_images) {
+		data.append("images[]", product.value.committed_images[i].instance)
+	}
+
+	return api.post("personal/products/" + product.value.id, data)
 }
 
 const validate = () => {
@@ -205,5 +193,19 @@ const validate = () => {
 	return Promise.all(validations)
 }
 
+onMounted(() => {
+	const promise = api.get(
+		`personal/producers/${$router.currentRoute.value.params.producer_id}/products/${$router.currentRoute.value.params.product_id}`
+	)
+
+	promise.then((response) => {
+		product.value = response.data
+		defaultProduct.value = _.cloneDeep(product.value)
+	})
+
+	promise.catch((error) => {
+		notifyError(error.response.data)
+	})
+})
 
 </script>
