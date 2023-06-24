@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { useNotification } from "src/composables/notification"
+import { api } from "src/boot/axios"
 
 const props = defineProps({
 	modelValue: {
@@ -14,6 +15,9 @@ const emit = defineEmits([
 ])
 
 const { notifyError } = useNotification()
+
+const tagCloud = ref([])
+const isLoadingTagCloud = ref(true)
 
 const defaultTags = computed(() => props.modelValue.tags.filter((t) => !t.is_new))
 const newTags = computed(() => props.modelValue.tags.filter((t) => t.is_new))
@@ -54,9 +58,35 @@ const removeOptionById = (tagId) => {
 		)
 	)
 }
+
+onMounted(() => {
+	const promise = api.get("personal/tags")
+
+	promise.then((response) => {
+		tagCloud.value = response.data
+	})
+
+	promise.finally(() => isLoadingTagCloud.value = false)
+})
 </script>
 
 <template>
+	<div
+		v-if="tagCloud.length"
+		class="row"
+	>
+		<div class="col-xs-12 col-lg-8">
+			<q-chip
+				v-for="tag in tagCloud"
+				:key="tag.id"
+				clickable
+				color="primary"
+				text-color="white"
+			>
+				{{ tag.name }}
+			</q-chip>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-xs-12 col-lg-8">
 			<q-select

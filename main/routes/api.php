@@ -116,8 +116,8 @@ Route::group([
 		});
 	});
 
-//	Route::group(['prefix' => 'tags'], function() {
-//		Route::get('', [TagController::class, 'index']);
-//	});
+	Route::group(['prefix' => 'tags'], function() {
+		Route::get('', [TagController::class, 'index']);
+	});
 
 });
