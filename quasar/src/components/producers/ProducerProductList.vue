@@ -15,7 +15,7 @@
 					<q-card-section
 						horizontal
 						class="justify-between"
-						:class="{'no-pointer-events': !!product.tmp_uuid}"
+						:class="{'no-pointer-events': product.is_loading}"
 					>
 						<div
 							class="col-xs-9 col-md-11 cursor-pointer q-hoverable"
@@ -59,7 +59,7 @@
 								</q-menu>
 							</q-btn>
 						</div>
-						<q-inner-loading :showing="!!product.tmp_uuid">
+						<q-inner-loading :showing="product.is_loading">
 							<q-spinner-gears
 								size="42px"
 								color="primary"
@@ -138,42 +138,31 @@ const show = (product) => {
 const showDeleteDialog = (product) => {
 	Dialog.create({
 		title: "Подтверждение",
-		message: "Удалить: " + product.title + " ?",
+		message: `Удалить: ${product.title} ?`,
 		cancel: true,
 	}).onOk(() => {
-		let tmp_uuid = crypto.randomUUID()
-		let producer_id = $router.currentRoute.value.params.producer_id
-		// todo - removal
-		producer_store.commitProducerProductFields({
-			producer_id: parseInt(producer_id),
-			product_id: product.id,
-			fields: { tmp_uuid }
-		})
+		product.is_loading = true
 
-		const promise = producer_store.deleteProducerProduct({
-			product_id: product.id
-		})
+		const promise = deleteProduct(product.id)
 
 		promise.then(() => {
-			producer_store.commitRemoveProducerProduct({
-				producer_id: parseInt(producer_id),
-				product_id: product.id
-			})
+			const index = products.value.findIndex((p) => p.id === product.id)
 
-			notifySuccess("Продукт «" + product.title + "» успешно удалён")
+			products.value.splice(index, 1)
+
+			notifySuccess(`Продукт «${product.title}» успешно удалён`)
 		})
 
 		promise.catch((error) => {
-			producer_store.commitProducerProductFields({
-				producer_id: parseInt(producer_id),
-				product_id: product.id,
-				tmp_uuid,
-				fields: {}
-			})
+			delete (product.is_loading)
 
 			notifyError(error.response.data)
 		})
 	})
+}
+
+const deleteProduct = (product_id) => {
+	return api.delete(`personal/products/${product_id}`,{ data: { product_id } })
 }
 
 onMounted(() => {
