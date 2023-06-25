@@ -25,7 +25,8 @@
     "vue": "^3.0.0",
     "vue-advanced-cropper": "^2.8.8",
     "vue-currency-input": "^3.0.3",
-    "vue-router": "^4.0.0"
+    "vue-router": "^4.0.0",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.0.0",
