@@ -27,50 +27,44 @@ const drag = ref(false)
 const tagCloud = ref([])
 const isLoadingTagCloud = ref(true)
 
-const newTags = ref([])
-const defaultTags = computed(() =>
-	props.modelValue.tags.filter((t) => !t.is_new)
-)
+const tags = ref(props.modelValue.tags)
 
-const validateTag = (e) => {
-	if (defaultTags.value.length + newTags.value.length > 7) {
-		const index = newTags.value.findIndex(
+const addTag = (e) => {
+	if (tags.value.length > 7) {
+		const index = tags.value.findIndex(
 			(t) => t.id === e.item.__draggable_context.element.id
 		)
 
-		newTags.value.splice(index, 1)
+		const extraTag = tags.value.splice(index, 1)[0]
+
+		tagCloud.value.push(extraTag)
 
 		notifyError("Нельзя добавить больше тегов")
-
-		return
-	}
-
-	let tag = {
-		id: e.item.__draggable_context.element.id,
-		name: e.item.__draggable_context.element.name,
-		is_new: 1
 	}
 
 	emit(
 		"update:modelValue",
 		Object.assign(
 			props.modelValue,
-			{tags: [...props.modelValue.tags, tag]}
+			{tags: tags.value}
 		)
 	)
 }
 
-const removeTag = (tag, removeFromNew) => {
-	let index
-	let removedTag
+const sortTag = () => {
+	emit(
+		"update:modelValue",
+		Object.assign(
+			props.modelValue,
+			{tags: tags.value}
+		)
+	)
+}
 
-	if (removeFromNew) {
-		index = newTags.value.findIndex((t) => t.id === tag.id)
-		removedTag = newTags.value.splice(index, 1)[0]
-	} else {
-		index = defaultTags.value.findIndex((t) => t.id === tag.id)
-		removedTag = defaultTags.value.splice(index, 1)[0]
-	}
+const removeTag = (tag) => {
+	const index = tags.value.findIndex((t) => t.id === tag.id)
+
+	const removedTag = tags.value.splice(index, 1)[0]
 
 	tagCloud.value.push(removedTag)
 
@@ -78,8 +72,14 @@ const removeTag = (tag, removeFromNew) => {
 		"update:modelValue",
 		Object.assign(
 			props.modelValue,
-			{tags: props.modelValue.tags.filter((t) => t.id !== tag.id)}
+			{tags: tags.value}
 		)
+	)
+}
+
+const tagsSorted = (e) => {
+	console.log(
+		!isEqual(tags.value, defaultTags)
 	)
 }
 
@@ -166,48 +166,21 @@ onMounted(() => {
 
 	<div
 		class="row q-mb-lg q-mt-sm"
-		style="min-height:120px"
+		style="min-height:160px"
 	>
 		<div
 			class="col-xs-6 col-lg-4"
-			style="border-right:1px solid rgba(0, 0, 0, 0.12)"
+			style="border:1px solid rgba(0, 0, 0, 0.12)"
 		>
-			<q-item-label header>
-				Имеющиеся
-			</q-item-label>
-			<q-list separator>
-				<q-item
-					v-for="tag in defaultTags"
-					:key="tag.id"
-					clickable
-					class="bg-primary text-white"
-				>
-					<q-item-section
-						side
-						@click="removeTag(tag, false)"
-					>
-						<q-icon
-							name="clear"
-							color="white"
-						/>
-					</q-item-section>
-					<q-item-section class="word-break_all">
-						{{ tag.name }}
-					</q-item-section>
-				</q-item>
-			</q-list>
-		</div>
-		<div class="col-xs-6 col-lg-4">
-			<q-item-label header>
-				Добавить
-			</q-item-label>
 			<draggable
-				:list="newTags"
+				:list="tags"
 				group="tags"
 				@start="drag=true"
 				@end="drag=false"
-				@add="validateTag"
+				@add="addTag"
+				@sort="sortTag"
 				item-key="id"
+				class="q-list--separator"
 			>
 				<template #item="{ element }">
 					<q-item
@@ -216,7 +189,7 @@ onMounted(() => {
 					>
 						<q-item-section
 							side
-							@click="removeTag(element, true)"
+							@click="removeTag(element)"
 						>
 							<q-icon
 								name="clear"

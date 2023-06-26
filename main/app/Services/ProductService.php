@@ -114,8 +114,15 @@ class ProductService
 				'title' => $data['title'],
 				'price' => $data['price'],
 				'amount' => !$data['amount'] ? 0 : $data['amount'],
-				'thumbnail_id' => $data['thumbnail_id']
+				'thumbnail_id' => $data['thumbnail_id'],
+				'keywords' => $data['keywords']
 			]);
+
+			$tagIds = collect($data['tags'])->pluck('id');
+
+			// detach/attach instead of 'sync' to reorder
+			$this->product->tags()->detach();
+			$this->product->tags()->attach($tagIds);
 
 			if (\Arr::exists($data, 'composition')) {
 				$composition = array_values(
