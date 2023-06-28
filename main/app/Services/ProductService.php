@@ -119,7 +119,6 @@ class ProductService
 			]);
 
 			$tagIds = collect($data['tags'])->pluck('id');
-
 			// detach/attach instead of 'sync' to reorder
 			$this->product->tags()->detach();
 			$this->product->tags()->attach($tagIds);

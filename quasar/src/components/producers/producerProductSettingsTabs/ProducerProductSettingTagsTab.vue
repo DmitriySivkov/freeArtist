@@ -1,8 +1,7 @@
 <script setup>
-import { computed, defineComponent, onMounted, ref } from "vue"
+import { defineComponent, onMounted, ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
-import { clone } from "lodash"
 import draggable from "vuedraggable"
 
 defineComponent({
@@ -77,48 +76,50 @@ const removeTag = (tag) => {
 	)
 }
 
-const tagsSorted = (e) => {
-	console.log(
-		!isEqual(tags.value, defaultTags)
-	)
-}
-
-const defaultKeywords = clone(props.modelValue.keywords)
-
-const newKeywords = computed(() =>
-	props.modelValue.keywords.filter((k) => !defaultKeywords.includes(k))
-)
-
-const currentKeywords = computed(() =>
-	props.modelValue.keywords.filter((k) => defaultKeywords.includes(k))
-)
+const keywords = ref(props.modelValue.keywords)
 
 const addKeyword = (keyword, doneFn) => {
-	if (props.modelValue.keywords.length === 7) {
+	if (keywords.value.length === 7) {
 		notifyError("Нельзя добавить больше ключевых слов")
 		return
 	}
 
 	doneFn(keyword, "add-unique")
 
-	if (props.modelValue.keywords.find((k) => k === keyword))
+	if (keywords.value.find((k) => k === keyword))
 		return
+
+	keywords.value.push(keyword)
 
 	emit(
 		"update:modelValue",
 		Object.assign(
 			props.modelValue,
-			{keywords: [...props.modelValue.keywords, keyword]}
+			{keywords: keywords.value}
 		)
 	)
 }
 
 const removeKeyword = (keyword) => {
+	const index = keywords.value.findIndex((k) => k === keyword)
+
+	keywords.value.splice(index, 1)
+
 	emit(
 		"update:modelValue",
 		Object.assign(
 			props.modelValue,
-			{keywords: props.modelValue.keywords.filter((k) => k !== keyword)}
+			{keywords: keywords.value}
+		)
+	)
+}
+
+const sortKeyword = () => {
+	emit(
+		"update:modelValue",
+		Object.assign(
+			props.modelValue,
+			{keywords: keywords.value}
 		)
 	)
 }
@@ -216,7 +217,7 @@ onMounted(() => {
 				hint="Нажмите 'enter' чтобы добавить (максимум 7)"
 				filled
 				class="q-mb-sm"
-				:model-value="modelValue.keywords"
+				:model-value="keywords"
 				use-input
 				hide-dropdown-icon
 				input-debounce="1000"
@@ -230,62 +231,41 @@ onMounted(() => {
 	</div>
 	<div
 		class="row"
-		style="min-height:120px"
+		style="min-height:160px"
 	>
 		<div
 			class="col-xs-6 col-lg-4"
-			style="border-right:1px solid rgba(0, 0, 0, 0.12)"
+			style="border:1px solid rgba(0, 0, 0, 0.12)"
 		>
-			<q-item-label header>
-				Имеющиеся
-			</q-item-label>
-			<q-list separator>
-				<q-item
-					v-for="(keyword, index) in currentKeywords"
-					:key="index"
-					clickable
-					class="bg-primary text-white"
-				>
-					<q-item-section
-						side
-						@click="removeKeyword(keyword)"
+			<draggable
+				:list="keywords"
+				group="keywords"
+				@start="drag=true"
+				@end="drag=false"
+				@sort="sortKeyword"
+				:item-key="(keyword) => keyword"
+				class="q-list--separator"
+			>
+				<template #item="{ element }">
+					<q-item
+						clickable
+						class="bg-primary text-white"
 					>
-						<q-icon
-							name="clear"
-							color="white"
-						/>
-					</q-item-section>
-					<q-item-section class="word-break_all">
-						{{ keyword }}
-					</q-item-section>
-				</q-item>
-			</q-list>
-		</div>
-		<div class="col-xs-6 col-lg-4">
-			<q-item-label header>
-				Добавить
-			</q-item-label>
-			<q-list separator>
-				<q-item
-					v-for="(keyword, index) in newKeywords"
-					:key="index"
-					clickable
-					class="bg-primary text-white"
-				>
-					<q-item-section
-						side
-						@click="removeKeyword(keyword)"
-					>
-						<q-icon
-							name="clear"
-							color="white"
-						/>
-					</q-item-section>
-					<q-item-section class="word-break_all">
-						{{ keyword }}
-					</q-item-section>
-				</q-item>
-			</q-list>
+						<q-item-section
+							side
+							@click="removeKeyword(element)"
+						>
+							<q-icon
+								name="clear"
+								color="white"
+							/>
+						</q-item-section>
+						<q-item-section class="word-break_all">
+							{{ element }}
+						</q-item-section>
+					</q-item>
+				</template>
+			</draggable>
 		</div>
 	</div>
 </template>
