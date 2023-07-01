@@ -16,6 +16,7 @@
 						horizontal
 						class="justify-between"
 						:class="{'no-pointer-events': product.is_loading}"
+						style="border-bottom:1px solid rgba(255,255,255,0.7)"
 					>
 						<div
 							class="col-xs-9 col-md-11 cursor-pointer q-hoverable"
@@ -66,7 +67,6 @@
 							/>
 						</q-inner-loading>
 					</q-card-section>
-					<q-separator dark />
 				</template>
 			</q-card>
 			<q-page-sticky
@@ -84,26 +84,20 @@
 				/>
 			</q-page-sticky>
 		</div>
-		<q-card
+		<div
 			v-else
-			square
-			class="col column"
+			class="column fit"
 		>
-			<q-card-section
-				v-for="n in 6"
-				:key="n"
-				class="col row bg-primary"
-			>
-				<q-skeleton
-					height="70%"
-					width="100%"
-				/>
-				<q-separator
-					class="full-width"
-					color="white"
-				/>
-			</q-card-section>
-		</q-card>
+			<q-skeleton
+				v-for="i in 5"
+				:key="i"
+				type="QInput"
+				class="col-1 bg-primary"
+				bordered
+				square
+				style="border-bottom:1px solid rgba(255,255,255,0.7)"
+			/>
+		</div>
 	</div>
 </template>
 
