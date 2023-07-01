@@ -84,7 +84,10 @@
 				/>
 			</q-page-sticky>
 		</q-page>
-		<q-page class="absolute column fit q-pa-md">
+		<q-page
+			v-else
+			class="absolute column fit q-pa-md"
+		>
 			<q-skeleton
 				v-for="i in 3"
 				:key="i"
@@ -135,7 +138,6 @@ const team = computed(() =>
 )
 
 const isLoading = ref(false)
-const isInitialized = ref(false)
 
 const defaultProduct = ref(null)
 const product = ref(null)
@@ -216,8 +218,6 @@ onMounted(() => {
 	promise.catch((error) => {
 		notifyError(error.response.data)
 	})
-
-	promise.finally(() => isInitialized.value = true)
 })
 
 </script>

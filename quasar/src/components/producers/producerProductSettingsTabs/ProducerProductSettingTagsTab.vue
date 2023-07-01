@@ -170,7 +170,7 @@ onMounted(() => {
 		style="min-height:160px"
 	>
 		<div
-			class="col-xs-6 col-lg-4"
+			class="col-xs-12 col-lg-4"
 			style="border:1px solid rgba(0, 0, 0, 0.12)"
 		>
 			<draggable
@@ -234,7 +234,7 @@ onMounted(() => {
 		style="min-height:160px"
 	>
 		<div
-			class="col-xs-6 col-lg-4"
+			class="col-xs-12 col-lg-4"
 			style="border:1px solid rgba(0, 0, 0, 0.12)"
 		>
 			<draggable
