@@ -94,97 +94,100 @@
 	</div>
 </template>
 
-<script>
-import { computed, ref, watch } from "vue"
+<script setup>
+import { computed, ref, watch, onMounted, defineComponent } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
 import { useQuasar } from "quasar"
-export default ({
-	setup() {
-		const $q = useQuasar()
-		const cart_store = useCartStore()
-		const user_store = useUserStore()
-		const producer_store = useProducerStore()
+import CheckCityDialog from "src/components/dialogs/CheckCityDialog.vue"
 
-		const $router = useRouter()
-		const user = computed(() => user_store.$state)
-		const backend_server = process.env.BACKEND_SERVER
+defineComponent({
+	CheckCityDialog
+})
 
-		const user_city = ref(user.value.location ?
-			user.value.location.city.name_ru : null
+const $q = useQuasar()
+const cart_store = useCartStore()
+const user_store = useUserStore()
+const producer_store = useProducerStore()
+
+const $router = useRouter()
+const backend_server = process.env.BACKEND_SERVER
+
+const user_city = ref(user_store.location ?
+	user_store.location.city.name_ru : null
+)
+
+const producers = ref([])
+const slide = ref({})
+
+const cart = computed(() => cart_store.data)
+
+const show = (producer_id) => {
+	$router.push({name:"producer_detail", params: { producer_id }})
+}
+
+const scroll_component = ref(null)
+
+const producers_length = computed(() => producers.value.length)
+
+const fetchProducers = async() => {
+	const limit = 5
+
+	// todo - wtf is fetching state
+	producer_store.setFetchingState(true)
+
+	const response = await api.get("producers", {
+		params: {
+			offset: producers_length.value,
+			limit,
+			location_range: user_store.location_range,
+			city: user_city.value,
+		}
+	})
+
+	producers.value = [...producers.value, ...response.data]
+
+	slide.value = {
+		...slide.value,
+		...response.data.reduce(
+			(carry, i) => ({...carry, [i.id]: 1}), {}
 		)
-
-		const producers = ref([])
-		const slide = ref({})
-
-		const cart = computed(() => cart_store.data)
-
-		const show = (producer_id) => {
-			$router.push({name:"producer_detail", params: { producer_id }})
-		}
-
-		const scroll_component = ref(null)
-
-		const producers_length = computed(() => producers.value.length)
-
-		const fetchProducers = async() => {
-			const limit = 5
-
-			// todo - wtf is fetching state
-			producer_store.setFetchingState(true)
-
-			const response = await api.get("producers", {
-				params: {
-					offset: producers_length.value,
-					limit,
-					location_range: user.value.location_range,
-					city: user_city.value,
-				}
-			})
-
-			producers.value = [...producers.value, ...response.data]
-
-			slide.value = {
-				...slide.value,
-				...response.data.reduce(
-					(carry, i) => ({...carry, [i.id]: 1}), {}
-				)
-			}
-
-			producer_store.setFetchingState(false)
-
-			if (response.data.length < limit && scroll_component.value) {
-				scroll_component.value.stop()
-			}
-		}
-
-		const loadProducers = async (index, done) => {
-			await fetchProducers()
-			done()
-		}
-
-		watch(() => user.value.location_range,() => {
-			producers.value = []
-			scroll_component.value.stop()
-			scroll_component.value.resume()
-			scroll_component.value.poll()
-		})
-
-		const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
-
-		return {
-			producers,
-			cart,
-			show,
-			backend_server,
-			loadProducers,
-			scroll_component,
-			slide,
-			isWidthThreshold
-		}
 	}
+
+	producer_store.setFetchingState(false)
+
+	if (response.data.length < limit && scroll_component.value) {
+		scroll_component.value.stop()
+	}
+}
+
+const loadProducers = async (index, done) => {
+	await fetchProducers()
+	done()
+}
+
+watch(() => user_store.location_range,() => {
+	producers.value = []
+	scroll_component.value.stop()
+	scroll_component.value.resume()
+	scroll_component.value.poll()
+})
+
+const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
+
+onMounted(() => {
+	$q.dialog({
+		component: CheckCityDialog,
+		componentProps: {}
+	}).onOk(() => {
+		console.log("OK")
+	}).onCancel(() => {
+		console.log("Cancel")
+	}).onDismiss(() => {
+		console.log("Called on OK or Cancel")
+	})
 })
 </script>

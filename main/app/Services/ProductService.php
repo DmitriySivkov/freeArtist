@@ -101,6 +101,7 @@ class ProductService
 	 */
 	public function updateProduct()
 	{
+		// todo - check for maximum amount of pictures & tags/keywords
 		try {
 			\DB::beginTransaction();
 
