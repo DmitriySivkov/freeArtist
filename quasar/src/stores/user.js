@@ -11,7 +11,6 @@ export const useUserStore = defineStore("user", {
 		is_logged: false,
 		personal_tab: "user",
 		location: null,
-		location_range: 1,
 		data: {}
 	}),
 
@@ -137,13 +136,10 @@ export const useUserStore = defineStore("user", {
 			})
 		},
 
-		async setLocation() {
-			const response = await api.get("user/location")
-			this.location = response.data
-		},
+		setLocation(location) {
+			this.location = location
 
-		setLocationRange(range) {
-			this.location_range = range
+			LocalStorage.set("location", location)
 		},
 
 		setIsLogged(is_logged) {

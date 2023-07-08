@@ -20,6 +20,8 @@ class ProducerController extends Controller
 	 */
 	public function index(Request $request)
 	{
+		$location = json_decode($request->input('location'),true);
+
 		$producers = Producer::query()
 			->select([
 				'producers.*',
@@ -31,21 +33,17 @@ class ProducerController extends Controller
 				},
 				'storefrontImage'
 			])
-			->leftJoin('teams', function(JoinClause $join) {
-				$join->on('teams.detailed_id', '=', 'producers.id')
-					->where('teams.detailed_type', Producer::class);
-			})
-			->when(
-				(int)$request->get('location_range') === User::LOCATION_RANGE_NEARBY && $request->get('city'),
-				fn(Builder $builder) =>
-				$builder->whereHas('city', fn(Builder $builder) =>
-					$builder->where('city', 'like', '%' . $request->get('city') . '%')
-				)
+			->whereHas('city', fn(Builder $builder) =>
+				$builder->where('id', $location['id'])
 			)
 			->when(
 				$request->get('offset') && $request->get('offset') !== 0,
 				fn(Builder $builder) => $builder->offset($request->get('offset'))
 			)
+			->leftJoin('teams', function(JoinClause $join) {
+				$join->on('teams.detailed_id', '=', 'producers.id')
+					->where('teams.detailed_type', Producer::class);
+			})
 			->limit($request->get('limit'))
 			->orderBy('teams.display_name')
 			->get();

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\UserServiceContract;
+use App\Models\City;
 use App\Models\User;
 use Eseath\SxGeo\Facades\SxGeo;
 
@@ -36,12 +37,18 @@ class UserService implements UserServiceContract
 	}
 
 	/**
-	 * @return array|false
+	 * @return City[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
 	 */
 	public function getUserLocationByIp()
 	{
 		$ip = app()->env === 'local' ? env('LOCAL_IP') : request()->ip();
 
-		return SxGeo::getCity($ip);
+		// todo - what if city is not found
+		$cityIpData = SxGeo::getCity($ip);
+
+		// todo - maybe change 'address' to 'city' - though some cities are 'null' in db
+		return City::where('address', 'like', "%{$cityIpData['city']['name_ru']}%")
+			->select(['id', 'address'])
+			->get();
 	}
 }

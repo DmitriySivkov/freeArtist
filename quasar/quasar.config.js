@@ -5,9 +5,6 @@ module.exports = configure(function (ctx) {
 	return {
 		eslint: {
 			fix: true,
-			// include = [],
-			// exclude = [],
-			// rawOptions = {},
 			warnings: true,
 			errors: true
 		},
@@ -21,7 +18,6 @@ module.exports = configure(function (ctx) {
 			"setLocation",
 			"setCartFromLocalStorage",
 			"setPersonalTabFromLocalStorage",
-			"browseProducers",
 			"browseRoles",
 			"browsePermissions",
 			"ws",

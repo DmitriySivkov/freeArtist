@@ -116,9 +116,7 @@ const producer_store = useProducerStore()
 const $router = useRouter()
 const backend_server = process.env.BACKEND_SERVER
 
-const user_city = ref(user_store.location ?
-	user_store.location.city.name_ru : null
-)
+const user_location = computed(() => user_store.location)
 
 const producers = ref([])
 const slide = ref({})
@@ -143,8 +141,7 @@ const fetchProducers = async() => {
 		params: {
 			offset: producers_length.value,
 			limit,
-			location_range: user_store.location_range,
-			city: user_city.value,
+			location: user_location.value
 		}
 	})
 
@@ -178,16 +175,4 @@ watch(() => user_store.location_range,() => {
 
 const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
 
-onMounted(() => {
-	$q.dialog({
-		component: CheckCityDialog,
-		componentProps: {}
-	}).onOk(() => {
-		console.log("OK")
-	}).onCancel(() => {
-		console.log("Cancel")
-	}).onDismiss(() => {
-		console.log("Called on OK or Cancel")
-	})
-})
 </script>

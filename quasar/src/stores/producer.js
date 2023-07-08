@@ -1,10 +1,8 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
-import { useTeamStore } from "src/stores/team"
 
 export const useProducerStore = defineStore("producer", {
 	state: () => ({
-		data: {},
 		detail: {},
 		user_rights: [
 			{
@@ -22,12 +20,6 @@ export const useProducerStore = defineStore("producer", {
 	}),
 
 	actions: {
-		async getList() {
-			const response = await api.get("producers")
-
-			this.data = response.data
-		},
-
 		async getProducer(producerId) {
 			const response = await api.get("producers/" + producerId)
 

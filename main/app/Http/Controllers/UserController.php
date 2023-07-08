@@ -99,9 +99,9 @@ class UserController extends Controller
 	}
 
 	/**
-	 * @return array|false
+	 * @return \App\Models\City[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
 	 */
-	public function getLocationByIp()
+	public function getLocation()
 	{
 		/** @var UserService $userService */
 		$userService = app(UserServiceContract::class);

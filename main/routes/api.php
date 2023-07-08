@@ -54,7 +54,7 @@ Route::group(['prefix' => 'cities'], function() {
 });
 
 Route::group(['prefix' => 'user'], function() {
-	Route::get('location', [UserController::class, 'getLocationByIp']);
+	Route::get('location', [UserController::class, 'getLocation']);
 });
 
 /** auth requiring routes */
