@@ -220,7 +220,7 @@ onMounted(() => {
 				:model-value="keywords"
 				use-input
 				hide-dropdown-icon
-				input-debounce="1000"
+				input-debounce="300"
 				options-selected-class="primary"
 				hide-selected
 				@add="addKeyword"

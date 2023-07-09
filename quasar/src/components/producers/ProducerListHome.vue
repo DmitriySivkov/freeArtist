@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted, defineComponent } from "vue"
+import { computed, ref, watch, defineComponent } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
@@ -106,6 +106,10 @@ import CheckCityDialog from "src/components/dialogs/CheckCityDialog.vue"
 
 defineComponent({
 	CheckCityDialog
+})
+
+const props = defineProps({
+	userRange: Number
 })
 
 const $q = useQuasar()
@@ -134,14 +138,15 @@ const producers_length = computed(() => producers.value.length)
 const fetchProducers = async() => {
 	const limit = 5
 
-	// todo - wtf is fetching state
+	// todo - try to replace fetching state with emit or smth else instead of pinia storage
 	producer_store.setFetchingState(true)
 
 	const response = await api.get("producers", {
 		params: {
 			offset: producers_length.value,
 			limit,
-			location: user_location.value
+			location: user_location.value,
+			range: props.userRange
 		}
 	})
 
@@ -166,7 +171,7 @@ const loadProducers = async (index, done) => {
 	done()
 }
 
-watch(() => user_store.location_range,() => {
+watch(() => props.userRange,() => {
 	producers.value = []
 	scroll_component.value.stop()
 	scroll_component.value.resume()

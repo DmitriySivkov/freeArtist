@@ -79,6 +79,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+	const RANGE_NEARBY = 1;
+	const RANGE_ALL = 2;
+
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */

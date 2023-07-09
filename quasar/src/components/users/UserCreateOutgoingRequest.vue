@@ -18,7 +18,7 @@
 					filled
 					v-model="team"
 					use-input
-					input-debounce="1000"
+					input-debounce="300"
 					label="Начните вводить название компании *"
 					:options="team_list"
 					@filter="loadTeamList"

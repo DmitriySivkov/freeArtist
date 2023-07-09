@@ -30,7 +30,7 @@
 					class="q-mb-lg"
 					v-model="location"
 					use-input
-					input-debounce="1000"
+					input-debounce="300"
 					label="Начните вводить название города"
 					:options="location_options"
 					@filter="loadLocation"

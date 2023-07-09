@@ -1,5 +1,5 @@
 const { configure } = require("quasar/wrappers")
-
+const { join } = require("path")
 
 module.exports = configure(function (ctx) {
 	return {

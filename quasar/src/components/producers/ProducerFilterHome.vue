@@ -2,47 +2,63 @@
 import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
 import { computed, ref } from "vue"
+import { LOCATION_RANGE, LOCATION_RANGE_LIST, LOCATION_UNKNOWN_ID } from "src/const/userLocation"
+
+const props = defineProps({
+	userLocation: Object
+})
+
+const emit = defineEmits([
+	"change-range"
+])
 
 const user_store = useUserStore()
 const producer_store = useProducerStore()
 
+const isUserLocationUnknown = computed(() =>
+	props.userLocation.id === LOCATION_UNKNOWN_ID
+)
+
 const options = [
-	{ label: "Рядом с вами", value: 1 },
-	{ label: "Все", value: 2 }
+	{
+		label: LOCATION_RANGE_LIST[LOCATION_RANGE.nearby],
+		value: LOCATION_RANGE.nearby,
+		disable: isUserLocationUnknown.value
+	},
+	{
+		label: LOCATION_RANGE_LIST[LOCATION_RANGE.all],
+		value: LOCATION_RANGE.all,
+		disable: false
+	}
 ]
 
-const selected_option = ref(
-	options.find((o) => o.value === 1).label
+const selectedRange = ref(
+	!isUserLocationUnknown.value ?
+		options.find((o) => o.value === LOCATION_RANGE.nearby).label :
+		options.find((o) => o.value === LOCATION_RANGE.all).label
 )
 
 const setLocationRange = (range) => {
-	selected_option.value = range.label
-	user_store.setLocationRange(range.value)
+	selectedRange.value = range.label
+	emit("change-range", range.value)
 }
 
-const is_fetching_producers = computed(() => producer_store.is_fetching)
+const isFetchingProducers = computed(() => producer_store.is_fetching)
 </script>
 
 <template>
 	<div class="row items-center justify-end">
 		<div class="col-xs-12 col-md-4">
 			<q-select
-				:disable="is_fetching_producers"
+				:disable="isFetchingProducers"
 				filled
 				square
-				:model-value="selected_option"
+				:model-value="selectedRange"
 				:options="options"
+				option-disable="disable"
 				bg-color="white"
 				@update:model-value="setLocationRange"
-			>
-				<!--							<template v-slot:no-option>-->
-				<!--								<q-item>-->
-				<!--									<q-item-section class="text-grey">-->
-				<!--										Город не найден-->
-				<!--									</q-item-section>-->
-				<!--								</q-item>-->
-				<!--							</template>-->
-			</q-select>
+			/>
 		</div>
 	</div>
 </template>

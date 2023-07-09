@@ -33,9 +33,12 @@ class ProducerController extends Controller
 				},
 				'storefrontImage'
 			])
-			->whereHas('city', fn(Builder $builder) =>
-				$builder->where('id', $location['id'])
-			)
+			->when((int)$request->input('range') === User::RANGE_NEARBY,
+				function ($query) use ($location) {
+					$query->whereHas('city', fn(Builder $builder) =>
+						$builder->where('id', $location['id'])
+					);
+			})
 			->when(
 				$request->get('offset') && $request->get('offset') !== 0,
 				fn(Builder $builder) => $builder->offset($request->get('offset'))
