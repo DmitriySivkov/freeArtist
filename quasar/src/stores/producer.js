@@ -16,7 +16,6 @@ export const useProducerStore = defineStore("producer", {
 				label: "партнёр"
 			}
 		],
-		is_fetching: false
 	}),
 
 	actions: {
@@ -39,9 +38,5 @@ export const useProducerStore = defineStore("producer", {
 				storefront_image,
 			)
 		},
-
-		setFetchingState(is_fetching) {
-			this.is_fetching = is_fetching
-		}
 	}
 })

@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-xs col-lg-8">
 			<q-infinite-scroll
-				ref="scroll_component"
+				ref="scrollComponent"
 				@load="loadProducers"
 				:offset="250"
 				class="column no-wrap fit"
@@ -18,7 +18,7 @@
 							<div class="col-xs-12 col-sm">
 								<q-img
 									class="home__card-image fit"
-									:src="producer.storefront_image ? backend_server + '/storage/' + producer.storefront_image.path : 'no-image.png'"
+									:src="producer.storefront_image ? backendServer + '/storage/' + producer.storefront_image.path : 'no-image.png'"
 									fit="cover"
 									:ratio="16/9"
 								/>
@@ -54,7 +54,7 @@
 													no-spinner
 													class="col"
 													fit="cover"
-													:src="backend_server + '/storage/' + thumbnail.path"
+													:src="backendServer + '/storage/' + thumbnail.path"
 													:ratio="4/3"
 												/>
 											</div>
@@ -70,7 +70,7 @@
 											no-spinner
 											class="col-4 q-mx-none"
 											fit="cover"
-											:src="backend_server + '/storage/' + thumbnail.path"
+											:src="backendServer + '/storage/' + thumbnail.path"
 										/>
 									</div>
 								</q-carousel-slide>
@@ -103,50 +103,46 @@ import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
 import { useQuasar } from "quasar"
 import CheckCityDialog from "src/components/dialogs/CheckCityDialog.vue"
+import { LOCATION_RANGE, LOCATION_UNKNOWN_ID } from "src/const/userLocation"
 
 defineComponent({
 	CheckCityDialog
 })
 
-const props = defineProps({
-	userRange: Number
-})
-
 const $q = useQuasar()
-const cart_store = useCartStore()
-const user_store = useUserStore()
-const producer_store = useProducerStore()
+const cartStore = useCartStore()
+const userStore = useUserStore()
+const producerStore = useProducerStore()
 
 const $router = useRouter()
-const backend_server = process.env.BACKEND_SERVER
+const backendServer = process.env.BACKEND_SERVER
 
-const user_location = computed(() => user_store.location)
+const userLocation = computed(() => userStore.location)
+
+const userRange = computed(() => userStore.location_range)
 
 const producers = ref([])
 const slide = ref({})
 
-const cart = computed(() => cart_store.data)
+const cart = computed(() => cartStore.data)
 
 const show = (producer_id) => {
 	$router.push({name:"producer_detail", params: { producer_id }})
 }
 
-const scroll_component = ref(null)
+const scrollComponent = ref(null)
 
-const producers_length = computed(() => producers.value.length)
+const producersLength = computed(() => producers.value.length)
 
 const fetchProducers = async() => {
 	const limit = 5
 
-	// todo - try to replace fetching state with emit or smth else instead of pinia storage
-	producer_store.setFetchingState(true)
-
 	const response = await api.get("producers", {
 		params: {
-			offset: producers_length.value,
+			offset: producersLength.value,
 			limit,
-			location: user_location.value,
-			range: props.userRange
+			location: userLocation.value,
+			range: userRange.value
 		}
 	})
 
@@ -159,10 +155,8 @@ const fetchProducers = async() => {
 		)
 	}
 
-	producer_store.setFetchingState(false)
-
-	if (response.data.length < limit && scroll_component.value) {
-		scroll_component.value.stop()
+	if (response.data.length < limit && scrollComponent.value) {
+		scrollComponent.value.stop()
 	}
 }
 
@@ -171,11 +165,11 @@ const loadProducers = async (index, done) => {
 	done()
 }
 
-watch(() => props.userRange,() => {
+watch(() => userRange.value,() => {
 	producers.value = []
-	scroll_component.value.stop()
-	scroll_component.value.resume()
-	scroll_component.value.poll()
+	scrollComponent.value.stop()
+	scrollComponent.value.resume()
+	scrollComponent.value.poll()
 })
 
 const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)

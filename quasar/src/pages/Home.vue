@@ -1,24 +1,19 @@
 <template>
 	<div
 		v-if="userLocation"
-		class="column no-wrap absolute full-height full-width"
+		class="column no-wrap absolute full-height full-width q-px-md"
 	>
-		<div class="col-3">
-			<ProducerFilterHome
-				:user-location="userLocation"
-				@change-range="userRange = $event"
-			/>
+		<div class="col-auto">
+			<ProducerFilterHome />
 		</div>
 		<div class="col-grow">
-			<ProducerListHome
-				:user-range="userRange"
-			/>
+			<ProducerListHome />
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, computed, defineComponent, onMounted } from "vue"
+import { computed, defineComponent, onMounted } from "vue"
 import { Dialog } from "quasar"
 import ProducerListHome from "src/components/producers/ProducerListHome.vue"
 import ProducerFilterHome from "src/components/producers/ProducerFilterHome.vue"
@@ -35,12 +30,6 @@ const userStore = useUserStore()
 
 const userLocation = computed(() => userStore.location)
 
-const userRange = ref(
-	userStore.location && userStore.location.id === LOCATION_UNKNOWN_ID ?
-		LOCATION_RANGE.all :
-		LOCATION_RANGE.nearby
-)
-
 onMounted(() => {
 	if (!userLocation.value) {
 		Dialog.create({
@@ -51,9 +40,11 @@ onMounted(() => {
 		}).onOk((location) => {
 			userStore.setLocation(location)
 
-			userRange.value = location.id === LOCATION_UNKNOWN_ID ?
-				LOCATION_RANGE.all :
-				LOCATION_RANGE.nearby
+			userStore.setLocationRange(
+				location.id === LOCATION_UNKNOWN_ID ?
+					LOCATION_RANGE.all :
+					LOCATION_RANGE.nearby
+			)
 		})
 	}
 })

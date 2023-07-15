@@ -11,6 +11,7 @@ export const useUserStore = defineStore("user", {
 		is_logged: false,
 		personal_tab: "user",
 		location: null,
+		location_range: null,
 		data: {}
 	}),
 
@@ -142,8 +143,12 @@ export const useUserStore = defineStore("user", {
 			LocalStorage.set("location", location)
 		},
 
-		setIsLogged(is_logged) {
-			this.is_logged = is_logged
+		setLocationRange(range) {
+			this.location_range = range
+		},
+
+		setIsLogged(isLogged) {
+			this.is_logged = isLogged
 		}
 	}
 })
