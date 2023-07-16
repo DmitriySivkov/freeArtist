@@ -11,7 +11,6 @@
 				<div class="col-12">
 					<q-select
 						filled
-						autofocus
 						:model-value="location"
 						use-input
 						input-debounce="300"
