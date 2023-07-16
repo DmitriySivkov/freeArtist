@@ -11,17 +11,27 @@
 				<div class="col-12">
 					<q-select
 						filled
-						square
-						:model-value="selectedRange"
-						:options="options"
-						option-disable="disable"
-						bg-color="white"
-						@update:model-value="setLocationRange"
+						autofocus
+						:model-value="location"
+						use-input
+						input-debounce="300"
+						option-value="id"
+						option-label="address"
+						label="Введите название города"
+						behavior="menu"
+						:options="locationOptions"
+						@filter="loadLocation"
+						@update:model-value="setLocation"
 					>
 						<template #before>
-							<q-icon
-								name="my_location"
-							/>
+							<q-icon name="place" />
+						</template>
+						<template v-slot:no-option>
+							<q-item>
+								<q-item-section class="text-grey">
+									Город не найден
+								</q-item-section>
+							</q-item>
 						</template>
 					</q-select>
 				</div>
@@ -32,11 +42,10 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import { useDialogPluginComponent } from "quasar"
 import { useUserStore } from "src/stores/user"
-import { useProducerStore } from "src/stores/producer"
-import { LOCATION_RANGE, LOCATION_RANGE_LIST, LOCATION_UNKNOWN_ID } from "src/const/userLocation"
+import { api } from "src/boot/axios"
 
 const emit = defineEmits([
 	...useDialogPluginComponent.emits,
@@ -45,26 +54,28 @@ const emit = defineEmits([
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
 const userStore = useUserStore()
-const producerStore = useProducerStore()
 
-const userLocation = computed(() => userStore.location)
+const locationOptions = ref([])
+const location = computed(() => userStore.location)
 
-const options = [
-	{
-		label: LOCATION_RANGE_LIST[LOCATION_RANGE.nearby],
-		value: LOCATION_RANGE.nearby,
-		disable: userLocation.value.id === LOCATION_UNKNOWN_ID
-	},
-	{
-		label: LOCATION_RANGE_LIST[LOCATION_RANGE.all],
-		value: LOCATION_RANGE.all,
-		disable: false
-	}
-]
+const setLocation = (location) => {
+	userStore.setLocation(location)
+}
 
-const selectedRange = computed(() => options.find((o) => o.value === userStore.location_range).label)
+const loadLocation = async (query, update) => {
+	if (query.length < 1) return
 
-const setLocationRange = (range) => {
-	userStore.setLocationRange(range.value)
+	const response = await api.get("cities",{
+		params: { query }
+	})
+
+	update(() => {
+		locationOptions.value = response.data.map((location) =>
+			({
+				id: location.id,
+				address: location.address
+			})
+		)
+	})
 }
 </script>

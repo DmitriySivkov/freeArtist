@@ -84,7 +84,7 @@
 						color="red"
 						label="Не указывать"
 						class="q-pa-md full-height full-width"
-						@click="setLocation({id:0, address:'unknown'})"
+						@click="setLocation({id:0, address:'Город не выбран'})"
 					/>
 				</div>
 			</div>

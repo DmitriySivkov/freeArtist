@@ -4,10 +4,18 @@
 		class="column no-wrap absolute full-height full-width q-px-md"
 	>
 		<div class="col-auto">
-			<ProducerFilterHome />
+			<div class="row">
+				<div class="col-xs col-lg-8">
+					<ProducerFilterHome />
+				</div>
+			</div>
 		</div>
 		<div class="col-grow">
-			<ProducerListHome />
+			<div class="row">
+				<div class="col-xs col-lg-8">
+					<ProducerListHome />
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -17,7 +25,7 @@ import { computed, defineComponent, onMounted } from "vue"
 import { Dialog } from "quasar"
 import ProducerListHome from "src/components/producers/ProducerListHome.vue"
 import ProducerFilterHome from "src/components/producers/ProducerFilterHome.vue"
-import CheckCityDialog from "components/dialogs/CheckCityDialog.vue"
+import SelectLocationDialog from "components/dialogs/SelectLocationDialog.vue"
 import { useUserStore } from "src/stores/user"
 import { LOCATION_RANGE, LOCATION_UNKNOWN_ID } from "src/const/userLocation"
 
@@ -33,7 +41,7 @@ const userLocation = computed(() => userStore.location)
 onMounted(() => {
 	if (!userLocation.value) {
 		Dialog.create({
-			component: CheckCityDialog,
+			component: SelectLocationDialog,
 			componentProps: {
 				persistent: true
 			},
