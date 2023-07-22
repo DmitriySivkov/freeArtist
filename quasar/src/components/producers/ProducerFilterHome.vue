@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue"
+import { ref, computed } from "vue"
 import { Dialog } from "quasar"
 import { LOCATION_RANGE, LOCATION_UNKNOWN_ID } from "src/const/userLocation.js"
 import { useUserStore } from "src/stores/user"
@@ -35,10 +35,64 @@ const showSettings = () => {
 		componentProps: {},
 	})
 }
+
+const search = ref("")
+const isSearchVisible = ref(false)
+
+const toggleSearchVisibility = (isVisible) => {
+	isSearchVisible.value = isVisible
+}
 </script>
 
 <template>
-	<div class="row">
+	<div class="row items-center">
+		<div
+			v-if="!isSearchVisible"
+			class="col-shrink"
+		>
+			<q-icon
+				name="search"
+				size="2em"
+				class="cursor-pointer q-my-sm"
+				color="white"
+				@click="toggleSearchVisibility(true)"
+			/>
+		</div>
+		<div
+			v-else
+			class="col"
+		>
+			<q-input
+				dense
+				outlined
+				filled
+				v-model="search"
+			>
+				<template v-slot:append>
+					<q-icon
+						name="clear"
+						class="cursor-pointer"
+						@click="toggleSearchVisibility(false)"
+					/>
+				</template>
+			</q-input>
+		</div>
+		<div
+			v-if="!isSearchVisible"
+			class="col text-right q-pr-md"
+		>
+			<q-toggle
+				:model-value="range"
+				:true-value="LOCATION_RANGE.nearby"
+				:false-value="LOCATION_RANGE.all"
+				size="2em"
+				color="indigo-8"
+				label="Рядом с Вами"
+				left-label
+				class="text-white text-h6 range-toggle"
+				@update:model-value="setLocationRange"
+			/>
+		</div>
 		<div class="col-shrink">
 			<q-icon
 				name="settings"
@@ -46,19 +100,6 @@ const showSettings = () => {
 				class="cursor-pointer q-my-sm"
 				color="white"
 				@click="showSettings"
-			/>
-		</div>
-		<div class="col text-right">
-			<q-toggle
-				:model-value="range"
-				:true-value="LOCATION_RANGE.nearby"
-				:false-value="LOCATION_RANGE.all"
-				size="2.5em"
-				color="indigo-8"
-				label="Рядом с Вами"
-				left-label
-				class="text-white text-h6 range-toggle"
-				@update:model-value="setLocationRange"
 			/>
 		</div>
 	</div>

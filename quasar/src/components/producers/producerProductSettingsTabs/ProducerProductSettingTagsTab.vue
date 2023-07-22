@@ -29,7 +29,7 @@ const isLoadingTagCloud = ref(true)
 const tags = ref(props.modelValue.tags)
 
 const addTag = (e) => {
-	if (tags.value.length > 7) {
+	if (tags.value.length > 8) {
 		const index = tags.value.findIndex(
 			(t) => t.id === e.item.__draggable_context.element.id
 		)
@@ -79,7 +79,7 @@ const removeTag = (tag) => {
 const keywords = ref(props.modelValue.keywords)
 
 const addKeyword = (keyword, doneFn) => {
-	if (keywords.value.length === 7) {
+	if (keywords.value.length === 8) {
 		notifyError("Нельзя добавить больше ключевых слов")
 		return
 	}
@@ -124,6 +124,13 @@ const sortKeyword = () => {
 	)
 }
 
+const dragOptions = {
+	animation: 200,
+	group: "description",
+	disabled: false,
+	ghostClass: "bg-green"
+}
+
 onMounted(() => {
 	const promise = api.get("personal/tags")
 
@@ -138,40 +145,13 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="q-py-md">
+	<div class="q-pb-md">
 		<span class="text-h5">Выберите теги для улучшенного поиска</span>
 	</div>
-	<div class="row">
-		<div class="col-xs-12 col-lg-8">
-			<draggable
-				v-if="tagCloud.length"
-				:list="tagCloud"
-				:sort="false"
-				group="tags"
-				@start="drag=true"
-				@end="drag=false"
-				item-key="id"
-			>
-				<template #item="{ element }">
-					<q-chip
-						clickable
-						color="primary"
-						text-color="white"
-					>
-						{{ element.name }}
-					</q-chip>
-				</template>
-			</draggable>
-		</div>
-	</div>
-
-	<div
-		class="row q-mb-lg q-mt-sm"
-		style="min-height:160px"
-	>
+	<div class="row q-gutter-sm">
 		<div
 			class="col-xs-12 col-lg-4"
-			style="border:1px solid rgba(0, 0, 0, 0.12)"
+			:class="$style.tag__container"
 		>
 			<draggable
 				:list="tags"
@@ -181,12 +161,19 @@ onMounted(() => {
 				@add="addTag"
 				@sort="sortTag"
 				item-key="id"
-				class="q-list--separator"
+				class="row"
+				:class="$style.tag__container_draggable"
+				:component-data="{
+					type: 'transition-group',
+					name: 'fade'
+				}"
+				v-bind="dragOptions"
 			>
 				<template #item="{ element }">
 					<q-item
 						clickable
-						class="bg-primary text-white"
+						class="col-xs-6 col-md-4 flex-center text-center"
+						:class="$style.tag"
 					>
 						<q-item-section
 							side
@@ -197,9 +184,38 @@ onMounted(() => {
 								color="white"
 							/>
 						</q-item-section>
-						<q-item-section class="word-break_all">
+						<q-item-section>
 							{{ element.name }}
 						</q-item-section>
+					</q-item>
+				</template>
+			</draggable>
+		</div>
+
+		<div class="col-xs-12 col-lg-6">
+			<draggable
+				v-if="tagCloud.length"
+				:list="tagCloud"
+				:sort="false"
+				group="tags"
+				@start="drag=true"
+				@end="drag=false"
+				item-key="id"
+				class="row"
+				:component-data="{
+					tag: 'div',
+					type: 'transition-group',
+					name: 'fade'
+				}"
+				v-bind="dragOptions"
+			>
+				<template #item="{ element }">
+					<q-item
+						clickable
+						class="col-xs-3 col-lg-2 flex-center text-center"
+						:class="$style.tag"
+					>
+						{{ element.name }}
 					</q-item>
 				</template>
 			</draggable>
@@ -210,11 +226,11 @@ onMounted(() => {
 		<span class="text-h5">Добавьте слова наиболее точно описывающие продукт</span>
 	</div>
 	<div class="row">
-		<div class="col-xs-12 col-lg-8">
+		<div class="col-xs-12 col-lg-6">
 			<q-select
 				ref="select"
 				label="Введите название"
-				hint="Нажмите 'enter' чтобы добавить (максимум 7)"
+				hint="Нажмите 'enter' чтобы добавить (максимум 8)"
 				filled
 				class="q-mb-sm"
 				:model-value="keywords"
@@ -234,7 +250,7 @@ onMounted(() => {
 		style="min-height:160px"
 	>
 		<div
-			class="col-xs-12 col-lg-4"
+			class="col-xs-12 col-lg-6"
 			style="border:1px solid rgba(0, 0, 0, 0.12)"
 		>
 			<draggable
@@ -245,6 +261,12 @@ onMounted(() => {
 				@sort="sortKeyword"
 				:item-key="(keyword) => keyword"
 				class="q-list--separator"
+				:component-data="{
+					tag: 'div',
+					type: 'transition-group',
+					name: 'fade'
+				}"
+				v-bind="dragOptions"
 			>
 				<template #item="{ element }">
 					<q-item
@@ -269,3 +291,28 @@ onMounted(() => {
 		</div>
 	</div>
 </template>
+
+<style lang="scss" module>
+.tag {
+	position:relative;
+	height: 70px !important;
+	overflow:hidden;
+	color: white;
+	background: $primary;
+	border-bottom: 1px dotted rgba(0, 0, 0, 0.12);
+	border-right: 1px dotted rgba(0, 0, 0, 0.12);
+
+	&__container_draggable {
+		background: #F1F1F1;
+		display: flex;
+		flex-flow: row wrap;
+		align-content: start;
+		height: 100%;
+	}
+
+	&__container {
+		border:1px dotted rgba(0, 0, 0, 0.4);
+		min-height:140px
+	}
+}
+</style>
