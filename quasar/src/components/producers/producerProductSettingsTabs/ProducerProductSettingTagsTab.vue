@@ -306,7 +306,7 @@ onMounted(() => {
 		background: #F1F1F1;
 		display: flex;
 		flex-flow: row wrap;
-		align-content: start;
+		align-content: flex-start;
 		height: 100%;
 	}
 
