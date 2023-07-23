@@ -84,6 +84,11 @@ const addKeyword = (keyword, doneFn) => {
 		return
 	}
 
+	if (keyword.length > 16) {
+		notifyError("Максимум 16 символов")
+		return
+	}
+
 	doneFn(keyword, "add-unique")
 
 	if (keywords.value.find((k) => k === keyword))
@@ -146,7 +151,7 @@ onMounted(() => {
 
 <template>
 	<div class="q-pb-md">
-		<span class="text-h5">Выберите теги для улучшенного поиска</span>
+		<span class="text-h5">Выберите теги для поиска</span>
 	</div>
 	<div class="row q-gutter-sm">
 		<div
@@ -194,7 +199,7 @@ onMounted(() => {
 
 		<div class="col-xs-12 col-lg-6">
 			<draggable
-				v-if="tagCloud.length"
+				v-if="!isLoadingTagCloud"
 				:list="tagCloud"
 				:sort="false"
 				group="tags"
@@ -219,6 +224,19 @@ onMounted(() => {
 					</q-item>
 				</template>
 			</draggable>
+			<div
+				v-else
+				class="row"
+			>
+				<q-skeleton
+					v-for="i in 15"
+					:key="i"
+					type="rect"
+					square
+					class="col-xs-3 col-lg-2 flex-center text-center"
+					:class="$style.tag"
+				/>
+			</div>
 		</div>
 	</div>
 
@@ -261,6 +279,7 @@ onMounted(() => {
 				@sort="sortKeyword"
 				:item-key="(keyword) => keyword"
 				class="q-list--separator"
+				:class="$style.keyword__container_draggable"
 				:component-data="{
 					tag: 'div',
 					type: 'transition-group',
@@ -282,7 +301,7 @@ onMounted(() => {
 								color="white"
 							/>
 						</q-item-section>
-						<q-item-section class="word-break_all">
+						<q-item-section>
 							{{ element }}
 						</q-item-section>
 					</q-item>
@@ -302,6 +321,11 @@ onMounted(() => {
 	border-bottom: 1px dotted rgba(0, 0, 0, 0.12);
 	border-right: 1px dotted rgba(0, 0, 0, 0.12);
 
+	&__container {
+		border:1px dotted rgba(0, 0, 0, 0.4);
+		min-height:70px
+	}
+
 	&__container_draggable {
 		background: #F1F1F1;
 		display: flex;
@@ -309,10 +333,12 @@ onMounted(() => {
 		align-content: flex-start;
 		height: 100%;
 	}
+}
 
-	&__container {
-		border:1px dotted rgba(0, 0, 0, 0.4);
-		min-height:140px
+.keyword {
+	&__container_draggable {
+		background: #F1F1F1;
+		height: 100%
 	}
 }
 </style>

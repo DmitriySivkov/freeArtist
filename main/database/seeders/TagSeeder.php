@@ -14,8 +14,18 @@ class TagSeeder extends Seeder
      */
     public function run()
     {
-		foreach (json_decode(file_get_contents(__DIR__ . '/../tags.json')) as $tag) {
-			Tag::create(['name' => $tag]);
-		}
+		\DB::table('tags')->truncate();
+
+		$raw = json_decode(file_get_contents(__DIR__ . '/../tags.json'), true);
+
+		$tags = array_unique(
+			collect($raw)->reduce(fn($carry, $category) =>
+				[...$carry, ...array_values($category)], []
+			)
+		);
+
+		$tags = array_map(fn($tag) => ['name' => $tag], $tags);
+
+		Tag::insert($tags);
     }
 }

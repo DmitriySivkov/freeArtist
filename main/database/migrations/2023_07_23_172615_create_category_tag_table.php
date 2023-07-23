@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_tag', function (Blueprint $table) {
-            $table->unsignedInteger('product_id');
+        Schema::create('category_tag', function (Blueprint $table) {
+            $table->unsignedInteger('category_id');
 			$table->unsignedInteger('tag_id');
 
-			$table->index(['product_id', 'tag_id']);
+			$table->index(['category_id', 'tag_id']);
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_tag');
+        Schema::dropIfExists('category_tag');
     }
 };
