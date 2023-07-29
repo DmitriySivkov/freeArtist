@@ -198,48 +198,53 @@ onMounted(() => {
 		</div>
 
 		<div class="col-xs-12 col-lg-6">
-			<draggable
-				v-if="!isLoadingTagCloud"
-				:list="tagCloud"
-				:sort="false"
-				group="tags"
-				@start="drag=true"
-				@end="drag=false"
-				item-key="id"
-				class="row"
-				:component-data="{
-					tag: 'div',
-					type: 'transition-group',
-					name: 'fade'
-				}"
-				v-bind="dragOptions"
+			<q-scroll-area
+				style="height:150px;"
+				visible
 			>
-				<template #item="{ element }">
-					<q-item
-						clickable
-						class="col-xs-3 col-lg-2 flex-center text-center"
+				<draggable
+					v-if="!isLoadingTagCloud"
+					:list="tagCloud"
+					:sort="false"
+					group="tags"
+					@start="drag=true"
+					@end="drag=false"
+					item-key="id"
+					class="row"
+					:component-data="{
+						tag: 'div',
+						type: 'transition-group',
+						name: 'fade'
+					}"
+					v-bind="dragOptions"
+				>
+					<template #item="{ element }">
+						<q-item
+							clickable
+							class="col-xs-4 col-md-3 flex-center text-center"
+							:class="$style.tag"
+						>
+							{{ element.name }}
+						</q-item>
+					</template>
+				</draggable>
+				<div
+					v-else
+					class="row"
+				>
+					<q-skeleton
+						v-for="i in 8"
+						:key="i"
+						type="rect"
+						square
+						class="col-xs-4 col-md-3 flex-center text-center"
 						:class="$style.tag"
-					>
-						{{ element.name }}
-					</q-item>
-				</template>
-			</draggable>
-			<div
-				v-else
-				class="row"
-			>
-				<q-skeleton
-					v-for="i in 15"
-					:key="i"
-					type="rect"
-					square
-					class="col-xs-3 col-lg-2 flex-center text-center"
-					:class="$style.tag"
-				/>
-			</div>
+					/>
+				</div>
+			</q-scroll-area>
 		</div>
 	</div>
-
+	<!-- todo zanesti kategorii v konstanti i vivodit na glavnoy -->
 	<div class="q-py-md">
 		<span class="text-h5">Добавьте слова наиболее точно описывающие продукт</span>
 	</div>
@@ -323,7 +328,7 @@ onMounted(() => {
 
 	&__container {
 		border:1px dotted rgba(0, 0, 0, 0.4);
-		min-height:70px
+		min-height:140px
 	}
 
 	&__container_draggable {

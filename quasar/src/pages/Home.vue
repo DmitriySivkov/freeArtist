@@ -10,6 +10,13 @@
 				</div>
 			</div>
 		</div>
+		<div class="col-auto q-mb-sm">
+			<div class="row fit">
+				<div class="col-xs col-lg-8">
+					<ProducerCategoriesHome />
+				</div>
+			</div>
+		</div>
 		<div class="col-grow">
 			<div class="row">
 				<div class="col-xs col-lg-8">
@@ -21,18 +28,14 @@
 </template>
 
 <script setup>
-import { computed, defineComponent, onMounted } from "vue"
+import { computed, onMounted } from "vue"
 import { Dialog } from "quasar"
 import ProducerListHome from "src/components/producers/ProducerListHome.vue"
 import ProducerFilterHome from "src/components/producers/ProducerFilterHome.vue"
+import ProducerCategoriesHome from "src/components/producers/ProducerCategoriesHome.vue"
 import SelectLocationDialog from "components/dialogs/SelectLocationDialog.vue"
 import { useUserStore } from "src/stores/user"
 import { LOCATION_RANGE, LOCATION_UNKNOWN_ID } from "src/const/userLocation"
-
-defineComponent({
-	ProducerListHome,
-	ProducerFilterHome
-})
 
 const userStore = useUserStore()
 
