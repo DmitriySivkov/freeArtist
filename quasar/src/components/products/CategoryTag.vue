@@ -1,7 +1,26 @@
 <script setup>
+import { ref } from "vue"
+
 const props = defineProps({
 	category: Object
 })
+
+const emit = defineEmits([
+	"select",
+	"unselect"
+])
+
+const isSelected = ref(false)
+
+const toggleCategory = () => {
+	if (!isSelected.value) {
+		isSelected.value = true
+		emit("select", props.category.id)
+	} else {
+		isSelected.value = false
+		emit("unselect", props.category.id)
+	}
+}
 </script>
 
 <template>
@@ -9,7 +28,11 @@ const props = defineProps({
 		bordered
 		clickable
 		class="full-height cursor-pointer q-hoverable"
-		:class="$style.category__tag"
+		:class="[
+			$style.category__tag,
+			{[$style.category__tag_active]: isSelected},
+		]"
+		@click="toggleCategory"
 	>
 		<span class="q-focus-helper"></span>
 		<div class="column fit flex-center">
@@ -42,7 +65,7 @@ const props = defineProps({
 		color:white;
 
 		&_active {
-			background-color: rgba(black, 0.2);
+			background-color: rgba(black, 0.7);
 		}
 	}
 }

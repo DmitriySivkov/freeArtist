@@ -21,6 +21,9 @@ class ProducerController extends Controller
 	public function index(Request $request)
 	{
 		$location = json_decode($request->input('location'),true);
+		$offset = $request->input('offset');
+		$limit = $request->input('limit');
+		$categories = $request->input('categories');
 
 		$producers = Producer::query()
 			->select([
@@ -28,26 +31,37 @@ class ProducerController extends Controller
 				'teams.display_name'
 			])
 			->with([
-				'products' => function($query) {
-					$query->with('thumbnail')->whereHas('thumbnail');
+				'products' => function($query) use ($categories) {
+					$query->with('thumbnail')
+						->whereHas('thumbnail')
+						->when($categories, function(Builder $query) use ($categories) {
+							$query->whereHas('tags.categories',
+								fn(Builder $builder) => $builder->whereIn('categories.id', $categories)
+							);
+						});
 				},
 				'storefrontImage'
 			])
 			->when((int)$request->input('range') === User::RANGE_NEARBY,
-				function ($query) use ($location) {
+				function (Builder $query) use ($location) {
 					$query->whereHas('city', fn(Builder $builder) =>
 						$builder->where('id', $location['id'])
 					);
-			})
-			->when(
-				$request->get('offset') && $request->get('offset') !== 0,
-				fn(Builder $builder) => $builder->offset($request->get('offset'))
+				}
 			)
+			->when($offset && $offset !== 0,
+				fn(Builder $builder) => $builder->offset($offset)
+			)
+			->when($categories, function(Builder $query) use ($categories) {
+				$query->whereHas('products.tags.categories', fn(Builder $builder) =>
+					$builder->whereIn('categories.id', $categories)
+				);
+			})
 			->leftJoin('teams', function(JoinClause $join) {
 				$join->on('teams.detailed_id', '=', 'producers.id')
 					->where('teams.detailed_type', Producer::class);
 			})
-			->limit($request->get('limit'))
+			->limit($limit)
 			->orderBy('teams.display_name')
 			->get();
 

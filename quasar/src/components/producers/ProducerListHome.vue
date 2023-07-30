@@ -35,7 +35,7 @@
 						:arrows="producer.products.length > 2"
 					>
 						<q-carousel-slide
-							v-for="i in Math.ceil(producer.products.length/3)"
+							v-for="i in Math.ceil(producer.products.length/2)"
 							:key="i"
 							:name="i"
 							class="q-pa-none"
@@ -91,17 +91,19 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, defineComponent } from "vue"
+import { computed, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
 import { useQuasar } from "quasar"
-import SelectLocationDialog from "src/components/dialogs/SelectLocationDialog.vue"
 
-defineComponent({
-	SelectLocationDialog
+const props = defineProps({
+	categories: {
+		type: Array,
+		default: () => []
+	}
 })
 
 const $q = useQuasar()
@@ -122,7 +124,10 @@ const slide = ref({})
 const cart = computed(() => cartStore.data)
 
 const show = (producer_id) => {
-	$router.push({name:"producer_detail", params: { producer_id }})
+	$router.push({
+		name: "producer_detail",
+		params: { producer_id }
+	})
 }
 
 const scrollComponent = ref(null)
@@ -137,7 +142,8 @@ const fetchProducers = async() => {
 			offset: producersLength.value,
 			limit,
 			location: userLocation.value,
-			range: userRange.value
+			range: userRange.value,
+			categories: props.categories
 		}
 	})
 
@@ -160,14 +166,21 @@ const loadProducers = async (index, done) => {
 	done()
 }
 
-watch([
-	() => userRange.value,
-	() => userLocation.value.id
-],() => {
+function reinit() {
 	producers.value = []
 	scrollComponent.value.stop()
 	scrollComponent.value.resume()
 	scrollComponent.value.poll()
+}
+
+watch([
+	() => userRange.value,
+	() => userLocation.value.id,
+	() => props.categories
+],() =>
+	reinit()
+, {
+	deep: true
 })
 
 const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
