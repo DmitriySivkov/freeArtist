@@ -25,6 +25,7 @@
 
 					<q-img
 						v-else-if="team.detailed.storefront_image"
+						no-spinner
 						:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
 						fit="contain"
 					/>

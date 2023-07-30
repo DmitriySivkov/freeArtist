@@ -49,6 +49,7 @@
 			<q-card-section horizontal>
 				<q-img
 					:src="image.src"
+					no-spinner
 					fit="contain"
 					style="height: 200px;"
 				/>
@@ -94,6 +95,7 @@
 			<q-card-section horizontal>
 				<q-img
 					:src="backend_server + '/storage/' + image.path"
+					no-spinner
 					fit="contain"
 					style="height: 200px;"
 				/>

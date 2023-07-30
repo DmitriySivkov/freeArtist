@@ -5,80 +5,87 @@
 		:offset="250"
 		class="column no-wrap fit"
 	>
-		<q-card
-			v-for="producer in producers"
-			:key="producer.id"
-			class="col-grow row home__card"
-			:class="`home__card_${isWidthThreshold ? 'expand' : 'shrink'}`"
-		>
-			<div class="column no-wrap fit">
-				<div class="col-grow row">
-					<div class="col-xs-12 col-sm">
-						<q-img
-							class="home__card-image fit"
-							:src="producer.storefront_image ? backendServer + '/storage/' + producer.storefront_image.path : 'no-image.png'"
-							fit="cover"
-							:ratio="16/9"
-						/>
-					</div>
-					<q-carousel
-						v-if="producer.products.length > 0"
-						v-model="slide[producer.id]"
-						:vertical="isWidthThreshold"
-						class="col-xs-12 col-sm-4 bg-secondary home__card-carousel"
-						transition-prev="fade"
-						transition-next="fade"
-						swipeable
-						animated
-						control-color="dark"
-						infinite
-						:arrows="producer.products.length > 2"
-					>
-						<q-carousel-slide
-							v-for="i in Math.ceil(producer.products.length/2)"
-							:key="i"
-							:name="i"
-							class="q-pa-none"
+		<template v-if="producers.length && !isInitializing">
+			<q-card
+				v-for="producer in producers"
+				:key="producer.id"
+				class="col-grow row home__card"
+				:class="`home__card_${isWidthThreshold ? 'expand' : 'shrink'}`"
+			>
+				<div class="column no-wrap fit">
+					<div class="col-grow row">
+						<div class="col-xs-12 col-sm">
+							<q-img
+								v-if="!isInitializing"
+								no-spinner
+								class="home__card-image fit"
+								:src="producer.storefront_image ? backendServer + '/storage/' + producer.storefront_image.path : 'no-image.png'"
+								fit="cover"
+								:ratio="16/9"
+							/>
+						</div>
+						<q-carousel
+							v-if="producer.products.length > 0"
+							v-model="slide[producer.id]"
+							:vertical="isWidthThreshold"
+							class="col-xs-12 col-sm-4 bg-secondary home__card-carousel"
+							transition-prev="fade"
+							transition-next="fade"
+							swipeable
+							animated
+							control-color="dark"
+							infinite
+							:arrows="producer.products.length > 2"
 						>
-							<div
-								v-if="!isWidthThreshold"
-								class="col row justify-center"
+							<q-carousel-slide
+								v-for="i in Math.ceil(producer.products.length/2)"
+								:key="i"
+								:name="i"
+								class="q-pa-none"
 							>
-								<div class="col-xs-9">
-									<div class="row justify-center q-gutter-x-xs">
-										<q-img
-											v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
-											:key="thumbnail.id"
-											no-spinner
-											class="col"
-											fit="cover"
-											:src="backendServer + '/storage/' + thumbnail.path"
-											:ratio="4/3"
-										/>
+								<div
+									v-if="!isWidthThreshold"
+									class="col row justify-center"
+								>
+									<div class="col-xs-9">
+										<div class="row justify-center q-gutter-x-xs">
+											<q-img
+												v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
+												:key="thumbnail.id"
+												no-spinner
+												class="col"
+												fit="cover"
+												:src="backendServer + '/storage/' + thumbnail.path"
+												:ratio="4/3"
+											/>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div
-								v-else
-								class="column fit justify-center q-gutter-xs q-mx-none"
-							>
-								<q-img
-									v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
-									:key="thumbnail.id"
-									no-spinner
-									class="col-4 q-mx-none"
-									fit="cover"
-									:src="backendServer + '/storage/' + thumbnail.path"
-								/>
-							</div>
-						</q-carousel-slide>
-					</q-carousel>
+								<div
+									v-else
+									class="column fit justify-center q-gutter-xs q-mx-none"
+								>
+									<q-img
+										v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
+										:key="thumbnail.id"
+										no-spinner
+										class="col-4 q-mx-none"
+										fit="cover"
+										:src="backendServer + '/storage/' + thumbnail.path"
+									/>
+								</div>
+							</q-carousel-slide>
+						</q-carousel>
+					</div>
+					<div class="col-grow row">
+						<span class="text-h6 q-pa-md">{{ producer.display_name }}</span>
+					</div>
 				</div>
-				<div class="col-grow row">
-					<span class="text-h6 q-pa-md">{{ producer.display_name }}</span>
-				</div>
-			</div>
-		</q-card>
+			</q-card>
+		</template>
+		<template v-else>
+			<ProducerListHomeSkeleton />
+		</template>
 		<template v-slot:loading>
 			<div class="row justify-center q-my-md">
 				<q-spinner-dots
@@ -98,6 +105,7 @@ import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
 import { useProducerStore } from "src/stores/producer"
 import { useQuasar } from "quasar"
+import ProducerListHomeSkeleton from "src/components/skeletons/ProducerListHomeSkeleton.vue"
 
 const props = defineProps({
 	categories: {
@@ -132,20 +140,27 @@ const show = (producer_id) => {
 
 const scrollComponent = ref(null)
 
-const producersLength = computed(() => producers.value.length)
-
 const fetchProducers = async() => {
+	if (!producers.value.length) {
+		isInitializing.value = true
+	}
+
 	const limit = 5
 
 	const response = await api.get("producers", {
 		params: {
-			offset: producersLength.value,
+			offset: !isInitializing.value ?
+				producers.value.length : 0,
 			limit,
 			location: userLocation.value,
 			range: userRange.value,
 			categories: props.categories
 		}
 	})
+
+	if (isInitializing.value) {
+		producers.value = []
+	}
 
 	producers.value = [...producers.value, ...response.data]
 
@@ -163,11 +178,19 @@ const fetchProducers = async() => {
 
 const loadProducers = async (index, done) => {
 	await fetchProducers()
+
+	if (isInitializing.value) {
+		isInitializing.value = false
+	}
+
 	done()
 }
 
-function reinit() {
-	producers.value = []
+const isInitializing = ref(false)
+
+const reinit = () => {
+	isInitializing.value = true
+
 	scrollComponent.value.stop()
 	scrollComponent.value.resume()
 	scrollComponent.value.poll()

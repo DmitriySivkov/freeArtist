@@ -12,6 +12,7 @@
 				>
 					<q-item-section avatar>
 						<q-img
+							no-spinner
 							:src="product.thumbnail ?
 								backend_server + '/storage/' + product.thumbnail.path :
 								(product.images.length > 0 ? backend_server + '/storage/' + product.images[0].path : '/no-image.png')"
