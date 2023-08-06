@@ -52,11 +52,15 @@ class ProducerController extends Controller
 			->when($offset && $offset !== 0,
 				fn(Builder $builder) => $builder->offset($offset)
 			)
-			->when($categories, function(Builder $query) use ($categories) {
-				$query->whereHas('products.tags.categories', fn(Builder $builder) =>
-					$builder->whereIn('categories.id', $categories)
-				);
-			})
+			->when(
+				$categories,
+				function(Builder $query) use ($categories) {
+					$query->whereHas('products.tags.categories', fn(Builder $builder) =>
+						$builder->whereIn('categories.id', $categories)
+					);
+				},
+				fn(Builder $query) => $query->whereHas('products.images')
+			)
 			->leftJoin('teams', function(JoinClause $join) {
 				$join->on('teams.detailed_id', '=', 'producers.id')
 					->where('teams.detailed_type', Producer::class);
