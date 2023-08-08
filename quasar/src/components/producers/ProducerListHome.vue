@@ -16,7 +16,6 @@
 					<div class="col-grow row">
 						<div class="col-xs-12 col-sm">
 							<q-img
-								v-if="!isInitializing"
 								no-spinner
 								class="home__card-image fit"
 								:src="producer.storefront_image ? backendServer + '/storage/' + producer.storefront_image.path : 'no-image.png'"

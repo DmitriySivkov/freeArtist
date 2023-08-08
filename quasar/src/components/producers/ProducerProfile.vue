@@ -11,6 +11,7 @@
 						v-if="team.detailed.logo"
 						:src="backend_server + '/storage/' + team.detailed.logo.path"
 						fit="contain"
+						height="100%"
 					/>
 					<span
 						v-else
