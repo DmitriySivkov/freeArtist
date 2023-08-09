@@ -1,70 +1,137 @@
 <template>
-	<!-- todo - return carousel & drag block from history -->
-	<div class="column absolute fit justify-center">
-		<div class="row col-6 justify-center">
-			<div class="col-xs col-lg-8">
+	<!-- todo - 1) - fetch some product images 2) - bring home page cards to this view -->
+	<div class="column absolute fit">
+		<div class="col row flex-center">
+			<div class="col-xs-12 col-md-9 col-xl-8">
 				<q-card
-					class="column fit"
-					:class="[
-						`home__card_${isWidthThreshold ? 'expand' : 'shrink'}`,
-						{'bg-green-6 text-white': is_dragging}
-					]"
+					:class="`home__card_${isWidthThreshold ? 'expand' : 'shrink'}`"
 				>
+					<div class="row">
+						<div class="col-xs-12 col-sm-8">
+							<q-responsive
+								:ratio="16/9"
+								:class="{'bg-green-6 text-white': is_dragging}"
+							>
+								<div>
+									<Cropper
+										v-if="tmp_image"
+										ref="cropper"
+										class="absolute"
+										:src="tmp_image"
+										:stencil-props="{aspectRatio: 16/9}"
+									/>
 
-					<cropper
-						v-if="tmp_image"
-						ref="cropper"
-						class="cropper full-width"
-						backgroundClass="bg-green-4"
-						:src="tmp_image"
-						:stencil-props="{aspectRatio: 16/9}"
-						style="z-index:9999"
-					/>
+									<q-img
+										v-else-if="team.detailed.storefront_image"
+										no-spinner
+										class="absolute"
+										:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
+										fit="contain"
+										style="border-radius: 4px 0 0 0"
+									/>
 
-					<q-img
-						v-else-if="team.detailed.storefront_image"
-						no-spinner
-						:src="backend_server + '/storage/' + team.detailed.storefront_image.path"
-						fit="contain"
-						:ratio="16/9"
-					/>
+									<div
+										v-else
+										class="absolute fit flex flex-center text-center"
+									>
+										Выберите изображение <br /> или переместите в эту область
+									</div>
 
-					<div
-						v-else
-						class="text-center col-grow flex flex-center"
-					>
-						Выберите изображение <br /> или переместите в эту область
+									<div
+										v-if="can_manage_storefront || is_team_admin"
+										class="absolute fit cursor-pointer"
+										@dragenter.prevent="is_dragging = true"
+										@dragleave.prevent="is_dragging = false"
+										@dragover.prevent
+										@drop.prevent="drop"
+										@click="showFilePrompt"
+									></div>
+									<q-inner-loading
+										:showing="is_loading"
+										style="z-index:99999"
+									>
+										<q-spinner-gears
+											size="50px"
+											color="primary"
+										/>
+									</q-inner-loading>
+								</div>
+							</q-responsive>
+						</div>
+						<q-carousel
+							v-model="slide"
+							:vertical="isWidthThreshold"
+							class="col-xs-12 col-sm-4 bg-secondary home__card-carousel"
+							transition-prev="fade"
+							transition-next="fade"
+							swipeable
+							animated
+							control-color="dark"
+							infinite
+							:arrows="true"
+						>
+							<q-carousel-slide
+								name="products"
+								class="q-pa-none"
+							>
+								<div
+									v-if="!isWidthThreshold"
+									class="col row justify-center"
+								>
+									<div class="col-xs-9">
+										<div class="row justify-center q-gutter-x-xs">
+											<q-img
+												v-for="n in Math.ceil(3/2)"
+												:key="n"
+												no-spinner
+												class="col"
+												fit="cover"
+												:src="'/no-image.png'"
+												:ratio="4/3"
+											/>
+										</div>
+									</div>
+								</div>
+								<div
+									v-else
+									class="column fit justify-center q-gutter-xs q-mx-none"
+								>
+									<q-img
+										v-for="n in Math.ceil(3/2)"
+										:key="n"
+										no-spinner
+										class="col-4 q-mx-none"
+										fit="contain"
+										:src="'/no-image.png'"
+									/>
+								</div>
+							</q-carousel-slide>
+						</q-carousel>
+						<div class="row">
+							<span class="text-h6 q-pa-md">{{ team.display_name }}</span>
+						</div>
 					</div>
-
-					<div class="col-shrink row">
-						<span class="text-h6 q-pa-md">{{ team.display_name }}</span>
-					</div>
-
 				</q-card>
 
-			</div>
-		</div>
-	</div>
+				<div
+					v-if="tmp_image"
+					class="row q-gutter-xs q-mt-xs"
+				>
+					<q-btn
+						color="primary"
+						icon="done"
+						class="col q-pa-lg"
+						@click="loadImage"
+					/>
+					<q-btn
+						color="red"
+						icon="clear"
+						class="col q-pa-lg"
+						@click="cancelImage"
+					/>
+				</div>
 
-	<div
-		v-if="tmp_image"
-		class="row q-col-gutter-md q-px-md"
-	>
-		<div class="col-6">
-			<q-btn
-				color="primary"
-				icon="done"
-				class="q-pa-lg full-height full-width"
-				@click="loadImage"
-			/>
-		</div>
-		<div class="col-6">
-			<q-btn
-				color="red"
-				icon="clear"
-				class="q-pa-lg full-height full-width"
-				@click="cancelImage"
-			/>
+			</div>
 		</div>
 	</div>
 
@@ -108,6 +175,8 @@ const cropper = ref(null)
 const file_picker = ref(null)
 const is_dragging = ref(false)
 const is_loading = ref(false)
+
+const slide = ref("products")
 
 const is_team_admin = computed(() => user_store.data.id === team.value.user_id)
 

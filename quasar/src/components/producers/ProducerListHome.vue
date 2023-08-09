@@ -24,7 +24,6 @@
 							/>
 						</div>
 						<q-carousel
-							v-if="producer.products.length > 0"
 							v-model="slide[producer.id]"
 							:vertical="isWidthThreshold"
 							class="col-xs-12 col-sm-4 bg-secondary home__card-carousel"
