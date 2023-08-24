@@ -16,71 +16,167 @@
     <link rel="icon" type="image/ico" href="favicon.ico">
 
 		<style>
+			*, *:before, *:after {
+				box-sizing: border-box;
+				outline: none;
+			}
+
 			body {
-				margin: 0;
-				line-height: 1.5;
+				margin:0;
+				overflow: hidden;
 			}
+
 			#loading-screen {
-				display:flex;
-				flex-direction: column;
+				display: flex;
 				justify-content: center;
+				align-items: center;
 				height: 100vh;
-				width: 100%;
-				background-color: #fe724c;
-				align-items:center;
+				background-color: rgba(254, 114, 76, 0.8);
 			}
-			#loading-screen-loader {
-				width: 100px;
-				height: 100px;
-				display:inline-block;
+
+			.window {
+				position: relative;
 			}
-			#loading-screen-image {
-				width:170px;
-				background-color:white;
-				border-radius:20%;
-				margin-top: auto;
-				box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px
+
+			.content {
+				position: relative;
+				width: 270px;
+				height: 320px;
+				overflow: hidden;
+				border:10px solid #fff;
+
+				display: flex;
+				justify-content: center;
+
+				background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), center / cover no-repeat url("/shelf.jpg");
+			}
+
+			input#blind {
+				display: none;
+			}
+
+			#blind:checked + .content .bulb {
+				background: #ffeb00;
+				transition: all 0.3s linear;
+				animation-direction: alternate;
+				box-shadow: 0px 0px 80px 40px rgba(245,223,77,1);
+				border: 1px solid rgba(255,255,255,0.1);
+			}
+
+			#blind:checked + .content {
+				background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), center / cover no-repeat url("/shelf.jpg");
+			}
+
+			.roll {
+				position: absolute;
+				z-index:10;
+				background-color: #333;
+				width: 120%;
+				height: 15px;
+				border-radius:20px 20px 0 0;
+				margin: 0 -10%;
+				top:-10px;
+			}
+
+			.roll:before {
+				position: absolute;
+				width:100%;
+				content:"";
+				background-color: #fff;
+				height:15px;
+				left:0;
+				top:330px;
+				box-shadow: 0 10px 10px rgba(0,0,0,0.15);
+			}
+
+			.bulb-container{
+				height: 250px;
+				position: absolute;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				z-index: 1;
+				transform-origin: top;
+			}
+			.wire{
+				width: 3px;
+				height: 40%;
+				background: black;
+				position: relative;
+				z-index: 1;
+			}
+			.connector{
+				background: #292929;
+				width: 15px;
+				aspect-ratio: 4/5;
+				border-radius: 1px;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-evenly;
+				align-items: center;
+				z-index: 2;
+			}
+			.grove{
+				background: #424242;
+				width: 17px;
+				height: 3px;
+				z-index: 3;
+			}
+			.bulb{
+				margin-top: -2px;
+				width: 32px;
+				aspect-ratio: 1;
+				border-radius: 50%;
+				background: rgba(255,255,255,0.1);
+				border: 1px solid rgba(255,255,255,0.1);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: flex-start;
+				gap: -1px;
+				z-index: 1;
+			}
+			.metal-wire{
+				position: relative;
+				border: 1px solid black;
+				width: 13px;
+				height: 9px;
+				border-radius: 50%;
+				z-index: 2;
+			}
+			.metal-wire:nth-child(1){
+				top: -1px;
+			}
+			.metal-wire:nth-child(2){
+				top: -7px;
+			}
+			.metal-wire:nth-child(3){
+				top: -13px;
 			}
 		</style>
   </head>
   <body>
 		<div id="loading-screen">
-			<img id="loading-screen-image" src="./src/assets/meal.svg" />
-
-			<div style="margin-top:auto;">
-				<svg version="1.1" id="loading-screen-loader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-						 viewBox="0 0 50 100" enable-background="new 0 0 0 0" xml:space="preserve">
-					<circle fill="#fff" stroke="none" cx="0" cy="50" r="9">
-						<animate
-							attributeName="opacity"
-							dur="1s"
-							values="0;1;0"
-							repeatCount="indefinite"
-							begin="0.1"
-						/>
-					</circle>
-					<circle fill="#fff" stroke="none" cx="24" cy="50" r="9">
-						<animate
-							attributeName="opacity"
-							dur="1s"
-							values="0;1;0"
-							repeatCount="indefinite"
-							begin="0.2"
-						/>
-					</circle>
-					<circle fill="#fff" stroke="none" cx="48" cy="50" r="9">
-						<animate
-							attributeName="opacity"
-							dur="1s"
-							values="0;1;0"
-							repeatCount="indefinite"
-							begin="0.3"
-						/>
-					</circle>
-				</svg>
+			<div class="window">
+				<input id='blind' type='checkbox'>
+				<div class="content">
+					<div class="bulb-container">
+						<div class="wire"></div>
+						<div class="connector">
+							<div class="grove"></div>
+							<div class="grove"></div>
+							<div class="grove"></div>
+						</div>
+						<div class="bulb">
+							<div class="metal-wire"></div>
+							<div class="metal-wire"></div>
+							<div class="metal-wire"></div>
+						</div>
+					</div>
+				</div>
+				<div class="roll"></div>
 			</div>
 		</div>
-
     <!-- quasar:entry-point -->
   </body>
 </html>
