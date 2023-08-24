@@ -31,7 +31,7 @@
 				justify-content: center;
 				align-items: center;
 				height: 100vh;
-				background: linear-gradient(rgba(218, 98, 65, 1), rgba(218, 98, 65, 0.7));
+				background: linear-gradient(rgba(241, 109, 73, 1), rgba(241, 109, 73, 0.8));
 			}
 
 			.window {
@@ -152,6 +152,39 @@
 			}
 			.metal-wire:nth-child(3){
 				top: -13px;
+			}
+
+			@media (min-width: 600px) {
+				.content {
+					width: 370px;
+					height: 420px;
+				}
+
+				.roll:before {
+					top:430px;
+				}
+			}
+
+			@media (min-width: 1024px) {
+				.content {
+					width: 420px;
+					height: 480px;
+				}
+
+				.roll:before {
+					top:490px;
+				}
+			}
+
+			@media (min-width: 1440px) {
+				.content {
+					width: 480px;
+					height: 530px;
+				}
+
+				.roll:before {
+					top:540px;
+				}
 			}
 		</style>
   </head>
