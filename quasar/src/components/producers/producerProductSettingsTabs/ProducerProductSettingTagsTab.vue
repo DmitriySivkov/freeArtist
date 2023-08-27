@@ -84,8 +84,8 @@ const addKeyword = (keyword, doneFn) => {
 		return
 	}
 
-	if (keyword.length > 16) {
-		notifyError("Максимум 16 символов")
+	if (keyword.length > 20) {
+		notifyError("Максимум 20 символов")
 		return
 	}
 

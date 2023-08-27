@@ -14,11 +14,14 @@
 			>
 				<div class="column no-wrap fit">
 					<div class="col-grow row">
-						<div class="col-xs-12 col-sm">
+						<div
+							class="col-xs-12 col-sm cursor-pointer"
+							@click="$router.push({name: 'producer_products', params: {producer_id: producer.id} })"
+						>
 							<q-img
 								no-spinner
 								class="home__card-image fit"
-								:src="producer.storefront_image ? backendServer + '/storage/' + producer.storefront_image.path : 'no-image.png'"
+								:src="producer.storefront_image ? `${backendServer}/storage/${producer.storefront_image.path}` : '/no-image.png'"
 								fit="cover"
 								:ratio="16/9"
 							/>
@@ -84,14 +87,6 @@
 		<template v-else>
 			<ProducerListHomeSkeleton />
 		</template>
-		<template v-slot:loading>
-			<div class="row justify-center q-my-md">
-				<q-spinner-dots
-					color="primary"
-					size="40px"
-				/>
-			</div>
-		</template>
 	</q-infinite-scroll>
 </template>
 
@@ -117,7 +112,6 @@ const cartStore = useCartStore()
 const userStore = useUserStore()
 const producerStore = useProducerStore()
 
-const $router = useRouter()
 const backendServer = process.env.BACKEND_SERVER
 
 const userLocation = computed(() => userStore.location)
@@ -129,27 +123,19 @@ const slide = ref({})
 
 const cart = computed(() => cartStore.data)
 
-const show = (producer_id) => {
-	$router.push({
-		name: "producer_detail",
-		params: { producer_id }
-	})
-}
-
 const scrollComponent = ref(null)
 
 const fetchProducers = async() => {
+	const limit = 5
+
 	if (!producers.value.length) {
 		isInitializing.value = true
 	}
-
-	const limit = 5
 
 	const response = await api.get("producers", {
 		params: {
 			offset: !isInitializing.value ?
 				producers.value.length : 0,
-			limit,
 			location: userLocation.value,
 			range: userRange.value,
 			categories: props.categories

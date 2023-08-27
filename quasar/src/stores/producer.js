@@ -3,7 +3,6 @@ import { api } from "src/boot/axios"
 
 export const useProducerStore = defineStore("producer", {
 	state: () => ({
-		detail: {},
 		user_rights: [
 			{
 				id: 1,
@@ -19,12 +18,6 @@ export const useProducerStore = defineStore("producer", {
 	}),
 
 	actions: {
-		async getProducer(producerId) {
-			const response = await api.get("producers/" + producerId)
-
-			this.detail = response.data
-		},
-
 		async setProducerLogo({ producer_id, logo }) {
 			return api.post(
 				"/personal/producers/" + producer_id + "/setLogo",

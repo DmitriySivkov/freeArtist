@@ -31,20 +31,14 @@ class ProductService
 		try {
 			\DB::beginTransaction();
 
-			$this->checkProduct();
-
 			$team = Team::find(request()->input('team_id'));
 
+			$this->checkProduct();
 			$this->checkPermission($team);
 
 			$data = json_decode(request()->input('product'), true);
 
-			$this->product->fill([
-				'producer_id' => $team->detailed_id,
-				'title' => $data['title'],
-				'price' => $data['price'],
-				'amount' => !$data['amount'] ? 0 : $data['amount']
-			]);
+			$composition = [];
 
 			if ($data['composition']) {
 				$composition = array_values(
@@ -56,13 +50,24 @@ class ProductService
 						})
 						->toArray()
 				);
-
-				$this->product->fill([
-					'composition' => $composition
-				]);
 			}
 
+			$this->product->fill([
+				'producer_id' => $team->detailed_id,
+				'title' => $data['title'],
+				'price' => $data['price'],
+				'amount' => !$data['amount'] ? 0 : $data['amount'],
+				'thumbnail_id' => $data['thumbnail_id'] ?? null,
+				'keywords' => $data['keywords'] ?? null,
+				'composition' => $composition
+			]);
+
+			info(print_r($this->product->toArray(),true));
+
 			$this->product->save();
+
+			$tagIds = collect($data['tags'])->pluck('id');
+			$this->product->tags()->attach($tagIds);
 
 			// todo - validate that incoming file is a picture
 			$committedImages = request()->file('images');
@@ -182,8 +187,6 @@ class ProductService
 				}
 			}
 
-
-
 			$this->product->save();
 
 			\DB::commit();
@@ -210,6 +213,7 @@ class ProductService
 				);
 			}
 
+			$this->product->tags()->detach();
 			$this->product->images()->delete();
 
 			$isProductDeleted = $this->product->delete();

@@ -46,7 +46,9 @@ Route::group(['prefix' => 'permissions'], function() {
 
 Route::group(['prefix' => 'producers'], function() {
 	Route::get('', [ProducerController::class, 'index']);
-	Route::get('{producer}', [ProducerController::class, 'show']);
+
+	Route::get('{producer}/products', [ProductController::class, 'index']);
+	Route::get('{producer}/products/{product}', [ProductController::class, 'show']);
 });
 
 Route::group(['prefix' => 'cities'], function() {

@@ -54,13 +54,9 @@ class Product extends Model
 	protected $hidden = ['pivot'];
 
 	protected $casts = [
-		'composition' => 'array',
-		'keywords' => 'array',
+		'composition' => 'json',
+		'keywords' => 'json',
 		'price' => 'float'
-	];
-
-	protected $attributes = [
-		'keywords' => [],
 	];
 
 	/**
@@ -93,13 +89,6 @@ class Product extends Model
 	public function tags()
 	{
 		return $this->belongsToMany(Tag::class);
-	}
-
-	protected function keywords(): Attribute
-	{
-		return Attribute::make(
-			get: fn ($value) => is_null($value) ? [] : json_decode($value),
-		);
 	}
 
 }

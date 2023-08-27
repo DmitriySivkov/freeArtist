@@ -2,14 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Permission;
+use App\Models\Producer;
 use App\Models\Product;
-use App\Models\User;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+	/**
+	 * @param Producer $producer
+	 * @param Request $request
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	public function index(Request $request, Producer $producer)
+	{
+		$offset = $request->input('offset');
+		$limit = 5;
+
+		return $producer->products()
+			->with([
+				'thumbnail'
+			])
+			->orderBy('title', 'desc')
+			->offset($offset)
+			->limit($limit)
+			->get();
+	}
+
+	public function show(Producer $producer)
+	{
+		// todo
+	}
+
 	/**
 	 * @param ProductService $productService
 	 * @return Product|\Illuminate\Http\JsonResponse

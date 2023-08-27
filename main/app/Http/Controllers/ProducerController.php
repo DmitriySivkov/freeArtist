@@ -22,7 +22,7 @@ class ProducerController extends Controller
 	{
 		$location = json_decode($request->input('location'),true);
 		$offset = $request->input('offset');
-		$limit = $request->input('limit');
+		$limit = 5;
 		$categories = $request->input('categories');
 
 		$producers = Producer::query()
@@ -70,15 +70,6 @@ class ProducerController extends Controller
 			->get();
 
 		return response()->json($producers);
-	}
-
-	/**
-	 * @param Producer $producer
-	 * @return JsonResponse
-	 */
-	public function show(Producer $producer)
-	{
-		return response()->json($producer->load(['products', 'team']));
 	}
 
 	/**
