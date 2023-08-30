@@ -2,15 +2,14 @@
 	<q-infinite-scroll
 		ref="scrollComponent"
 		@load="loadProducers"
-		:offset="250"
 		class="column no-wrap fit"
 	>
 		<template v-if="producers.length && !isInitializing">
 			<q-card
 				v-for="producer in producers"
 				:key="producer.id"
-				class="col-grow row home__card"
-				:class="`home__card_${isWidthThreshold ? 'expand' : 'shrink'}`"
+				class="col-grow row product__card"
+				:class="`product__card_${isWidthThreshold ? 'expand' : 'shrink'}`"
 			>
 				<div class="column no-wrap fit">
 					<div class="col-grow row">
@@ -20,7 +19,7 @@
 						>
 							<q-img
 								no-spinner
-								class="home__card-image fit"
+								class="product__card-image fit"
 								:src="producer.storefront_image ? `${backendServer}/storage/${producer.storefront_image.path}` : '/no-image.png'"
 								fit="cover"
 								:ratio="16/9"
@@ -29,7 +28,7 @@
 						<q-carousel
 							v-model="slide[producer.id]"
 							:vertical="isWidthThreshold"
-							class="col-xs-12 col-sm-4 bg-secondary home__card-carousel"
+							class="col-xs-12 col-sm-4 bg-secondary product__card-carousel"
 							transition-prev="fade"
 							transition-next="fade"
 							swipeable
@@ -92,7 +91,6 @@
 
 <script setup>
 import { computed, ref, watch } from "vue"
-import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"

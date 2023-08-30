@@ -7,7 +7,6 @@
 						<q-btn
 							class="q-pa-md"
 							icon="login"
-							:text-color="['login', 'register'].includes(route.name) ? 'indigo-10': 'white'"
 							:color="['login', 'register'].includes(route.name) ? 'secondary': 'primary'"
 							to="/auth"
 						/>
@@ -16,7 +15,6 @@
 						<q-btn
 							class="q-pa-md"
 							icon="home"
-							:text-color="route.name === 'home' ? 'indigo-10': 'white'"
 							:color="route.name === 'home' ? 'secondary': 'primary'"
 							to="/"
 						/>
@@ -28,7 +26,6 @@
 						<q-btn
 							class="q-pa-md"
 							icon="account_circle"
-							:text-color="route.name.includes('personal') ? 'indigo-10': 'white'"
 							:color="route.name.includes('personal') ? 'secondary': 'primary'"
 							to="/personal"
 						/>
@@ -38,7 +35,6 @@
 							class="q-pa-md"
 							:label="cartCounter"
 							icon-right="shopping_cart"
-							:text-color="cartCounter > 0 || route.name === 'cart' ? 'indigo-10': 'white'"
 							:color="cartCounter > 0 || route.name === 'cart' ? 'secondary': 'primary'"
 							to="/cart"
 						/>

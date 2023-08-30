@@ -10,7 +10,7 @@
 				</div>
 				<div
 					class="col-xs-12 col-md-grow"
-					:class="$router.currentRoute.value.name === 'home' ? 'bg-primary' : 'bg-white'"
+					:class="isBackgroundColorPrimary ? 'bg-primary' : 'bg-white'"
 				>
 					<div class="column full-height">
 						<q-scroll-area
@@ -43,5 +43,14 @@
 <script setup>
 import MainFooter from "src/layouts/MainFooter.vue"
 import MenuMain from "src/components/menus/MenuMain.vue"
+import { useRouter } from "vue-router"
+import { computed } from "vue"
+
+const $router = useRouter()
+
+const isBackgroundColorPrimary = computed(() =>
+	!$router.currentRoute.value.path.includes("personal") &&
+	!["register", "login"].includes($router.currentRoute.value.name)
+)
 
 </script>

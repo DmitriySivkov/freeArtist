@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="userLocation"
-		class="column no-wrap fit q-px-md"
+		class="column no-wrap fit q-px-md absolute"
 	>
 		<div class="col-auto">
 			<div class="row justify-center">
@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div class="col-grow">
-			<div class="row justify-center">
+			<div class="row justify-center fit">
 				<div class="col-xs col-lg-8">
 					<ProducerListHome
 						:categories="selectedCategories"

@@ -62,8 +62,6 @@ class ProductService
 				'composition' => $composition
 			]);
 
-			info(print_r($this->product->toArray(),true));
-
 			$this->product->save();
 
 			$tagIds = collect($data['tags'])->pluck('id');

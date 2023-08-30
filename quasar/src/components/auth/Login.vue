@@ -67,66 +67,55 @@
 	/>
 </template>
 
-<script>
+<script setup>
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
 import { Plugins } from "@capacitor/core"
 import { useQuasar, Loading } from "quasar"
 import { useUserStore } from "src/stores/user"
-export default {
-	setup() {
-		const $q = useQuasar()
-		const $router = useRouter()
-		const user_store = useUserStore()
-		const { Storage } = Plugins
 
-		const { notifySuccess, notifyError } = useNotification()
-		const phone = ref(null)
-		const password = ref("")
-		const is_pwd = ref(true)
+const $q = useQuasar()
+const $router = useRouter()
+const user_store = useUserStore()
+const { Storage } = Plugins
 
-		const onSubmit = async() => {
-			Loading.show({ spinnerColor: "primary" })
+const { notifySuccess, notifyError } = useNotification()
+const phone = ref(null)
+const password = ref("")
+const is_pwd = ref(true)
 
-			await user_store.login({
-				phone: phone.value,
-				password: password.value,
-				is_mobile: $q.platform.is.capacitor
-			}).then((response) => {
-				if (response.data.token) {
-					Storage.set({
-						key: "token",
-						value: response.data.token
-					})
-				}
+const onSubmit = async() => {
+	Loading.show({ spinnerColor: "primary" })
 
-				notifySuccess("Добро пожаловать!")
-
-				$router.push({name: "personal"})
-
-				user_store.setIsLogged(true)
-			}).catch((error) => {
-				const errors = Object.values(error.response.data.errors)
-					.reduce((accum, val) => accum.concat(...val), [])
-				notifyError(errors)
+	await user_store.login({
+		phone: phone.value,
+		password: password.value,
+		is_mobile: $q.platform.is.capacitor
+	}).then((response) => {
+		if (response.data.token) {
+			Storage.set({
+				key: "token",
+				value: response.data.token
 			})
-
-			Loading.hide()
 		}
 
-		const onReset = () => {
-			phone.value = null
-			password.value = null
-		}
+		notifySuccess("Добро пожаловать!")
 
-		return {
-			phone,
-			password,
-			is_pwd,
-			onSubmit,
-			onReset
-		}
-	}
+		$router.push({name: "personal"})
+
+		user_store.setIsLogged(true)
+	}).catch((error) => {
+		const errors = Object.values(error.response.data.errors)
+			.reduce((accum, val) => accum.concat(...val), [])
+		notifyError(errors)
+	})
+
+	Loading.hide()
+}
+
+const onReset = () => {
+	phone.value = null
+	password.value = null
 }
 </script>

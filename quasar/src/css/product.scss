@@ -1,26 +1,32 @@
-.home {
+.product {
 
 	&__card {
 		margin-bottom: 16px;
 		border-radius: 8px;
 
 		&_expand {
-			& .home__card-image {
+			& .product__card-image {
 				border-radius: 4px 0 0 4px;
 			}
 
-			& .home__card-carousel {
+			& .product__card-carousel {
 				border-radius: 0 4px 4px 0 !important;
 			}
 		}
 
 		&_shrink {
-			& .home__card-image {
+			& .product__card-image {
 				border-radius: 8px 8px 0 0;
 			}
 
-			& .home__card-carousel {
+			& .product__card-carousel {
 				border-radius: 0 0 8px 8px !important;
+			}
+		}
+
+		&_list {
+			& .product__card-image {
+				border-radius: 4px 4px 4px 4px;
 			}
 		}
 	}
