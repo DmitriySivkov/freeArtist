@@ -21,12 +21,10 @@ const cartCounter = computed(
 const { notifySuccess } = useNotification()
 
 const logout = () => {
-	user_store.logout().then(() =>
-	{
+	user_store.logout().then(() => {
 		notifySuccess("До свидания!")
 		$router.push({"name": "home"})
-	}
-	)
+	})
 }
 </script>
 <template>
@@ -34,7 +32,6 @@ const logout = () => {
 		<q-item
 			v-if="!is_user_logged"
 			clickable
-			v-ripple
 			to="/auth"
 			:class="{'bg-primary text-white': ['login', 'register'].includes(route.name)}"
 		>
@@ -47,7 +44,6 @@ const logout = () => {
 		<q-item
 			v-if="is_user_logged"
 			clickable
-			v-ripple
 			@click="logout"
 		>
 			<q-item-section avatar>
@@ -58,7 +54,6 @@ const logout = () => {
 		</q-item>
 		<q-item
 			clickable
-			v-ripple
 			to="/"
 			:class="route.name === 'home' ? 'bg-primary text-white' : 'text-dark'"
 		>
@@ -72,7 +67,6 @@ const logout = () => {
 		<q-item
 			v-if="is_user_logged"
 			clickable
-			v-ripple
 			to="/personal"
 			:class="{'bg-primary text-white': route.name.includes('personal')}"
 		>
@@ -85,7 +79,6 @@ const logout = () => {
 
 		<q-item
 			clickable
-			v-ripple
 			to="/cart"
 			:class="{'bg-primary text-white': route.name === 'cart'}"
 		>

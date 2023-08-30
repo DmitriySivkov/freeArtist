@@ -1,60 +1,62 @@
 <template>
-	<div class="q-pa-md row justify-center">
-		<div class="col-xs-12 col-md-6 col-lg-4">
-			<q-form
-				@submit="onSubmit"
-				@reset="onReset"
-			>
-				<q-card class="q-mb-lg">
-					<q-card-section
-						class="text-center bg-primary text-white"
-					>
-						Присоединиться к существующей команде.<br/>
-						Вы по-прежнему сможете зарегистрироваться собственную.
-					</q-card-section>
-				</q-card>
+	<div class="column absolute fit">
+		<div class="q-pa-md row flex flex-center fit">
+			<div class="col-xs-12 col-md-6 col-lg-4">
+				<q-form
+					@submit="onSubmit"
+					@reset="onReset"
+				>
+					<q-card class="q-mb-lg">
+						<q-card-section
+							class="text-center bg-primary text-white"
+						>
+							Присоединиться к существующей команде.<br/>
+							Вы по-прежнему сможете зарегистрироваться собственную.
+						</q-card-section>
+					</q-card>
 
-				<q-select
-					filled
-					v-model="team"
-					use-input
-					input-debounce="300"
-					label="Начните вводить название компании *"
-					:options="team_list"
-					@filter="loadTeamList"
-					behavior="dialog"
-					lazy-rules
-					:rules="[
-						val => !!val,
-					]"
-				/>
+					<q-select
+						filled
+						v-model="team"
+						use-input
+						input-debounce="300"
+						label="Начните вводить название компании *"
+						:options="team_list"
+						@filter="loadTeamList"
+						behavior="dialog"
+						lazy-rules
+						:rules="[
+							val => !!val,
+						]"
+					/>
 
-				<q-input
-					v-model="message"
-					filled
-					type="textarea"
-					label="Добавьте текст заявки (необязательно)"
-				/>
+					<q-input
+						v-model="message"
+						filled
+						type="textarea"
+						label="Добавьте текст заявки (необязательно)"
+					/>
 
-				<div class="row q-col-gutter-sm q-mt-lg">
-					<div class="col-xs-6">
-						<q-btn
-							label="Подтвердить"
-							type="submit"
-							color="primary"
-							class="q-pa-lg full-width"
-						/>
+					<div class="row q-col-gutter-sm q-mt-lg">
+						<div class="col-xs-6">
+							<q-btn
+								label="Подтвердить"
+								type="submit"
+								color="primary"
+								class="q-pa-lg full-width"
+							/>
+						</div>
+						<div class="col-xs-6">
+							<q-btn
+								label="Сбросить"
+								type="reset"
+								color="warning"
+								class="q-pa-lg full-width"
+							/>
+						</div>
 					</div>
-					<div class="col-xs-6">
-						<q-btn
-							label="Сбросить"
-							type="reset"
-							color="warning"
-							class="q-pa-lg full-width"
-						/>
-					</div>
-				</div>
-			</q-form>
+				</q-form>
+			</div>
 		</div>
 	</div>
 </template>
