@@ -2,35 +2,50 @@
 	<q-infinite-scroll
 		ref="scrollComponent"
 		@load="load"
-		class="column no-wrap fit q-mt-md"
 	>
-		<template v-if="products.length && !isInitializing">
-			<q-card
-				v-for="product in products"
-				:key="product.id"
-				class="col-grow row product__card product__card_list"
-			>
-				<div class="column no-wrap fit">
-					<div class="col-grow row">
-						<div class="col cursor-pointer">
-							<q-img
-								no-spinner
-								class="product__card-image fit"
-								:src="product.thumbnail ? `${backendServer}/storage/${product.thumbnail.path}` : '/no-image.png'"
-								fit="cover"
-								:ratio="16/9"
-							/>
+		<q-page>
+			<template v-if="products.length && !isInitializing">
+				<q-card
+					v-for="product in products"
+					:key="product.id"
+					class="row product__card product__card_list"
+				>
+					<div class="column no-wrap full-width">
+						<div class="col-grow row">
+							<div class="col cursor-pointer">
+								<q-img
+									no-spinner
+									class="product__card-image fit"
+									:src="product.thumbnail ? `${backendServer}/storage/${product.thumbnail.path}` : '/no-image.png'"
+									fit="cover"
+									:ratio="16/9"
+								/>
+							</div>
+						</div>
+						<q-separator />
+						<div
+							v-if="product.tags.length"
+							class="col-shrink row q-pa-xs"
+						>
+							<q-chip
+								v-for="tag in product.tags"
+								:key="tag.id"
+								class="col-shrink"
+							>
+								{{ tag.name }}
+							</q-chip>
+						</div>
+						<q-separator v-if="product.tags.length" />
+						<div class="col row">
+							<span class="text-h6 q-pa-md">{{ product.title }}</span>
 						</div>
 					</div>
-					<div class="col row">
-						<span class="text-h6 q-pa-md">{{ product.title }}</span>
-					</div>
-				</div>
-			</q-card>
-		</template>
-		<template v-else>
-			<ProducerPublicProductListSkeleton />
-		</template>
+				</q-card>
+			</template>
+			<template v-else>
+				<ProducerPublicProductListSkeleton />
+			</template>
+		</q-page>
 	</q-infinite-scroll>
 </template>
 
@@ -65,7 +80,8 @@ const fetchProducts = async() => {
 
 	const response = await api.get(`producers/${$router.currentRoute.value.params.producer_id}/products`, {
 		params: {
-			offset: products.value.length
+			offset: products.value.length,
+			categories: $router.currentRoute.value.params.categories
 		}
 	})
 

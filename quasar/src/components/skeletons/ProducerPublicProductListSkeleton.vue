@@ -1,5 +1,8 @@
 <template>
-	<div class="column no-wrap fit">
+	<div
+		class="column no-wrap"
+		style="height:1px; min-height:inherit"
+	>
 		<q-card
 			v-for="n in 2"
 			:key="n"

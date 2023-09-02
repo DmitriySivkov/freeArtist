@@ -16,13 +16,20 @@ class ProductController extends Controller
 	 */
 	public function index(Request $request, Producer $producer)
 	{
+		$categories = $request->input('categories', null);
 		$offset = $request->input('offset');
 		$limit = 5;
 
 		return $producer->products()
 			->with([
-				'thumbnail'
+				'thumbnail',
+				'tags'
 			])
+			->when($categories, function($query) use ($categories) {
+				$query->whereHas('tags.categories',
+					fn($query) => $query->whereIn('categories', $categories)
+				);
+			})
 			->orderBy('title', 'desc')
 			->offset($offset)
 			->limit($limit)

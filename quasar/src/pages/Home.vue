@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="userLocation"
-		class="column no-wrap fit q-px-md absolute"
+		class="column no-wrap full-width q-px-md absolute"
 	>
 		<div class="col-auto">
 			<div class="row justify-center">
@@ -13,18 +13,14 @@
 		<div class="col-auto q-mb-sm">
 			<div class="row justify-center">
 				<div class="col-xs col-lg-8">
-					<ProducerCategoriesHome
-						@change="setCategories"
-					/>
+					<ProducerCategoriesHome />
 				</div>
 			</div>
 		</div>
 		<div class="col-grow">
-			<div class="row justify-center fit">
+			<div class="row justify-center">
 				<div class="col-xs col-lg-8">
-					<ProducerListHome
-						:categories="selectedCategories"
-					/>
+					<ProducerListHome />
 				</div>
 			</div>
 		</div>
@@ -32,7 +28,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from "vue"
+import { computed, onMounted } from "vue"
 import { Dialog } from "quasar"
 import ProducerListHome from "src/components/producers/ProducerListHome.vue"
 import ProducerFilterHome from "src/components/producers/ProducerFilterHome.vue"
@@ -44,12 +40,6 @@ import { LOCATION_RANGE, LOCATION_UNKNOWN_ID } from "src/const/userLocation"
 const userStore = useUserStore()
 
 const userLocation = computed(() => userStore.location)
-
-const selectedCategories = ref([])
-
-const setCategories = (categoryIds) => {
-	selectedCategories.value = categoryIds
-}
 
 onMounted(() => {
 	if (!userLocation.value) {

@@ -6,11 +6,11 @@
 
 		&_expand {
 			& .product__card-image {
-				border-radius: 4px 0 0 4px;
+				border-radius: 4px 0 0 0;
 			}
 
 			& .product__card-carousel {
-				border-radius: 0 4px 4px 0 !important;
+				border-radius: 0 4px 0 0 !important;
 			}
 		}
 
@@ -18,15 +18,11 @@
 			& .product__card-image {
 				border-radius: 8px 8px 0 0;
 			}
-
-			& .product__card-carousel {
-				border-radius: 0 0 8px 8px !important;
-			}
 		}
 
 		&_list {
 			& .product__card-image {
-				border-radius: 4px 4px 4px 4px;
+				border-radius: 4px 4px 0 0;
 			}
 		}
 	}

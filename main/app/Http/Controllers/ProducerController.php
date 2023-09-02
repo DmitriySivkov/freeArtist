@@ -42,6 +42,7 @@ class ProducerController extends Controller
 				},
 				'storefrontImage'
 			])
+			->whereHas('products.images')
 			->when((int)$request->input('range') === User::RANGE_NEARBY,
 				function (Builder $query) use ($location) {
 					$query->whereHas('city', fn(Builder $builder) =>
@@ -58,8 +59,7 @@ class ProducerController extends Controller
 					$query->whereHas('products.tags.categories', fn(Builder $builder) =>
 						$builder->whereIn('categories.id', $categories)
 					);
-				},
-				fn(Builder $query) => $query->whereHas('products.images')
+				}
 			)
 			->leftJoin('teams', function(JoinClause $join) {
 				$join->on('teams.detailed_id', '=', 'producers.id')

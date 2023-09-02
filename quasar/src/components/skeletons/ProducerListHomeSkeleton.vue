@@ -8,12 +8,15 @@ const isWidthThreshold = computed(() =>
 )
 </script>
 <template>
-	<div class="column no-wrap fit">
+	<div
+		class="column no-wrap"
+		style="height:1px; min-height:inherit"
+	>
 		<template v-if="isWidthThreshold">
 			<q-card
 				v-for="n in 2"
 				:key="n"
-				class="col-xs-9 col-md-6 q-mb-md"
+				class="col-sm-5 q-mb-md"
 			>
 				<div class="column fit">
 					<div class="col-xs-12 col-sm-9 row">
@@ -36,7 +39,7 @@ const isWidthThreshold = computed(() =>
 			<q-card
 				v-for="n in 2"
 				:key="n"
-				class="col-xs-12 col-sm-6 column no-wrap q-mb-md"
+				class="col-xs-5 column no-wrap q-mb-md"
 			>
 				<q-skeleton
 					class="col-9 row"

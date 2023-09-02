@@ -12,6 +12,7 @@ export const useUserStore = defineStore("user", {
 		personal_tab: "user",
 		location: null,
 		location_range: null,
+		selected_categories: [],
 		data: {}
 	}),
 
@@ -149,6 +150,10 @@ export const useUserStore = defineStore("user", {
 
 		setIsLogged(isLogged) {
 			this.is_logged = isLogged
+		},
+
+		setSelectedCategories(categories) {
+			this.selected_categories = categories
 		}
 	}
 })

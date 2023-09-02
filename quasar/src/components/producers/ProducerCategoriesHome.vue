@@ -1,24 +1,23 @@
 <script setup>
-import { ref } from "vue"
+import { computed } from "vue"
 import CategoryTag from "src/components/products/CategoryTag.vue"
 import { PRODUCT_CATEGORY_LIST } from "src/const/productCategories.js"
+import { useUserStore } from "src/stores/user"
 
-const emit = defineEmits([
-	"change"
-])
+const userStore = useUserStore()
 
-const selectedCategoryIds = ref([])
+const selectedCategoryIds = computed(() => userStore.selected_categories)
 
 const addSelectedCategory = (categoryId) => {
-	selectedCategoryIds.value.push(categoryId)
-
-	emit("change", selectedCategoryIds.value)
+	userStore.setSelectedCategories(
+		[categoryId, ...selectedCategoryIds.value]
+	)
 }
 
 const removeSelectedCategory = (categoryId) => {
-	selectedCategoryIds.value = selectedCategoryIds.value.filter((c) => c !== categoryId)
-
-	emit("change", selectedCategoryIds.value)
+	userStore.setSelectedCategories(
+		selectedCategoryIds.value.filter((c) => c !== categoryId)
+	)
 }
 </script>
 
