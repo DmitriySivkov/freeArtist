@@ -17,7 +17,8 @@
 								class="col-xs-12 col-sm cursor-pointer"
 								@click="$router.push({
 									name: 'producer_products',
-									params: { producer_id: producer.id }
+									params: { producer_id: producer.id },
+									query: categories.length ? { categories: categories.join(',') } : {}
 								})"
 							>
 								<q-img
@@ -86,6 +87,9 @@
 					</div>
 				</q-card>
 			</template>
+			<template v-else-if="!producers.length && !isInitializing">
+				<!-- todo - nothing found -->
+			</template>
 			<template v-else>
 				<ProducerListHomeSkeleton />
 			</template>
@@ -103,6 +107,10 @@ import { useQuasar } from "quasar"
 import { debounce } from "lodash"
 import ProducerListHomeSkeleton from "src/components/skeletons/ProducerListHomeSkeleton.vue"
 
+const props = defineProps({
+	categories: Array
+})
+
 const $q = useQuasar()
 const cartStore = useCartStore()
 const userStore = useUserStore()
@@ -113,8 +121,6 @@ const backendServer = process.env.BACKEND_SERVER
 const userLocation = computed(() => userStore.location)
 
 const userRange = computed(() => userStore.location_range)
-
-const categories = computed(() => userStore.selected_categories)
 
 const producers = ref([])
 const slide = ref({})
@@ -138,7 +144,7 @@ const fetchProducers = async() => {
 				producers.value.length : 0,
 			location: userLocation.value,
 			range: userRange.value,
-			categories: categories.value
+			categories: props.categories
 		}
 	})
 
@@ -177,7 +183,7 @@ const reinit = debounce(() => {
 watch([
 	() => userRange.value,
 	() => userLocation.value.id,
-	() => categories.value
+	() => props.categories
 ],() => {
 	producers.value = []
 	isInitializing.value = true

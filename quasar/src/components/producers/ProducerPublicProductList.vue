@@ -42,6 +42,9 @@
 					</div>
 				</q-card>
 			</template>
+			<template v-else-if="!products.length && !isInitializing">
+				<!-- todo - nothing found -->
+			</template>
 			<template v-else>
 				<ProducerPublicProductListSkeleton />
 			</template>
@@ -52,10 +55,18 @@
 <script setup>
 import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
-import { computed, ref } from "vue"
+import { computed, ref, watch } from "vue"
 import { useCartStore } from "src/stores/cart"
 import { useProducerStore } from "src/stores/producer"
 import ProducerPublicProductListSkeleton from "src/components/skeletons/ProducerPublicProductListSkeleton.vue"
+import { debounce } from "lodash"
+
+const props = defineProps({
+	selectedTags: {
+		type: Array,
+		default: () => ([])
+	}
+})
 
 const $router = useRouter()
 const cart_store = useCartStore()
@@ -81,7 +92,7 @@ const fetchProducts = async() => {
 	const response = await api.get(`producers/${$router.currentRoute.value.params.producer_id}/products`, {
 		params: {
 			offset: products.value.length,
-			categories: $router.currentRoute.value.params.categories
+			tags: props.selectedTags.map((tag) => tag.id) // todo - pass tags as string - not as array
 		}
 	})
 
@@ -91,4 +102,20 @@ const fetchProducts = async() => {
 		scrollComponent.value.stop()
 	}
 }
+
+const reinit = debounce(() => {
+	scrollComponent.value.stop()
+	scrollComponent.value.resume()
+	scrollComponent.value.poll()
+}, 700)
+
+watch(
+	() => props.selectedTags,
+	() => {
+		products.value = []
+		isInitializing.value = true
+		reinit()
+	}
+)
+
 </script>

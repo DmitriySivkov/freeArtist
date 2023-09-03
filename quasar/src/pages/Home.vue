@@ -13,14 +13,18 @@
 		<div class="col-auto q-mb-sm">
 			<div class="row justify-center">
 				<div class="col-xs col-lg-8">
-					<ProducerCategoriesHome />
+					<ProducerCategoriesHome
+						@change="setCategories"
+					/>
 				</div>
 			</div>
 		</div>
 		<div class="col-grow">
 			<div class="row justify-center">
 				<div class="col-xs col-lg-8">
-					<ProducerListHome />
+					<ProducerListHome
+						:categories="selectedCategories"
+					/>
 				</div>
 			</div>
 		</div>
@@ -28,7 +32,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { Dialog } from "quasar"
 import ProducerListHome from "src/components/producers/ProducerListHome.vue"
 import ProducerFilterHome from "src/components/producers/ProducerFilterHome.vue"
@@ -40,6 +44,12 @@ import { LOCATION_RANGE, LOCATION_UNKNOWN_ID } from "src/const/userLocation"
 const userStore = useUserStore()
 
 const userLocation = computed(() => userStore.location)
+
+const selectedCategories = ref([])
+
+const setCategories = (categoryIds) => {
+	selectedCategories.value = categoryIds
+}
 
 onMounted(() => {
 	if (!userLocation.value) {

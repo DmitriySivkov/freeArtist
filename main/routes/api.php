@@ -4,10 +4,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\Personal\PersonalTagController;
 use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\TagController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Broadcast;
@@ -57,6 +57,10 @@ Route::group(['prefix' => 'cities'], function() {
 
 Route::group(['prefix' => 'user'], function() {
 	Route::get('location', [UserController::class, 'getLocation']);
+});
+
+Route::group(['prefix' => 'tags'], function() {
+	Route::get('', [\App\Http\Controllers\TagController::class, 'index']);
 });
 
 /** auth requiring routes */
@@ -119,7 +123,7 @@ Route::group([
 	});
 
 	Route::group(['prefix' => 'tags'], function() {
-		Route::get('', [TagController::class, 'index']);
+		Route::get('', [PersonalTagController::class, 'index']);
 	});
 
 });

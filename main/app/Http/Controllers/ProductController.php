@@ -16,7 +16,7 @@ class ProductController extends Controller
 	 */
 	public function index(Request $request, Producer $producer)
 	{
-		$categories = $request->input('categories', null);
+		$tags = $request->input('tags', null);
 		$offset = $request->input('offset');
 		$limit = 5;
 
@@ -25,10 +25,8 @@ class ProductController extends Controller
 				'thumbnail',
 				'tags'
 			])
-			->when($categories, function($query) use ($categories) {
-				$query->whereHas('tags.categories',
-					fn($query) => $query->whereIn('categories', $categories)
-				);
+			->when($tags, function($query) use ($tags) {
+				$query->whereHas('tags', fn($query) => $query->whereIn('id', $tags));
 			})
 			->orderBy('title', 'desc')
 			->offset($offset)
