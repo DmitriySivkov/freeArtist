@@ -78,6 +78,8 @@ const products = ref([])
 const scrollComponent = ref(null)
 const isInitializing = ref(true)
 
+const isTagsChanged = ref(false)
+
 const load = async (index, done) => {
 	await fetchProducts()
 
@@ -89,12 +91,22 @@ const load = async (index, done) => {
 const fetchProducts = async() => {
 	const limit = 5
 
-	const response = await api.get(`producers/${$router.currentRoute.value.params.producer_id}/products`, {
-		params: {
-			offset: products.value.length,
-			tags: props.selectedTags.map((tag) => tag.id) // todo - pass tags as string - not as array
-		}
-	})
+	let params = {
+		offset: products.value.length
+	}
+
+	// on first-time component load using 'categories' as param
+	if (isTagsChanged.value) {
+		params.tags = props.selectedTags.map((tag) => tag.id) // todo - pass tags as string - not as array
+	} else {
+		params.categories = $router.currentRoute.value.query.categories ?
+			$router.currentRoute.value.query.categories.split(",") : null
+	}
+
+	const response = await api.get(
+		`producers/${$router.currentRoute.value.params.producer_id}/products`,
+		{ params }
+	)
 
 	products.value = [...products.value, ...response.data]
 
@@ -114,6 +126,7 @@ watch(
 	() => {
 		products.value = []
 		isInitializing.value = true
+		isTagsChanged.value = true
 		reinit()
 	}
 )
