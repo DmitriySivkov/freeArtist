@@ -22,7 +22,6 @@ const { notifySuccess } = useNotification()
 
 const logout = () => {
 	user_store.logout().then(() => {
-		notifySuccess("До свидания!")
 		$router.push({"name": "home"})
 	})
 }

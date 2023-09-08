@@ -100,8 +100,6 @@ const onSubmit = async() => {
 			})
 		}
 
-		notifySuccess("Добро пожаловать!")
-
 		$router.push({name: "personal"})
 
 		user_store.setIsLogged(true)

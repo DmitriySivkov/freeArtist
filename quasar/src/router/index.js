@@ -1,6 +1,7 @@
 import {route} from "quasar/wrappers"
 import {createMemoryHistory, createRouter, createWebHashHistory, createWebHistory} from "vue-router"
 import routes from "src/router/routes"
+import { scroll } from "quasar"
 
 /*
  * If not building with SSR mode, you can
@@ -17,7 +18,15 @@ export default route( async ({ store, ssrContext }) => {
 		: (process.env.VUE_ROUTER_MODE === "history" ? createWebHistory : createWebHashHistory)
 
 	return createRouter({
-		scrollBehavior: () => ({left: 0, top: 0}),
+		scrollBehavior: () => {
+			// todo - figure better way to reset scroll height & width
+			const { getScrollTarget, setVerticalScrollPosition, setHorizontalScrollPosition } = scroll
+			let target = getScrollTarget(
+				document.getElementsByClassName("q-scrollarea__container scroll relative-position fit hide-scrollbar")[0]
+			)
+			setVerticalScrollPosition(target, 0)
+			setHorizontalScrollPosition(target, 0)
+		},
 		routes,
 
 		// Leave this as is and make changes in quasar.conf.js instead!
