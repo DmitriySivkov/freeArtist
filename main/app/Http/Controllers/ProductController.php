@@ -42,9 +42,13 @@ class ProductController extends Controller
 			->get();
 	}
 
-	public function show(Producer $producer)
+	public function show(Producer $producer, Product $product)
 	{
-		// todo
+		return $product->load([
+			'images',
+			'thumbnail',
+			'tags'
+		]);
 	}
 
 	/**

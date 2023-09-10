@@ -6,5 +6,13 @@ export default [
 		meta: {
 			route_name: "Витрина"
 		}
+	},
+	{
+		name: "producer_products_detail",
+		path: "/producers/:producer_id/products/:product_id",
+		component: () => import("pages/producer/ProducerProductsDetail.vue"),
+		meta: {
+			route_name: "Витрина"
+		}
 	}
 ]

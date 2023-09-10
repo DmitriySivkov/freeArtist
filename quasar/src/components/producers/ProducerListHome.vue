@@ -81,6 +81,7 @@
 								</q-carousel-slide>
 							</q-carousel>
 						</div>
+						<q-separator />
 						<div class="col-grow row">
 							<span class="text-h6 q-pa-md">{{ producer.display_name }}</span>
 						</div>
@@ -98,7 +99,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue"
+import { computed, ref, watch, onBeforeUnmount } from "vue"
 import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
@@ -130,6 +131,10 @@ const cart = computed(() => cartStore.data)
 const scrollComponent = ref(null)
 
 const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
+
+onBeforeUnmount(() => {
+	scrollComponent.value.stop()
+})
 
 const fetchProducers = async() => {
 	const limit = 5

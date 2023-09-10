@@ -25,6 +25,18 @@
 				border-radius: 4px 4px 0 0;
 			}
 		}
+
+		& .q-separator:after {
+			display:block;
+			content: '';
+			border-bottom: solid 2px $primary;
+			transform: scaleX(0);
+			transition: transform 0.25s ease-in-out;
+		}
+
+		&:hover .q-separator:after {
+			transform: scaleX(1)
+		}
 	}
 
 	&__card-carousel {

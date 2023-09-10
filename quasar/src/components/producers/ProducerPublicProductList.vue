@@ -8,11 +8,18 @@
 				<q-card
 					v-for="product in products"
 					:key="product.id"
-					class="row product__card product__card_list"
+					class="row product__card product__card_list cursor-pointer"
+					@click="$router.push({
+						name: 'producer_products_detail',
+						params: {
+							producer_id: $router.currentRoute.value.params.producer_id,
+							product_id: product.id
+						}
+					})"
 				>
 					<div class="column no-wrap full-width">
 						<div class="col-grow row">
-							<div class="col cursor-pointer">
+							<div class="col">
 								<q-img
 									no-spinner
 									class="product__card-image fit"
@@ -22,7 +29,7 @@
 								/>
 							</div>
 						</div>
-						<q-separator />
+						<q-separator v-if="!product.tags.length" />
 						<div
 							v-if="product.tags.length"
 							class="col-shrink row q-pa-xs"
@@ -55,7 +62,7 @@
 <script setup>
 import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
-import { computed, ref, watch } from "vue"
+import { computed, ref, watch, onBeforeUnmount } from "vue"
 import { useCartStore } from "src/stores/cart"
 import { useProducerStore } from "src/stores/producer"
 import ProducerPublicProductListSkeleton from "src/components/skeletons/ProducerPublicProductListSkeleton.vue"
@@ -79,6 +86,10 @@ const scrollComponent = ref(null)
 const isInitializing = ref(true)
 
 const isTagsChanged = ref(false)
+
+onBeforeUnmount(() => {
+	scrollComponent.value.stop()
+})
 
 const load = async (index, done) => {
 	await fetchProducts()
