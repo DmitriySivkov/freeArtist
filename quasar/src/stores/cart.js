@@ -1,38 +1,54 @@
 import { defineStore } from "pinia"
 import { LocalStorage } from "quasar"
-import { useNotification } from "src/composables/notification"
 
 export const useCartStore = defineStore("cart", {
 	state: () => ({
-		data: {}
+		data: [] // array of objects: producerId + product list with amount
 	}),
 
 	actions: {
-		addToCart({ producer, products }) {
-			let product_list = producer.products
-				.filter((product) => Object.keys(products).includes(product.id.toString()) && products[product.id] !== 0)
-				.map((product) =>
-					({
-						amount: products[product.id],
-						data: product
-					})
-				)
+		add({ producerId, product }) {
+			let producerSet = this.data.find((item) => item.producerId === producerId)
 
-			try {
-				if (product_list.length === 0 && this.data.hasOwnProperty(producer.id))
-					delete this.data[producer.id]
-				else
-					this.data[producer.id] = { producer: producer, product_list }
+			if (producerSet) {
+				if (!producerSet.products || !producerSet.products.length) {
+					producerSet.products = [{...product, amount: 1}]
+				} else {
+					let product = producerSet.products.find((p) => p.id === product.id)
 
-				LocalStorage.set("cart", this.data)
-			} catch (error) {
-				useNotification()
-					.notifyError("Ошибка локального хранилища")
+					if (product) {
+						product.amount++
+					} else {
+						producerSet.products.unshift({...product, amount: 1})
+					}
+
+				}
+			} else {
+				this.data.unshift({
+					producerId,
+					products: [{...product, amount: 1}]
+				})
 			}
+
+			LocalStorage.set("cart", this.data)
 		},
 
-		setCart(data) {
-			this.data = data
-		}
+		remove({ producerId, productId }) {
+			let producerSet = this.data.find((item) => item.producerId === producerId)
+
+			let product = producerSet.products.find((p) => p.id === productId)
+
+			if (product.amount === 1) {
+				producerSet.products = producerSet.products.filter((p) => p.id !== productId)
+
+				if (!producerSet.products.length) {
+					this.data = this.data.filter((item) => item.producerId !== producerId)
+				}
+			} else {
+				product.amount--
+			}
+
+			LocalStorage.set("cart", this.data)
+		},
 	}
 })

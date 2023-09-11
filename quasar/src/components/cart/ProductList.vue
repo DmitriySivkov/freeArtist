@@ -67,30 +67,21 @@
 	</q-table>
 </template>
 
-<script>
+<script setup>
 import { computed } from "vue"
 import { useCart } from "src/composables/cart"
 import { useCartStore } from "src/stores/cart"
-export default {
-	setup() {
-		const cart_store = useCartStore()
-		const cart = computed(() => Object.values(cart_store.data))
-		const { products, increase, decrease, orderAmountChanged } = useCart(
-			cart.value.length > 0
-				? cart.value.reduce((accum, cart_item) => ({
-					...accum,
-					...cart_item.product_list.reduce((ac, product) => ({
-						...ac, [product.data.id]:product.amount
-					}), {})
-				}), {})
-				: {})
-		return {
-			cart,
-			products,
-			increase,
-			decrease,
-			orderAmountChanged
-		}
-	}
-}
+
+const cart_store = useCartStore()
+const cart = computed(() => Object.values(cart_store.data))
+const { products, increase, decrease, orderAmountChanged } = useCart(
+	cart.value.length > 0
+		? cart.value.reduce((accum, cart_item) => ({
+			...accum,
+			...cart_item.product_list.reduce((ac, product) => ({
+				...ac, [product.data.id]:product.amount
+			}), {})
+		}), {})
+		: {})
+
 </script>
