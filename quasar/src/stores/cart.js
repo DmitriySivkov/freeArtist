@@ -3,52 +3,109 @@ import { LocalStorage } from "quasar"
 
 export const useCartStore = defineStore("cart", {
 	state: () => ({
-		data: [] // array of objects: producerId + product list with amount
+		data: [] // array of objects: producerId + product list (cart_amount, data)
 	}),
 
 	actions: {
-		add({ producerId, product }) {
-			let producerSet = this.data.find((item) => item.producerId === producerId)
+		increaseProductAmount({ producerId, product }) {
+			producerId = parseInt(producerId)
+
+			let producerSet = this.data.find((item) => item.producer_id === producerId)
 
 			if (producerSet) {
 				if (!producerSet.products || !producerSet.products.length) {
-					producerSet.products = [{...product, amount: 1}]
+					producerSet.products = [{ cart_amount: 1, data: product }]
 				} else {
-					let product = producerSet.products.find((p) => p.id === product.id)
+					let productSet = producerSet.products.find((p) => p.data.id === product.id)
 
-					if (product) {
-						product.amount++
+					if (productSet) {
+						productSet.cart_amount++
 					} else {
-						producerSet.products.unshift({...product, amount: 1})
+						producerSet.products.unshift({ cart_amount: 1, data: product })
 					}
 
 				}
 			} else {
 				this.data.unshift({
-					producerId,
-					products: [{...product, amount: 1}]
+					producer_id: producerId,
+					products: [{ cart_amount: 1, data: product }]
 				})
 			}
 
 			LocalStorage.set("cart", this.data)
 		},
 
-		remove({ producerId, productId }) {
-			let producerSet = this.data.find((item) => item.producerId === producerId)
+		decreaseProductAmount({ producerId, productId }) {
+			producerId = parseInt(producerId)
+			productId = parseInt(productId)
 
-			let product = producerSet.products.find((p) => p.id === productId)
+			let producerSet = this.data.find((item) => item.producer_id === producerId)
 
-			if (product.amount === 1) {
-				producerSet.products = producerSet.products.filter((p) => p.id !== productId)
+			let productSet = producerSet.products.find((p) => p.data.id === productId)
+
+			if (productSet.cart_amount === 1) {
+				producerSet.products = producerSet.products.filter((p) => p.data.id !== productId)
 
 				if (!producerSet.products.length) {
-					this.data = this.data.filter((item) => item.producerId !== producerId)
+					this.data = this.data.filter((item) => item.producer_id !== producerId)
 				}
 			} else {
-				product.amount--
+				productSet.cart_amount--
 			}
 
 			LocalStorage.set("cart", this.data)
 		},
+
+		setProductAmount({ producerId, product, specificAmount }) {
+			producerId = parseInt(producerId)
+			specificAmount = parseInt(specificAmount)
+
+			let producerSet = this.data.find((item) => item.producer_id === producerId)
+
+			if (producerSet) {
+				if (!producerSet.products || !producerSet.products.length) {
+					if (specificAmount > 0) {
+						producerSet.products = [{ cart_amount: specificAmount, data: product }]
+					}
+				} else {
+					let productSet = producerSet.products.find((p) => p.data.id === product.id)
+
+					if (productSet) {
+						if (specificAmount > 0) {
+							productSet.cart_amount = specificAmount
+						} else {
+							producerSet.products = producerSet.products.filter((p) => p.data.id !== product.id)
+
+							if (!producerSet.products.length) {
+								this.data = this.data.filter((item) => item.producer_id !== producerId)
+							}
+						}
+					} else {
+						if (specificAmount > 0) {
+							producerSet.products.unshift({cart_amount: specificAmount, data: product})
+						} else {
+							producerSet.products = producerSet.products.filter((p) => p.data.id !== product.id)
+						}
+					}
+
+				}
+			} else {
+				if (specificAmount > 0) {
+					this.data.unshift({
+						producer_id: producerId,
+						products: [{ cart_amount: specificAmount, data: product }]
+					})
+				} else {
+					this.data = this.data.filter((item) => item.producer_id !== producerId)
+				}
+
+			}
+
+			LocalStorage.set("cart", this.data)
+		},
+
+		setCart(data) {
+			this.data = data
+		}
 	}
 })

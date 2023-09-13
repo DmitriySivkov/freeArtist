@@ -42,7 +42,8 @@
 										<q-input
 											dense
 											filled
-											v-model="productAmount"
+											:model-value="cartProductAmount"
+											@update:model-value="setProductAmount"
 											type="number"
 											input-class="text-center"
 										>
@@ -51,7 +52,7 @@
 													icon="remove"
 													size="md"
 													color="primary"
-													@click="productAmount--"
+													@click="removeFromCart"
 													class="full-height"
 												/>
 											</template>
@@ -60,7 +61,7 @@
 													icon="add"
 													size="md"
 													color="primary"
-													@click="productAmount++"
+													@click="addToCart"
 													class="full-height"
 												/>
 											</template>
@@ -104,7 +105,7 @@
 
 <script setup>
 import ProducerPublicProductDetailSkeleton from "src/components/skeletons/ProducerPublicProductDetailSkeleton.vue"
-import { ref, onMounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
 import { useCartStore } from "src/stores/cart"
@@ -113,18 +114,53 @@ const $router = useRouter()
 const backendServer = process.env.BACKEND_SERVER
 
 const cart = useCartStore()
+const cartProducer = computed(() =>
+	cart.data.find((item) =>
+		item.producer_id === Number($router.currentRoute.value.params.producer_id)
+	)
+)
+const cartProducerProduct = computed(() =>
+	cartProducer.value ?
+		cartProducer.value.products.find(
+			(p) => p.data.id === Number($router.currentRoute.value.params.product_id)
+		) : null
+)
 
-function addToCart({ producerId, product }) {
-	cart.add({ producerId, product })
+function addToCart() {
+	if (cartProductAmount.value >= product.value.amount) return
+
+	cart.increaseProductAmount({
+		producerId: $router.currentRoute.value.params.producer_id,
+		product: product.value
+	})
 }
 
-function removeFromCart({ producerId, productId }) {
-	cart.remove({ producerId, productId })
+function removeFromCart() {
+	if (cartProductAmount.value === 0) return
+
+	cart.decreaseProductAmount({
+		producerId: $router.currentRoute.value.params.producer_id,
+		productId: $router.currentRoute.value.params.product_id
+	})
+}
+
+function setProductAmount(amount) {
+	if (parseInt(amount) > product.value.amount) {
+		amount = product.value.amount
+	}
+
+	cart.setProductAmount({
+		producerId: $router.currentRoute.value.params.producer_id,
+		product: product.value,
+		specificAmount: amount
+	})
 }
 
 const product = ref(null)
 
-const productAmount = ref(0)
+const cartProductAmount = computed(() =>
+	cartProducerProduct.value ? cartProducerProduct.value.cart_amount : 0
+)
 
 const slide = ref(null)
 

@@ -13,11 +13,6 @@ const route = $router.currentRoute
 
 const is_user_logged = computed(() => user_store.is_logged)
 
-const cartCounter = computed(
-	() => Object.values(cart_store.data)
-		.reduce((accum, cart_item) => accum + cart_item.product_list.length, 0)
-)
-
 const { notifySuccess } = useNotification()
 
 const logout = () => {
@@ -84,8 +79,8 @@ const logout = () => {
 			<q-item-section avatar>
 				<q-icon name="shopping_cart" />
 			</q-item-section>
-
-			<q-item-section>Корзина{{ cartCounter ? ` (${cartCounter})` : '' }}</q-item-section>
+			<!-- todo - cart counter -->
+			<q-item-section>Корзина</q-item-section>
 		</q-item>
 	</q-list>
 </template>
