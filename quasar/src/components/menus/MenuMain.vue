@@ -6,25 +6,30 @@ import { useUserStore } from "src/stores/user"
 import { useNotification } from "src/composables/notification"
 
 const $router = useRouter()
-const cart_store = useCartStore()
-const user_store = useUserStore()
-
-const route = $router.currentRoute
-
-const is_user_logged = computed(() => user_store.is_logged)
+const cartStore = useCartStore()
+const userStore = useUserStore()
 
 const { notifySuccess } = useNotification()
 
+const route = $router.currentRoute
+
+const isUserLogged = computed(() => userStore.is_logged)
+
 const logout = () => {
-	user_store.logout().then(() => {
+	userStore.logout().then(() => {
 		$router.push({"name": "home"})
 	})
 }
+
+const cartCounter = computed(() =>
+	cartStore.data.reduce((carry, item) =>
+		carry + item.products.length, 0)
+)
 </script>
 <template>
 	<q-list bordered>
 		<q-item
-			v-if="!is_user_logged"
+			v-if="!isUserLogged"
 			clickable
 			to="/auth"
 			:class="{'bg-primary text-white': ['login', 'register'].includes(route.name)}"
@@ -36,7 +41,7 @@ const logout = () => {
 			<q-item-section>Войти</q-item-section>
 		</q-item>
 		<q-item
-			v-if="is_user_logged"
+			v-if="isUserLogged"
 			clickable
 			@click="logout"
 		>
@@ -59,7 +64,7 @@ const logout = () => {
 		</q-item>
 
 		<q-item
-			v-if="is_user_logged"
+			v-if="isUserLogged"
 			clickable
 			to="/personal"
 			:class="{'bg-primary text-white': route.name.includes('personal')}"
@@ -79,8 +84,14 @@ const logout = () => {
 			<q-item-section avatar>
 				<q-icon name="shopping_cart" />
 			</q-item-section>
-			<!-- todo - cart counter -->
-			<q-item-section>Корзина</q-item-section>
+
+			<q-item-section>
+				<div>Корзина
+					<span v-if="cartCounter">
+						(<small>{{ cartCounter }}</small>)
+					</span>
+				</div>
+			</q-item-section>
 		</q-item>
 	</q-list>
 </template>

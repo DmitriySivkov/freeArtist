@@ -3,7 +3,7 @@ import { LocalStorage } from "quasar"
 
 export const useCartStore = defineStore("cart", {
 	state: () => ({
-		data: [] // array of objects: producerId + product list (cart_amount, data)
+		data: [] // array of objects: producer_id + producer_name + product list (cart_amount, data)
 	}),
 
 	actions: {

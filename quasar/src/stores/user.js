@@ -55,6 +55,7 @@ export const useUserStore = defineStore("user", {
 			return response
 		},
 
+		// todo - try to make synchronous request with promise
 		async logout(payload) {
 			const team_store = useTeamStore()
 			const relation_request_store = useRelationRequestStore()

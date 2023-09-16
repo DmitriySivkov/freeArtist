@@ -1,38 +1,21 @@
 <template>
-	<q-page class="row no-wrap justify-center">
-		<div class="col-12 bg-white">
-			<div class="column full-height">
-				<q-scroll-area
-					visible
-					class="col-xs-9 col-md-10"
-				>
-					<ProductList />
-				</q-scroll-area>
-				<div class="col-xs-3 col-md-2">
-					<OrderSummary v-if="cart.length > 0" />
-				</div>
+	<div class="column absolute fit">
+		<div class="row justify-center fit">
+			<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6 bg-white">
+				<CartProductList />
+				<!--					<OrderSummary v-if="cart.length > 0" />-->
 			</div>
 		</div>
-	</q-page>
+	</div>
 </template>
 
-<script>
-import ProductList from "src/components/cart/ProductList.vue"
+<script setup>
+import CartProductList from "src/components/cart/CartProductList.vue"
 import OrderSummary from "src/components/cart/OrderSummary.vue"
 import { useCartStore } from "src/stores/cart"
 import { computed, onMounted, ref } from "vue"
-export default {
-	components: {
-		ProductList,
-		OrderSummary
-	},
-	setup() {
-		const cart_store = useCartStore()
-		const cart = computed(() => Object.values(cart_store.data))
 
-		return {
-			cart
-		}
-	}
-}
+const cartStore = useCartStore()
+
+const cart = computed(() => cartStore.data)
 </script>

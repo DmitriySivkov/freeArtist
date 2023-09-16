@@ -34,7 +34,7 @@
 									<span class="text-h5">{{ product.title }}</span>
 								</q-card-section>
 
-								<q-card-section class="q-py-xs row justify-between">
+								<q-card-section class="row justify-between q-py-xs q-mb-md">
 									<div class="col-4">
 										<span class="text-h6 text-primary">{{ product.price }} ₽</span>
 									</div>

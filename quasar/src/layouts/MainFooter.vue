@@ -20,7 +20,7 @@
 						/>
 					</div>
 					<div
-						v-if="is_user_logged"
+						v-if="isUserLogged"
 						class="col-xs-shrink"
 					>
 						<q-btn
@@ -45,31 +45,22 @@
 	</q-footer>
 </template>
 
-<script>
+<script setup>
 import { computed } from "vue"
 import { useRouter } from "vue-router"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
-export default {
-	setup() {
-		const $router = useRouter()
-		const cart_store = useCartStore()
-		const user_store = useUserStore()
 
-		const route = $router.currentRoute
+const $router = useRouter()
+const cartStore = useCartStore()
+const userStore = useUserStore()
 
-		const is_user_logged = computed(() => user_store.is_logged)
+const route = $router.currentRoute
 
-		const cartCounter = computed(
-			() => Object.values(cart_store.data)
-				.reduce((accum, cart_item) => accum + cart_item.product_list.length, 0)
-		)
+const isUserLogged = computed(() => userStore.is_logged)
 
-		return {
-			cartCounter,
-			route,
-			is_user_logged
-		}
-	}
-}
+const cartCounter = computed(() =>
+	cartStore.data.reduce((carry, item) =>
+		carry + item.products.length, 0)
+)
 </script>
