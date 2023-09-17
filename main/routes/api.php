@@ -63,6 +63,10 @@ Route::group(['prefix' => 'tags'], function() {
 	Route::get('', [\App\Http\Controllers\TagController::class, 'index']);
 });
 
+Route::group(['prefix' => 'cart'], function() {
+	Route::post('checkProducts', [\App\Http\Controllers\CartController::class, 'checkProducts']);
+});
+
 /** auth requiring routes */
 Route::group([
 	'middleware' => [

@@ -35,7 +35,7 @@
 							class="q-pa-md"
 							:label="cartCounter"
 							icon-right="shopping_cart"
-							:color="cartCounter > 0 || route.name === 'cart' ? 'secondary': 'primary'"
+							:color="route.name === 'cart' ? 'secondary': 'primary'"
 							to="/cart"
 						/>
 					</div>
