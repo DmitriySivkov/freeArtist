@@ -20,10 +20,10 @@ import { computed } from "vue"
 import { useCartStore } from "src/stores/cart"
 import { useOrderStore } from "src/stores/order"
 import { useNotification } from "src/composables/notification"
-import { Loading } from "quasar"
+import { api } from "src/boot/axios"
 
 const cartStore = useCartStore()
-const order_store = useOrderStore()
+const orderStore = useOrderStore()
 const { notifySuccess } = useNotification()
 
 const cart = computed(() => cartStore.data)
@@ -36,14 +36,21 @@ const totalPrice = computed(() =>
 )
 
 const makeNewOrder = () => {
-	Loading.show({ spinnerColor: "primary" })
+	let cartMapped = cart.value.map((producerSet) => ({
+		producer_id: producerSet.producer_id,
+		products: producerSet.products.map((productSet) => ({
+			product_id: productSet.data.id,
+			cart_amount: productSet.cart_amount
+		}))
+	}))
 
-	const promise = order_store.create(cart.value)
+	// todo - makeNewOrder - backend
+	const promise = api.post("orders", {
+		cart: cartMapped
+	})
 
 	promise.then(() => {
-		clearCart()
-
-		Loading.hide()
+		cartStore.clearCart()
 
 		notifySuccess("Заказ успешно оформлен")
 	})

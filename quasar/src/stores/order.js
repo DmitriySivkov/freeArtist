@@ -14,11 +14,5 @@ export const useOrderStore = defineStore("order", {
 
 			this.data = response.data
 		},
-
-		create(payload) {
-			return api.post("personal/orders", {
-				cart: payload
-			})
-		}
 	}
 })

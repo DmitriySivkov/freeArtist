@@ -2,10 +2,7 @@
 
 namespace App\Providers;
 
-use App\Contracts\NewOrderRequestContract;
 use App\Contracts\OrderServiceContract;
-use App\Http\Requests\UserNewOrderRequest;
-use App\Http\Requests\ProducerNewOrderRequest;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Orders\ProducerOrderService;
@@ -21,17 +18,6 @@ class OrderServiceProvider extends ServiceProvider
      */
     public function register()
     {
-		$this->app->bind(NewOrderRequestContract::class, function () {
-			/** @var User $user */
-			$user = auth('sanctum')->user();
-			switch ($user->role_id) {
-				case Role::ROLE_PRODUCER:
-					return new ProducerNewOrderRequest();
-				default:
-					return new UserNewOrderRequest();
-			}
-		});
-
 		$this->app->bind(OrderServiceContract::class, function () {
 			/** @var User $user */
 			$user = auth('sanctum')->user();

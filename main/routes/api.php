@@ -67,6 +67,11 @@ Route::group(['prefix' => 'cart'], function() {
 	Route::post('checkProducts', [\App\Http\Controllers\CartController::class, 'checkProducts']);
 });
 
+Route::group(['prefix' => 'orders'], function () {
+	Route::get('', [OrderController::class, 'index']);
+	Route::post('', [OrderController::class, 'store']);
+});
+
 /** auth requiring routes */
 Route::group([
 	'middleware' => [
@@ -76,11 +81,6 @@ Route::group([
 	'prefix' => 'personal'
 ], function() {
     Route::post('logout', [AuthController::class, 'logout']);
-
-    Route::group(['prefix' => 'orders'], function () {
-    	Route::get('', [OrderController::class, 'index']);
-    	Route::post('', [OrderController::class, 'store']);
-    });
 
 	Route::group(['prefix' => 'teams'], function() {
 		Route::group(['prefix' => '{team}'], function() {

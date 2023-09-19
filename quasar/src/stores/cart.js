@@ -106,6 +106,11 @@ export const useCartStore = defineStore("cart", {
 
 		setCart(data) {
 			this.data = data
+		},
+
+		clearCart() {
+			this.data = []
+			LocalStorage.remove("cart")
 		}
 	}
 })
