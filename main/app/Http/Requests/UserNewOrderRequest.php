@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Contracts\NewOrderRequestContract;
 use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserNewOrderRequest extends FormRequest implements NewOrderRequestContract
+class UserNewOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +21,7 @@ class UserNewOrderRequest extends FormRequest implements NewOrderRequestContract
     public function prepareForValidation()
 	{
 		$this->merge([
-			'user_id' => auth('sanctum')->user()->id,
+			'user_id' => auth()->id(),
 			'payment_method' => Order::ORDER_PAYMENT_METHOD_CARD,
 			'status' => Order::ORDER_STATUS_NEW,
 		]);
