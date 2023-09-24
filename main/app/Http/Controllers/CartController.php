@@ -17,7 +17,10 @@ class CartController extends Controller
 	public function checkProducts(Request $request)
 	{
 		$producers = Producer::whereIn('id', $request->input('producers'))
-			->with(['team'])
+			->with([
+				'team',
+				'paymentMethods'
+			])
 			->get();
 
 		$products = Product::whereIn('id', $request->input('products'))

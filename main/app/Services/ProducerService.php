@@ -147,6 +147,8 @@ class ProducerService implements ProducerServiceContract
 				'city_id' => $producerData['city_id']
 			]);
 
+			$producer->paymentMethods()->attach(\App\Models\PaymentMethod::PAYMENT_METHOD_CASH_ID);
+
 			$team = Team::create([
 				'name' => 'producer_' . $user->id . '_owner',
 				'display_name' => $producerData['display_name'],

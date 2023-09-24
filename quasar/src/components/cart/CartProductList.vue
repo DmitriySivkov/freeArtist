@@ -87,12 +87,22 @@
 						v-if="$q.screen.width >= $q.screen.sizes.md"
 						class="row q-col-gutter-sm"
 					>
-						<div class="col-xs-12 col-md-8 text-body1 text-center self-center">
-							payment methods
+						<div class="col-xs-12 col-md-8">
+							<div class="row full-height q-col-gutter-xs">
+								<div
+									v-for="method in paymentMethods[cartItem.producer_id]"
+									:key="method.id"
+									class="col-6"
+								>
+									<q-card class="flex flex-center full-height text-body1">
+										{{ method.name }}
+									</q-card>
+								</div>
+							</div>
 						</div>
 						<!-- todo - payment methods -->
 						<div class="col-xs-12 col-md">
-							<div class="row">
+							<div class="row q-pb-xs">
 								<div class="col-12 text-right q-pb-sm text-h6">
 									{{ totalPrice[cartItem.producer_id] }} ₽
 								</div>
@@ -114,8 +124,18 @@
 						<div class="col-12 text-right q-pb-sm text-h6">
 							{{ totalPrice[cartItem.producer_id] }} ₽
 						</div>
-						<div class="col-12 text-body1 text-center q-py-md">
-							payment methods
+						<div class="col-12 q-py-md">
+							<div class="row q-col-gutter-xs">
+								<div
+									v-for="method in paymentMethods[cartItem.producer_id]"
+									:key="method.id"
+									class="col-12"
+								>
+									<q-card class="q-py-md text-body1 text-center">
+										{{ method.name }}
+									</q-card>
+								</div>
+							</div>
 						</div>
 						<div class="col-12">
 							<q-btn
@@ -179,6 +199,8 @@ function setProductAmount({producerId, product, amount}) {
 	})
 }
 
+const paymentMethods = ref({})
+
 const isCartChecked = ref(false)
 const checkedProducers = ref({})
 const checkedProducts = ref({})
@@ -234,6 +256,10 @@ onMounted(() => {
 		)
 		checkedProducts.value = response.data.products.reduce((carry, p) =>
 			({...carry, [p.id]: p}), {}
+		)
+
+		paymentMethods.value = response.data.producers.reduce((carry, p) =>
+			({...carry, [p.id]: p.payment_methods}), {}
 		)
 
 		isCartChecked.value = true

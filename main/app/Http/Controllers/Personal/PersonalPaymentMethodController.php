@@ -24,7 +24,7 @@ class PersonalPaymentMethodController extends Controller
 	 */
 	public function setPaymentMethods(Request $request, Producer $producer)
 	{
-		// todo - check for rights
+		// todo - check for rights & check that at least 1 payment method exists
 		$paymentMethods = $request->input('payment_methods');
 
 		$producer->paymentMethods()->sync($paymentMethods);

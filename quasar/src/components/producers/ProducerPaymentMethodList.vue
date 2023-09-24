@@ -34,7 +34,7 @@
 						color="primary"
 						class="col-shrink q-py-lg"
 						:loading="isSettingMethods"
-						:disable="isSettingMethods"
+						:disable="isSettingMethods || isNoPaymentMethodsSelected"
 						@click="setPaymentMethods"
 					/>
 				</div>
@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
 import { PAYMENT_METHOD_NAMES } from "src/const/paymentMethods.js"
@@ -63,6 +63,9 @@ const props = defineProps({
 const $router = useRouter()
 
 const selectedPaymentMethods = ref(null)
+const isNoPaymentMethodsSelected = computed(() =>
+	!selectedPaymentMethods.value || Object.values(selectedPaymentMethods.value).filter((pm) => pm).length < 1
+)
 
 const isSettingMethods = ref(false)
 const isMounting = ref(true)

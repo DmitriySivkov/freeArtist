@@ -20,7 +20,8 @@ class CartCheckProducersResource extends JsonResource
     {
         return [
 			'id' => $this->id,
-			'display_name' => $this->team->display_name
+			'display_name' => $this->team->display_name,
+			'payment_methods' => $this->paymentMethods->makeHidden(['created_at', 'updated_at'])
 		];
     }
 }
