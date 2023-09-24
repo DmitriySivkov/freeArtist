@@ -5,7 +5,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 /**
  * App\Models\Producer
  *
@@ -23,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingRelationRequests
  * @property-read int|null $outgoing_relation_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PaymentMethod[] $paymentMethods
+ * @property-read int|null $payment_methods_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
  * @property-read int|null $products_count
  * @property-read \App\Models\Image|null $storefrontImage
@@ -112,4 +113,11 @@ class Producer extends Model
 		return $this->belongsTo(City::class);
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function paymentMethods()
+	{
+		return $this->belongsToMany(PaymentMethod::class);
+	}
 }

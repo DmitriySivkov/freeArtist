@@ -23,31 +23,26 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import { computed } from "vue"
 import { useUserTeam } from "src/composables/userTeam"
-export default {
-	setup() {
-		const { user_own_team } = useUserTeam()
 
-		const items = [
-			{ title: "Профиль", link: "/personal/user" },
-			{ title: "Заказы", link: "/personal/user/orders" },
-			{
-				title: "Зарегистрировать изготовителя",
-				link: "/personal/register-producer",
-				conditional: !user_own_team.value
-			},
-			{ title: "Заявки", link: "/personal/user/requests" }
-		]
+const { userOwnTeam } = useUserTeam()
 
-		const menu = computed(() =>
-			items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
-		)
+const items = [
+	{ title: "Профиль", link: "/personal/user" },
+	{ title: "Заказы", link: "/personal/user/orders" },
+	{
+		title: "Зарегистрировать изготовителя",
+		link: "/personal/register-producer",
+		conditional: !userOwnTeam.value
+	},
+	{ title: "Заявки", link: "/personal/user/requests" }
+]
 
-		return {
-			menu
-		}
-	}
-}
+const menu = computed(() =>
+	items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
+)
+
+
 </script>

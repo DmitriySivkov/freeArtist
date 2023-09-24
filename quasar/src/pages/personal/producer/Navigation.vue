@@ -23,34 +23,29 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import { computed } from "vue"
 import { useUserTeam } from "src/composables/userTeam"
-export default {
-	setup() {
-		const { user_own_team } = useUserTeam()
 
-		const items = [
-			{ title: "Профиль", link: "/personal/producer" },
-			{ title: "Заказы", link: "/personal/producer/orders" },
-			{
-				title: "Зарегистрировать изготовителя",
-				link: "/personal/register-producer",
-				conditional: !user_own_team.value
-			},
-			{ title: "Заявки", link: "/personal/team/requests" },
-			{ title: "Разрешения", link: "/personal/team/permissions" },
-			{ title: "Управлять продуктами", link: "/personal/producer/products" },
-			{ title: "Управлять витриной", link: "/personal/producer/storefront" }
-		]
+const { userOwnTeam } = useUserTeam()
 
-		const menu = computed(() =>
-			items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
-		)
+// todo - remove 'links' - add route names instead
+const items = [
+	{ title: "Профиль", link: "/personal/producer" },
+	{ title: "Заказы", link: "/personal/producer/orders" },
+	{
+		title: "Зарегистрировать изготовителя",
+		link: "/personal/register-producer",
+		conditional: !userOwnTeam.value
+	},
+	{ title: "Заявки", link: "/personal/team/requests" },
+	{ title: "Разрешения", link: "/personal/team/permissions" },
+	{ title: "Управлять продуктами", link: "/personal/producer/products" },
+	{ title: "Управлять витриной", link: "/personal/producer/storefront" },
+	{ title: "Способы оплаты", link: "/personal/producer/payment-methods" }
+]
 
-		return {
-			menu
-		}
-	}
-}
+const menu = computed(() =>
+	items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
+)
 </script>

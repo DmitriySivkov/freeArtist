@@ -90,6 +90,7 @@
 						<div class="col-xs-12 col-md-8 text-body1 text-center self-center">
 							payment methods
 						</div>
+						<!-- todo - payment methods -->
 						<div class="col-xs-12 col-md">
 							<div class="row">
 								<div class="col-12 text-right q-pb-sm text-h6">

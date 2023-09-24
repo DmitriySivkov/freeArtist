@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\Personal\PersonalPaymentMethodController;
 use App\Http\Controllers\Personal\PersonalTagController;
 use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\ProductController;
@@ -109,6 +110,11 @@ Route::group([
 			Route::get('{product}', [ProducerController::class, 'getProducerProduct']);
 			Route::get('thumbnails', [ProducerController::class, 'getProducerProductThumbnails']);
 		});
+	});
+
+	Route::group(['prefix' => 'paymentMethods'], function() {
+		Route::get('{producer}', [PersonalPaymentMethodController::class, 'getPaymentMethods']);
+		Route::post('{producer}', [PersonalPaymentMethodController::class, 'setPaymentMethods']);
 	});
 
 	Route::group(['prefix' => 'products'], function() {

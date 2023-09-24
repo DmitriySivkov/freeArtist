@@ -8,7 +8,7 @@ export const useUserTeam = () => {
 
 	const user_teams = computed(() => team_store.user_teams)
 
-	const user_own_team = computed(() =>
+	const userOwnTeam = computed(() =>
 		user_teams.value.find((team) => team.user_id === user_store.data.id)
 	)
 
@@ -29,7 +29,7 @@ export const useUserTeam = () => {
 
 	return {
 		user_teams,
-		user_own_team,
+		userOwnTeam,
 		getTeam,
 		getTeamUser,
 		syncTeamUserPermissions,

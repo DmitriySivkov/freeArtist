@@ -28,5 +28,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(TagSeeder::class);
 
 		$this->call(CategorySeeder::class);
+
+		$this->call(PaymentMethodsSeeder::class);
     }
 }

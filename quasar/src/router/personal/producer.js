@@ -80,4 +80,21 @@ export default [
 		}
 	},
 
+	{
+		name: "personal_producer_payment_methods",
+		path: "personal/producer/payment-methods",
+		component: () => import("pages/personal/producer/PaymentMethods.vue"),
+		meta: {
+			route_name: "Способы оплаты"
+		}
+	},
+	{
+		name: "personal_producer_payment_methods_detail",
+		path: "personal/producer/:producer_id/payment-methods",
+		component: () => import("pages/personal/producer/PaymentMethodsDetail.vue"),
+		meta: {
+			route_name: "Способы оплаты"
+		}
+	},
+
 ]
