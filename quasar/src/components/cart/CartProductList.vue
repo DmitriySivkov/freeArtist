@@ -45,7 +45,7 @@
 							})"
 							type="number"
 							:bg-color="
-								isCartChecked && cart[cartItemIndex].products[productIndex].cart_amount > checkedProducts[product.data.id].amount ? 'red-8': ''
+								isCartChecked && cart[cartItemIndex].products[productIndex].cart_amount > checkedProducts[product.data.id].amount ? 'negative': ''
 							"
 							:input-class="[
 								{'text-center': true},
@@ -100,7 +100,6 @@
 								</div>
 							</div>
 						</div>
-						<!-- todo - payment methods -->
 						<div class="col-xs-12 col-md">
 							<div class="row q-pb-xs">
 								<div class="col-12 text-right q-pb-sm text-h6">
@@ -112,6 +111,7 @@
 										label="Оформить заказ"
 										color="primary"
 										@click="makeNewOrder"
+										:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
 									/>
 								</div>
 							</div>
@@ -143,6 +143,7 @@
 								label="Оформить заказ"
 								color="primary"
 								@click="makeNewOrder"
+								:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
 							/>
 						</div>
 					</div>
@@ -168,6 +169,16 @@ import EmptyCart from "src/components/cart/EmptyCart.vue"
 
 const cartStore = useCartStore()
 const cart = computed(() => cartStore.data)
+
+const hasInvalidAmount = computed(() =>
+	!isCartChecked.value ? {} :
+		cart.value.reduce((carry, producerSet) =>
+			({
+				...carry,
+				[producerSet.producer_id]:
+				producerSet.products.filter((productSet) => productSet.cart_amount > checkedProducts.value[productSet.data.id].amount).length
+			}), {})
+)
 
 function addToCart({producerId, product}) {
 	if (product.cart_amount >= checkedProducts.value[product.data.id].amount) return
