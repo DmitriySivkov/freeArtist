@@ -88,14 +88,39 @@
 						class="row q-col-gutter-sm"
 					>
 						<div class="col-xs-12 col-md-8">
-							<div class="row full-height q-col-gutter-xs">
+							<div
+								v-if="isCartChecked"
+								class="row full-height q-col-gutter-xs"
+							>
 								<div
-									v-for="method in paymentMethods[cartItem.producer_id]"
+									v-for="method in paymentMethods[cartItem.producer_id].methods"
 									:key="method.id"
 									class="col-6"
 								>
-									<q-card class="flex flex-center full-height text-body1">
-										{{ method.name }}
+									<q-card
+										class="q-py-md text-body1 text-center q-hoverable cursor-pointer"
+										:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"
+										@click="selectPaymentMethod({
+											producerId: cartItem.producer_id,
+											methodId: method.id
+										})"
+									>
+										<span class="q-focus-helper"></span>
+										<div class="row full-width">
+											<q-card-section class="col-3">
+												<q-radio
+													:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"
+													checked-icon="radio_button_checked"
+													unchecked-icon="radio_button_unchecked"
+													:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"
+													:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"
+													:val="method.id"
+												/>
+											</q-card-section>
+											<q-card-section class="col-9 self-center">
+												<span class="text-body1">{{ method.name }}</span>
+											</q-card-section>
+										</div>
 									</q-card>
 								</div>
 							</div>
@@ -127,12 +152,34 @@
 						<div class="col-12 q-py-md">
 							<div class="row q-col-gutter-xs">
 								<div
-									v-for="method in paymentMethods[cartItem.producer_id]"
+									v-for="method in paymentMethods[cartItem.producer_id].methods"
 									:key="method.id"
 									class="col-12"
 								>
-									<q-card class="q-py-md text-body1 text-center">
-										{{ method.name }}
+									<q-card
+										class="q-py-md text-body1 text-center q-hoverable cursor-pointer"
+										:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"
+										@click="selectPaymentMethod({
+											producerId: cartItem.producer_id,
+											methodId: method.id
+										})"
+									>
+										<span class="q-focus-helper"></span>
+										<div class="row full-width">
+											<q-card-section class="col-3">
+												<q-radio
+													:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"
+													checked-icon="radio_button_checked"
+													unchecked-icon="radio_button_unchecked"
+													:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"
+													:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"
+													:val="method.id"
+												/>
+											</q-card-section>
+											<q-card-section class="col-9 self-center">
+												<span class="text-body1">{{ method.name }}</span>
+											</q-card-section>
+										</div>
 									</q-card>
 								</div>
 							</div>
@@ -149,8 +196,6 @@
 					</div>
 				</q-card-section>
 			</q-card>
-
-
 		</div>
 	</div>
 	<div
@@ -166,6 +211,7 @@ import { computed, ref, onMounted } from "vue"
 import { useCartStore } from "src/stores/cart"
 import { api } from "src/boot/axios"
 import EmptyCart from "src/components/cart/EmptyCart.vue"
+import { PAYMENT_METHODS } from "src/const/paymentMethods"
 
 const cartStore = useCartStore()
 const cart = computed(() => cartStore.data)
@@ -211,6 +257,10 @@ function setProductAmount({producerId, product, amount}) {
 }
 
 const paymentMethods = ref({})
+
+const selectPaymentMethod = ({ producerId, methodId }) => {
+	paymentMethods.value[producerId].selectedPaymentMethodId = methodId
+}
 
 const isCartChecked = ref(false)
 const checkedProducers = ref({})
@@ -270,7 +320,13 @@ onMounted(() => {
 		)
 
 		paymentMethods.value = response.data.producers.reduce((carry, p) =>
-			({...carry, [p.id]: p.payment_methods}), {}
+			({
+				...carry,
+				[p.id]: {
+					selectedPaymentMethodId: p.payment_methods.find((pm) => pm.id === PAYMENT_METHODS.CASH).id,
+					methods: p.payment_methods
+				}
+			}), {}
 		)
 
 		isCartChecked.value = true
