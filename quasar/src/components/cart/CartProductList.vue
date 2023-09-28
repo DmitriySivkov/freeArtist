@@ -90,15 +90,15 @@
 						<div class="col-xs-12 col-md-8">
 							<div
 								v-if="isCartChecked"
-								class="row full-height q-col-gutter-xs"
+								class="row q-col-gutter-xs full-height"
 							>
 								<div
 									v-for="method in paymentMethods[cartItem.producer_id].methods"
 									:key="method.id"
-									class="col-6"
+									class="col-6 flex"
 								>
 									<q-card
-										class="q-py-md text-body1 text-center q-hoverable cursor-pointer"
+										class="q-py-md full-width text-body1 text-center q-hoverable cursor-pointer"
 										:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"
 										@click="selectPaymentMethod({
 											producerId: cartItem.producer_id,
@@ -126,11 +126,11 @@
 							</div>
 						</div>
 						<div class="col-xs-12 col-md">
-							<div class="row q-pb-xs">
-								<div class="col-12 text-right q-pb-sm text-h6">
+							<div class="column full-height">
+								<div class="col text-right text-h6">
 									{{ totalPrice[cartItem.producer_id] }} ₽
 								</div>
-								<div class="col-12">
+								<div class="col-shrink">
 									<q-btn
 										class="q-pa-md full-width"
 										label="Оформить заказ"
