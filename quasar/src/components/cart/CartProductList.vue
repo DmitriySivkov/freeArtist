@@ -29,10 +29,10 @@
 					class="row q-pa-lg q-hoverable"
 				>
 					<span class="q-focus-helper"></span>
-					<div class="col-xs-12 col-sm-7 self-center">
+					<div class="col-xs-12 col-sm-6 self-center">
 						<span class="text-body1">{{ product.data.title }}</span>
 					</div>
-					<div class="col-xs-12 col-sm">
+					<div class="col-xs-12 col-sm offset-sm-1">
 						<q-input
 							dense
 							filled
@@ -82,12 +82,12 @@
 					</div>
 				</q-card-section>
 				<q-separator />
-				<q-card-section>
+				<q-card-section class="q-pa-lg">
 					<div
-						v-if="$q.screen.width >= $q.screen.sizes.md"
+						v-if="$q.screen.width >= $q.screen.sizes.sm"
 						class="row q-col-gutter-sm"
 					>
-						<div class="col-xs-12 col-md-8">
+						<div class="col-xs-12 col-sm-8">
 							<div
 								v-if="isCartChecked"
 								class="row q-col-gutter-xs full-height"
@@ -125,14 +125,14 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-xs-12 col-md">
+						<div class="col-xs-12 col-sm">
 							<div class="column full-height">
 								<div class="col text-right text-h6">
 									{{ totalPrice[cartItem.producer_id] }} ₽
 								</div>
 								<div class="col-shrink">
 									<q-btn
-										class="q-pa-md full-width"
+										class="q-py-md full-width"
 										label="Оформить заказ"
 										color="primary"
 										@click="makeNewOrder"
@@ -186,7 +186,7 @@
 						</div>
 						<div class="col-12">
 							<q-btn
-								class="q-pa-md full-width"
+								class="q-py-lg full-width"
 								label="Оформить заказ"
 								color="primary"
 								@click="makeNewOrder"
