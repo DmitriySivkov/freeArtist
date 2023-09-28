@@ -106,7 +106,7 @@
 										})"
 									>
 										<span class="q-focus-helper"></span>
-										<div class="row full-width">
+										<div class="row">
 											<q-card-section class="col-3">
 												<q-radio
 													:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"
@@ -115,6 +115,10 @@
 													:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"
 													:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"
 													:val="method.id"
+													@update:model-value="selectPaymentMethod({
+														producerId: cartItem.producer_id,
+														methodId: $event
+													})"
 												/>
 											</q-card-section>
 											<q-card-section class="col-9 self-center">
@@ -165,7 +169,7 @@
 										})"
 									>
 										<span class="q-focus-helper"></span>
-										<div class="row full-width">
+										<div class="row">
 											<q-card-section class="col-3">
 												<q-radio
 													:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"
@@ -174,6 +178,10 @@
 													:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"
 													:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"
 													:val="method.id"
+													@update:model-value="selectPaymentMethod({
+														producerId: cartItem.producer_id,
+														methodId: $event
+													})"
 												/>
 											</q-card-section>
 											<q-card-section class="col-9 self-center">
