@@ -17,7 +17,7 @@ class ProducerOrderService implements OrderServiceContract
 	public function getOrderList()
 	{
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		$query = Order::where('producer_id', $user->ownProducer->detailed_id)
 			->orderBy('id', 'desc')

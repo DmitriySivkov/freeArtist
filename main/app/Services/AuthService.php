@@ -21,18 +21,15 @@ class AuthService
 	protected Collection $userTeams;
 
 	/**
-	 * @param $credentials
+	 * @param $phone
 	 * @param $isMobile
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function loginWithCredentials($credentials, $isMobile)
+	public function loginWithCredentials($phone, $isMobile)
     {
-		if (!Auth::attempt($credentials))
-			return response()->json(['errors' => ['total' => ['Неверный телефон или пароль']]], 422);
+		$this->user = User::where('phone', $phone)->first();
 
-		$this->user = User::where('phone', $credentials['phone'])->firstOrFail();
-
-		$tokenName = $credentials['phone'] . '-' . ($isMobile ? 'mobile' : 'desktop');
+		$tokenName = $phone . '-' . ($isMobile ? 'mobile' : 'desktop');
 
 		$this->revokeOldTokensOnCurrentDevice($tokenName);
 

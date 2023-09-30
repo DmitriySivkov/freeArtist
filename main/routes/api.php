@@ -30,12 +30,10 @@ Broadcast::routes(['middleware' => [\App\Http\Middleware\AppendAuthHeader::class
 /** no auth requiring routes */
 Route::post('register', [AuthController::class, 'register']);
 
-Route::post('authViaToken', [AuthController::class, 'authViaToken'])
-	->middleware(\App\Http\Middleware\AppendAuthHeader::class);
-
 Route::group(['prefix' => 'auth'], function() {
     Route::post('', [AuthController::class, 'login']);
-	Route::post('checkByPhone', [AuthController::class, 'checkByPhone']);
+	Route::post('viaToken', [AuthController::class, 'viaToken'])
+		->middleware(\App\Http\Middleware\AppendAuthHeader::class);
 });
 
 Route::group(['prefix' => 'roles'], function() {

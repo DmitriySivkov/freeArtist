@@ -76,6 +76,8 @@ const $router = useRouter()
 const userStore = useUserStore()
 const { Storage } = Plugins
 
+// todo - rework with auth with auth code
+
 const { notifySuccess, notifyError } = useNotification()
 const phone = ref(null)
 const password = ref("")

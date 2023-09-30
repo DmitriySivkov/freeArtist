@@ -20,13 +20,14 @@ class AuthController extends Controller
 	 */
 	public function login(Request $request, AuthService $authService)
     {
-		if ($request->has(['phone', 'password']))
-			return $authService->loginWithCredentials(
-				$request->only(['phone', 'password']),
-				$request->get('is_mobile')
-			);
+		$phone = $request->input('phone');
+		$isMobile = $request->input('is_mobile');
 
-		return response('Ошибка сервера авторизации', 422);
+		if (!$phone) {
+			return response('Ошибка сервера авторизации', 422);
+		}
+
+		return $authService->loginWithCredentials($phone, $isMobile);
     }
 
     /**
@@ -34,8 +35,9 @@ class AuthController extends Controller
      */
     public function logout()
     {
-		if ($currentToken = request()->user()->currentAccessToken())
+		if ($currentToken = request()->user()->currentAccessToken()) {
 			$currentToken->delete();
+		}
 
 		Auth::guard('web')->logout();
 
@@ -46,30 +48,14 @@ class AuthController extends Controller
 	 * @param AuthService $authService
 	 * @return false|\Illuminate\Http\JsonResponse
 	 */
-	public function authViaToken(AuthService $authService)
+	public function viaToken(AuthService $authService)
 	{
-		if (!auth('sanctum')->user())
+		if (!auth()->user()) {
 			return false;
+		}
 
 		return $authService->loginWithToken();
 	}
-
-	/**
-	 * @param Request $request
-	 * @return bool|\Illuminate\Contracts\Foundation\Application|ResponseFactory|Response|int
-	 */
-	public function verifyEmail(Request $request)
-    {
-        if (!hash_equals(
-            (string) $request->get('hash'),
-            sha1($request->get('email')))
-        )
-           return response('Не удалось верифицировать почту', 422);
-
-        return User::where('email', $request->get('email'))->update([
-            'email_verified_at' => Carbon::now()
-        ]);
-    }
 
 	/**
 	 * @param UserRegisterRequest $request
@@ -87,16 +73,5 @@ class AuthController extends Controller
 				]
 			])->setStatusCode(422);
 		}
-	}
-
-	/**
-	 * @param Request $request
-	 * @return bool
-	 */
-	public function checkByPhone(Request $request)
-	{
-		$phone = $request->input('phone');
-
-		return User::wherePhone($phone)->exists();
 	}
 }

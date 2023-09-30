@@ -18,7 +18,7 @@ class UserOrderService implements OrderServiceContract
 	public function getOrderList()
 	{
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		$query = Order::where('user_id', $user->id)
 			->orderBy('id', 'desc')

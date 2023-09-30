@@ -240,7 +240,7 @@ class ProductService
 	private function checkPermission(Team $team)
 	{
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		if (
 			!$user->hasPermission(Permission::PERMISSION_PRODUCER_PRODUCT['name'], $team) &&

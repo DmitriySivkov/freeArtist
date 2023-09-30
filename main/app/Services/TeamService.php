@@ -51,7 +51,7 @@ class TeamService implements TeamServiceContract
 	public function syncUserPermissions(array $permissionIds, Team $team, User $user)
 	{
 		/** @var User $authUser */
-		$authUser = auth('sanctum')->user();
+		$authUser = auth()->user();
 
 		if (
 			!$authUser->hasPermission(Permission::PERMISSION_PRODUCER_PERMISSIONS['name'], $team) &&
@@ -113,7 +113,7 @@ class TeamService implements TeamServiceContract
 	public function acceptRequest(RelationRequest $relationRequest)
 	{
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		if (
 			!$user->owns($this->team) &&
@@ -158,7 +158,7 @@ class TeamService implements TeamServiceContract
 	public function rejectRequest(RelationRequest $relationRequest)
 	{
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		if (
 			!$user->owns($this->team) &&

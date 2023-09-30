@@ -20,7 +20,7 @@ class OrderServiceProvider extends ServiceProvider
     {
 		$this->app->bind(OrderServiceContract::class, function () {
 			/** @var User $user */
-			$user = auth('sanctum')->user();
+			$user = auth()->user();
 			switch ($user->role_id) {
 				case Role::ROLE_PRODUCER:
 					return new ProducerOrderService();

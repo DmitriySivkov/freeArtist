@@ -1,31 +1,3 @@
-<script setup>
-import { computed } from "vue"
-import { useRouter } from "vue-router"
-import { useCartStore } from "src/stores/cart"
-import { useUserStore } from "src/stores/user"
-import { useNotification } from "src/composables/notification"
-
-const $router = useRouter()
-const cartStore = useCartStore()
-const userStore = useUserStore()
-
-const { notifySuccess } = useNotification()
-
-const route = $router.currentRoute
-
-const isUserLogged = computed(() => userStore.is_logged)
-
-const logout = () => {
-	userStore.logout().then(() => {
-		$router.push({"name": "home"})
-	})
-}
-
-const cartCounter = computed(() =>
-	cartStore.data.reduce((carry, item) =>
-		carry + item.products.length, 0)
-)
-</script>
 <template>
 	<q-list bordered>
 		<q-item
@@ -95,3 +67,45 @@ const cartCounter = computed(() =>
 		</q-item>
 	</q-list>
 </template>
+
+<script setup>
+import { computed } from "vue"
+import { useRouter } from "vue-router"
+import { useCartStore } from "src/stores/cart"
+import { useUserStore } from "src/stores/user"
+import { useNotification } from "src/composables/notification"
+import { useTeamStore } from "stores/team"
+import { useRelationRequestStore } from "stores/relation-request"
+import { api } from "src/boot/axios"
+
+const $router = useRouter()
+const cartStore = useCartStore()
+const userStore = useUserStore()
+const teamStore = useTeamStore()
+const relationRequestStore = useRelationRequestStore()
+
+const { notifySuccess } = useNotification()
+
+const route = $router.currentRoute
+
+const isUserLogged = computed(() => userStore.is_logged)
+
+const logout = () => {
+	api.post("personal/logout")
+
+	userStore.switchPersonal("user")
+
+	userStore.setData({})
+	teamStore.emptyUserTeams()
+	relationRequestStore.emptyUserRequests()
+
+	this.setIsLogged(false)
+
+	$router.push({name: "home"})
+}
+
+const cartCounter = computed(() =>
+	cartStore.data.reduce((carry, item) =>
+		carry + item.products.length, 0)
+)
+</script>

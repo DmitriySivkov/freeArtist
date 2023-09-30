@@ -1,6 +1,6 @@
 <template>
-	<div class="q-pa-md row flex flex-center fit absolute">
-		<div class="col-xs-12 col-md-6 col-lg-3">
+	<div class="row flex flex-center fit absolute q-pa-md">
+		<div class="col-xs-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
 			<Login />
 		</div>
 	</div>

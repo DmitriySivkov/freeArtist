@@ -20,7 +20,7 @@ class ProducerNewOrderRequest extends FormRequest
 	public function prepareForValidation()
 	{
 		$this->merge([
-			'user_id' => auth('sanctum')->user()->id,
+			'user_id' => auth()->id(),
 			'status' => Order::ORDER_STATUS_NEW,
 			'payment_method' => 1
 		]);

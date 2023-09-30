@@ -9,98 +9,13 @@ import { useRoleStore } from "src/stores/role"
 export const useUserStore = defineStore("user", {
 	state: () => ({
 		is_logged: false,
-		personal_tab: "user",
+		personal_tab: "user", // todo - make const file for personal tab names
 		location: null,
 		location_range: null,
 		data: {}
 	}),
 
 	actions: {
-		async login(payload) {
-			const team_store = useTeamStore()
-			const relation_request_store = useRelationRequestStore()
-			const permission_store = usePermissionStore()
-			const role_store = useRoleStore()
-
-			const response = await api.post("auth", payload)
-
-			if (response.data.token)
-				api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
-
-			this.data = response.data.user
-
-			role_store.setUserRoles(response.data.user_roles)
-			permission_store.setUserPermissions(response.data.user_permissions)
-
-			team_store.setUserTeams(response.data.user_teams)
-
-			if (response.data.user_requests.length > 0)
-				relation_request_store.commitUserRequest(response.data.user_requests)
-
-			if (response.data.user_teams_requests.length > 0)
-				relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
-
-			return response
-		},
-
-		async signUp(payload) {
-			const response = await api.post("register", payload)
-
-			if (response.data.token)
-				api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
-
-			this.data = response.data.user
-			this.setIsLogged(true)
-
-			return response
-		},
-
-		// todo - try to make synchronous request with promise
-		async logout(payload) {
-			const team_store = useTeamStore()
-			const relation_request_store = useRelationRequestStore()
-
-			await api.post("personal/logout", payload)
-
-			this.data = {}
-
-			this.switchPersonal("user")
-
-			team_store.emptyUserTeams()
-			relation_request_store.emptyUserRequests()
-
-			this.setIsLogged(false)
-		},
-
-		async authViaToken({ token }) {
-			const team_store = useTeamStore()
-			const relation_request_store = useRelationRequestStore()
-			const permission_store = usePermissionStore()
-			const role_store = useRoleStore()
-
-			if (token && token.value)
-				api.defaults.headers.common["Authorization"] = "Bearer " + token.value
-
-			const response = await api.post("authViaToken")
-
-			if (response.data) {
-				this.data = response.data.user
-
-				role_store.setUserRoles(response.data.user_roles)
-				permission_store.setUserPermissions(response.data.user_permissions)
-
-				team_store.setUserTeams(response.data.user_teams)
-
-				if (response.data.user_requests.length > 0)
-					relation_request_store.commitUserRequest(response.data.user_requests)
-
-				if (response.data.user_teams_requests.length > 0)
-					relation_request_store.setUserTeamsRequests(response.data.user_teams_requests)
-
-				this.setIsLogged(true)
-			}
-		},
-
 		async registerProducer(payload) {
 			const team_store = useTeamStore()
 			const role_store = useRoleStore()
@@ -151,5 +66,9 @@ export const useUserStore = defineStore("user", {
 		setIsLogged(isLogged) {
 			this.is_logged = isLogged
 		},
+
+		setData(data) {
+			this.data = data
+		}
 	}
 })

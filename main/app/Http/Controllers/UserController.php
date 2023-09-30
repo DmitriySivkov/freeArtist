@@ -21,7 +21,7 @@ class UserController extends Controller
 	public function createRequest(Team $team, Request $request)
 	{
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		try {
 			$relationRequest = $user->outgoingRelationRequests()
@@ -69,7 +69,7 @@ class UserController extends Controller
 	public function setRelationRequestStatus(RelationRequest $relationRequest, Request $request)
 	{
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		$relationRequest->status = collect(RelationRequest::STATUSES)
 			->filter(fn($status) => $status['id'] === $request->get('status_id'))
@@ -87,7 +87,7 @@ class UserController extends Controller
 	public function getNonRelatedTeams(Request $request)
 	{
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		return $user->nonRelatedTeams()
 			->when($request->has('query'), function($query) use ($request) {

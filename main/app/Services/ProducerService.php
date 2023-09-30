@@ -35,7 +35,7 @@ class ProducerService implements ProducerServiceContract
 	{
 		try {
 			/** @var User $user */
-			$user = auth('sanctum')->user();
+			$user = auth()->user();
 
 			if (
 				!$user->hasPermission(Permission::PERMISSION_PRODUCER_LOGO['name'], $producer->team) &&
@@ -86,7 +86,7 @@ class ProducerService implements ProducerServiceContract
 	{
 		try {
 			/** @var User $user */
-			$user = auth('sanctum')->user();
+			$user = auth()->user();
 
 			if (
 				!$user->hasPermission(Permission::PERMISSION_PRODUCER_STOREFRONT['name'], $producer->team) &&
@@ -138,7 +138,7 @@ class ProducerService implements ProducerServiceContract
 		DB::beginTransaction();
 		try {
 			/** @var User $user */
-			$user = auth('sanctum')->user();
+			$user = auth()->user();
 
 			if ($user->ownProducer()->exists())
 				throw new \Exception('Вы уже являетесь изготовителем-владельцем');
@@ -198,7 +198,7 @@ class ProducerService implements ProducerServiceContract
 			throw new \Exception('Изготовитель не задан');
 
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		if (
 			!$user->owns($this->producer->team) &&
@@ -222,7 +222,7 @@ class ProducerService implements ProducerServiceContract
 			throw new \Exception('Изготовитель не задан');
 
 		/** @var User $user */
-		$user = auth('sanctum')->user();
+		$user = auth()->user();
 
 		if (
 			!$user->owns($this->producer->team) &&
