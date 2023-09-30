@@ -35,6 +35,7 @@ Route::post('authViaToken', [AuthController::class, 'authViaToken'])
 
 Route::group(['prefix' => 'auth'], function() {
     Route::post('', [AuthController::class, 'login']);
+	Route::post('checkByPhone', [AuthController::class, 'checkByPhone']);
 });
 
 Route::group(['prefix' => 'roles'], function() {

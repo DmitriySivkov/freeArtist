@@ -17,12 +17,10 @@ class UserNewOrderRequest extends FormRequest
         return true;
     }
 
-    /** TODO payment method and status */
     public function prepareForValidation()
 	{
 		$this->merge([
 			'user_id' => auth()->id(),
-			'payment_method' => Order::ORDER_PAYMENT_METHOD_CARD,
 			'status' => Order::ORDER_STATUS_NEW,
 		]);
 	}

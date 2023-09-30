@@ -89,4 +89,14 @@ class AuthController extends Controller
 		}
 	}
 
+	/**
+	 * @param Request $request
+	 * @return bool
+	 */
+	public function checkByPhone(Request $request)
+	{
+		$phone = $request->input('phone');
+
+		return User::wherePhone($phone)->exists();
+	}
 }

@@ -139,7 +139,7 @@
 										class="q-py-md full-width"
 										label="Оформить заказ"
 										color="primary"
-										@click="makeNewOrder"
+										@click="makeNewOrder(cartItem.producer_id)"
 										:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
 									/>
 								</div>
@@ -197,7 +197,7 @@
 								class="q-py-lg full-width"
 								label="Оформить заказ"
 								color="primary"
-								@click="makeNewOrder"
+								@click="makeNewOrder(cartItem.producer_id)"
 								:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
 							/>
 						</div>
@@ -220,6 +220,12 @@ import { useCartStore } from "src/stores/cart"
 import { api } from "src/boot/axios"
 import EmptyCart from "src/components/cart/EmptyCart.vue"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
+import { useNotification } from "src/composables/notification"
+import AuthDialog from "src/components/dialogs/AuthDialog.vue"
+import { useUserStore } from "src/stores/user"
+import { Dialog } from "quasar"
+
+const { notifySuccess } = useNotification()
 
 const cartStore = useCartStore()
 const cart = computed(() => cartStore.data)
@@ -282,25 +288,37 @@ const totalPrice = computed(() =>
 		}), {})
 )
 
-const makeNewOrder = () => {
-	let cartMapped = cart.value.map((producerSet) => ({
-		producer_id: producerSet.producer_id,
-		products: producerSet.products.map((productSet) => ({
-			product_id: productSet.data.id,
-			cart_amount: productSet.cart_amount
+const userStore = useUserStore()
+
+const makeNewOrder = (producerId) => {
+	if (userStore.is_logged) {
+		let order = Object.assign({}, cart.value.find((item) => item.producer_id === producerId))
+
+		order.payment_method_id = paymentMethods.value[producerId].selectedPaymentMethodId
+
+		order.products = order.products.map((p) => ({
+			product_id: p.data.id,
+			amount: p.cart_amount
 		}))
-	}))
 
-	// todo - makeNewOrder - backend
-	const promise = api.post("orders", {
-		cart: cartMapped
-	})
+		// todo - register on new order if not auth
+		// todo - makeNewOrder - backend
+		const promise = api.post("orders", {
+			cart: order
+		})
 
-	promise.then(() => {
-		// cartStore.clearCart()
+		promise.then(() => {
+			// cartStore.clearCartProducer(producerId)
 
-		notifySuccess("Заказ успешно оформлен")
-	})
+			notifySuccess("Заказ принят")
+		})
+	} else {
+		Dialog.create({
+			component: AuthDialog,
+		}).onOk(() => {
+
+		})
+	}
 }
 
 onMounted(() => {

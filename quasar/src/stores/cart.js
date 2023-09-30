@@ -108,6 +108,11 @@ export const useCartStore = defineStore("cart", {
 			this.data = data
 		},
 
+		clearCartProducer(producerId) {
+			this.data = this.data.filter((producerSet) => producerSet.producer_id !== producerId)
+			LocalStorage.set("cart", this.data)
+		},
+
 		clearCart() {
 			this.data = []
 			LocalStorage.remove("cart")

@@ -16,6 +16,7 @@ class OrderController extends Controller
 
     public function store(UserNewOrderRequest $request)
 	{
+		// todo - check cart amount
 		$orderData = $request->validated();
 
 		/** @var UserOrderService $orderService */
