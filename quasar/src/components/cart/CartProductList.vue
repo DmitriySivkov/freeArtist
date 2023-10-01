@@ -292,33 +292,35 @@ const userStore = useUserStore()
 
 const makeNewOrder = (producerId) => {
 	if (userStore.is_logged) {
-		let order = Object.assign({}, cart.value.find((item) => item.producer_id === producerId))
-
-		order.payment_method_id = paymentMethods.value[producerId].selectedPaymentMethodId
-
-		order.products = order.products.map((p) => ({
-			product_id: p.data.id,
-			amount: p.cart_amount
-		}))
-
-		// todo - register on new order if not auth
-		// todo - makeNewOrder - backend
-		const promise = api.post("orders", {
-			cart: order
-		})
-
-		promise.then(() => {
-			// cartStore.clearCartProducer(producerId)
-
-			notifySuccess("Заказ принят")
-		})
+		orderAction(producerId)
 	} else {
 		Dialog.create({
 			component: AuthDialog,
 		}).onOk(() => {
-
+			orderAction(producerId)
 		})
 	}
+}
+
+function orderAction(producerId) {
+	let order = Object.assign({}, cart.value.find((item) => item.producer_id === producerId))
+
+	order.payment_method = paymentMethods.value[producerId].selectedPaymentMethodId
+
+	order.products = order.products.map((p) => ({
+		product_id: p.data.id,
+		amount: p.cart_amount
+	}))
+
+	const promise = api.post("personal/orders", {
+		...order
+	})
+
+	promise.then(() => {
+		cartStore.clearCartProducer(producerId)
+
+		notifySuccess("Заказ принят")
+	})
 }
 
 onMounted(() => {

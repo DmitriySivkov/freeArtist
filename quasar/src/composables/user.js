@@ -14,8 +14,9 @@ export const useUser = () => {
 
 	// todo remove heavy loadings (relation requests & etc)
 	const afterLogin = (response) => {
-		if (response.data.token)
+		if (response.data.token) {
 			api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
+		}
 
 		userStore.setData(response.data.user)
 

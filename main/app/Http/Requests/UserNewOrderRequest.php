@@ -33,13 +33,29 @@ class UserNewOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => ['required', 'exists:users,id'],
-			'cart.*.producer.id' => ['required', 'exists:producers,id'],
-			'cart.*.product_list' => ['required'],
-			'cart.*.product_list.*.amount' => ['gt:0'],
-			'cart.*.product_list.*.data.id' => ['exists:products,id'],
-			'payment_method' => ['required'],
-			'status' => ['required']
+            'user_id' => [
+				'required',
+				'exists:users,id'
+			],
+			'producer_id' => [
+				'required',
+				'exists:producers,id'
+			],
+			'products.*.product_id' => [
+				'required',
+				'exists:products,id'
+			],
+			'products.*.amount' => [
+				'required',
+				'gt:0'
+			],
+			'payment_method' => [
+				'required',
+				'exists:payment_methods,id'
+			],
+			'status' => [
+				'required'
+			]
         ];
     }
 }

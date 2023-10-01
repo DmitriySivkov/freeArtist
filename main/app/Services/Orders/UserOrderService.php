@@ -48,21 +48,13 @@ class UserOrderService implements OrderServiceContract
 
 	public function processOrder($orderData)
 	{
-		info(print_r($orderData,true));
-//		foreach ($orderData['cart'] as $cartItem)
-//		{
-//			Order::create([
-//				'user_id' => $orderData['user_id'],
-//				'producer_id' => $cartItem['producer']['id'],
-//				'products' => collect($cartItem['product_list'])->map(function($product) {
-//					return [
-//						'product_id' => $product['data']['id'],
-//						'amount' => $product['amount']
-//					];
-//				}),
-//				'payment_method' => $orderData['payment_method'],
-//				'status' => $orderData['status']
-//			]);
-//		}
+		// todo - decrease available product amount after order is created
+		Order::create([
+			'user_id' => $orderData['user_id'],
+			'producer_id' => $orderData['producer_id'],
+			'payment_method' => $orderData['payment_method'],
+			'status' => $orderData['status'],
+			'products' => $orderData['products']
+		]);
 	}
 }

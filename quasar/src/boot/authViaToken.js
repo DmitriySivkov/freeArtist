@@ -2,7 +2,7 @@ import { Platform } from "quasar"
 import { Plugins } from "@capacitor/core"
 import { api } from "src/boot/axios"
 import { useUser } from "src/composables/user"
-import { useUserStore } from "stores/user"
+import { useUserStore } from "src/stores/user"
 
 export default async () => {
 	const userStore = useUserStore()
@@ -17,8 +17,9 @@ export default async () => {
 		token = await Storage.get({key: "token"})
 	}
 
-	if (token && token.value)
+	if (token && token.value) {
 		api.defaults.headers.common["Authorization"] = "Bearer " + token.value
+	}
 
 	const response = await api.post("auth/viaToken")
 

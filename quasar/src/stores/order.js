@@ -7,6 +7,7 @@ export const useOrderStore = defineStore("order", {
 	}),
 
 	actions: {
+		// todo - move request action to component
 		async getOrders(filter) {
 			const response = await api.get("personal/orders", {
 				params: filter

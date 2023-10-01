@@ -18,7 +18,6 @@ class AuthController extends Controller
 		$phone = $request->input('phone');
 		$code = $request->input('code');
 		$isAuth = $request->input('is_auth');
-		$isMobile = $request->input('is_mobile');
 
 		if (!$phone) {
 			throw new \Exception('Ошибка сервиса авторизации');
@@ -26,7 +25,7 @@ class AuthController extends Controller
 
 		if (!$code) {
 			return response()->json([
-				'user_exists' => $this->checkPhone($phone)
+				'user_exists' => User::wherePhone($phone)->exists()
 			]);
 		}
 
@@ -40,7 +39,7 @@ class AuthController extends Controller
 			]);
 		}
 
-		return $authService->loginWithCredentials($phone, $isMobile);
+		return $authService->loginWithCredentials($phone);
     }
 
     /**
@@ -64,11 +63,5 @@ class AuthController extends Controller
 	public function viaToken(AuthService $authService)
 	{
 		return $authService->loginWithToken();
-	}
-
-	// todo - move to service
-	private function checkPhone($phone)
-	{
-		return User::wherePhone($phone)->exists();
 	}
 }

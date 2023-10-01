@@ -22,11 +22,12 @@ class AuthService
 
 	/**
 	 * @param $phone
-	 * @param $isMobile
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function loginWithCredentials($phone, $isMobile)
+	public function loginWithCredentials($phone)
     {
+		$isMobile = request()->input('is_mobile');
+
 		$this->user = User::wherePhone($phone)->firstOrFail();
 
 		$tokenName = $phone . '-' . ($isMobile ? 'mobile' : 'desktop');

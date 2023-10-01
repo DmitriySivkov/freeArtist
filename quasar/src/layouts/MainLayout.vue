@@ -4,7 +4,7 @@
 			<q-page class="row">
 				<div
 					v-if="$q.screen.width >= $q.screen.sizes.md"
-					class="col-3"
+					class="col-3 col-xl-2"
 				>
 					<MenuMain />
 				</div>
