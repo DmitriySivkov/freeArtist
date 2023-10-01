@@ -18,6 +18,7 @@
 				label="Подтвердить"
 				color="primary"
 				class="q-pa-lg full-width"
+				:loading="isLoading"
 				@click="auth"
 			/>
 		</div>
@@ -29,14 +30,17 @@ import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { ref } from "vue"
 import { Plugins } from "@capacitor/core"
-import { useQuasar } from "quasar"
+import { Dialog, useQuasar} from "quasar"
 import { useUserStore } from "src/stores/user"
 import { api } from "boot/axios"
 import { useUser } from "src/composables/user"
+import AuthCodeDialog from "src/components/dialogs/AuthCodeDialog.vue"
 
 const $q = useQuasar()
 const $router = useRouter()
 const userStore = useUserStore()
+
+const isLoading = ref(false)
 
 const { Storage } = Plugins
 
@@ -46,30 +50,42 @@ const phone = ref(null)
 const { afterLogin } = useUser()
 
 const auth = () => {
+	if (!phone.value) return
+
+	isLoading.value = true
+
 	const promise = api.post("auth", {
-		phone: phone.value,
+		phone: `8${phone.value}`,
 		is_mobile: $q.platform.is.capacitor
 	})
 
 	promise.then((response) => {
-		afterLogin(response)
+		Dialog.create({
+			component: AuthCodeDialog,
+			componentProps: {
+				phone: `8${phone.value}`,
+				isAuth: response.data.user_exists,
+			}
+		}).onOk((response) => {
+			afterLogin(response)
 
-		if (response.data.token) {
-			Storage.set({
-				key: "token",
-				value: response.data.token
-			})
-		}
+			if (response.data.token) {
+				Storage.set({
+					key: "token",
+					value: response.data.token
+				})
+			}
 
-		$router.push({name: "personal"})
+			$router.push({name: "personal"})
 
-		userStore.setIsLogged(true)
+			userStore.setIsLogged(true)
+		})
 	})
 
 	promise.catch((error) => {
-		const errors = Object.values(error.response.data.errors)
-			.reduce((accum, val) => accum.concat(...val), [])
-		notifyError(errors)
+		notifyError(error.response.data.message)
 	})
+
+	promise.finally(() => isLoading.value = false)
 }
 </script>

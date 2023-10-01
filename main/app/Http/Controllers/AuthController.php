@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use App\Services\AuthService;
-use Carbon\Carbon;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -13,18 +11,33 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-	/**
-	 * @param Request $request
-	 * @param AuthService $authService
-	 * @return \Illuminate\Contracts\Foundation\Application|ResponseFactory|\Illuminate\Http\JsonResponse|Response
-	 */
+	const TEST_CODE = 1111;
+
 	public function login(Request $request, AuthService $authService)
     {
 		$phone = $request->input('phone');
+		$code = $request->input('code');
+		$isAuth = $request->input('is_auth');
 		$isMobile = $request->input('is_mobile');
 
 		if (!$phone) {
-			return response('Ошибка сервера авторизации', 422);
+			throw new \Exception('Ошибка сервиса авторизации');
+		}
+
+		if (!$code) {
+			return response()->json([
+				'user_exists' => $this->checkPhone($phone)
+			]);
+		}
+
+		if ($code !== self::TEST_CODE) {
+			throw new \Exception('Неверный код');
+		}
+
+		if (!$isAuth) {
+			User::create([
+				'phone' => $phone
+			]);
 		}
 
 		return $authService->loginWithCredentials($phone, $isMobile);
@@ -50,28 +63,12 @@ class AuthController extends Controller
 	 */
 	public function viaToken(AuthService $authService)
 	{
-		if (!auth()->user()) {
-			return false;
-		}
-
 		return $authService->loginWithToken();
 	}
 
-	/**
-	 * @param UserRegisterRequest $request
-	 * @param AuthService $authService
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	public function register(UserRegisterRequest $request, AuthService $authService)
+	// todo - move to service
+	private function checkPhone($phone)
 	{
-		try {
-			return $authService->register($request->validated(), $request->get('is_mobile'));
-		} catch (\Throwable $e) {
-			return response()->json([
-				"errors" => [
-					"registerService" => [$e->getMessage()]
-				]
-			])->setStatusCode(422);
-		}
+		return User::wherePhone($phone)->exists();
 	}
 }

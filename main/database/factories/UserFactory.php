@@ -25,7 +25,6 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name,
             'phone' => $this->faker->unique()->numerify('8##########'),
-            'password' => Hash::make('test123'),
             'remember_token' => null,
         ];
     }

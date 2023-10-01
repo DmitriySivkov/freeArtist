@@ -99,7 +99,7 @@ const logout = () => {
 	teamStore.emptyUserTeams()
 	relationRequestStore.emptyUserRequests()
 
-	this.setIsLogged(false)
+	userStore.setIsLogged(false)
 
 	$router.push({name: "home"})
 }

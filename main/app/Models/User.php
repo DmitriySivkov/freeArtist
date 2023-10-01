@@ -118,12 +118,4 @@ class User extends Authenticatable
 			$this->rolesTeams->pluck('id')
 		);
 	}
-
-    /**
-     * We override the default verification and use our own
-     */
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new EmailVerificationNotification($this));
-    }
 }

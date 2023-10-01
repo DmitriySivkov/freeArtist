@@ -2,8 +2,11 @@ import { Platform } from "quasar"
 import { Plugins } from "@capacitor/core"
 import { api } from "src/boot/axios"
 import { useUser } from "src/composables/user"
+import { useUserStore } from "stores/user"
 
 export default async () => {
+	const userStore = useUserStore()
+
 	const { afterLogin } = useUser()
 
 	const { Storage } = Plugins
@@ -23,6 +26,6 @@ export default async () => {
 	if (response.data) {
 		afterLogin(response)
 
-		this.setIsLogged(true)
+		userStore.setIsLogged(true)
 	}
 }

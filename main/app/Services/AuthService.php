@@ -27,16 +27,26 @@ class AuthService
 	 */
 	public function loginWithCredentials($phone, $isMobile)
     {
-		$this->user = User::where('phone', $phone)->first();
+		$this->user = User::wherePhone($phone)->firstOrFail();
 
 		$tokenName = $phone . '-' . ($isMobile ? 'mobile' : 'desktop');
 
 		$this->revokeOldTokensOnCurrentDevice($tokenName);
 
-		$token = $this->user->createToken($tokenName)->plainTextToken;
+		$tokenRaw = $this->user->createToken($tokenName);
 
-		if ($isMobile)
+		$token = $tokenRaw->plainTextToken;
+
+		// double check user
+		$this->user = User::whereHas('tokens',
+			fn($query) => $query->where('id', $tokenRaw->accessToken->id)
+		)->firstOrFail();
+
+		Auth::loginUsingId($this->user->id);
+
+		if ($isMobile) {
 			return $this->makeResponse(['token' => $token]);
+		}
 
 		$cookie = cookie(
 			'token', $token, 0, "/", config('session.domain'),
@@ -47,14 +57,15 @@ class AuthService
     }
 
 	/**
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return false|JsonResponse
 	 */
 	public function loginWithToken()
     {
-        $this->user = auth("sanctum")->user();
+		if (!$this->user = auth('sanctum')->user()) {
+			return false;
+		}
 
-		if (!$this->user)
-			return response()->json(['errors' => ['total' => ['Пользователь не найден']]], 422);
+		Auth::loginUsingId($this->user->id);
 
 		return $this->makeResponse();
     }
@@ -167,34 +178,4 @@ class AuthService
 	{
 		$this->user->tokens()->where('name', $token)->delete();
 	}
-
-	/**
-	 * @param array $userData
-	 * @param bool $isMobile
-	 * @return JsonResponse
-	 * @throws \Throwable
-	 */
-	public function register($userData, $isMobile)
-	{
-		DB::beginTransaction();
-		try {
-			$unhashedPassword = $userData['password'];
-			$userData['password'] = Hash::make($unhashedPassword);
-
-			$user = User::create($userData);
-
-			$response = $this->loginWithCredentials([
-				'phone' => $user->phone,
-				'password' => $unhashedPassword
-			], $isMobile);
-
-			DB::commit();
-		} catch (\Throwable) {
-			DB::rollBack();
-			throw new \LogicException("Ошибка сервера регистрации");
-		}
-
-		return $response;
-	}
-
 }
