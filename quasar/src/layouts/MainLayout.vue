@@ -4,12 +4,12 @@
 			<q-page class="row">
 				<div
 					v-if="$q.screen.width >= $q.screen.sizes.md"
-					class="col-md-3 col-lg-2"
+					class="col-3"
 				>
 					<MenuMain />
 				</div>
 				<div
-					class="col-xs-12 col-md-grow"
+					class="col-12 col-md-grow"
 					:class="isBackgroundColorPrimary ? 'bg-primary' : 'bg-white'"
 				>
 					<div class="column full-height">
