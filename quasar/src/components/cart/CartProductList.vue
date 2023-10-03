@@ -141,6 +141,7 @@
 										color="primary"
 										@click="makeNewOrder(cartItem.producer_id)"
 										:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
+										:loading="isLoading"
 									/>
 								</div>
 							</div>
@@ -199,6 +200,7 @@
 								color="primary"
 								@click="makeNewOrder(cartItem.producer_id)"
 								:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
+								:loading="isLoading"
 							/>
 						</div>
 					</div>
@@ -222,6 +224,7 @@ import EmptyCart from "src/components/cart/EmptyCart.vue"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { useNotification } from "src/composables/notification"
 import AuthDialog from "src/components/dialogs/AuthDialog.vue"
+import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import { useUserStore } from "src/stores/user"
 import { Dialog } from "quasar"
 
@@ -302,6 +305,8 @@ const makeNewOrder = (producerId) => {
 	}
 }
 
+const isLoading = ref(false)
+
 function orderAction(producerId) {
 	let order = Object.assign({}, cart.value.find((item) => item.producer_id === producerId))
 
@@ -312,18 +317,44 @@ function orderAction(producerId) {
 		amount: p.cart_amount
 	}))
 
+	isLoading.value = true
+
 	const promise = api.post("personal/orders", {
 		...order
 	})
 
 	promise.then(() => {
-		cartStore.clearCartProducer(producerId)
+		// cartStore.clearCartProducer(producerId) // todo - rollback
 
 		notifySuccess("Заказ принят")
 	})
+
+	promise.catch((error) => {
+		if (
+			typeof error.response.data === "object" &&
+			error.response.data.hasOwnProperty("invalid_items")
+		) {
+			Dialog.create({
+				component: OrderInvalidProductDialog,
+				componentProps: {
+					message: error.response.data.message,
+					invalidProducts: error.response.data.invalid_items
+				}
+			}).onDismiss(() => {
+				isCartChecked.value = false
+				init()
+			})
+		}
+	})
+
+	promise.finally(() => isLoading.value = false)
 }
 
 onMounted(() => {
+	init()
+})
+
+function init() {
 	if (!cart.value.length) return
 
 	let producers = cart.value.map((producerSet) => producerSet.producer_id)
@@ -359,5 +390,5 @@ onMounted(() => {
 
 		isCartChecked.value = true
 	})
-})
+}
 </script>

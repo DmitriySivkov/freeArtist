@@ -6,6 +6,7 @@ namespace App\Services\Orders;
 
 use App\Contracts\OrderServiceContract;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -56,5 +57,17 @@ class UserOrderService implements OrderServiceContract
 			'status' => $orderData['status'],
 			'products' => $orderData['products']
 		]);
+	}
+
+	public function findInvalidProducts(array $orderProducts)
+	{
+		$orderProducts = collect($orderProducts)->pluck('amount', 'product_id');
+
+		$products = Product::whereIn('id', $orderProducts->keys())
+			->get();
+
+		return $products->filter(fn(Product $product) =>
+			$product->amount < $orderProducts[$product->id] || !$product->is_active
+		);
 	}
 }

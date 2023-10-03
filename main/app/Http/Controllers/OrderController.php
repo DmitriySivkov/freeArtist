@@ -16,12 +16,26 @@ class OrderController extends Controller
 
     public function store(UserNewOrderRequest $request)
 	{
-		// todo - check cart amount
 		$orderData = $request->validated();
 
 		/** @var UserOrderService $orderService */
 		$orderService = app(OrderServiceContract::class);
-		// todo - try catch
-		$orderService->processOrder($orderData);
+
+		$invalidProducts = $orderService->findInvalidProducts($orderData['products']);
+
+		if ($invalidProducts->isNotEmpty()) {
+			return response([
+				'message' => 'Ой, кажется кто-то вас опередил',
+				'invalid_items' => $invalidProducts->map(fn(\App\Models\Product $product) => [
+					'id' => $product->id,
+					'title' => $product->title,
+					'amount' => $product->is_active ? $product->amount : 0
+				])->values(),
+			], 422);
+		}
+
+		return $orderService->processOrder($orderData);
 	}
+
+
 }
