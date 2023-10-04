@@ -34,7 +34,19 @@ class OrderController extends Controller
 			], 422);
 		}
 
-		return $orderService->processOrder($orderData);
+		try {
+			\DB::beginTransaction();
+
+			$orderService->processOrder($orderData);
+
+			\DB::commit();
+		} catch (\Throwable $e) {
+			\DB::rollBack();
+
+			return response(['message' => 'Что-то пошло не так'], 422);
+		}
+
+		return response(['message' => 'Заказ принят'], 200);
 	}
 
 

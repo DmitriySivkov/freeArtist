@@ -228,7 +228,7 @@ import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProduc
 import { useUserStore } from "src/stores/user"
 import { Dialog } from "quasar"
 
-const { notifySuccess } = useNotification()
+const { notifySuccess, notifyError } = useNotification()
 
 const cartStore = useCartStore()
 const cart = computed(() => cartStore.data)
@@ -323,10 +323,10 @@ function orderAction(producerId) {
 		...order
 	})
 
-	promise.then(() => {
-		// cartStore.clearCartProducer(producerId) // todo - rollback
+	promise.then((response) => {
+		cartStore.clearCartProducer(producerId)
 
-		notifySuccess("Заказ принят")
+		notifySuccess(response.data.message)
 	})
 
 	promise.catch((error) => {
@@ -344,7 +344,11 @@ function orderAction(producerId) {
 				isCartChecked.value = false
 				init()
 			})
+
+			return
 		}
+
+		notifyError(error.response.data.message)
 	})
 
 	promise.finally(() => isLoading.value = false)

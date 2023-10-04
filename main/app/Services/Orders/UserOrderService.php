@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Symfony\Component\Mime\Exception\LogicException;
 
 class UserOrderService implements OrderServiceContract
 {
@@ -49,7 +50,6 @@ class UserOrderService implements OrderServiceContract
 
 	public function processOrder($orderData)
 	{
-		// todo - decrease available product amount after order is created
 		Order::create([
 			'user_id' => $orderData['user_id'],
 			'producer_id' => $orderData['producer_id'],
@@ -57,6 +57,8 @@ class UserOrderService implements OrderServiceContract
 			'status' => $orderData['status'],
 			'products' => $orderData['products']
 		]);
+
+		$this->decreaseProducts($orderData['products']);
 	}
 
 	public function findInvalidProducts(array $orderProducts)
@@ -69,5 +71,22 @@ class UserOrderService implements OrderServiceContract
 		return $products->filter(fn(Product $product) =>
 			$product->amount < $orderProducts[$product->id] || !$product->is_active
 		);
+	}
+
+	private function decreaseProducts($orderProducts)
+	{
+		$orderProductAmounts = collect($orderProducts)->pluck('amount', 'product_id');
+
+		$products = Product::whereIn('id', $orderProductAmounts->keys())->get();
+
+		$products->each(function(Product $product) use ($orderProductAmounts) {
+			$product->amount = $product->amount - $orderProductAmounts[$product->id];
+
+			if ($product->amount < 0) {
+				throw new LogicException('Некорректное количество товара');
+			}
+
+			$product->save();
+		});
 	}
 }
