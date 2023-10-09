@@ -9,9 +9,12 @@ use App\Services\Orders\UserOrderService;
 
 class OrderController extends Controller
 {
-    public function index(OrderServiceContract $orderService)
+    public function index()
     {
-        return response()->json($orderService->getOrderList());
+		/** @var UserOrderService $orderService */
+		$orderService = app(OrderServiceContract::class);
+
+        return $orderService->getOrderList();
     }
 
     public function store(UserNewOrderRequest $request)
@@ -21,7 +24,7 @@ class OrderController extends Controller
 		/** @var UserOrderService $orderService */
 		$orderService = app(OrderServiceContract::class);
 
-		$invalidProducts = $orderService->findInvalidProducts($orderData['products']);
+		$invalidProducts = $orderService->findInvalidProducts($orderData['order_products']);
 
 		if ($invalidProducts->isNotEmpty()) {
 			return response([

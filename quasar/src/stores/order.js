@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
-
+// todo - remove order store?
 export const useOrderStore = defineStore("order", {
 	state: () => ({
 		data: []
@@ -9,9 +9,7 @@ export const useOrderStore = defineStore("order", {
 	actions: {
 		// todo - move request action to component
 		async getOrders(filter) {
-			const response = await api.get("personal/orders", {
-				params: filter
-			})
+
 
 			this.data = response.data
 		},

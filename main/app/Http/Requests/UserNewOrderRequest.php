@@ -41,11 +41,11 @@ class UserNewOrderRequest extends FormRequest
 				'required',
 				'exists:producers,id'
 			],
-			'products.*.product_id' => [
+			'order_products.*.product_id' => [
 				'required',
 				'exists:products,id'
 			],
-			'products.*.amount' => [
+			'order_products.*.amount' => [
 				'required',
 				'gt:0'
 			],

@@ -312,7 +312,7 @@ function orderAction(producerId) {
 
 	order.payment_method = paymentMethods.value[producerId].selectedPaymentMethodId
 
-	order.products = order.products.map((p) => ({
+	order.order_products = order.products.map((p) => ({
 		product_id: p.data.id,
 		amount: p.cart_amount
 	}))

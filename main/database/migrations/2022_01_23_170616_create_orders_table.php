@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('producer_id');
-            $table->json('products');
+            $table->json('order_products');
             $table->integer('payment_method');
             $table->integer('status');
             $table->timestamps();

@@ -22,11 +22,12 @@ class UserOrderService implements OrderServiceContract
 		/** @var User $user */
 		$user = auth()->user();
 
-		$query = Order::where('user_id', $user->id)
+		$query = Order::query()
+			->where('user_id', $user->id)
 			->orderBy('id', 'desc')
 			->withCasts([
-				'created_at' => 'datetime:d-m-Y H:i:s',
-				'updated_at' => 'datetime:d-m-Y H:i:s'
+				'created_at' => 'datetime:d-m-Y H:i',
+				'updated_at' => 'datetime:d-m-Y H:i'
 			]);
 
 		if (request()->has('filter')) {
@@ -45,6 +46,16 @@ class UserOrderService implements OrderServiceContract
 			'products.thumbnail'
 		])->get();
 
+		$orders->each(function(Order $order) {
+			$order->setAttribute(
+				'order_products',
+				array_combine(
+					collect($order->order_products)->pluck('product_id')->toArray(),
+					$order->order_products
+				)
+			);
+		});
+
 		return $orders;
 	}
 
@@ -55,10 +66,10 @@ class UserOrderService implements OrderServiceContract
 			'producer_id' => $orderData['producer_id'],
 			'payment_method' => $orderData['payment_method'],
 			'status' => $orderData['status'],
-			'products' => $orderData['products']
+			'order_products' => $orderData['order_products']
 		]);
 
-		$this->decreaseProducts($orderData['products']);
+		$this->decreaseProducts($orderData['order_products']);
 	}
 
 	public function findInvalidProducts(array $orderProducts)
