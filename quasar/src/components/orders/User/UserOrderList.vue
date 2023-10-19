@@ -3,7 +3,7 @@
 		<div class="row full-height justify-center">
 			<div
 				v-if="!isMounting"
-				class="col-xs-12 col-md-9 col-lg-8 q-py-xs"
+				class="col-xs-12 col-md-9 col-lg-7 q-py-xs"
 			>
 				<div class="column no-wrap">
 					<q-card
@@ -14,23 +14,21 @@
 					>
 						<div class="row">
 							<div class="col-xs-12 col-sm">
-								<div class="column no-wrap full-height">
-									<q-img
-										v-for="(product, productIndex) in order.products"
-										:key="product.product_id"
-										no-spinner
-										:src="product.thumbnail ?
-											backendServer + '/storage/' + product.thumbnail.path :
-											(product.images.length > 0 ? backendServer + '/storage/' + product.images[0].path : '/no-image.png')"
-										class="col rounded-borders"
-										:class="{'q-mb-xs': productIndex !== order.products.length - 1}"
-									>
-										<div class="absolute-bottom text-center">
-											<span class="text-h5">{{ product.title }}</span>
-											<span class="text-body1"> ({{ order.order_products[product.id].amount }} шт)</span>
-										</div>
-									</q-img>
-								</div>
+								<q-img
+									v-for="(product, productIndex) in order.products"
+									:key="product.product_id"
+									no-spinner
+									:src="product.thumbnail ?
+										backendServer + '/storage/' + product.thumbnail.path :
+										(product.images.length > 0 ? backendServer + '/storage/' + product.images[0].path : '/no-image.png')"
+									class="rounded-borders"
+									:class="{'q-mb-xs': productIndex !== order.products.length - 1}"
+								>
+									<div class="absolute-bottom text-center">
+										<span class="text-h5">{{ product.title }}</span>
+										<span class="text-body1"> ({{ order.order_products[product.id].amount }} шт)</span>
+									</div>
+								</q-img>
 							</div>
 							<div class="col-xs-12 col-sm-5">
 								<q-card class="bg-primary text-white full-height">
