@@ -16,6 +16,14 @@ export default [
 		}
 	},
 	{
+		name: "personal_producer_orders_detail",
+		path: "personal/producer/:producer_id/orders",
+		component: () => import("pages/personal/producer/OrdersDetail.vue"),
+		meta: {
+			route_name: "Список заказов"
+		}
+	},
+	{
 		name: "personal_register_producer",
 		path: "personal/register-producer",
 		component: () => import("pages/personal/RegisterProducer.vue"),

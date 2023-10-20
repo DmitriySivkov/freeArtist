@@ -64,7 +64,7 @@
 			</div>
 			<div
 				v-else
-				class="col-xs-12 col-md-9 q-pt-xs"
+				class="col-xs-12 col-md-9 col-lg-7 q-py"
 			>
 				<UserPersonalOrdersSkeleton />
 			</div>
@@ -83,9 +83,7 @@ const orders = ref([])
 const isMounting = ref(true)
 
 onMounted(() => {
-	const promise = api.get("personal/orders", {
-		params: {}
-	})
+	const promise = api.get("personal/orders")
 
 	promise.then((response) => {
 		orders.value = response.data

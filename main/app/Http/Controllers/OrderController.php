@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Contracts\OrderServiceContract;
 use App\Http\Requests\UserNewOrderRequest;
+use App\Models\User;
 use App\Services\Orders\UserOrderService;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(UserOrderService $orderService)
     {
-		/** @var UserOrderService $orderService */
-		$orderService = app(OrderServiceContract::class);
+		/** @var User $user */
+		$user = auth()->user();
+
+		$orderService->setUser($user);
 
         return $orderService->getOrderList();
     }
 
-    public function store(UserNewOrderRequest $request)
+    public function store(UserNewOrderRequest $request, UserOrderService $orderService)
 	{
 		$orderData = $request->validated();
-
-		/** @var UserOrderService $orderService */
-		$orderService = app(OrderServiceContract::class);
 
 		$invalidProducts = $orderService->findInvalidProducts($orderData['order_products']);
 

@@ -104,6 +104,10 @@ Route::group([
 			Route::get('{product}', [ProducerController::class, 'getProducerProduct']);
 			Route::get('thumbnails', [ProducerController::class, 'getProducerProductThumbnails']);
 		});
+
+		Route::group(['prefix' => '{producer}/orders'], function () {
+			Route::get('', [\App\Http\Controllers\Producer\OrderController::class, 'index']);
+		});
 	});
 
 	Route::group(['prefix' => 'paymentMethods'], function() {
