@@ -14,12 +14,15 @@
 						#{{ order.id }}
 					</q-item-section>
 					<q-item-section class="text-right">
-						для {{ order.user }}
+						{{ order.created_at }}
 					</q-item-section>
 				</q-item>
 			</q-card-section>
 			<q-separator class="full-width" />
 			<q-card-section class="col-12">
+				<div class="text-right">
+					для {{ order.user }}
+				</div>
 				<div
 					v-for="product in order.products"
 					:key="product.product_id"

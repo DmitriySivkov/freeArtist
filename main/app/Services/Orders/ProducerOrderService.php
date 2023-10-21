@@ -33,11 +33,7 @@ class ProducerOrderService implements OrderServiceContract
 
 		$query = Order::where('producer_id', $this->producer->id)
 			->whereBetween('created_at', [$dateFrom, $dateTo])
-			->orderBy('created_at', 'desc')
-			->withCasts([
-				'created_at' => 'datetime:d-m-Y H:i:s',
-				'updated_at' => 'datetime:d-m-Y H:i:s'
-			]);
+			->orderBy('created_at', 'desc');
 
 		$orders = $query->with([
 			'user',

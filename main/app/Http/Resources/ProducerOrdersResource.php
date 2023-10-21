@@ -30,7 +30,7 @@ class ProducerOrdersResource extends JsonResource
 					'id' => $product->id,
 					'title' => $product->title
 				]),
-			'created_at' => $this->created_at
+			'created_at' => $this->created_at->format('d-m-Y H:i')
 		];
     }
 }
