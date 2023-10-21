@@ -1,26 +1,51 @@
 <template>
-	<q-date
-		@update:model-value="$emit('update:modelValue', $event)"
-		:model-value="modelValue"
-		mask="DD.MM.YYYY"
-		:locale="ruLocale"
-		no-unset
-		minimal
-		range
-		style="width:100%"
-	/>
+	<q-card
+		class="bg-primary text-white cursor-pointer q-hoverable text-body1"
+		@click="showCalendarDialog"
+	>
+		<span class="q-focus-helper"></span>
+		<q-item>
+			<q-item-section avatar>
+				<q-avatar
+					text-color="white"
+					icon="date_range"
+					size="48px"
+				/>
+			</q-item-section>
+			<q-item-section>
+				{{ dateRange }}
+			</q-item-section>
+		</q-item>
+	</q-card>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from "vue"
+import { Dialog } from "quasar"
+import ProducerOrderListCalendarDialog from "src/components/dialogs/ProducerOrderListCalendarDialog.vue"
+
+const props = defineProps({
 	modelValue: [String, Object]
 })
 
-const ruLocale = {
-	days: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],
-	daysShort: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
-	months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-	monthsShort: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-	firstDayOfWeek: 1
+const emit = defineEmits([
+	"update:modelValue"
+])
+
+const dateRange = computed(() =>
+	typeof props.modelValue === "string" ?
+		props.modelValue :
+		`${props.modelValue.from} - ${props.modelValue.to}`
+)
+
+const showCalendarDialog = () => {
+	Dialog.create({
+		component: ProducerOrderListCalendarDialog,
+		componentProps: {
+			date: props.modelValue
+		}
+	}).onOk((date) => {
+		emit("update:modelValue", date)
+	})
 }
 </script>
