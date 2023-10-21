@@ -3,37 +3,40 @@
 		<q-card
 			v-for="order in orderList"
 			:key="order.id"
-			class="row col-auto bg-primary text-white"
+			class="row col-auto bg-primary text-white text-body1"
 		>
-			<q-card-section class="col-xs-12 col-md-8">
-				<q-list>
-					<q-item
-						v-for="product in order.products"
-						:key="product.product_id"
+			<q-card-section class="col-12 q-py-none">
+				<q-item class="q-pa-none">
+					<q-item-section
+						side
+						class="text-white"
 					>
-						<q-item-section avatar>
-							<q-img
-								no-spinner
-								:src="product.thumbnail ?
-									backendServer + '/storage/' + product.thumbnail.path :
-									(product.images.length > 0 ? backendServer + '/storage/' + product.images[0].path : '/no-image.png')"
-							/>
-						</q-item-section>
-
-						<q-item-section>
-							<q-item-label>{{ product.title }}</q-item-label>
-						</q-item-section>
-
-					</q-item>
-				</q-list>
+						#{{ order.id }}
+					</q-item-section>
+					<q-item-section class="text-right">
+						для {{ order.user }}
+					</q-item-section>
+				</q-item>
 			</q-card-section>
-			<q-card-section class="col-xs-12 col-md-4">
-				<q-list dense>
-					<!-- todo - format date -->
-					<q-item>Номер заказа {{ order.id }}</q-item>
-					<q-item>создан: {{ order.created_at }}</q-item>
-					<q-item>обновлен: {{ order.updated_at }}</q-item>
-				</q-list>
+			<q-separator class="full-width" />
+			<q-card-section class="col-12">
+				<div
+					v-for="product in order.products"
+					:key="product.product_id"
+					class="row q-py-md justify-center"
+				>
+					<div class="col-xs-12 col-sm-11">
+						<div class="row">
+							<div class="col">
+								{{ product.title }}
+							</div>
+							<div class="col-shrink text-right">
+								{{ order.order_products[product.id] }} шт
+							</div>
+						</div>
+						<q-separator class="full-width" />
+					</div>
+				</div>
 			</q-card-section>
 		</q-card>
 	</div>
@@ -48,9 +51,11 @@ const props = defineProps({
 	date: [String, Object]
 })
 
-const $router = useRouter()
+const emit = defineEmits([
+	"load"
+])
 
-const backendServer = process.env.BACKEND_SERVER
+const $router = useRouter()
 
 const orderList = ref([])
 
@@ -59,6 +64,8 @@ onMounted(() => {
 })
 
 const loadOrders = (date) => {
+	emit("load", true)
+
 	const promise = api.get(`personal/producers/${$router.currentRoute.value.params.producer_id}/orders`,{
 		params: {
 			date
@@ -69,6 +76,8 @@ const loadOrders = (date) => {
 	promise.then((response) => {
 		orderList.value = response.data
 	})
+
+	promise.finally(() => emit("load", false))
 }
 
 watch(

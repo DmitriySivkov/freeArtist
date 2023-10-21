@@ -1,12 +1,14 @@
 <template>
-	<div class="q-pa-sm row q-col-gutter-sm justify-center">
+	<div class="row justify-center">
 		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6">
 			<OrderCalendar
 				v-model="qdate"
 				class="q-mb-sm"
+				:isLoading="isLoading"
 			/>
 			<ProducerOrderList
 				:date="qdate"
+				@load="isLoading = $event"
 			/>
 		</div>
 	</div>
@@ -18,5 +20,6 @@ import ProducerOrderList from "src/components/orders/Producer/ProducerOrderList.
 import { ref } from "vue"
 import { date } from "quasar"
 
+const isLoading = ref(true)
 const qdate = ref(date.formatDate(Date.now(), "DD.MM.YYYY"))
 </script>

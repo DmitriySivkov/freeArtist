@@ -15,6 +15,13 @@
 			<q-item-section>
 				{{ dateRange }}
 			</q-item-section>
+			<q-item-section side>
+				<q-spinner-oval
+					v-show="isLoading"
+					color="white"
+					size="24px"
+				/>
+			</q-item-section>
 		</q-item>
 	</q-card>
 </template>
@@ -25,7 +32,11 @@ import { Dialog } from "quasar"
 import ProducerOrderListCalendarDialog from "src/components/dialogs/ProducerOrderListCalendarDialog.vue"
 
 const props = defineProps({
-	modelValue: [String, Object]
+	modelValue: [String, Object],
+	isLoading: {
+		type: Boolean,
+		default: true
+	}
 })
 
 const emit = defineEmits([

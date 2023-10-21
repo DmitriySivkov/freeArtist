@@ -4,6 +4,7 @@
 namespace App\Services\Orders;
 
 use App\Contracts\OrderServiceContract;
+use App\Http\Resources\ProducerOrdersResource;
 use App\Models\Order;
 use App\Models\Producer;
 use Carbon\Carbon;
@@ -17,9 +18,6 @@ class ProducerOrderService implements OrderServiceContract
 		$this->producer = $producer;
 	}
 
-	/**
-	 * @return Order[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
-	 */
 	public function getOrderList()
 	{
 		// todo - check access (middleware?)
@@ -43,11 +41,10 @@ class ProducerOrderService implements OrderServiceContract
 
 		$orders = $query->with([
 			'user',
-			'products.images',
-			'products.thumbnail'
+			'products'
 		])->get();
 
-		return $orders;
+		return ProducerOrdersResource::collection($orders)->collection;
 	}
 
 	public function processOrder($orderData)
