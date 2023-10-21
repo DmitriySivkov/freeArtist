@@ -1,11 +1,10 @@
 <template>
-	<div class="q-pa-sm row q-col-gutter-sm">
-		<div class="col-xs-12 col-md-6 col-lg-3">
+	<div class="q-pa-sm row q-col-gutter-sm justify-center">
+		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6">
 			<OrderCalendar
 				v-model="qdate"
+				class="q-mb-sm"
 			/>
-		</div>
-		<div class="col-xs-12 col-md-6 col-lg-9">
 			<ProducerOrderList
 				:date="qdate"
 			/>

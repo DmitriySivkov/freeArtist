@@ -1,5 +1,5 @@
 <template>
-	<div class="column q-gutter-sm">
+	<div class="column q-gutter-xs">
 		<q-card
 			v-for="order in orderList"
 			:key="order.id"
