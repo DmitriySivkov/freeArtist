@@ -23,12 +23,18 @@ class ProducerOrderService implements OrderServiceContract
 	public function getOrderList()
 	{
 		// todo - check access (middleware?)
-		$date = request()->input('date') ?
-			Carbon::parse(request()->input('date'))->format('Y-m-d') :
-			Carbon::today();
+		$date = json_decode(request()->input('date'),true);
+
+		if (is_array($date)) {
+			$dateFrom = Carbon::parse($date['from'])->startOfDay();
+			$dateTo = Carbon::parse($date['to'])->endOfDay();
+		} else {
+			$dateFrom = Carbon::parse(request()->input('date'))->startOfDay();
+			$dateTo = Carbon::parse(request()->input('date'))->endOfDay();
+		}
 
 		$query = Order::where('producer_id', $this->producer->id)
-			->whereDate('created_at', $date)
+			->whereBetween('created_at', [$dateFrom, $dateTo])
 			->orderBy('created_at', 'desc')
 			->withCasts([
 				'created_at' => 'datetime:d-m-Y H:i:s',

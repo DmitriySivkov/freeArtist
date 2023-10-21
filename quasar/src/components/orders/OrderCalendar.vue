@@ -5,16 +5,15 @@
 		mask="DD.MM.YYYY"
 		:locale="ruLocale"
 		no-unset
+		minimal
+		range
 		style="width:100%"
 	/>
 </template>
 
 <script setup>
 defineProps({
-	modelValue: {
-		type: String,
-		required: false
-	},
+	modelValue: [String, Object]
 })
 
 const ruLocale = {

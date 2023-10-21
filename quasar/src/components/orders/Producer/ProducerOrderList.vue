@@ -45,10 +45,7 @@ import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
 
 const props = defineProps({
-	date: {
-		type: String,
-		required: false
-	}
+	date: [String, Object]
 })
 
 const $router = useRouter()
@@ -58,7 +55,7 @@ const backendServer = process.env.BACKEND_SERVER
 const orderList = ref([])
 
 onMounted(() => {
-	loadOrders()
+	loadOrders(props.date)
 })
 
 const loadOrders = (date) => {
