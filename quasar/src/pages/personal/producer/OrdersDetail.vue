@@ -1,15 +1,24 @@
 <template>
-	<div class="row justify-center">
-		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6">
-			<OrderCalendar
-				v-model="qdate"
-				class="q-mb-sm"
-				:isLoading="isLoading"
-			/>
-			<ProducerOrderList
-				:date="qdate"
-				@load="isLoading = $event"
-			/>
+	<div class="absolute column fit">
+		<div class="col-shrink q-mb-sm">
+			<div class="row justify-center">
+				<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6">
+					<OrderCalendar
+						v-model="qdate"
+						:isLoading="isLoading"
+					/>
+				</div>
+			</div>
+		</div>
+		<div class="col-grow">
+			<div class="row justify-center full-height">
+				<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6">
+					<ProducerOrderList
+						:date="qdate"
+						@load="isLoading = $event"
+					/>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>

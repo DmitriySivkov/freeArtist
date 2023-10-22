@@ -4,29 +4,30 @@
 		@click="showCalendarDialog"
 	>
 		<span class="q-focus-helper"></span>
-		<q-item>
-			<q-item-section avatar>
+		<div class="row flex flex-center">
+			<div class="col-shrink">
 				<q-avatar
 					text-color="white"
 					icon="date_range"
 					size="48px"
 				/>
-			</q-item-section>
-			<q-item-section>
+			</div>
+			<div class="col">
 				{{ dateRange }}
-			</q-item-section>
-			<q-item-section side>
+			</div>
+			<div class="col-shrink q-mr-md">
 				<q-spinner-oval
 					v-show="isLoading"
 					color="white"
 					size="24px"
 				/>
-			</q-item-section>
-		</q-item>
+			</div>
+		</div>
 	</q-card>
 </template>
 
 <script setup>
+// todo - grid breaks when date is range & when loader is visible - on lg+ screens
 import { computed } from "vue"
 import { Dialog } from "quasar"
 import ProducerOrderListCalendarDialog from "src/components/dialogs/ProducerOrderListCalendarDialog.vue"

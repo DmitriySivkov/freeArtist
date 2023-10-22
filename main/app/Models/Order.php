@@ -37,9 +37,9 @@ class Order extends Model
     use HasFactory, HasJsonRelationships;
 
     const ORDER_STATUS_NEW = 1;
-
-    const ORDER_PAYMENT_METHOD_CARD = 1;
-	const ORDER_PAYMENT_METHOD_CASH = 2;
+	const ORDER_STATUS_PROCESS = 2;
+	const ORDER_STATUS_CANCEL = 3;
+	const ORDER_STATUS_DONE = 4;
 
     protected $guarded = [];
 

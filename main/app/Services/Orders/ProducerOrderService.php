@@ -35,12 +35,19 @@ class ProducerOrderService implements OrderServiceContract
 			->whereBetween('created_at', [$dateFrom, $dateTo])
 			->orderBy('created_at', 'desc');
 
-		$orders = $query->with([
+		$ordersRaw = $query->with([
 			'user',
 			'products'
 		])->get();
 
-		return ProducerOrdersResource::collection($orders)->collection;
+		$orders = ProducerOrdersResource::collection($ordersRaw)->collection;
+
+		return [
+			Order::ORDER_STATUS_NEW => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_NEW)->values(),
+			Order::ORDER_STATUS_PROCESS => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_PROCESS)->values(),
+			Order::ORDER_STATUS_CANCEL => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_CANCEL)->values(),
+			Order::ORDER_STATUS_DONE => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_DONE)->values(),
+		];
 	}
 
 	public function processOrder($orderData)
