@@ -1,154 +1,3 @@
-<script setup>
-import { defineComponent, onMounted, ref } from "vue"
-import { useNotification } from "src/composables/notification"
-import { api } from "src/boot/axios"
-import draggable from "vuedraggable"
-
-defineComponent({
-	draggable
-})
-
-const props = defineProps({
-	modelValue: {
-		type: Object,
-		default: () => ({})
-	}
-})
-
-const emit = defineEmits([
-	"update:modelValue"
-])
-
-const { notifyError } = useNotification()
-
-const drag = ref(false)
-
-const tagCloud = ref([])
-const isLoadingTagCloud = ref(true)
-
-const tags = ref(props.modelValue.tags)
-
-const addTag = (e) => {
-	if (tags.value.length > 8) {
-		const index = tags.value.findIndex(
-			(t) => t.id === e.item.__draggable_context.element.id
-		)
-
-		const extraTag = tags.value.splice(index, 1)[0]
-
-		tagCloud.value.push(extraTag)
-
-		notifyError("Нельзя добавить больше тегов")
-	}
-
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{tags: tags.value}
-		)
-	)
-}
-
-const sortTag = () => {
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{tags: tags.value}
-		)
-	)
-}
-
-const removeTag = (tag) => {
-	const index = tags.value.findIndex((t) => t.id === tag.id)
-
-	const removedTag = tags.value.splice(index, 1)[0]
-
-	tagCloud.value.push(removedTag)
-
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{tags: tags.value}
-		)
-	)
-}
-
-const keywords = ref(props.modelValue.keywords)
-
-const addKeyword = (keyword, doneFn) => {
-	if (keywords.value.length === 8) {
-		notifyError("Нельзя добавить больше ключевых слов")
-		return
-	}
-
-	if (keyword.length > 20) {
-		notifyError("Максимум 20 символов")
-		return
-	}
-
-	doneFn(keyword, "add-unique")
-
-	if (keywords.value.find((k) => k === keyword))
-		return
-
-	keywords.value.push(keyword)
-
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{keywords: keywords.value}
-		)
-	)
-}
-
-const removeKeyword = (keyword) => {
-	const index = keywords.value.findIndex((k) => k === keyword)
-
-	keywords.value.splice(index, 1)
-
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{keywords: keywords.value}
-		)
-	)
-}
-
-const sortKeyword = () => {
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{keywords: keywords.value}
-		)
-	)
-}
-
-const dragOptions = {
-	animation: 200,
-	group: "description",
-	disabled: false,
-	ghostClass: "bg-green"
-}
-
-onMounted(() => {
-	const promise = api.get("personal/tags")
-
-	promise.then((response) => {
-		tagCloud.value = response.data.filter(
-			(t) => !props.modelValue.tags.map((t) => t.id).includes(t.id)
-		)
-	})
-
-	promise.finally(() => isLoadingTagCloud.value = false)
-})
-</script>
-
 <template>
 	<div class="q-pb-md">
 		<span class="text-h5">Выберите теги для поиска</span>
@@ -315,6 +164,157 @@ onMounted(() => {
 		</div>
 	</div>
 </template>
+
+<script setup>
+import { defineComponent, onMounted, ref } from "vue"
+import { useNotification } from "src/composables/notification"
+import { api } from "src/boot/axios"
+import draggable from "vuedraggable"
+
+defineComponent({
+	draggable
+})
+
+const props = defineProps({
+	modelValue: {
+		type: Object,
+		default: () => ({})
+	}
+})
+
+const emit = defineEmits([
+	"update:modelValue"
+])
+
+const { notifyError } = useNotification()
+
+const drag = ref(false)
+
+const tagCloud = ref([])
+const isLoadingTagCloud = ref(true)
+
+const tags = ref(props.modelValue.tags)
+
+const addTag = (e) => {
+	if (tags.value.length > 8) {
+		const index = tags.value.findIndex(
+			(t) => t.id === e.item.__draggable_context.element.id
+		)
+
+		const extraTag = tags.value.splice(index, 1)[0]
+
+		tagCloud.value.push(extraTag)
+
+		notifyError("Нельзя добавить больше тегов")
+	}
+
+	emit(
+		"update:modelValue",
+		Object.assign(
+			props.modelValue,
+			{tags: tags.value}
+		)
+	)
+}
+
+const sortTag = () => {
+	emit(
+		"update:modelValue",
+		Object.assign(
+			props.modelValue,
+			{tags: tags.value}
+		)
+	)
+}
+
+const removeTag = (tag) => {
+	const index = tags.value.findIndex((t) => t.id === tag.id)
+
+	const removedTag = tags.value.splice(index, 1)[0]
+
+	tagCloud.value.push(removedTag)
+
+	emit(
+		"update:modelValue",
+		Object.assign(
+			props.modelValue,
+			{tags: tags.value}
+		)
+	)
+}
+
+const keywords = ref(props.modelValue.keywords)
+
+const addKeyword = (keyword, doneFn) => {
+	if (keywords.value.length === 8) {
+		notifyError("Нельзя добавить больше ключевых слов")
+		return
+	}
+
+	if (keyword.length > 20) {
+		notifyError("Максимум 20 символов")
+		return
+	}
+
+	doneFn(keyword, "add-unique")
+
+	if (keywords.value.find((k) => k === keyword))
+		return
+
+	keywords.value.push(keyword)
+
+	emit(
+		"update:modelValue",
+		Object.assign(
+			props.modelValue,
+			{keywords: keywords.value}
+		)
+	)
+}
+
+const removeKeyword = (keyword) => {
+	const index = keywords.value.findIndex((k) => k === keyword)
+
+	keywords.value.splice(index, 1)
+
+	emit(
+		"update:modelValue",
+		Object.assign(
+			props.modelValue,
+			{keywords: keywords.value}
+		)
+	)
+}
+
+const sortKeyword = () => {
+	emit(
+		"update:modelValue",
+		Object.assign(
+			props.modelValue,
+			{keywords: keywords.value}
+		)
+	)
+}
+
+const dragOptions = {
+	animation: 200,
+	group: "description",
+	disabled: false,
+	ghostClass: "bg-green"
+}
+
+onMounted(() => {
+	const promise = api.get("personal/tags")
+
+	promise.then((response) => {
+		tagCloud.value = response.data.filter(
+			(t) => !props.modelValue.tags.map((t) => t.id).includes(t.id)
+		)
+	})
+
+	promise.finally(() => isLoadingTagCloud.value = false)
+})
+</script>
 
 <style lang="scss" module>
 .tag {
