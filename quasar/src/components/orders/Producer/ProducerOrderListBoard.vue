@@ -24,13 +24,14 @@
 						group="orders"
 						:sort="false"
 						@start="drag=true"
-						@end="drag=false"
+						@end="onEnd"
 						:item-key="(order) => order.id"
 						class="row full-height q-gutter-xs"
 						:component-data="{
 							tag: 'div',
 							type: 'transition-group',
-							name: 'fade'
+							name: 'fade',
+							id: boardId
 						}"
 						v-bind="{
 							animation: 200,
@@ -55,7 +56,6 @@
 					</draggable>
 				</div>
 			</q-scroll-area>
-
 		</div>
 	</q-card>
 </template>
@@ -68,11 +68,23 @@ defineComponent({
 	draggable
 })
 
-defineEmits([
-	"show"
+const emit = defineEmits([
+	"show", "change"
 ])
 
+const onEnd = (e) => {
+	drag.value = false
+
+	const statusId = parseInt(e.to.getAttribute("id"))
+	const orderId = e.item.__draggable_context.element.id
+
+	if (props.boardId === statusId) return
+
+	emit("change", { orderId, statusId })
+}
+
 const props = defineProps({
+	boardId: Number,
 	boardName: String,
 	orders: Array,
 	boardClass: String,

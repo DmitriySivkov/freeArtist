@@ -1,6 +1,7 @@
 <template>
 	<div class="column q-gutter-xs full-height">
 		<ProducerOrderListBoard
+			:board-id="ORDER_STATUSES.NEW"
 			:board-name="ORDER_STATUS_NAMES[ORDER_STATUSES.NEW]"
 			:orders="orderList[ORDER_STATUSES.NEW]"
 			:board-class="'bg-blue-1'"
@@ -8,9 +9,11 @@
 			:chip-color="'blue-9'"
 			:ghost-class="$style.ghost__new"
 			@show="showOrderDetails"
+			@change="changeOrderStatus"
 		/>
 
 		<ProducerOrderListBoard
+			:board-id="ORDER_STATUSES.PROCESS"
 			:board-name="ORDER_STATUS_NAMES[ORDER_STATUSES.PROCESS]"
 			:orders="orderList[ORDER_STATUSES.PROCESS]"
 			:board-class="'bg-green-1'"
@@ -18,9 +21,11 @@
 			:chip-color="'green-9'"
 			:ghost-class="$style.ghost__process"
 			@show="showOrderDetails"
+			@change="changeOrderStatus"
 		/>
 
 		<ProducerOrderListBoard
+			:board-id="ORDER_STATUSES.CANCEL"
 			:board-name="ORDER_STATUS_NAMES[ORDER_STATUSES.CANCEL]"
 			:orders="orderList[ORDER_STATUSES.CANCEL]"
 			:board-class="'bg-red-1'"
@@ -28,9 +33,11 @@
 			:chip-color="'red-9'"
 			:ghost-class="$style.ghost__cancel"
 			@show="showOrderDetails"
+			@change="changeOrderStatus"
 		/>
 
 		<ProducerOrderListBoard
+			:board-id="ORDER_STATUSES.DONE"
 			:board-name="ORDER_STATUS_NAMES[ORDER_STATUSES.DONE]"
 			:orders="orderList[ORDER_STATUSES.DONE]"
 			:board-class="'bg-grey-1'"
@@ -38,6 +45,7 @@
 			:chip-color="'grey-8'"
 			:ghost-class="$style.ghost__done"
 			@show="showOrderDetails"
+			@change="changeOrderStatus"
 		/>
 
 	</div>
@@ -95,6 +103,17 @@ const showOrderDetails = (order) => {
 		component: OrderCardDetailDialog,
 		componentProps: { order }
 	})
+}
+
+const changeOrderStatus = ({ orderId, statusId }) => {
+	// todo - apply front sort fitting that of backend - add 'statused_at' for sorting ?
+	const promise = api.post(
+		`personal/producers/${$router.currentRoute.value.params.producer_id}/orders/${orderId}/status`,
+		{
+			status: statusId
+		}
+	)
+	// todo - on fail return back
 }
 
 watch(

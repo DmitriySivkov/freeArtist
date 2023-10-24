@@ -107,6 +107,7 @@ Route::group([
 
 		Route::group(['prefix' => '{producer}/orders'], function () {
 			Route::get('', [\App\Http\Controllers\Producer\OrderController::class, 'index']);
+			Route::post('{order}/status', [\App\Http\Controllers\Producer\OrderController::class, 'changeStatus']);
 		});
 	});
 
