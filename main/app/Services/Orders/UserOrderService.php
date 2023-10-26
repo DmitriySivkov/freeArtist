@@ -16,6 +16,10 @@ class UserOrderService implements OrderServiceContract
 {
 	private User $user;
 
+	/**
+	 * @param User $user
+	 * @return void
+	 */
 	public function setUser(User $user)
 	{
 		$this->user = $user;
@@ -53,9 +57,13 @@ class UserOrderService implements OrderServiceContract
 		return $orders;
 	}
 
+	/**
+	 * @param $orderData
+	 * @return Order|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+	 */
 	public function processOrder($orderData)
 	{
-		Order::create([
+		$order = Order::create([
 			'user_id' => $orderData['user_id'],
 			'producer_id' => $orderData['producer_id'],
 			'payment_method' => $orderData['payment_method'],
@@ -64,8 +72,14 @@ class UserOrderService implements OrderServiceContract
 		]);
 
 		$this->decreaseProducts($orderData['order_products']);
+
+		return $order;
 	}
 
+	/**
+	 * @param array $orderProducts
+	 * @return \Illuminate\Support\Collection
+	 */
 	public function findInvalidProducts(array $orderProducts)
 	{
 		$orderProducts = collect($orderProducts)->pluck('amount', 'product_id');
@@ -78,6 +92,10 @@ class UserOrderService implements OrderServiceContract
 		);
 	}
 
+	/**
+	 * @param $orderProducts
+	 * @return void
+	 */
 	private function decreaseProducts($orderProducts)
 	{
 		$orderProductAmounts = collect($orderProducts)->pluck('amount', 'product_id');

@@ -22,7 +22,6 @@
 					<draggable
 						:list="orders"
 						group="orders"
-						:sort="false"
 						@start="drag=true"
 						@end="onEnd"
 						:item-key="(order) => order.id"
@@ -76,11 +75,22 @@ const onEnd = (e) => {
 	drag.value = false
 
 	const statusId = parseInt(e.to.getAttribute("id"))
+
 	const orderId = e.item.__draggable_context.element.id
 
-	if (props.boardId === statusId) return
+	// if dropped to the same board & the same position
+	if (
+		props.boardId === statusId &&
+		e.oldIndex === e.newIndex
+	) return
 
-	emit("change", { orderId, statusId })
+	emit("change", {
+		orderId,
+		statusId,
+		previousStatusId: props.boardId,
+		index: e.newIndex,
+		previousIndex: e.oldIndex
+	})
 }
 
 const props = defineProps({

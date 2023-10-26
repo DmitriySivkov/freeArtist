@@ -30,10 +30,10 @@ class PaymentMethod extends Model
 	public $guarded = [];
 
 	const PAYMENT_METHODS = [
-		self::PAYMENT_METHOD_CARD,
-		self::PAYMENT_METHOD_SBP,
-		self::PAYMENT_METHOD_CASH,
-		self::PAYMENT_METHOD_QIWI,
+		self::PAYMENT_METHOD_CARD_ID 	=> self::PAYMENT_METHOD_CARD,
+		self::PAYMENT_METHOD_SBP_ID 	=> self::PAYMENT_METHOD_SBP,
+		self::PAYMENT_METHOD_CASH_ID 	=> self::PAYMENT_METHOD_CASH,
+		self::PAYMENT_METHOD_QIWI_ID 	=> self::PAYMENT_METHOD_QIWI,
 	];
 
 	const PAYMENT_METHOD_CARD 	= 'Оплата картой';

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserNewOrderRequest;
+use App\Models\Order;
+use App\Models\ProducerOrderPriority;
 use App\Models\User;
 use App\Services\Orders\UserOrderService;
 
@@ -38,7 +40,23 @@ class OrderController extends Controller
 		try {
 			\DB::beginTransaction();
 
-			$orderService->processOrder($orderData);
+			$order = $orderService->processOrder($orderData);
+
+			// todo - move to service
+			$orderPriority = ProducerOrderPriority::where('producer_id', $order->producer_id)
+				->where('status', Order::ORDER_STATUS_NEW)
+				->first();
+
+			if ($orderPriority) {
+				$orderPriority->order_priority = [$order->id, ...$orderPriority->order_priority];
+				$orderPriority->save();
+			} else {
+				ProducerOrderPriority::create([
+					'producer_id' => $order->producer_id,
+					'status' => Order::ORDER_STATUS_NEW,
+					'order_priority' => [$order->id]
+				]);
+			}
 
 			\DB::commit();
 		} catch (\Throwable $e) {

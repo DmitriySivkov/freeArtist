@@ -105,15 +105,27 @@ const showOrderDetails = (order) => {
 	})
 }
 
-const changeOrderStatus = ({ orderId, statusId }) => {
-	// todo - apply front sort fitting that of backend - add 'statused_at' for sorting ?
+const changeOrderStatus = ({ orderId, statusId, previousStatusId, index, previousIndex }) => {
 	const promise = api.post(
-		`personal/producers/${$router.currentRoute.value.params.producer_id}/orders/${orderId}/status`,
+		`personal/producers/${$router.currentRoute.value.params.producer_id}/orders/${orderId}/move`,
 		{
-			status: statusId
+			status: statusId,
+			position: index,
+			from_status: previousStatusId
 		}
 	)
-	// todo - on fail return back
+
+	promise.then(() => {
+		const order = orderList.value[statusId].find((o) => o.id === orderId)
+		order.status = statusId
+	})
+
+	promise.catch(() => {
+		const order = orderList.value[statusId].find((o) => o.id === orderId)
+
+		orderList.value[previousStatusId].splice(previousIndex, 0, order)
+		orderList.value[statusId] = orderList.value[statusId].filter((o) => o.id !== orderId)
+	})
 }
 
 watch(

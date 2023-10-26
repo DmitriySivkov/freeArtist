@@ -38,6 +38,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereStorefrontImageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerOrderPriority[] $orderPriorities
+ * @property-read int|null $order_priorities_count
  */
 class Producer extends Model
 {
@@ -119,5 +121,13 @@ class Producer extends Model
 	public function paymentMethods()
 	{
 		return $this->belongsToMany(PaymentMethod::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function orderPriorities()
+	{
+		return $this->hasMany(ProducerOrderPriority::class);
 	}
 }

@@ -27,7 +27,6 @@
 </template>
 
 <script setup>
-// todo - grid breaks when date is range & when loader is visible - on lg+ screens
 import { computed } from "vue"
 import { Dialog } from "quasar"
 import ProducerOrderListCalendarDialog from "src/components/dialogs/ProducerOrderListCalendarDialog.vue"
