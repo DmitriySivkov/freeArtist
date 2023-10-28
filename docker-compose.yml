@@ -93,7 +93,7 @@ services:
     volumes:
       - ./Makefile:/Makefile
     ports:
-      - 127.0.0.1:53307:3306
+      - 53307:3306
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=fa_db
