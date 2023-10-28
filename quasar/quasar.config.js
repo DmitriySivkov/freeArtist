@@ -1,3 +1,5 @@
+
+require("dotenv").config()
 const { configure } = require("quasar/wrappers")
 const { join } = require("path")
 
@@ -51,9 +53,9 @@ module.exports = configure(function (ctx) {
 			// analyze: true,
 			env: {
 				// on mobile dev - change address to available inside network
-				BACKEND_SERVER: ctx.dev ? (ctx.mode.spa ? "https://api.freeartist.loc" : (ctx.mode.capacitor ? "https://192.168.1.2" : null)) :
+				BACKEND_SERVER: ctx.dev ? (ctx.mode.spa ? process.env.BACKEND_SERVER : (ctx.mode.capacitor ? "https://192.168.1.2" : null)) :
 					"https://e217-95-106-191-13.ngrok.io",
-				BACKEND_HOST: "api.freeartist.loc"
+				BACKEND_HOST: process.env.BACKEND_HOST
 			},
 			// rawDefine: {}
 			// ignorePublicFolder: true,
