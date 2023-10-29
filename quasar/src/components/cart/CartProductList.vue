@@ -155,7 +155,10 @@
 							{{ totalPrice[cartItem.producer_id] }} ₽
 						</div>
 						<div class="col-12 q-py-md">
-							<div class="row q-col-gutter-xs">
+							<div
+								v-if="isCartChecked"
+								class="row q-col-gutter-xs"
+							>
 								<div
 									v-for="method in paymentMethods[cartItem.producer_id].methods"
 									:key="method.id"

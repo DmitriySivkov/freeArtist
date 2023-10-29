@@ -73,6 +73,7 @@
 				class="transform-none"
 				:offset="[18,18]"
 			>
+				<!-- todo - button reloads app on click on mobile resolution -->
 				<q-btn
 					round
 					size="1.5em"

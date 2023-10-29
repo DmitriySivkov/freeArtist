@@ -125,6 +125,7 @@
 			class="col-xs-12 col-lg-6"
 			style="border:1px solid rgba(0, 0, 0, 0.12)"
 		>
+			<!-- todo - draggable mix up with scroll event on mobile resolution - unable to scroll -->
 			<draggable
 				:list="keywords"
 				group="keywords"
