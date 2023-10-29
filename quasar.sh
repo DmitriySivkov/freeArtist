@@ -1,2 +1,2 @@
 #!/bin/bash
-docker exec -it quasar sh
+cd quasar && npm run dev
