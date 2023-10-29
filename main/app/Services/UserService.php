@@ -49,7 +49,7 @@ class UserService implements UserServiceContract
 		// todo - what if city is not found
 		$cityIpData = SxGeo::getCity($ip);
 
-		info(print_r($cityIpData));
+		info(print_r($cityIpData,true));
 
 		// todo - maybe change 'address' to 'city' - though some cities are 'null' in db
 		return City::where('address', 'like', "%{$cityIpData['city']['name_ru']}%")
