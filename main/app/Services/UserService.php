@@ -41,6 +41,8 @@ class UserService implements UserServiceContract
 	 */
 	public function getUserLocationByIp()
 	{
+		info(request()->getClientIp());
+		info(request()->ip());
 		$ip = app()->env === 'local' ? env('LOCAL_IP') : request()->getClientIp();
 
 		// todo - what if city is not found
