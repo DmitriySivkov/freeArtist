@@ -84,3 +84,5 @@ make broadcast
 
 ### to make GEO work
 php artisan sxgeo:update & set 'LOCAL_IP' key in 'env'
+
+### WRONG storage permissions cause CORS problem (and probably others)
