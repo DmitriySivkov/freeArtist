@@ -9,7 +9,7 @@ export const useNotification = () => {
 			textColor: "white",
 			multiLine: true,
 			icon: "cloud_done",
-			position: $q.platform.is.desktop ? "top-right" : "bottom",
+			position: "top-right",
 			message
 		})
 	}
@@ -20,7 +20,7 @@ export const useNotification = () => {
 			textColor: "white",
 			multiline: true,
 			icon: "warning",
-			position: $q.platform.is.desktop ? "top-right" : "bottom",
+			position: "top-right",
 			message
 		})
 	}

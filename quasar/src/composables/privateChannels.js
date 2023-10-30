@@ -4,6 +4,7 @@ import { useTeamStore } from "src/stores/team"
 import { useUserStore } from "src/stores/user"
 import { useRelationRequestStore } from "src/stores/relation-request"
 import { usePermissionStore } from "src/stores/permission"
+import { useRoleStore } from "stores/role"
 
 // todo - make less WS connections ?
 export const usePrivateChannels = () => {
@@ -13,6 +14,7 @@ export const usePrivateChannels = () => {
 	const team_store = useTeamStore()
 	const relation_request_store = useRelationRequestStore()
 	const permission_store = usePermissionStore()
+	const role_store = useRoleStore()
 
 	const connectTeams = () => {
 		// todo - same for 'teams' entity - add name change to producer profile
@@ -41,7 +43,7 @@ export const usePrivateChannels = () => {
 				})
 
 				if (e.model.status.id === relation_request_store.statuses.accepted.id) {
-					user_store.setRole(e.role)
+					role_store.setUserRole(e.role)
 					team_store.setUserTeams(e.team)
 					connectPermissions()
 				}

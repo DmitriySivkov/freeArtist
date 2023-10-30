@@ -9,8 +9,11 @@
 					<q-card
 						v-for="(method, pmid) in PAYMENT_METHOD_NAMES"
 						:key="pmid"
-						class="col flex flex-center q-hoverable cursor-pointer"
-						:class="{'payment-method-active': selectedPaymentMethods[pmid]}"
+						class="col flex flex-center q-hoverable"
+						:class="[
+							{'payment-method-active': selectedPaymentMethods[pmid]},
+							{'cursor-pointer': isAbleToManagePaymentMethods}
+						]"
 						@click="selectPaymentMethod({ pmid, val:!selectedPaymentMethods[pmid] })"
 					>
 						<span class="q-focus-helper"></span>
@@ -71,6 +74,8 @@ const isSettingMethods = ref(false)
 const isMounting = ref(true)
 
 const selectPaymentMethod = ({ pmid, val }) => {
+	if (!props.isAbleToManagePaymentMethods) return
+
 	selectedPaymentMethods.value[pmid] = val
 }
 
