@@ -43,8 +43,6 @@ class RelationRequest extends Model
 
     protected $guarded = [];
 
-	protected $hidden = ['pivot'];
-
     protected $with = ['from', 'to'];
 
 	protected $appends = ['status'];

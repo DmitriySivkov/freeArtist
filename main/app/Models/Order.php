@@ -31,6 +31,8 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  * @mixin \Eloquent
+ * @property mixed $order_meta
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereOrderMeta($value)
  */
 class Order extends Model
 {
@@ -43,10 +45,9 @@ class Order extends Model
 
     protected $guarded = [];
 
-	protected $hidden = ['pivot'];
-
     protected $casts = [
-    	'order_products' => 'json'
+    	'order_products' => 'json',
+		'order_meta' => 'json',
 	];
 
 	/**

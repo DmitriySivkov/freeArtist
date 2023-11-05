@@ -51,8 +51,6 @@ class Product extends Model
 
 	protected $guarded = [];
 
-	protected $hidden = ['pivot'];
-
 	protected $casts = [
 		'composition' => 'json',
 		'keywords' => 'json',

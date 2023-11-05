@@ -37,8 +37,6 @@ class Team extends LaratrustTeam
 {
     public $guarded = [];
 
-	protected $hidden = ['pivot'];
-
 	protected $with = ['detailed'];
 
 	const TEAMS = [

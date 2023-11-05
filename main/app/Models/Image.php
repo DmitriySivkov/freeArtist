@@ -33,8 +33,6 @@ class Image extends Model
 
 	protected $guarded = [];
 
-	protected $hidden = ['pivot'];
-
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\MorphTo
 	 */

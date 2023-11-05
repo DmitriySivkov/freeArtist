@@ -17,14 +17,6 @@ class UserNewOrderRequest extends FormRequest
         return true;
     }
 
-    public function prepareForValidation()
-	{
-		$this->merge([
-			'user_id' => auth()->id(),
-			'status' => Order::ORDER_STATUS_NEW,
-		]);
-	}
-
 	/**
      * Get the validation rules that apply to the request.
      *
@@ -34,8 +26,7 @@ class UserNewOrderRequest extends FormRequest
     {
         return [
             'user_id' => [
-				'required',
-				'exists:users,id'
+				'nullable'
 			],
 			'producer_id' => [
 				'required',
@@ -52,9 +43,6 @@ class UserNewOrderRequest extends FormRequest
 			'payment_method' => [
 				'required',
 				'exists:payment_methods,id'
-			],
-			'status' => [
-				'required'
 			]
         ];
     }

@@ -33,8 +33,6 @@ class Permission extends LaratrustPermission
 {
     public $guarded = [];
 
-	protected $hidden = ['pivot'];
-
 	/** producer permissions */
 	const PERMISSIONS_PRODUCER = [
 		self::PERMISSION_PRODUCER_REQUESTS,
