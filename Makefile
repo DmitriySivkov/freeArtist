@@ -58,3 +58,9 @@ cache:
 
 front:
 	./quasar.sh
+
+wipe-public:
+	./wipe-public.sh
+
+log:
+	./log.sh
