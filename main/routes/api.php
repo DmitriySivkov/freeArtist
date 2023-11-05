@@ -32,6 +32,7 @@ Route::post('register', [AuthController::class, 'register']);
 
 Route::group(['prefix' => 'auth'], function() {
     Route::post('', [AuthController::class, 'login']);
+
 	Route::post('viaToken', [AuthController::class, 'viaToken'])
 		->middleware(\App\Http\Middleware\AppendAuthHeader::class);
 });

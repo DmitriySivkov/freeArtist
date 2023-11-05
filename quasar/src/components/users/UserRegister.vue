@@ -5,8 +5,8 @@
 	>
 		<q-input
 			filled
-			type="tel"
 			v-model="phone"
+			type="tel"
 			label="Телефон *"
 			mask="8 (###) ###-##-##"
 			fill-mask=""
@@ -36,62 +36,83 @@
 			</template>
 		</q-input>
 
+		<q-input
+			v-model="confirm_password"
+			filled
+			type="password"
+			label="Введите пароль ещё раз *"
+			:lazy-rules="true"
+			:rules="[
+				val => val === password || 'Пароли не совпадают',
+			]"
+		/>
+
+		<div class="row q-mt-none">
+			<q-toggle
+				v-model="accept"
+				label="Я принимаю условия пользования сервисом"
+				size="lg"
+				class="col-xs-12 q-mt-md"
+				color="primary"
+			/>
+		</div>
+
 		<div class="row">
 			<div class="col q-pl-none">
 				<q-btn
-					label="Подтвердить"
+					label="Зарегистрироваться и войти"
 					type="submit"
 					color="primary"
-					class="q-pa-lg full-width"
+					class="q-pa-lg full-width full-height"
 					:loading="isLoading"
 				/>
 			</div>
 		</div>
 	</q-form>
-	<div class="full-width">
-		<div class="q-pa-md text-center text-subtitle1">Ещё нет личного кабинета? -</div>
-	</div>
-	<q-btn
-		label="Зарегистрироваться"
-		to="/register"
-		color="primary"
-		class="q-pa-lg full-width"
-	/>
 </template>
 
 <script setup>
+import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
-import { ref } from "vue"
-import { Plugins } from "@capacitor/core"
 import { useQuasar } from "quasar"
+import { Plugins } from "@capacitor/core"
 import { useUser } from "src/composables/user"
 import { api } from "src/boot/axios"
 
 const $q = useQuasar()
-const $router = useRouter()
-const { Storage } = Plugins
-const { notifySuccess, notifyError } = useNotification()
 const { afterLogin } = useUser()
+const $router = useRouter()
+const { notifySuccess, notifyError } = useNotification()
+const { Storage } = Plugins
 
 const phone = ref(null)
+const accept = ref(false)
 const password = ref("")
+const confirm_password = ref("")
 const is_pwd = ref(true)
 
 const isLoading = ref(false)
 
 const onSubmit = () => {
+	if (!accept.value) {
+		notifyError("Необходимо принять условия пользования сервисом")
+		return
+	}
+
 	isLoading.value = true
 
-	const promise = api.post("auth", {
+	const promise = api.post("register", {
 		phone: phone.value,
 		password: password.value,
+		consent: accept.value,
 		is_mobile: $q.platform.is.capacitor
 	})
 
 	promise.then((response) => {
 		afterLogin(response)
-		$router.push({name: "personal"})
+		notifySuccess("Добро пожаловать")
+		$router.push({name:"personal"})
 	})
 
 	// todo - errors refactor
@@ -103,4 +124,5 @@ const onSubmit = () => {
 
 	promise.finally(() => isLoading.value = false)
 }
+
 </script>

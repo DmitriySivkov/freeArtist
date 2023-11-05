@@ -3,7 +3,10 @@
 		<q-toolbar class="q-pa-sm">
 			<div class="col-xs-12 col-lg-8">
 				<div class="row q-gutter-sm">
-					<div class="col-xs-shrink">
+					<div
+						v-if="!isUserLogged"
+						class="col-shrink"
+					>
 						<q-btn
 							class="q-pa-md"
 							icon="login"
@@ -11,7 +14,7 @@
 							to="/auth"
 						/>
 					</div>
-					<div class="col-xs-shrink">
+					<div class="col-shrink">
 						<q-btn
 							class="q-pa-md"
 							icon="home"
@@ -21,7 +24,7 @@
 					</div>
 					<div
 						v-if="isUserLogged"
-						class="col-xs-shrink"
+						class="col-shrink"
 					>
 						<q-btn
 							class="q-pa-md"
@@ -30,13 +33,23 @@
 							to="/personal"
 						/>
 					</div>
-					<div class="col-xs-shrink">
+					<div class="col-shrink">
 						<q-btn
 							class="q-pa-md"
 							:label="cartCounter"
 							icon-right="shopping_cart"
 							:color="route.name === 'cart' ? 'secondary': 'primary'"
 							to="/cart"
+						/>
+					</div>
+					<div
+						v-if="isUserLogged"
+						class="col text-right"
+					>
+						<q-btn
+							class="q-pa-md"
+							icon="logout"
+							@click="logout"
 						/>
 					</div>
 				</div>
@@ -50,10 +63,15 @@ import { computed } from "vue"
 import { useRouter } from "vue-router"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
+import { api } from "src/boot/axios"
+import { useTeamStore } from "src/stores/team"
+import { useRelationRequestStore } from "src/stores/relation-request"
 
 const $router = useRouter()
 const cartStore = useCartStore()
 const userStore = useUserStore()
+const teamStore = useTeamStore()
+const relationRequestStore = useRelationRequestStore()
 
 const route = $router.currentRoute
 
@@ -63,4 +81,20 @@ const cartCounter = computed(() =>
 	cartStore.data.reduce((carry, item) =>
 		carry + item.products.length, 0)
 )
+
+
+// todo - move logout action to composable
+const logout = () => {
+	api.post("personal/logout")
+
+	userStore.switchPersonal("user")
+
+	userStore.setData({})
+	teamStore.emptyUserTeams()
+	relationRequestStore.emptyUserRequests()
+
+	userStore.setIsLogged(false)
+
+	$router.push({name: "home"})
+}
 </script>

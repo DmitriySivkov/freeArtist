@@ -19,6 +19,7 @@ export const useUser = () => {
 		}
 
 		userStore.setData(response.data.user)
+		userStore.setIsLogged(true)
 
 		roleStore.setUserRoles(response.data.user_roles)
 		permissionStore.setUserPermissions(response.data.user_permissions)

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Requests\UserRegisterRequest;
 use App\Services\AuthService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -11,35 +11,15 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-	const TEST_CODE = 1111;
-
 	public function login(Request $request, AuthService $authService)
     {
-		$phone = $request->input('phone');
-		$code = $request->input('code');
-		$isAuth = $request->input('is_auth');
+		if ($request->has(['phone', 'password']))
+			return $authService->loginWithCredentials(
+				$request->only(['phone', 'password']),
+				$request->get('is_mobile')
+			);
 
-		if (!$phone) {
-			throw new \Exception('Ошибка сервиса авторизации');
-		}
-
-		if (!$code) {
-			return response()->json([
-				'user_exists' => User::wherePhone($phone)->exists()
-			]);
-		}
-
-		if ($code !== self::TEST_CODE) {
-			throw new \Exception('Неверный код');
-		}
-
-		if (!$isAuth) {
-			User::create([
-				'phone' => $phone
-			]);
-		}
-
-		return $authService->loginWithCredentials($phone);
+		return response('Ошибка сервера авторизации', 422);
     }
 
     /**
@@ -63,5 +43,23 @@ class AuthController extends Controller
 	public function viaToken(AuthService $authService)
 	{
 		return $authService->loginWithToken();
+	}
+
+	/**
+	 * @param UserRegisterRequest $request
+	 * @param AuthService $authService
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function register(UserRegisterRequest $request, AuthService $authService)
+	{
+		try {
+			return $authService->register($request->validated(), $request->get('is_mobile'));
+		} catch (\Throwable $e) {
+			return response()->json([
+				"errors" => [
+					"registerService" => [$e->getMessage()]
+				]
+			])->setStatusCode(422);
+		}
 	}
 }

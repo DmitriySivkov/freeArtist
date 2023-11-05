@@ -21,33 +21,31 @@ class AuthService
 	protected Collection $userTeams;
 
 	/**
-	 * @param $phone
+	 * @param $credentials
+	 * @param $isMobile
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function loginWithCredentials($phone)
-    {
-		$isMobile = request()->input('is_mobile');
+	public function loginWithCredentials($credentials, $isMobile)
+	{
+		// todo - move to request 'prepareForValidation'
+		$credentials['phone'] = preg_replace('/[^0-9.]+/', '', $credentials['phone']);
 
-		$this->user = User::wherePhone($phone)->firstOrFail();
+		if (!Auth::attempt($credentials)) {
+			return response()->json([
+				'errors' => ['total' => ['Неверный телефон или пароль']]
+			], 422);
+		}
 
-		$tokenName = $phone . '-' . ($isMobile ? 'mobile' : 'desktop');
+		$this->user = User::where('phone', $credentials['phone'])->firstOrFail();
+
+		$tokenName = $credentials['phone'] . '-' . ($isMobile ? 'mobile' : 'desktop');
 
 		$this->revokeOldTokensOnCurrentDevice($tokenName);
 
-		$tokenRaw = $this->user->createToken($tokenName);
+		$token = $this->user->createToken($tokenName)->plainTextToken;
 
-		$token = $tokenRaw->plainTextToken;
-
-		// double check user
-		$this->user = User::whereHas('tokens',
-			fn($query) => $query->where('id', $tokenRaw->accessToken->id)
-		)->firstOrFail();
-
-		Auth::loginUsingId($this->user->id);
-
-		if ($isMobile) {
+		if ($isMobile)
 			return $this->makeResponse(['token' => $token]);
-		}
 
 		$cookie = cookie(
 			'token', $token, 0, "/", config('session.domain'),
@@ -55,7 +53,7 @@ class AuthService
 		);
 
 		return $this->makeResponse()->withCookie($cookie);
-    }
+	}
 
 	/**
 	 * @return false|JsonResponse
@@ -178,5 +176,34 @@ class AuthService
 	private function revokeOldTokensOnCurrentDevice($token)
 	{
 		$this->user->tokens()->where('name', $token)->delete();
+	}
+
+	/**
+	 * @param array $userData
+	 * @param bool $isMobile
+	 * @return JsonResponse
+	 * @throws \Throwable
+	 */
+	public function register($userData, $isMobile)
+	{
+		DB::beginTransaction();
+		try {
+			$unhashedPassword = $userData['password'];
+			$userData['password'] = Hash::make($unhashedPassword);
+
+			$user = User::create($userData);
+
+			$response = $this->loginWithCredentials([
+				'phone' => $user->phone,
+				'password' => $unhashedPassword
+			], $isMobile);
+
+			DB::commit();
+		} catch (\Throwable) {
+			DB::rollBack();
+			throw new \LogicException("Ошибка сервера регистрации");
+		}
+
+		return $response;
 	}
 }

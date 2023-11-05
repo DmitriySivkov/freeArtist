@@ -3,7 +3,6 @@ import { api } from "src/boot/axios"
 import { useTeamStore } from "src/stores/team"
 import { useRelationRequestStore } from "src/stores/relation-request"
 import { LocalStorage } from "quasar"
-import { usePermissionStore } from "src/stores/permission"
 import { useRoleStore } from "src/stores/role"
 
 export const useUserStore = defineStore("user", {
