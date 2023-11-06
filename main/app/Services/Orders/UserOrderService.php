@@ -8,11 +8,12 @@ use App\Contracts\OrderServiceContract;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Symfony\Component\Mime\Exception\LogicException;
 
 class UserOrderService implements OrderServiceContract
 {
-	private ?User $user;
+	private ?User $user = null;
 
 	/**
 	 * @param User $user
@@ -62,11 +63,13 @@ class UserOrderService implements OrderServiceContract
 	public function processOrder($orderData)
 	{
 		$order = Order::create([
+			'uuid' => (string)Str::uuid(),
 			'user_id' => $this->user ? $this->user->id : null,
 			'producer_id' => $orderData['producer_id'],
 			'payment_method' => $orderData['payment_method'],
 			'status' => Order::ORDER_STATUS_NEW,
-			'order_products' => $orderData['order_products']
+			'order_products' => $orderData['order_products'],
+			'order_meta' => $orderData['meta']
 		]);
 
 		$this->decreaseProducts($orderData['order_products']);

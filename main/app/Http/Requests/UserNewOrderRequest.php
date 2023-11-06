@@ -43,6 +43,9 @@ class UserNewOrderRequest extends FormRequest
 			'payment_method' => [
 				'required',
 				'exists:payment_methods,id'
+			],
+			'meta' => [
+				'nullable'
 			]
         ];
     }

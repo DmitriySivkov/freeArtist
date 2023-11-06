@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('user_id')->nullable();
             $table->unsignedInteger('producer_id');
             $table->json('order_products');
-			$table->json('order_meta');
+			$table->json('order_meta')->nullable();
             $table->integer('payment_method');
             $table->integer('status');
             $table->timestamps();

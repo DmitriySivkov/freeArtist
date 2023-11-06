@@ -226,7 +226,7 @@ import { api } from "src/boot/axios"
 import EmptyCart from "src/components/cart/EmptyCart.vue"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { useNotification } from "src/composables/notification"
-import AuthDialog from "src/components/dialogs/AuthDialog.vue"
+import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import { useUserStore } from "src/stores/user"
 import { Dialog } from "quasar"
@@ -298,19 +298,19 @@ const userStore = useUserStore()
 
 const makeNewOrder = (producerId) => {
 	if (userStore.is_logged) {
-		orderAction(producerId)
+		orderAction({ producerId, orderMeta: null })
 	} else {
 		Dialog.create({
-			component: AuthDialog,
-		}).onOk(() => {
-			orderAction(producerId)
+			component: OrderMetaDialog,
+		}).onOk((orderMeta) => {
+			orderAction({ producerId, orderMeta })
 		})
 	}
 }
 
 const isLoading = ref(false)
 
-function orderAction(producerId) {
+function orderAction({ producerId, orderMeta }) {
 	let order = Object.assign({}, cart.value.find((item) => item.producer_id === producerId))
 
 	order.payment_method = paymentMethods.value[producerId].selectedPaymentMethodId
@@ -322,8 +322,9 @@ function orderAction(producerId) {
 
 	isLoading.value = true
 
-	const promise = api.post("personal/orders", {
-		...order
+	const promise = api.post("orders", {
+		...order,
+		meta: orderMeta
 	})
 
 	promise.then((response) => {
