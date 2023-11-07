@@ -16,10 +16,10 @@ class UserOrderService implements OrderServiceContract
 	private ?User $user = null;
 
 	/**
-	 * @param User $user
+	 * @param User|null $user
 	 * @return void
 	 */
-	public function setUser(User $user)
+	public function setUser(?User $user)
 	{
 		$this->user = $user;
 	}
@@ -29,8 +29,14 @@ class UserOrderService implements OrderServiceContract
 	 */
 	public function getOrderList()
 	{
+		$orderUuid = json_decode(request()->cookie('orders'));
+
 		$query = Order::query()
-			->where('user_id', $this->user->id)
+			->when(
+				$this->user,
+				fn($query) => $query->where('user_id', $this->user->id),
+				fn($query) => $query->whereIn('uuid', $orderUuid ?? []),
+			)
 			->orderBy('id', 'desc')
 			->withCasts([
 				'created_at' => 'datetime:d-m-Y H:i',

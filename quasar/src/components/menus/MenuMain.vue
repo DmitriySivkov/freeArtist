@@ -65,6 +65,19 @@
 				</div>
 			</q-item-section>
 		</q-item>
+
+		<q-item
+			clickable
+			to="/orders"
+			:class="{'bg-primary text-white': route.name === 'user_orders'}"
+		>
+			<q-item-section avatar>
+				<q-icon name="list" />
+			</q-item-section>
+
+			<!-- todo - order count -->
+			<q-item-section>Заказы</q-item-section>
+		</q-item>
 	</q-list>
 </template>
 

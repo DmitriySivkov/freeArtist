@@ -1,13 +1,5 @@
 export default [
 	{
-		name: "personal_user_orders",
-		path: "personal/user/orders",
-		component: () => import("pages/personal/user/Orders.vue"),
-		meta: {
-			route_name: "Список заказов"
-		}
-	},
-	{
 		name: "personal_register_producer",
 		path: "personal/register-producer",
 		component: () => import("pages/personal/RegisterProducer.vue"),

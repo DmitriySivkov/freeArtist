@@ -31,7 +31,7 @@ const { userOwnTeam } = useUserTeam()
 
 const items = [
 	{ title: "Профиль", link: "/personal/user" },
-	{ title: "Заказы", link: "/personal/user/orders" },
+	{ title: "Заказы", link: "/orders" },
 	{
 		title: "Зарегистрировать изготовителя",
 		link: "/personal/register-producer",

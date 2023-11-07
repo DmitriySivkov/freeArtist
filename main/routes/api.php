@@ -69,7 +69,7 @@ Route::group(['prefix' => 'cart'], function() {
 });
 
 Route::group(['prefix' => 'orders'], function () {
-	Route::get('', [OrderController::class, 'index']); // todo
+	Route::get('', [OrderController::class, 'index']);
 	Route::post('', [OrderController::class, 'store']);
 });
 
@@ -139,11 +139,5 @@ Route::group([
 
 	Route::group(['prefix' => 'tags'], function() {
 		Route::get('', [PersonalTagController::class, 'index']);
-	});
-
-	// todo - move to public
-	Route::group(['prefix' => 'orders'], function () {
-		Route::get('', [OrderController::class, 'index']);
-		Route::post('', [OrderController::class, 'store']);
 	});
 });

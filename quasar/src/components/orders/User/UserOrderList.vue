@@ -83,7 +83,7 @@ const orders = ref([])
 const isMounting = ref(true)
 
 onMounted(() => {
-	const promise = api.get("personal/orders")
+	const promise = api.get("orders")
 
 	promise.then((response) => {
 		orders.value = response.data

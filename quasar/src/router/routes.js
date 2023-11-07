@@ -3,6 +3,7 @@ import personal from "src/router/personal"
 import auth from "src/router/auth"
 import producer from "src/router/producer"
 import cart from "src/router/cart"
+import user from "src/router/user"
 
 const routes = [
 	{
@@ -13,7 +14,8 @@ const routes = [
 			...auth,
 			...personal,
 			...producer,
-			...cart
+			...cart,
+			...user
 		]
 	},
 

@@ -65,7 +65,10 @@ class OrderController extends Controller
 			return response(['message' => 'Что-то пошло не так'], 422);
 		}
 
-		return response(['message' => 'Заказ принят'], 200);
+		return response([
+			'message' => 'Заказ принят',
+			'uuid' => $order->uuid
+		], 200);
 	}
 
 

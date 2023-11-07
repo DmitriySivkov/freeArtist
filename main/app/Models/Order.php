@@ -33,6 +33,8 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @mixin \Eloquent
  * @property mixed $order_meta
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereOrderMeta($value)
+ * @property string $uuid
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereUuid($value)
  */
 class Order extends Model
 {

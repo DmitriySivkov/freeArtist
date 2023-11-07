@@ -230,6 +230,7 @@ import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import { useUserStore } from "src/stores/user"
 import { Dialog } from "quasar"
+import { Cookies } from "quasar"
 
 const { notifySuccess, notifyError } = useNotification()
 
@@ -328,6 +329,8 @@ function orderAction({ producerId, orderMeta }) {
 	})
 
 	promise.then((response) => {
+		setOrderCookie(response.data.uuid)
+
 		cartStore.clearCartProducer(producerId)
 
 		notifySuccess(response.data.message)
@@ -398,5 +401,30 @@ function init() {
 
 		isCartChecked.value = true
 	})
+}
+
+function setOrderCookie(orderUuid) {
+	const cookieParams = {
+		domain: process.env.SESSION_DOMAIN,
+		sameSite: "lax",
+		path: "/",
+		expires: 365
+	}
+
+	if (Cookies.has("orders")) {
+		const cookieOrders = Cookies.get("orders")
+
+		Cookies.set(
+			"orders",
+			JSON.stringify([orderUuid, ...cookieOrders]),
+			cookieParams
+		)
+	} else {
+		Cookies.set(
+			"orders",
+			JSON.stringify([orderUuid]),
+			cookieParams
+		)
+	}
 }
 </script>

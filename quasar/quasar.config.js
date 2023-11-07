@@ -55,7 +55,8 @@ module.exports = configure(function (ctx) {
 				// on mobile dev - change address to available inside network
 				BACKEND_SERVER: ctx.dev ? (ctx.mode.spa ? process.env.BACKEND_SERVER : (ctx.mode.capacitor ? "https://192.168.1.2" : null)) :
 					"https://e217-95-106-191-13.ngrok.io",
-				BACKEND_HOST: process.env.BACKEND_HOST
+				BACKEND_HOST: process.env.BACKEND_HOST,
+				SESSION_DOMAIN: process.env.SESSION_DOMAIN
 			},
 			// rawDefine: {}
 			// ignorePublicFolder: true,
