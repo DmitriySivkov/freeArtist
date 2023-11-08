@@ -6,7 +6,7 @@ export const ORDER_STATUSES = {
 }
 
 export const ORDER_STATUS_NAMES = {
-	[ORDER_STATUSES.NEW]: "Новый",
+	[ORDER_STATUSES.NEW]: "В обработке",
 	[ORDER_STATUSES.PROCESS]: "Готовим",
 	[ORDER_STATUSES.CANCEL]: "Не можем выполнить :(",
 	[ORDER_STATUSES.DONE]: "Выполнено",

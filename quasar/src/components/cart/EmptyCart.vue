@@ -328,7 +328,7 @@
 				></path>
 			</svg>
 			<div class="text-center text-h5 q-mt-xl">
-				В Вашей корзине пока ничего нет
+				В вашей корзине пока ничего нет
 			</div>
 		</div>
 	</div>
