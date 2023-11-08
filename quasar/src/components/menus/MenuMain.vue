@@ -72,7 +72,7 @@
 			:class="{'bg-primary text-white': route.name === 'user_orders'}"
 		>
 			<q-item-section avatar>
-				<q-icon name="list" />
+				<q-icon name="shopping_cart_checkout" />
 			</q-item-section>
 
 			<!-- todo - order count -->
