@@ -43,6 +43,17 @@
 						/>
 					</div>
 					<div
+						v-if="!isUserLogged"
+						class="col-shrink"
+					>
+						<q-btn
+							class="q-pa-md"
+							icon="shopping_cart_checkout"
+							:color="route.name === 'user_orders' ? 'secondary': 'primary'"
+							to="/orders"
+						/>
+					</div>
+					<div
 						v-if="isUserLogged"
 						class="col text-right"
 					>

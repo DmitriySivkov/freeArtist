@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Contracts\TeamServiceContract;
 use App\Contracts\UserServiceContract;
+use App\Models\Order;
 use App\Models\Producer;
 use App\Models\Team;
 use App\Models\User;
@@ -19,6 +20,15 @@ class AuthService
 {
 	protected ?User $user;
 	protected Collection $userTeams;
+
+	/**
+	 * @param User|null $user
+	 * @return void
+	 */
+	public function setUser(?User $user)
+	{
+		$this->user = $user;
+	}
 
 	/**
 	 * @param $credentials
@@ -36,17 +46,24 @@ class AuthService
 			], 422);
 		}
 
-		$this->user = User::where('phone', $credentials['phone'])->firstOrFail();
+		/** @var User $user */
+		$user = auth()->user();
 
-		$tokenName = $credentials['phone'] . '-' . ($isMobile ? 'mobile' : 'desktop');
+		$this->setUser($user);
+
+		$this->onCredentialsAuthAction();
+
+		$tokenName = $this->user->phone . '-' . ($isMobile ? 'mobile' : 'desktop');
 
 		$this->revokeOldTokensOnCurrentDevice($tokenName);
 
 		$token = $this->user->createToken($tokenName)->plainTextToken;
 
-		if ($isMobile)
+		if ($isMobile) {
 			return $this->makeResponse(['token' => $token]);
+		}
 
+		// todo - move to cookie helper (service)
 		$cookie = cookie(
 			'token', $token, 0, "/", config('session.domain'),
 			true, true, false, 'lax'
@@ -60,7 +77,12 @@ class AuthService
 	 */
 	public function loginWithToken()
     {
-		if (!$this->user = auth('sanctum')->user()) {
+		/** @var User|null $user */
+		$user = auth('sanctum')->user();
+
+		$this->setUser($user);
+
+		if (!$this->user) {
 			return false;
 		}
 
@@ -205,5 +227,18 @@ class AuthService
 		}
 
 		return $response;
+	}
+
+	private function onCredentialsAuthAction()
+	{
+		$orderUuid = json_decode(request()->cookie('orders'));
+
+		if ($orderUuid) {
+			Order::whereIn('uuid', $orderUuid)
+				->whereNull('user_id')
+				->update([
+					'user_id' => $this->user->id
+				]);
+		}
 	}
 }
