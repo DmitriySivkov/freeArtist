@@ -45,96 +45,17 @@ class RelationRequest extends Model
 
     protected $with = ['from', 'to'];
 
-	protected $appends = ['status'];
-
-	const STATUS_PENDING = [
-		'id' => 1,
-		'label' => 'На рассмотрении'
-	];
-	const STATUS_ACCEPTED = [
-		'id' => 2,
-		'label' => 'Принято'
-	];
-	const STATUS_REJECTED_BY_RECIPIENT = [
-		'id' => 3,
-		'label' => 'Отказано получателем'
-	];
-	const STATUS_REJECTED_BY_CONTRIBUTOR = [
-		'id' => 4,
-		'label' => 'Отменено заявителем'
-	];
+	const STATUS_PENDING = 1;
+	const STATUS_ACCEPTED = 2;
+	const STATUS_REJECTED_BY_RECIPIENT = 3;
+	const STATUS_CANCELED_BY_CONTRIBUTOR = 4;
 
 	const STATUSES = [
-		self::STATUS_PENDING,
-		self::STATUS_ACCEPTED,
-		self::STATUS_REJECTED_BY_RECIPIENT,
-		self::STATUS_REJECTED_BY_CONTRIBUTOR
+		self::STATUS_PENDING => 'На рассмотрении',
+		self::STATUS_ACCEPTED => 'Принято',
+		self::STATUS_REJECTED_BY_RECIPIENT => 'Отказано получателем',
+		self::STATUS_CANCELED_BY_CONTRIBUTOR => 'Отмена'
 	];
-
-	/**
-	 * Get the channels that model events should broadcast on.
-	 *
-	 * @param  string  $event
-	 * @return \Illuminate\Broadcasting\Channel|array
-	 */
-	public function broadcastOn($event)
-	{
-		$broadcastOn = [];
-		if (is_a($this->from, User::class) || is_a($this->to, User::class))
-			$broadcastOn[] = new PrivateChannel(
-				'relation-requests.user.' . ( is_a($this->from, User::class) ? $this->from->id : $this->to->id )
-			);
-
-		if (!is_a($this->to, User::class))
-			$broadcastOn[] = new PrivateChannel(
-				'relation-requests.team.' . $this->to->team->id
-			);
-
-		return $broadcastOn;
-	}
-
-	/**
-	 * Get the data to broadcast for the model.
-	 *
-	 * @param  string  $event
-	 * @return array
-	 */
-	public function broadcastWith($event)
-	{
-		if (is_a($this->from, User::class) && !is_a($this->to, User::class))
-			return [
-				'model' => $this,
-				'role' => Role::where('name', Role::ROLE_PRODUCER['name'])->first(),
-				'team' => $this->to->team
-			];
-
-		return ['model' => $this];
-	}
-
-	/**
-	 * Get the queue that should be used to broadcast model events.
-	 *
-	 * @return string|null
-	 */
-	public function broadcastQueue()
-	{
-		return config('queue.broadcast');
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Casts\Attribute
-	 */
-	protected function status(): Attribute
-	{
-		return Attribute::make(
-			get: fn ($statusId) => collect([
-				'id' => $statusId,
-				'label' => collect(self::STATUSES)
-					->filter(fn($status) => $status['id'] === $statusId)
-					->first()['label']
-			]),
-        );
-    }
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\MorphTo

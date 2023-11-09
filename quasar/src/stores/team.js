@@ -1,6 +1,5 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
-import { useRelationRequestStore } from "src/stores/relation-request"
 
 export const useTeamStore = defineStore("team", {
 	state: () => ({
@@ -77,28 +76,6 @@ export const useTeamStore = defineStore("team", {
 				team_id,
 				user_id,
 				permissions:response.data
-			})
-		},
-
-		async acceptRequest({ team_id, request_id }) {
-			const response = await api.post("personal/teams/" + team_id + "/relationRequests/" + request_id + "/accept")
-
-			const relation_request_store = useRelationRequestStore()
-
-			relation_request_store.setUserTeamRelationRequestStatus({
-				request_id: response.data.id,
-				status_id: response.data.status.id
-			})
-		},
-
-		async rejectRequest({ team_id, request_id }) {
-			const response = await api.post("personal/teams/" + team_id + "/relationRequests/" + request_id + "/reject")
-
-			const relation_request_store = useRelationRequestStore()
-
-			relation_request_store.setUserTeamRelationRequestStatus({
-				request_id: response.data.id,
-				status_id: response.data.status.id
 			})
 		},
 

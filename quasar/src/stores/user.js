@@ -1,7 +1,6 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
 import { useTeamStore } from "src/stores/team"
-import { useRelationRequestStore } from "src/stores/relation-request"
 import { LocalStorage } from "quasar"
 import { useRoleStore } from "src/stores/role"
 
@@ -29,27 +28,6 @@ export const useUserStore = defineStore("user", {
 		switchPersonal(personal_tab) {
 			this.personal_tab = personal_tab
 			LocalStorage.set("personal_tab", personal_tab)
-		},
-
-		async createRequest({team, message}) {
-			return api.post(
-				"personal/users/relationRequests/" + team.value + "/create",
-				{ message }
-			)
-		},
-
-		async setRelationRequestStatus({ request_id, status_id }) {
-			const relation_request_store = useRelationRequestStore()
-
-			const response = await api.post(
-				"personal/users/relationRequests/" + request_id + "/setStatus",
-				{ status_id }
-			)
-
-			relation_request_store.setUserRelationRequestStatus({
-				request_id: response.data.id,
-				status_id: response.data.status.id
-			})
 		},
 
 		setLocation(location) {

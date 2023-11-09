@@ -76,13 +76,12 @@ import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
 import { api } from "src/boot/axios"
 import { useTeamStore } from "src/stores/team"
-import { useRelationRequestStore } from "src/stores/relation-request"
+import { useUser } from "src/composables/user"
 
 const $router = useRouter()
 const cartStore = useCartStore()
 const userStore = useUserStore()
 const teamStore = useTeamStore()
-const relationRequestStore = useRelationRequestStore()
 
 const route = $router.currentRoute
 
@@ -93,18 +92,12 @@ const cartCounter = computed(() =>
 		carry + item.products.length, 0)
 )
 
+const { afterLogout } = useUser()
 
-// todo - move logout action to composable
 const logout = () => {
 	api.post("personal/logout")
 
-	userStore.switchPersonal("user")
-
-	userStore.setData({})
-	teamStore.emptyUserTeams()
-	relationRequestStore.emptyUserRequests()
-
-	userStore.setIsLogged(false)
+	afterLogout()
 
 	$router.push({name: "home"})
 }

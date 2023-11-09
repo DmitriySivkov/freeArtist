@@ -18,18 +18,6 @@ Broadcast::channel('teams.{teamId}', function (\App\Models\User $user, $teamId) 
 	return $team->users->pluck('id')->contains($user->id);
 });
 
-Broadcast::channel('relation-requests.user.{userId}', function (\App\Models\User $user, $userId) {
-	return $user->id === (int)$userId;
-});
-
-Broadcast::channel('relation-requests.team.{teamId}', function (\App\Models\User $user, $teamId) {
-	$team = \App\Models\Team::find($teamId);
-	return $user->id === $team->user_id ||
-		$user->hasPermission([
-			\App\Models\Permission::PERMISSION_PRODUCER_REQUESTS['name'] // todo - add other types later
-		], $team->name);
-});
-
 Broadcast::channel('permissions.{teamId}', function (\App\Models\User $user, $teamId) {
 	$team = \App\Models\Team::find($teamId);
 	return $team->users->pluck('id')->contains($user->id);

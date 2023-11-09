@@ -10,7 +10,9 @@ use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TeamRelationRequestController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserRelationRequestController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -91,12 +93,6 @@ Route::group([
 				Route::get('', [TeamController::class, 'getUsers']);
 				Route::post('{user}/permissions/sync', [TeamController::class, 'syncUserPermissions']);
 			});
-
-			Route::group(['prefix' => 'relationRequests'], function() {
-				Route::get('incoming', [TeamController::class, 'getIncomingRequests']);
-				Route::post('{relationRequest}/accept', [TeamController::class, 'acceptRequest']);
-				Route::post('{relationRequest}/reject', [TeamController::class, 'rejectRequest']);
-			});
 		});
 	});
 
@@ -130,14 +126,22 @@ Route::group([
 
 	Route::group(['prefix' => 'users'], function() {
 		Route::get('nonRelatedTeams', [UserController::class, 'getNonRelatedTeams']);
-
-		Route::group(['prefix' => 'relationRequests'], function() {
-			Route::post('{team}/create', [UserController::class, 'createRequest']);
-			Route::post('{relationRequest}/setStatus', [UserController::class, 'setRelationRequestStatus']);
-		});
 	});
 
 	Route::group(['prefix' => 'tags'], function() {
 		Route::get('', [PersonalTagController::class, 'index']);
+	});
+
+	Route::group(['prefix' => 'relationRequests'], function() {
+		Route::group(['prefix' => 'users'], function() {
+			Route::post('', [UserRelationRequestController::class, 'store']);
+			Route::put('{relationRequest}', [UserRelationRequestController::class, 'update']);
+		});
+
+		Route::group(['prefix' => 'teams'], function() {
+			Route::get('{team}', [TeamRelationRequestController::class, 'index']);
+			Route::post('{team}/accept/{relationRequest}', [TeamRelationRequestController::class, 'accept']);
+			Route::post('{team}/reject/{relationRequest}', [TeamRelationRequestController::class, 'reject']);
+		});
 	});
 });

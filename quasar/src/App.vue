@@ -23,15 +23,13 @@ export default {
 
 			if (userStore.data.id) {
 				private_channels.connectTeams()
-				private_channels.connectRelationRequestUser()
-				private_channels.connectRelationRequestTeam()
 				private_channels.connectPermissions()
 			}
 		}
 
 		const setStatusBar = () => {
 			StatusBar.setBackgroundColor({
-				color: "#1952a6"
+				color: "#fe724c"
 			})
 		}
 

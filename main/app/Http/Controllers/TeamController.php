@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RelationRequest;
 use App\Models\Team;
 use App\Models\User;
 use App\Services\TeamService;
@@ -61,66 +60,6 @@ class TeamController extends Controller
 		try {
 			return $teamService->syncUserPermissions($request->all(), $team, $user);
 		} catch (\Throwable $e) {
-			return response()->json($e->getMessage())
-				->setStatusCode(422);
-		}
-	}
-
-	/**
-	 * @param Team $team
-	 * @param TeamService $teamService
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	public function getIncomingRequests(Team $team, TeamService $teamService)
-	{
-		$teamService->setTeam($team);
-
-		return response()->json(
-			$teamService->getTeamIncomingRequests()
-		);
-	}
-
-	/**
-	 * @param Team $team
-	 * @param RelationRequest $relationRequest
-	 * @param TeamService $teamService
-	 * @return RelationRequest|\Illuminate\Http\JsonResponse
-	 * @throws \Throwable
-	 */
-	public function acceptRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
-	{
-		\DB::beginTransaction();
-		try {
-			$teamService->setTeam($team);
-			$request = $teamService->acceptRequest($relationRequest);
-
-			\DB::commit();
-			return $request;
-		} catch (\Throwable $e) {
-			\DB::rollBack();
-			return response()->json($e->getMessage())
-				->setStatusCode(422);
-		}
-	}
-
-	/**
-	 * @param Team $team
-	 * @param RelationRequest $relationRequest
-	 * @param TeamService $teamService
-	 * @return RelationRequest|\Illuminate\Http\JsonResponse
-	 * @throws \Throwable
-	 */
-	public function rejectRequest(Team $team, RelationRequest $relationRequest, TeamService $teamService)
-	{
-		\DB::beginTransaction();
-		try {
-			$teamService->setTeam($team);
-			$request = $teamService->rejectRequest($relationRequest);
-
-			\DB::commit();
-			return $request;
-		} catch (\Throwable $e) {
-			\DB::rollBack();
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
 		}

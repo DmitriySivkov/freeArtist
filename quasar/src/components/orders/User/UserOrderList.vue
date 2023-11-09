@@ -73,7 +73,7 @@
 			</div>
 			<div
 				v-else
-				class="col-xs-12 col-md-9 col-lg-7 q-py"
+				class="col-xs-12 col-sm-8 col-md-7 col-lg-6 col-xl-5"
 			>
 				<UserPersonalOrdersSkeleton />
 			</div>

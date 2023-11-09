@@ -8,14 +8,6 @@ export default [
 		}
 	},
 	{
-		name: "personal_user_outgoing_request",
-		path: "personal/outgoing-request",
-		component: () => import("pages/personal/OutgoingRequest.vue"),
-		meta: {
-			route_name: "Новая заявка"
-		}
-	},
-	{
 		name: "personal_user_requests",
 		path: "personal/user/requests",
 		component: () => import("pages/personal/user/Requests.vue"),
