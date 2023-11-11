@@ -134,8 +134,10 @@ Route::group([
 
 	Route::group(['prefix' => 'relationRequests'], function() {
 		Route::group(['prefix' => 'users'], function() {
+			Route::get('', [UserRelationRequestController::class, 'index']);
 			Route::post('', [UserRelationRequestController::class, 'store']);
 			Route::put('{relationRequest}', [UserRelationRequestController::class, 'update']);
+			Route::delete('{relationRequest}', [UserRelationRequestController::class, 'delete']);
 		});
 
 		Route::group(['prefix' => 'teams'], function() {

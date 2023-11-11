@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\Team;
 use App\Models\User;
@@ -10,6 +9,17 @@ use Illuminate\Http\Request;
 
 class UserRelationRequestController extends Controller
 {
+	public function index()
+	{
+		/** @var User $user */
+		$user = auth()->user();
+
+		return $user->outgoingRelationRequests()
+			->with(['to.team'])
+			->orderBy('created_at', 'desc')
+			->get();
+	}
+
     public function store(Request $request)
 	{
 		$teamId = $request->input('team_id');
@@ -50,13 +60,7 @@ class UserRelationRequestController extends Controller
 			], 422);
 		}
 
-		// todo - check if such response is necessary
-		return response()->json(
-			$outgoingRequest->load(['from'])
-				->loadMorph('to', [
-					Producer::class => ['team']
-				])
-		);
+		return $outgoingRequest->load(['to.team']);
 	}
 
 	public function update(Request $request, RelationRequest $relationRequest)
@@ -69,5 +73,17 @@ class UserRelationRequestController extends Controller
 		// todo check if auth user === relation request creator
 
 		$relationRequest->update($request->all());
+	}
+
+	public function delete(RelationRequest $relationRequest)
+	{
+		// todo - make a validator
+
+		/** @var User $user */
+		$user = auth()->user();
+
+		// todo check if auth user === relation request creator
+
+		$relationRequest->delete();
 	}
 }
