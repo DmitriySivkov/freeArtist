@@ -30,33 +30,15 @@ class Role extends LaratrustRole
 {
     public $guarded = [];
 
+	const PRODUCER = 1;
+
+	const ADVERTISER = 2;
+
+	const GUARANTOR = 3;
+
 	const ROLES = [
-		self::ROLE_PRODUCER,
-		self::ROLE_ADVERTISER,
-		self::ROLE_GUARANTOR,
+		self::PRODUCER 		=> 'producer',
+		self::ADVERTISER 	=> 'advertiser',
+		self::GUARANTOR 	=> 'guarantor'
 	];
-
-	const ROLE_PRODUCER = [
-		'id' => 1,
-		'name' => 'producer',
-		'display_name' => 'Изготовитель',
-		'description' => ''
-	];
-
-	const ROLE_ADVERTISER = [
-		'id' => 2,
-		'name' => 'advertiser',
-		'display_name' => 'Рекламодатель',
-		'description' => ''
-	];
-
-	const ROLE_GUARANTOR = [
-		'id' => 3,
-		'name' => 'guarantor',
-		'display_name' => 'Гарант',
-		'description' => ''
-	];
-
-
-
 }

@@ -159,7 +159,7 @@ class ProducerService implements ProducerServiceContract
 			]);
 
 			$user->roles()->attach(
-				Role::ROLE_PRODUCER['id'],
+				Role::PRODUCER,
 				['user_type' => User::class, 'team_id' => $team->id]
 			);
 
@@ -183,7 +183,7 @@ class ProducerService implements ProducerServiceContract
 					'teams.id as team_id'
 				])
 				->leftJoin('teams', 'role_user.team_id', '=', 'teams.id')
-				->where('role_id', Role::ROLE_PRODUCER['id'])
+				->where('role_id', Role::PRODUCER)
 				->where('team_id', $team->id)
 				->first()
 		]);

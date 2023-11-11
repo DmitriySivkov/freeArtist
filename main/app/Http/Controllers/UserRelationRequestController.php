@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RelationRequest;
+use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,12 +25,16 @@ class UserRelationRequestController extends Controller
 	{
 		$teamId = $request->input('team_id');
 
-		$team = Team::findOrFail($teamId);
-
-		/** @var User $user */
-		$user = auth()->user();
-
 		try {
+			$team = Team::findOrFail($teamId);
+
+			/** @var User $user */
+			$user = auth()->user();
+
+			if ($user->hasRole(Role::PRODUCER, $team->id)) {
+				throw new \LogicException('Вы уже состоите в этой команде');
+			}
+
 			/** @var RelationRequest|null $relationRequest */
 			$relationRequest = $user->outgoingRelationRequests()
 				->where('to_id', $team->detailed_id)

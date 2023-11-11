@@ -154,7 +154,6 @@ const cancelRequest = ({ request }) => {
 				notifySuccess("Успешно")
 			})
 
-			//todo catch
 			promise.catch((error) => {
 				notifyError(error.response.data.message)
 			})

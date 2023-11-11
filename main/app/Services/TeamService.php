@@ -139,10 +139,10 @@ class TeamService implements TeamServiceContract
 
 			\DB::beginTransaction();
 			try {
-				$userToAttach->attachRole(Role::ROLE_PRODUCER['name'], $this->team);
+				$userToAttach->attachRole(Role::ROLES[Role::PRODUCER], $this->team);
 
 				$relationRequest->update([
-					'status' => RelationRequest::STATUS_ACCEPTED['id']
+					'status' => RelationRequest::STATUS_ACCEPTED
 				]);
 
 				\DB::commit();

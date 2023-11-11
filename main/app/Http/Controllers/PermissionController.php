@@ -14,7 +14,7 @@ class PermissionController extends Controller
 	public function index()
     {
     	return response()->json([
-			'producer' => Permission::where('role_id', Role::ROLE_PRODUCER['id'])
+			'producer' => Permission::where('role_id', Role::PRODUCER)
 				->get(),
 			'advertiser' => [],
 			'guarantor' => []
