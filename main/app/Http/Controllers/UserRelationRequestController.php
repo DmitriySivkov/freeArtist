@@ -78,12 +78,26 @@ class UserRelationRequestController extends Controller
 	public function delete(RelationRequest $relationRequest)
 	{
 		// todo - make a validator
+		try {
+			/** @var User $user */
+			$user = auth()->user();
 
-		/** @var User $user */
-		$user = auth()->user();
+			// todo check if auth user === relation request creator
 
-		// todo check if auth user === relation request creator
+			if (
+				in_array($relationRequest->status, [
+					RelationRequest::STATUS_ACCEPTED,
+					RelationRequest::STATUS_REJECTED_BY_RECIPIENT
+				])
+			) {
+				throw new \LogicException('Запрос уже обработан');
+			}
 
-		$relationRequest->delete();
+			return $relationRequest->delete();
+		} catch (\Throwable $e) {
+			return response([
+				'message' => $e->getMessage()
+			], 422);
+		}
 	}
 }

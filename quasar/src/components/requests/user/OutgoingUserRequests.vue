@@ -51,6 +51,12 @@
 			<div class="row q-mb-lg">
 				<div class="col text-right">
 					<q-btn
+						v-if="
+							![
+								RELATION_REQUEST_STATUSES.REJECTED_BY_RECIPIENT,
+								RELATION_REQUEST_STATUSES.ACCEPTED
+							].includes(request.status)
+						"
 						label="Отменить"
 						class="bg-primary text-white q-pa-sm"
 						:loading="requestLoading === request.id"
@@ -89,7 +95,7 @@ import { ref, onMounted } from "vue"
 import { useNotification } from "src/composables/notification"
 import { Dialog } from "quasar"
 import { api } from "src/boot/axios"
-import { RELATION_REQUEST_STATUS_NAMES } from "src/const/relationRequestStatuses"
+import { RELATION_REQUEST_STATUSES, RELATION_REQUEST_STATUS_NAMES } from "src/const/relationRequestStatuses"
 import UserCreateRelationRequestDialog from "src/components/dialogs/UserCreateRelationRequestDialog.vue"
 import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
 
@@ -149,8 +155,8 @@ const cancelRequest = ({ request }) => {
 			})
 
 			//todo catch
-			promise.catch(() => {
-				notifySuccess("Что-то пошло не так")
+			promise.catch((error) => {
+				notifyError(error.response.data.message)
 			})
 
 			promise.finally(() => requestLoading.value = null)
