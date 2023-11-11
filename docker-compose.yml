@@ -112,8 +112,10 @@ services:
 #        ipv4_address: 172.21.1.253
 #
   rabbitmq:
+    build:
+      context: ./docker/rabbitmq/
+      dockerfile: ./rabbitmq.dockerfile
     container_name: rabbitmq
-    image: rabbitmq:3.11.2-management
     environment:
       - RABBITMQ_DEFAULT_USER=root
       - RABBITMQ_DEFAULT_PASS=root
