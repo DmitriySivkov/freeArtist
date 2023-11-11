@@ -48,7 +48,7 @@
 			:key="request.id"
 			class="col-auto q-mb-xs q-pa-md"
 		>
-			<div class="row q-mb-lg">
+			<div class="row">
 				<div class="col text-right">
 					<q-btn
 						v-if="
@@ -64,6 +64,9 @@
 					/>
 				</div>
 			</div>
+
+			<q-separator class="q-my-md"/>
+
 			<div class="row justify-evenly">
 				<div class="col-xs-12 col-sm-11">
 					<div class="row q-py-sm">
@@ -91,6 +94,7 @@
 </template>
 
 <script setup>
+// todo - pagination / filter
 import { ref, onMounted } from "vue"
 import { useNotification } from "src/composables/notification"
 import { Dialog } from "quasar"

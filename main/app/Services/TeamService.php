@@ -94,8 +94,10 @@ class TeamService implements TeamServiceContract
 			/** @var ProducerService $producerService */
 			$producerService = app(ProducerServiceContract::class);
 			$producerService->setProducer($this->team->detailed);
+
 			return $producerService->getIncomingRequests();
 		}
+
 		return [];
 	}
 
@@ -124,21 +126,21 @@ class TeamService implements TeamServiceContract
 		)
 			throw new \LogicException('Доступ закрыт');
 
-		/** @var array $relationRequestStatus */
-		$relationRequestStatus = $relationRequest->status;
-
-		if ($relationRequestStatus['id'] !== RelationRequest::STATUS_PENDING['id'])
+		if ($relationRequest->status !== RelationRequest::STATUS_PENDING) {
 			throw new \LogicException('Заявка уже обработана');
+		}
 
 		if ($this->team->detailed_type === Producer::class) {
 			/** @var User $userToAttach */
 			$userToAttach = $relationRequest->from;
 
-			if (!$userToAttach)
+			if (!$userToAttach) {
 				throw new \LogicException('Пользователь заблокирован или удалён');
+			}
 
-			\DB::beginTransaction();
 			try {
+				\DB::beginTransaction();
+
 				$userToAttach->attachRole(Role::ROLES[Role::PRODUCER], $this->team);
 
 				$relationRequest->update([
@@ -152,6 +154,7 @@ class TeamService implements TeamServiceContract
 			}
 		}
 
+		// todo - check if refresh() is needed
 		return $relationRequest->refresh();
 	}
 
@@ -166,19 +169,18 @@ class TeamService implements TeamServiceContract
 				Permission::PERMISSION_PRODUCER_REQUESTS['name'],
 				$this->team->name
 			)
-		)
+		) {
 			throw new \LogicException('Доступ закрыт');
+		}
 
-		/** @var array $relationRequestStatus */
-		$relationRequestStatus = $relationRequest->status;
-
-		if ($relationRequestStatus['id'] !== RelationRequest::STATUS_PENDING['id'])
+		if ($relationRequest->status !== RelationRequest::STATUS_PENDING)
 			throw new \LogicException('Заявка уже обработана');
 
 		$relationRequest->update([
-			'status' => RelationRequest::STATUS_REJECTED_BY_RECIPIENT['id']
+			'status' => RelationRequest::STATUS_REJECTED_BY_RECIPIENT
 		]);
 
+		// todo - check if refresh() is needed
 		return $relationRequest->refresh();
 	}
 }

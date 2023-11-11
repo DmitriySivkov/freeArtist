@@ -194,8 +194,9 @@ class ProducerService implements ProducerServiceContract
 	 */
 	public function getIncomingRequests()
 	{
-		if (!$this->producer)
+		if (!$this->producer) {
 			throw new \Exception('Изготовитель не задан');
+		}
 
 		/** @var User $user */
 		$user = auth()->user();

@@ -1,131 +1,197 @@
 <template>
-	<q-table
-		grid
-		:rows="teamIncomingRequests(team)"
-		:row-key="row => row.id"
-		hide-header
-		hide-pagination
+	<div
+		class="column no-wrap"
+		style="min-height:100vh"
 	>
-		<template v-slot:top>
-			<div class="col-xs-12 text-center">
-				<span class="text-h6">Входящие заявки на вступление в команду <br/>"{{ team.display_name }}" </span>
+		<q-card
+			flat
+			square
+			class="col-2 q-mb-xs"
+		>
+			<div class="row q-pa-md flex-center">
+				<div class="col">
+					<span class="text-body1">
+						Входящие
+					</span>
+				</div>
 			</div>
-		</template>
-		<template v-slot:item="props">
-			<q-card
-				class="col-xs-12"
-				square
-			>
-				<q-card-section class="row items-center">
-					<div class="col-xs-12 col-md-8">
-						Статус: {{ props.row.status.label }}<br/>
-						Отправитель: {{ props.row.from.name ?? props.row.from.phone }}
-					</div>
-					<div
-						v-if="props.row.status.id !== relation_request_store.statuses.rejected_by_contributor.id"
-						class="col-xs-12 col-md-4"
-					>
-						<div class="row q-col-gutter-sm">
-							<div class="col-xs-12">
-								<q-btn
-									label="Принять"
-									size="md"
-									color="secondary"
-									class="full-width"
-									@click="acceptRequest(props.row.id)"
-								/>
-							</div>
-							<div class="col-xs-12">
-								<q-btn
-									label="Отказать"
-									size="md"
-									color="warning"
-									class="full-width"
-									@click="rejectRequest(props.row.id)"
-								/>
-							</div>
-						</div>
-					</div>
+		</q-card>
 
-				</q-card-section>
-				<q-separator />
-				<q-card-section>
-					<div class="row items-center text-center">
-						<div class="col-xs-12">
-							<q-btn
-								size="md"
-								color="primary"
-								round
-								dense
-								@click="props.expand = !props.expand"
-								:icon="props.expand ? 'expand_less' : 'expand_more'"
-							/>
-						</div>
-					</div>
-				</q-card-section>
-				<q-card-section
-					v-show="props.expand"
-					:props="props"
-				>
-					<div class="text-left">{{ props.row.message ?? "Сообщение отсутствует" }}</div>
-				</q-card-section>
-			</q-card>
-		</template>
-		<template v-slot:no-data>
-			<q-card
-				square
-				class="col-xs-12"
-			>
-				<q-card-section class="text-center">
-					Заявки отсутствуют
-				</q-card-section>
-			</q-card>
-		</template>
-	</q-table>
+		<q-card
+			v-if="isCreatingRequest"
+			class="col-auto q-mb-xs q-pa-md"
+		>
+			<div class="row q-py-sm">
+				<div class="col">Статус</div>
+			</div>
+			<div class="row q-py-sm">
+				<div class="col">Получатель</div>
+			</div>
+			<q-inner-loading showing>
+				<q-spinner-gears
+					size="lg"
+					color="primary"
+				/>
+			</q-inner-loading>
+		</q-card>
 
+		<q-card
+			v-for="request in requests"
+			:key="request.id"
+			class="col-auto q-mb-xs q-pa-md"
+		>
+			<div class="row justify-end">
+				<div class="col-xs-4 col-md-3 q-mr-sm">
+					<q-btn
+						v-if="
+							![
+								RELATION_REQUEST_STATUSES.REJECTED_BY_RECIPIENT,
+								RELATION_REQUEST_STATUSES.ACCEPTED
+							].includes(request.status)
+						"
+						label="Принять"
+						class="bg-primary text-white q-pa-sm full-width"
+						:loading="requestLoading === request.id"
+						@click="acceptRequest({ request })"
+					/>
+				</div>
+				<div class="col-xs-4 col-md-3">
+					<q-btn
+						v-if="
+							![
+								RELATION_REQUEST_STATUSES.REJECTED_BY_RECIPIENT,
+								RELATION_REQUEST_STATUSES.ACCEPTED
+							].includes(request.status)
+						"
+						label="Отклонить"
+						class="bg-warning text-white q-pa-sm full-width"
+						:loading="requestLoading === request.id"
+						@click="rejectRequest({ request })"
+					/>
+				</div>
+			</div>
+
+			<q-separator class="q-my-md"/>
+
+			<div class="row justify-evenly">
+				<div class="col-xs-12 col-sm-11">
+					<div class="row q-py-sm">
+						<div class="col">Отправитель</div>
+						<div class="col text-right">{{ request.from.name ?? request.from.phone }}</div>
+					</div>
+					<div class="row q-py-sm">
+						<div class="col">Статус</div>
+						<div class="col text-right">{{ RELATION_REQUEST_STATUS_NAMES[request.status] }}</div>
+					</div>
+					<div class="row q-py-sm text-center">
+						<div class="col-12">Сообщение</div>
+						<div class="col-12">{{ request.message }}</div>
+					</div>
+				</div>
+			</div>
+			<q-inner-loading :showing="requestLoading === request.id">
+				<q-spinner-gears
+					size="lg"
+					color="primary"
+				/>
+			</q-inner-loading>
+		</q-card>
+	</div>
 </template>
 
-<script>
-import { useRelationRequest } from "src/composables/relationRequest"
+<script setup>
+// todo - pagination / filter
+import { ref, onMounted } from "vue"
 import { useNotification } from "src/composables/notification"
-import { useRelationRequestStore } from "src/stores/relation-request"
-export default {
-	props: {
-		team: {
-			type: Object,
-			default: () => ({})
+import { Dialog } from "quasar"
+import { api } from "src/boot/axios"
+import { RELATION_REQUEST_STATUSES, RELATION_REQUEST_STATUS_NAMES } from "src/const/relationRequestStatuses"
+import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
+const { notifySuccess, notifyError } = useNotification()
+
+const props = defineProps({
+	team: Object
+})
+
+const isLoading = ref(true)
+const isCreatingRequest = ref(false)
+
+const requests = ref([])
+const requestLoading = ref(null)
+
+const acceptRequest = ({ request }) => {
+	requestLoading.value = request.id
+
+	Dialog.create({
+		component: CommonConfirmationDialog,
+		componentProps: {
+			text: `Принять запрос на вступление от <span class="text-bold">${request.from.name ?? request.from.phone }?</span>`,
+			headline: "Принять"
 		}
-	},
-	setup(props) {
-		const relation_request_store = useRelationRequestStore()
+	})
+		.onOk(() => {
+			const promise = api.post(`personal/relationRequests/teams/${props.team.id}/accept/${request.id}`)
 
-		const
-			{
-				teamAcceptRequest,
-				teamRejectRequest,
-				teamIncomingRequests
-			} = useRelationRequest()
+			promise.then(() => {
+				let acceptedRequest = requests.value.find((r) => r.id === request.id)
 
-		const { notifySuccess, notifyError } = useNotification()
+				acceptedRequest.status = RELATION_REQUEST_STATUSES.ACCEPTED
 
-		const acceptRequest = (request_id) => {
-			teamAcceptRequest(props.team.id, request_id)
-				.then(() => { notifySuccess("Заявка принята") })
-				.catch((error) => { notifyError(error.response.data) })
-		}
+				notifySuccess("Успешно")
+			})
 
-		const rejectRequest = (request_id) => {
-			teamRejectRequest(props.team.id, request_id)
-				.then(() => { notifySuccess("В заявке отказано") })
-				.catch((error) => { notifyError(error.response.data) })
-		}
+			promise.catch((error) => {
+				notifyError(error.response.data.message)
+			})
 
-		return {
-			relation_request_store,
-			teamIncomingRequests,
-			acceptRequest,
-			rejectRequest
-		}
-	}
+			promise.finally(() => requestLoading.value = null)
+		})
+		.onCancel(() => {
+			requestLoading.value = null
+		})
 }
+
+const rejectRequest = ({ request }) => {
+	requestLoading.value = request.id
+
+	Dialog.create({
+		component: CommonConfirmationDialog,
+		componentProps: {
+			text: `Отклонить запрос на вступление от <span class="text-bold">${request.from.name ?? request.from.phone }?</span>`,
+			headline: "Отклонить"
+		}
+	})
+		.onOk(() => {
+			const promise = api.post(`personal/relationRequests/teams/${props.team.id}/reject/${request.id}`)
+
+			promise.then(() => {
+				let rejectedRequest = requests.value.find((r) => r.id === request.id)
+
+				rejectedRequest.status = RELATION_REQUEST_STATUSES.REJECTED_BY_RECIPIENT
+
+				notifySuccess("Успешно")
+			})
+
+			promise.catch((error) => {
+				notifyError(error.response.data.message)
+			})
+
+			promise.finally(() => requestLoading.value = null)
+		})
+		.onCancel(() => {
+			requestLoading.value = null
+		})
+}
+
+onMounted(() => {
+	const promise = api.get(`personal/relationRequests/teams/${props.team.id}`)
+
+	promise.then((response) => {
+		requests.value = response.data
+	})
+
+	//todo catch
+
+	promise.finally(() => isLoading.value = false)
+})
 </script>

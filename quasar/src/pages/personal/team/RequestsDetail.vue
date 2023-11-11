@@ -2,23 +2,17 @@
 	<TeamRequestList :team="team" />
 </template>
 
-<script>
+<script setup>
 import TeamRequestList from "src/components/teams/TeamRequestList.vue"
-import { useRoute } from "vue-router"
+import { useRouter } from "vue-router"
 import { useUserTeam } from "src/composables/userTeam"
 import { computed } from "vue"
-export default {
-	components: { TeamRequestList },
-	setup() {
-		const $route = useRoute()
-		const { user_teams } = useUserTeam()
-		const team = computed(() =>
-			user_teams.value.find((t) => t.id === parseInt($route.params.team_id))
-		)
 
-		return {
-			team
-		}
-	}
-}
+const $router = useRouter()
+const { user_teams } = useUserTeam()
+// todo - remove team load on init?
+const team = computed(() =>
+	user_teams.value.find((t) => t.id === parseInt($router.currentRoute.value.params.team_id))
+)
+
 </script>
