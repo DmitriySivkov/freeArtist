@@ -43,12 +43,9 @@ class UserService implements UserServiceContract
 	{
 		$ip = app()->env === 'local' ? env('LOCAL_IP') : request()->getClientIp();
 
-		// todo - what if city is not found
 		$cityIpData = SxGeo::getCity($ip);
 
-		info(print_r($cityIpData,true));
-
-		if (!$cityIpData) {
+		if (!$cityIpData || !$cityIpData['city']['name_ru']) {
 			return [];
 		}
 
