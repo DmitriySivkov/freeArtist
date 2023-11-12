@@ -20,7 +20,7 @@ class CreateRelationRequestsTable extends Migration
 			$table->unsignedInteger('to_id');
 			$table->string('to_type');
 			$table->unsignedTinyInteger('status')
-				->default(\App\Models\RelationRequest::STATUS_PENDING['id']);
+				->default(\App\Models\RelationRequest::STATUS_PENDING);
 			$table->text('message')
 				->nullable();
             $table->timestamps();
