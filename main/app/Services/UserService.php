@@ -46,6 +46,8 @@ class UserService implements UserServiceContract
 		// todo - what if city is not found
 		$cityIpData = SxGeo::getCity($ip);
 
+		info(print_r($cityIpData,true));
+
 		if (!$cityIpData) {
 			return [];
 		}
