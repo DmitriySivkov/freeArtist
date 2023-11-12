@@ -212,7 +212,7 @@ const loadImage = async() => {
 
 	let form_data = new FormData()
 
-	const blob = await new Promise(resolve => canvas.toBlob(resolve))
+	const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg"))
 
 	form_data.append("storefront_image", blob)
 
