@@ -37,7 +37,7 @@ class UserService implements UserServiceContract
 	}
 
 	/**
-	 * @return City[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
+	 * @return array|mixed[]
 	 */
 	public function getUserLocationByIp()
 	{
@@ -46,9 +46,14 @@ class UserService implements UserServiceContract
 		// todo - what if city is not found
 		$cityIpData = SxGeo::getCity($ip);
 
+		if (!$cityIpData) {
+			return [];
+		}
+
 		// todo - maybe change 'address' to 'city' - though some cities are 'null' in db
 		return City::where('address', 'like', "%{$cityIpData['city']['name_ru']}%")
 			->select(['id', 'address'])
-			->get();
+			->get()
+			->toArray();
 	}
 }
