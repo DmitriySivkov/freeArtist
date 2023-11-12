@@ -20,7 +20,6 @@ module.exports = configure(function (ctx) {
 			"setLocation",
 			"setCartFromLocalStorage",
 			"setPersonalTabFromLocalStorage",
-			"browseRoles",
 			"browsePermissions",
 			"ws",
 			"routes" // keep at the end

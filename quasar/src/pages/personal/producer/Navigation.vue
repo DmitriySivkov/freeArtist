@@ -33,11 +33,6 @@ const { userOwnTeam } = useUserTeam()
 const items = [
 	{ title: "Профиль", link: "/personal/producer" },
 	{ title: "Заказы", link: "/personal/producer/orders" },
-	{
-		title: "Зарегистрировать изготовителя",
-		link: "/personal/register-producer",
-		conditional: !userOwnTeam.value
-	},
 	{ title: "Заявки", link: "/personal/team/requests" },
 	{ title: "Разрешения", link: "/personal/team/permissions" },
 	{ title: "Управлять продуктами", link: "/personal/producer/products" },

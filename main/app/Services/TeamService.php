@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\ProducerServiceContract;
 use App\Contracts\TeamServiceContract;
+use App\Events\TeamAcceptUserRequest;
 use App\Events\UserPermissionsSynchronized;
 use App\Models\Permission;
 use App\Models\Producer;
@@ -123,8 +124,9 @@ class TeamService implements TeamServiceContract
 				Permission::PERMISSION_PRODUCER_REQUESTS['name'],
 				$this->team->name
 			)
-		)
+		) {
 			throw new \LogicException('Доступ закрыт');
+		}
 
 		if ($relationRequest->status !== RelationRequest::STATUS_PENDING) {
 			throw new \LogicException('Заявка уже обработана');
@@ -146,6 +148,8 @@ class TeamService implements TeamServiceContract
 				$relationRequest->update([
 					'status' => RelationRequest::STATUS_ACCEPTED
 				]);
+
+				TeamAcceptUserRequest::dispatch($relationRequest, $userToAttach);
 
 				\DB::commit();
 			} catch (\Throwable $e) {

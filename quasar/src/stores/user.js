@@ -15,14 +15,14 @@ export const useUserStore = defineStore("user", {
 
 	actions: {
 		async registerProducer(payload) {
-			const team_store = useTeamStore()
-			const role_store = useRoleStore()
+			const teamStore = useTeamStore()
+			const roleStore = useRoleStore()
 
 			const response = await api.post("personal/producers/register", { ...payload })
 
-			team_store.setUserTeams(response.data.team)
+			teamStore.setUserTeams(response.data.team)
 
-			role_store.setUserRole(response.data.role)
+			roleStore.setUserRole(response.data.role)
 		},
 
 		switchPersonal(personal_tab) {

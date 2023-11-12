@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { api } from "src/boot/axios"
 
+// todo - move permissions to const
 export const usePermissionStore = defineStore("permission", {
 	state: () => ({
 		user_permissions: [],

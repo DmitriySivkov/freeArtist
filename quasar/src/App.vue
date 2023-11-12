@@ -18,12 +18,14 @@ export default {
 		const private_channels = usePrivateChannels()
 
 		const connectPrivateChannels = () => {
-			if (!window.Pusher.isConnected)
+			if (!window.Pusher.isConnected) {
 				echo.connect()
+			}
 
 			if (userStore.data.id) {
 				private_channels.connectTeams()
 				private_channels.connectPermissions()
+				private_channels.connectRelationRequests()
 			}
 		}
 

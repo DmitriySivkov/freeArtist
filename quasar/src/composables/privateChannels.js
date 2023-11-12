@@ -3,15 +3,17 @@ import { useUserTeam } from "src/composables/userTeam"
 import { useTeamStore } from "src/stores/team"
 import { useUserStore } from "src/stores/user"
 import { usePermissionStore } from "src/stores/permission"
-import { useRoleStore } from "stores/role"
+import { useRoleStore } from "src/stores/role"
+import { ROLES } from "src/const/roles"
 
 export const usePrivateChannels = () => {
+	// todo rm computed from composable
 	const { user_teams } = useUserTeam()
 
 	const userStore = useUserStore()
 	const teamStore = useTeamStore()
 	const permissionStore = usePermissionStore()
-	const roleStore = useRoleStore() // todo - change role on producer request accepted
+	const roleStore = useRoleStore()
 
 	const connectTeams = () => {
 		// todo - same for 'teams' entity - add name change to producer profile
@@ -53,11 +55,23 @@ export const usePrivateChannels = () => {
 
 				})
 		}
+	}
 
+	const connectRelationRequests = () => {
+		echo.private(`relation-requests.user.${userStore.data.id}`)
+			.listen(".user-team.relation-request.accepted", (e) => {
+				roleStore.setUserRole({
+					id: ROLES.PRODUCER,
+					team_id: e.team.id
+				})
+
+				teamStore.setUserTeams(e.team)
+			})
 	}
 
 	return {
 		connectTeams,
-		connectPermissions
+		connectPermissions,
+		connectRelationRequests
 	}
 }
