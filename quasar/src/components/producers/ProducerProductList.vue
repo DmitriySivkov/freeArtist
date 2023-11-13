@@ -1,6 +1,6 @@
 <template>
-	<div class="absolute column fit">
-		<div class="col-shrink sticky__common_top">
+	<div class="absolute column full-width no-wrap">
+		<div class="col-auto sticky__common_top">
 			<div class="row full-height">
 				<q-card
 					square
