@@ -1,7 +1,13 @@
 <template>
-	<ProducerProductList
-		:is-able-to-manage-product="isAbleToManageProduct"
-	/>
+	<div class="column absolute full-width no-wrap bg-primary">
+		<div class="row full-height justify-center">
+			<div class="col-xs-12 col-md-8 bg-white">
+				<ProducerProductList
+					:is-able-to-manage-product="isAbleToManageProduct"
+				/>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup>

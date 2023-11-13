@@ -17,6 +17,12 @@
 			</div>
 		</q-card>
 
+		<q-linear-progress
+			v-if="isMounting"
+			indeterminate
+			color="primary"
+		/>
+
 		<q-card
 			v-if="isCreatingRequest"
 			class="col-auto q-mb-xs q-pa-md"
@@ -113,7 +119,7 @@ const props = defineProps({
 	team: Object
 })
 
-const isLoading = ref(true)
+const isMounting = ref(true)
 const isCreatingRequest = ref(false)
 
 const requests = ref([])
@@ -192,6 +198,6 @@ onMounted(() => {
 
 	//todo catch
 
-	promise.finally(() => isLoading.value = false)
+	promise.finally(() => isMounting.value = false)
 })
 </script>
