@@ -1,175 +1,183 @@
 <template>
-	<q-card
-		bordered
-		class="col-xs-12 col-md-4 border-dashed bg-green-3 shadow-0 q-mb-xs"
-		:class="[
-			{'text-white bg-green-6 border-white': is_dragging},
-			{'border-black': !is_dragging}
-		]"
-		style="height:200px"
-	>
-		<q-card-section class="row flex-center full-height">
-			<span class="text-center">Выберите изображение <br /> или переместите в эту область</span>
-			<div
-				class="full-height full-width absolute cursor-pointer"
-				@dragenter.prevent="is_dragging = true"
-				@dragleave.prevent="is_dragging = false"
-				@dragover.prevent
-				@drop.prevent="drop"
-				@click="showFilePrompt"
-			></div>
-			<q-inner-loading :showing="is_loading">
-				<q-spinner-gears
-					size="50px"
-					color="primary"
-				/>
-			</q-inner-loading>
-		</q-card-section>
-	</q-card>
-
-	<div
-		v-if="modelValue.committed_images"
-		class="row q-col-gutter-sm q-mt-md"
-	>
-		<q-card
-			flat
-			class="col-xs-12 col-md-6"
-			v-for="image in modelValue.committed_images"
-			:key="image.key"
-		>
-			<q-card-section
-				horizontal
-				class="justify-end bg-indigo-5 q-mb-xs q-pa-xs"
+	<div class="row flex-center">
+		<q-card class="col-xs-12 col-sm-7 col-lg-6 col-xl-5 bg-green-3 q-mb-xs">
+			<q-responsive
+				:ratio="16/9"
+				:class="{'bg-green-6 text-white': isDragging}"
 			>
-				<q-icon
-					class="cursor-pointer"
-					size="32px"
-					name="clear"
-					color="red-3"
-					@click="removeCommittedImage(image.key)"
-				/>
-			</q-card-section>
-			<q-card-section horizontal>
-				<q-img
-					:src="image.src"
-					no-spinner
-					fit="contain"
-					style="height: 200px;"
-				/>
-			</q-card-section>
+				<div>
+					<Cropper
+						v-if="tmpImage"
+						ref="cropper"
+						class="absolute"
+						:src="tmpImage"
+						:stencil-props="{aspectRatio: 16/9}"
+					/>
+
+					<div
+						v-else
+						class="absolute fit flex flex-center text-center"
+					>
+						Выберите изображение <br /> или переместите в эту область
+					</div>
+
+					<div
+						class="absolute fit cursor-pointer"
+						@dragenter.prevent="isDragging = true"
+						@dragleave.prevent="isDragging = false"
+						@dragover.prevent
+						@drop.prevent="drop"
+						@click="showFilePrompt"
+					></div>
+					<q-inner-loading
+						:showing="isLoading"
+						style="z-index:99999"
+					>
+						<q-spinner-gears
+							size="50px"
+							color="primary"
+						/>
+					</q-inner-loading>
+				</div>
+			</q-responsive>
 		</q-card>
 	</div>
 
-	<q-carousel
-		ref="carousel"
-		v-model="slide"
-		class="bg-secondary"
-		transition-prev="fade"
-		transition-next="fade"
-		control-type="regular"
-		control-color="primary"
-		control-text-color="white"
-		swipeable
-		animated
-		height="auto"
-		:arrows="modelValue.images.length > 2"
+	<div
+		v-if="tmpImage"
+		class="row flex-center"
 	>
-		<template v-if="isWidthThreshold">
-			<q-carousel-slide
-				v-for="n in Math.ceil(modelValue.images.length/2)"
-				:key="n"
-				:name="n"
-				class="column no-wrap q-px-none q-py-sm"
-			>
-				<div
-					v-if="isWidthThreshold"
-					class="row fit flex-center"
-				>
-					<div class="col-sm-8 col-lg-6">
-						<div class="row fit flex-center q-gutter-xs q-col-gutter no-wrap">
-							<q-img
-								v-for="image in modelValue.images.slice((n-1)*2, n*2)"
-								:key="image.id"
-								no-spinner
-								class="rounded-borders col-6 full-height"
-								fit="cover"
-								:src="`${backendServer}/storage/${image.path}`"
-								:ratio="16/9"
-							/>
-						</div>
-					</div>
-				</div>
-			</q-carousel-slide>
-		</template>
-		<template v-else>
-			<!--			<q-carousel-slide-->
-			<!--				v-for="(image, i) in modelValue.images"-->
-			<!--				:key="image.id"-->
-			<!--				:name="i+1"-->
-			<!--				:img-src="`${backendServer}/storage/${image.path}`"-->
-			<!--			/>-->
-			<q-carousel-slide
-				v-for="(image, i) in modelValue.images"
-				:key="image.id"
-				:name="i+1"
-				class="q-pa-xs"
-			>
-				<q-img
-					no-spinner
-					class="rounded-borders"
-					fit="cover"
-					:src="`${backendServer}/storage/${image.path}`"
-					:ratio="16/9"
+		<div class="col-xs-12 col-sm-7 col-lg-6 col-xl-5 q-mb-xs">
+			<div class="row q-gutter-xs q-mb-xs justify-center">
+				<q-btn
+					color="primary"
+					icon="done"
+					class="col q-pa-lg"
+					@click="addImage"
 				/>
-			</q-carousel-slide>
-		</template>
+				<q-btn
+					color="red"
+					icon="clear"
+					class="col q-pa-lg"
+					@click="cancelImage"
+				/>
+			</div>
+		</div>
+	</div>
 
-	</q-carousel>
-
-	<!--	<div class="row q-col-gutter-sm">-->
-	<!--		<q-card-->
-	<!--			flat-->
-	<!--			class="col-xs-12 col-md-6"-->
-	<!--			v-for="image in modelValue.images"-->
-	<!--			:key="image.id"-->
-	<!--		>-->
-	<!--			<q-card-section-->
-	<!--				horizontal-->
-	<!--				class="bg-indigo-7 q-mb-xs q-pa-xs"-->
-	<!--			>-->
-	<!--				<div class="col text-left">-->
-	<!--					<q-icon-->
-	<!--						class="cursor-pointer"-->
-	<!--						size="32px"-->
-	<!--						name="wallpaper"-->
-	<!--						:color="modelValue.thumbnail_id === image.id ? 'white' : 'black'"-->
-	<!--						@click="toggleImageThumbnail(image.id)"-->
-	<!--					/>-->
-	<!--				</div>-->
-	<!--				<div class="col self-end text-right">-->
-	<!--					<q-icon-->
-	<!--						class="cursor-pointer"-->
-	<!--						size="32px"-->
-	<!--						:name="!image.to_delete ? 'clear' : 'restore'"-->
-	<!--						:color="!image.to_delete ? 'black' : 'white'"-->
-	<!--						@click="toggleImageRemoval(image.id)"-->
-	<!--					/>-->
-	<!--				</div>-->
-	<!--			</q-card-section>-->
-	<!--			<q-card-section horizontal>-->
-	<!--				<q-img-->
-	<!--					:src="backendServer + '/storage/' + image.path"-->
-	<!--					no-spinner-->
-	<!--					fit="contain"-->
-	<!--					style="height: 200px;"-->
-	<!--				/>-->
-	<!--			</q-card-section>-->
-	<!--		</q-card>-->
-	<!--	</div>-->
+	<div class="row justify-center">
+		<div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8">
+			<q-carousel
+				ref="carousel"
+				v-model="slide"
+				transition-prev="fade"
+				transition-next="fade"
+				control-type="regular"
+				control-color="primary"
+				control-text-color="white"
+				swipeable
+				animated
+				height="auto"
+				:arrows="modelValue.images.length > 2"
+			>
+				<template v-if="isWidthThreshold">
+					<q-carousel-slide
+						v-for="n in Math.ceil(modelValue.images.length/2)"
+						:key="n"
+						:name="n"
+						class="column no-wrap q-px-none q-py-sm"
+					>
+						<div
+							v-if="isWidthThreshold"
+							class="row fit flex-center"
+						>
+							<div class="col-9">
+								<div class="row fit flex-center q-gutter-xs q-col-gutter no-wrap">
+									<q-img
+										v-for="image in modelValue.images.slice((n-1)*2, n*2)"
+										:key="image.id"
+										no-spinner
+										class="rounded-borders col-6 full-height"
+										fit="cover"
+										:src="`${backendServer}/storage/${image.path}`"
+										:ratio="16/9"
+									>
+										<div
+											class="row absolute-bottom"
+											style="padding:8px 12px"
+										>
+											<div class="col">
+												<q-icon
+													class="cursor-pointer"
+													size="md"
+													name="wallpaper"
+													:color="modelValue.thumbnail_id === image.id ? 'white' : 'black'"
+													@click="toggleImageThumbnail(image.id)"
+												/>
+											</div>
+											<div class="col text-right">
+												<q-icon
+													class="cursor-pointer"
+													size="md"
+													:name="!image.to_delete ? 'clear' : 'restore'"
+													:color="!image.to_delete ? 'red-4' : 'green-4'"
+													@click="toggleImageRemoval(image.id)"
+												/>
+											</div>
+										</div>
+									</q-img>
+								</div>
+							</div>
+						</div>
+					</q-carousel-slide>
+				</template>
+				<template v-else>
+					<q-carousel-slide
+						v-for="(image, i) in modelValue.images"
+						:key="image.id"
+						:name="i+1"
+						class="q-pa-xs"
+					>
+						<q-img
+							no-spinner
+							class="rounded-borders"
+							fit="cover"
+							:src="`${backendServer}/storage/${image.path}`"
+							:ratio="16/9"
+						>
+							<div
+								class="row absolute-bottom"
+								style="padding:8px 12px"
+							>
+								<div class="col">
+									<q-icon
+										class="cursor-pointer"
+										size="md"
+										name="wallpaper"
+										:color="modelValue.thumbnail_id === image.id ? 'white' : 'black'"
+										@click="toggleImageThumbnail(image.id)"
+									/>
+								</div>
+								<div class="col text-right">
+									<q-icon
+										class="cursor-pointer"
+										size="md"
+										:name="!image.to_delete ? 'clear' : 'restore'"
+										:color="!image.to_delete ? 'red-4' : 'green-4'"
+										@click="toggleImageRemoval(image.id)"
+									/>
+								</div>
+							</div>
+						</q-img>
+					</q-carousel-slide>
+				</template>
+			</q-carousel>
+		</div>
+	</div>
 
 	<q-file
 		v-model="image"
-		ref="file_picker"
+		ref="filePicker"
 		accept=".jpg, image/*"
 		style="display:none"
 		@update:model-value="addImage"
@@ -178,11 +186,12 @@
 
 <script setup>
 import { useQuasar } from "quasar"
-import {computed, ref} from "vue"
+import { computed, ref} from "vue"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
-import _ from "lodash"
+import { clone } from "lodash"
+import { Cropper } from "vue-advanced-cropper"
 
 const props = defineProps({
 	modelValue: {
@@ -197,12 +206,13 @@ const emit = defineEmits([
 
 const $q = useQuasar()
 const image = ref(null)
+const tmpImage = ref(null)
 
 const slide = ref(1)
 
-const uploader = ref(null)
-const is_dragging = ref(false)
-const is_loading = ref(false)
+const filePicker = ref(null)
+const isDragging = ref(false)
+const isLoading = ref(false)
 
 const { base64ToBlob } = cameraService()
 const { Camera } = Plugins
@@ -210,6 +220,15 @@ const { Camera } = Plugins
 const backendServer = process.env.BACKEND_SERVER
 
 const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
+
+const addImage = () => {
+	tmpImage.value = URL.createObjectURL(image.value)
+}
+
+const cancelImage = () => {
+	tmpImage.value = null
+	image.value = null
+}
 
 const showFilePrompt = () => {
 	if ($q.platform.is.desktop) {
@@ -228,7 +247,7 @@ const showFilePrompt = () => {
 }
 
 const fromGallery = () => {
-	uploader.value.pickFiles()
+	filePicker.value.pickFiles()
 }
 
 // todo - check camera
@@ -240,58 +259,11 @@ const fromCamera = async () => {
 	})
 	const blob = await base64ToBlob(img.dataUrl)
 	const img_file = new File([blob], "no-matter.jpg")
-	uploader.value.addFiles([img_file])
-}
-
-const imageCommitted = (files) => {
-	const tmp_images = files.map((f) => {
-		return {
-			key: f.__key,
-			src: URL.createObjectURL(f),
-			instance: f
-		}
-	})
-
-	if (!props.modelValue.committed_images) {
-		emit("update:modelValue", {...props.modelValue, committed_images: tmp_images })
-		return
-	}
-
-	emit("update:modelValue", {
-		...props.modelValue,
-		committed_images: [...tmp_images, ...props.modelValue.committed_images]
-	})
-}
-
-const removeCommittedImage = (committed_image_key) => {
-	uploader.value.removeFile(
-		props.modelValue.committed_images.find((i) => i.key === committed_image_key).instance
-	)
-
-	// if deleting the last committed image
-	if (props.modelValue.committed_images.length === 1) {
-		emit(
-			"update:modelValue",
-			{
-				...Object.keys(props.modelValue)
-					.filter((prop) => prop !== "committed_images")
-					.reduce((carry, prop) => {
-						carry[prop] = props.modelValue[prop]
-						return carry
-					}, {})
-			}
-		)
-		return
-	}
-
-	emit("update:modelValue", {
-		...props.modelValue,
-		committed_images: props.modelValue.committed_images.filter((i) => i.key !== committed_image_key)
-	})
+	filePicker.value.addFiles([img_file])
 }
 
 const toggleImageRemoval = (image_id) => {
-	let images = _.clone(props.modelValue.images)
+	let images = clone(props.modelValue.images)
 	let image_index = images.findIndex((i) => i.id === image_id)
 	let image = images.find((i) => i.id === image_id)
 
@@ -316,8 +288,8 @@ const toggleImageThumbnail = (image_id) => {
 }
 
 const drop = (e) => {
-	is_dragging.value = false
-	uploader.value.addFiles([e.dataTransfer.files[0]])
+	isDragging.value = false
+	filePicker.value.addFiles([e.dataTransfer.files[0]])
 }
 
 </script>
