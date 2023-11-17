@@ -53,7 +53,7 @@
 					color="primary"
 					icon="done"
 					class="col q-pa-lg"
-					@click="addImage"
+					@click="commitImage"
 				/>
 				<q-btn
 					color="red"
@@ -65,6 +65,30 @@
 		</div>
 	</div>
 
+	<div class="row justify-center">
+		<div class="col-xs-12 col-sm-11 col-md-10 col-lg-9">
+			<div
+				v-if="modelValue.committed_images && modelValue.committed_images.length"
+				class="row q-col-gutter-xs justify-center q-mb-xs"
+			>
+				<div
+					v-for="(image, i) in modelValue.committed_images"
+					:key="i"
+					class="col-xs-4 col-sm-3 col-md-2 cursor-pointer"
+					@click="showRemoveCommittedImageDialog(image.src)"
+				>
+					<q-card>
+						<q-img
+							:src="image.src"
+							no-spinner
+							:ratio="16/9"
+							style="opacity:0.8"
+						/>
+					</q-card>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="row justify-center">
 		<div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8">
 			<q-carousel
@@ -185,13 +209,14 @@
 </template>
 
 <script setup>
-import { useQuasar } from "quasar"
+import { useQuasar, Dialog } from "quasar"
 import { computed, ref} from "vue"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
 import { clone } from "lodash"
 import { Cropper } from "vue-advanced-cropper"
+import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
 
 const props = defineProps({
 	modelValue: {
@@ -211,6 +236,8 @@ const tmpImage = ref(null)
 const slide = ref(1)
 
 const filePicker = ref(null)
+const cropper = ref(null)
+
 const isDragging = ref(false)
 const isLoading = ref(false)
 
@@ -220,6 +247,48 @@ const { Camera } = Plugins
 const backendServer = process.env.BACKEND_SERVER
 
 const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
+
+const commitImage = () => {
+	const { canvas } = cropper.value.getResult()
+
+	const blobPromise = new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg"))
+
+	blobPromise.then((result) => {
+		const img = {
+			src: URL.createObjectURL(result),
+			instance: result
+		}
+
+		if (!props.modelValue.committed_images) {
+			emit("update:modelValue", {
+				...props.modelValue,
+				committed_images: [img]
+			})
+		} else {
+			emit("update:modelValue", {
+				...props.modelValue,
+				committed_images: [img, ...props.modelValue.committed_images]
+			})
+		}
+
+		cancelImage()
+	})
+}
+
+const showRemoveCommittedImageDialog = (imgSrc) => {
+	Dialog.create({
+		component: CommonConfirmationDialog,
+		componentProps: {
+			text: "Не загружать выбранное изображение?",
+			headline: "Подтвердите действие"
+		}
+	}).onOk(() => {
+		emit("update:modelValue", {
+			...props.modelValue,
+			committed_images: props.modelValue.committed_images.filter((ci) => ci.src !== imgSrc)
+		})
+	})
+}
 
 const addImage = () => {
 	tmpImage.value = URL.createObjectURL(image.value)
