@@ -1,18 +1,16 @@
 <template>
 	<q-btn
 		round
-		size="1.5em"
 		icon="add"
 		color="primary"
-		class="q-mb-md"
+		class="q-pa-md q-mb-md"
 		@click="addIngredient"
 	/>
 	<q-form ref="form">
 		<q-card
 			v-for="(ingredient, index) in modelValue.composition"
 			:key="index"
-			class="composition__card border-primary"
-			:class="{'q-my-sm': index !== modelValue.composition.length-1}"
+			class="composition__card border-primary q-mb-xs"
 			bordered
 		>
 			<q-input

@@ -29,15 +29,6 @@
 						@drop.prevent="drop"
 						@click="showFilePrompt"
 					></div>
-					<q-inner-loading
-						:showing="isLoading"
-						style="z-index:99999"
-					>
-						<q-spinner-gears
-							size="50px"
-							color="primary"
-						/>
-					</q-inner-loading>
 				</div>
 			</q-responsive>
 		</q-card>
@@ -187,9 +178,10 @@
 						>
 							<div
 								class="row absolute-bottom"
+								:class="{'full-height': image.to_delete}"
 								style="padding:8px 12px"
 							>
-								<div class="col">
+								<div class="col self-end">
 									<q-icon
 										class="cursor-pointer"
 										size="md"
@@ -198,7 +190,7 @@
 										@click="toggleImageThumbnail(image.id)"
 									/>
 								</div>
-								<div class="col text-right">
+								<div class="col text-right self-end">
 									<q-icon
 										class="cursor-pointer"
 										size="md"
@@ -255,7 +247,6 @@ const filePicker = ref(null)
 const cropper = ref(null)
 
 const isDragging = ref(false)
-const isLoading = ref(false)
 
 const { base64ToBlob } = cameraService()
 const { Camera } = Plugins

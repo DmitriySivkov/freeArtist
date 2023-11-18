@@ -30,8 +30,12 @@
 		/>
 	</q-tabs>
 
-	<q-page-container>
-		<q-page v-if="product">
+	<div
+		v-if="product"
+		class="absolute column full-width no-wrap"
+		style="min-height:100vh"
+	>
+		<div class="col">
 			<q-tab-panels
 				:model-value="tab"
 				animated
@@ -68,42 +72,41 @@
 					/>
 				</q-tab-panel>
 			</q-tab-panels>
-			<q-page-sticky
-				position="bottom-right"
-				class="transform-none"
-				:offset="[18,18]"
-			>
-				<!-- todo - button reloads app on click on mobile resolution -->
+		</div>
+		<div class="col-auto sticky__common_bottom bg-white">
+			<div class="row q-pa-sm">
 				<q-btn
 					round
-					size="1.5em"
+					class="q-pa-md"
 					:class="{'composition__button_done_active': isProductChanged}"
 					icon="done"
 					:loading="isLoading"
 					color="primary"
 					@click="updateProduct"
 				/>
-			</q-page-sticky>
-		</q-page>
-		<q-page
-			v-else
-			class="absolute column fit q-pa-md"
-		>
-			<q-skeleton
-				v-for="i in 3"
-				:key="i"
-				type="QInput"
-				class="col-1 q-mb-md"
-				bordered
-			/>
-		</q-page>
-	</q-page-container>
+			</div>
+		</div>
+	</div>
+
+	<div
+		v-else
+		class="absolute column full-width no-wrap q-pa-md"
+		style="min-height:100vh"
+	>
+		<q-skeleton
+			v-for="i in 3"
+			:key="i"
+			type="QInput"
+			class="q-mb-sm"
+			bordered
+		/>
+	</div>
 
 </template>
 
 <script setup>
 import { useRouter } from "vue-router"
-import { computed, defineComponent, ref, onMounted } from "vue"
+import { computed, ref, onMounted } from "vue"
 import { useProducerStore } from "src/stores/producer"
 import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
