@@ -62,7 +62,9 @@ class ProductController extends Controller
 
 			$product = $productService->storeProduct();
 
-			return $product->load(['images']);
+			return $product->load([
+				'images' => fn($query) => $query->orderBy('created_at', 'desc')
+			]);
 		} catch (\Throwable $e) {
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
@@ -82,7 +84,7 @@ class ProductController extends Controller
 			$product = $productService->updateProduct();
 
 			return $product->load([
-				'images',
+				'images' => fn($query) => $query->orderBy('created_at', 'desc'),
 				'tags'
 			]);
 		} catch (\Throwable $e) {

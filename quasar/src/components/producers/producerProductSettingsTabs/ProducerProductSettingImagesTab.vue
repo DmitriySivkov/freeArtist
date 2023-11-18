@@ -83,12 +83,27 @@
 							no-spinner
 							:ratio="16/9"
 							style="opacity:0.8"
-						/>
+						>
+							<div
+								class="row absolute-top full-height"
+								style="padding:0"
+							>
+								<div class="col text-right">
+									<q-icon
+										class="cursor-pointer"
+										size="xs"
+										name="clear"
+										color="red-4"
+									/>
+								</div>
+							</div>
+						</q-img>
 					</q-card>
 				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="row justify-center">
 		<div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8">
 			<q-carousel
@@ -128,9 +143,10 @@
 									>
 										<div
 											class="row absolute-bottom"
+											:class="{'full-height': image.to_delete}"
 											style="padding:8px 12px"
 										>
-											<div class="col">
+											<div class="col self-end">
 												<q-icon
 													class="cursor-pointer"
 													size="md"
@@ -139,7 +155,7 @@
 													@click="toggleImageThumbnail(image.id)"
 												/>
 											</div>
-											<div class="col text-right">
+											<div class="col text-right self-end">
 												<q-icon
 													class="cursor-pointer"
 													size="md"
@@ -214,7 +230,7 @@ import { computed, ref} from "vue"
 import { Plugins, CameraResultType } from "@capacitor/core"
 import { cameraService } from "src/services/cameraService"
 import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
-import { clone } from "lodash"
+import { clone, omit } from "lodash"
 import { Cropper } from "vue-advanced-cropper"
 import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
 
@@ -283,10 +299,16 @@ const showRemoveCommittedImageDialog = (imgSrc) => {
 			headline: "Подтвердите действие"
 		}
 	}).onOk(() => {
-		emit("update:modelValue", {
-			...props.modelValue,
-			committed_images: props.modelValue.committed_images.filter((ci) => ci.src !== imgSrc)
-		})
+		let committedImages = props.modelValue.committed_images.filter((ci) => ci.src !== imgSrc)
+
+		if (committedImages.length > 0) {
+			emit("update:modelValue", {
+				...props.modelValue,
+				committed_images: committedImages
+			})
+		} else {
+			emit("update:modelValue", omit(props.modelValue, "committed_images"))
+		}
 	})
 }
 
@@ -297,6 +319,11 @@ const addImage = () => {
 const cancelImage = () => {
 	tmpImage.value = null
 	image.value = null
+}
+
+const drop = (e) => {
+	isDragging.value = false
+	filePicker.value.addFiles([e.dataTransfer.files[0]])
 }
 
 const showFilePrompt = () => {
@@ -326,9 +353,11 @@ const fromCamera = async () => {
 		allowEditing: false,
 		resultType: CameraResultType.DataUrl
 	})
+
 	const blob = await base64ToBlob(img.dataUrl)
-	const img_file = new File([blob], "no-matter.jpg")
-	filePicker.value.addFiles([img_file])
+	const imgFile = new File([blob], "no-matter.jpg")
+
+	filePicker.value.addFiles([imgFile])
 }
 
 const toggleImageRemoval = (image_id) => {
@@ -355,10 +384,4 @@ const toggleImageThumbnail = (image_id) => {
 
 	emit("update:modelValue", Object.assign(props.modelValue, { thumbnail_id }))
 }
-
-const drop = (e) => {
-	isDragging.value = false
-	filePicker.value.addFiles([e.dataTransfer.files[0]])
-}
-
 </script>

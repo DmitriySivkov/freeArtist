@@ -116,15 +116,8 @@ import ProducerProductSettingImagesTab
 import ProducerProductSettingTagsTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingTagsTab.vue"
 // todo - replace all '_' lodash imports for specific functions
-import _ from "lodash"
+import { cloneDeep, isEqual } from "lodash"
 import { api } from "src/boot/axios"
-
-defineComponent({
-	ProducerProductSettingCommonTab,
-	ProducerProductSettingCompositionTab,
-	ProducerProductSettingImagesTab,
-	ProducerProductSettingTagsTab
-})
 
 const team_store = useTeamStore()
 const producer_store = useProducerStore()
@@ -149,7 +142,7 @@ const compositionTab = ref(null)
 const tagsTab = ref(null)
 
 const isProductChanged = computed(() =>
-	!_.isEqual(product.value, defaultProduct.value)
+	!isEqual(product.value, defaultProduct.value)
 )
 
 const updateProduct = () => {
@@ -167,7 +160,7 @@ const updateProduct = () => {
 
 		promise.then((response) => {
 			product.value = response.data
-			defaultProduct.value = _.cloneDeep(product.value)
+			defaultProduct.value = cloneDeep(product.value)
 
 			notifySuccess(`Продукт «${product.value.title}» успешно обновлён`)
 		})
@@ -213,7 +206,7 @@ onMounted(() => {
 
 	promise.then((response) => {
 		product.value = response.data
-		defaultProduct.value = _.cloneDeep(product.value)
+		defaultProduct.value = cloneDeep(product.value)
 	})
 
 	promise.catch((error) => {
