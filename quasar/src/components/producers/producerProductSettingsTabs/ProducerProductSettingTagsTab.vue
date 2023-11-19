@@ -1,100 +1,90 @@
 <template>
-	<div
-		class="column"
-		style="min-height:100vh"
-	>
-		<div class="col-auto">
-			<div class="row justify-center">
-				<div
-					class="relative-position col-xs-12 col-sm-9 col-md-8 col-lg-6"
-					:class="$style.tag__container"
-				>
-					<div
-						v-if="!tags.length"
-						class="absolute flex flex-center fit text-body1"
-					>
-						Переместите теги из окна ниже
-					</div>
-					<draggable
-						:list="tags"
-						group="tags"
-						@start="drag=true"
-						@end="drag=false"
-						@add="addTag"
-						@sort="sortTag"
-						item-key="id"
-						class="row"
-						:class="$style.tag__container_draggable"
-						:component-data="{
-							type: 'transition-group',
-							name: 'fade'
-						}"
-						v-bind="dragOptions"
-					>
-						<template #item="{ element }">
-							<q-item
-								clickable
-								class="col-xs-6 col-md-4 flex-center text-center bg-green-5"
-								:class="$style.tag"
-							>
-								<q-item-section class="text-body1">
-									{{ element.name }}
-								</q-item-section>
-							</q-item>
-						</template>
-					</draggable>
-				</div>
+	<div class="row justify-center">
+		<div
+			class="relative-position col-xs-12 col-sm-9 col-md-8 col-lg-6"
+			:class="$style.tag__container"
+		>
+			<div
+				v-if="!tags.length"
+				class="absolute flex flex-center fit text-body1"
+			>
+				Переместите теги из окна ниже
 			</div>
-		</div>
-
-		<div class="row justify-center">
-			<q-icon
-				name="swap_vert"
-				class="q-my-sm"
-				size="md"
+			<draggable
+				:list="tags"
+				group="tags"
+				@start="drag=true"
+				@end="drag=false"
+				@add="addTag"
+				@sort="sortTag"
+				item-key="id"
+				class="row"
+				:class="$style.tag__container_draggable"
+				:component-data="{
+					type: 'transition-group',
+					name: 'fade'
+				}"
+				v-bind="dragOptions"
+			>
+				<template #item="{ element }">
+					<q-item
+						clickable
+						class="col-xs-6 col-md-4 flex-center text-center bg-green-5"
+						:class="$style.tag"
+					>
+						<q-item-section class="text-body1">
+							{{ element.name }}
+						</q-item-section>
+					</q-item>
+				</template>
+			</draggable>
+			<q-linear-progress
+				v-if="isLoadingTagCloud"
+				indeterminate
+				color="primary"
 			/>
 		</div>
+	</div>
 
-		<div class="col">
-			<div class="row justify-center">
-				<q-scroll-area
-					visible
-					style="height:25vh"
-					:thumb-style="{ width: '15px' }"
-					class="relative-position col-xs-12 col-sm-9 col-md-8 col-lg-6"
+	<div class="row justify-center q-my-md">
+		<q-icon
+			name="swap_vert"
+			size="md"
+		/>
+	</div>
+
+	<div class="row justify-center">
+		<div class="col-xs-12 col-sm-9 col-md-8 col-lg-6">
+			<q-scroll-area
+				visible
+				style="height:25vh"
+				:thumb-style="{ width: '15px' }"
+			>
+				<draggable
+					:list="tagCloud"
+					group="tags"
+					:sort="false"
+					@start="drag=true"
+					@end="drag=false"
+					item-key="id"
+					class="row relative-position"
+					:component-data="{
+						type: 'transition-group',
+						name: 'fade',
+					}"
+					v-bind="dragOptions"
 				>
-					<draggable
-						:list="tagCloud"
-						group="tags"
-						@start="drag=true"
-						@end="drag=false"
-						item-key="id"
-						class="row"
-						:component-data="{
-							type: 'transition-group',
-							name: 'fade',
-						}"
-						v-bind="dragOptions"
-					>
-						<template #item="{ element }">
-							<q-item
-								clickable
-								class="col-xs-4 col-md-3 flex-center text-center text-body1"
-								:class="$style.tag"
-							>
-								{{ element.name }}
-							</q-item>
-						</template>
-					</draggable>
-					<q-inner-loading :showing="isLoadingTagCloud">
-						<q-spinner-gears
-							size="md"
-							color="primary"
-						/>
-					</q-inner-loading>
-				</q-scroll-area>
-
-			</div>
+					<template #item="{ element }">
+						<q-item
+							clickable
+							class="col-xs-4 col-md-3 flex-center text-center text-body1"
+							:class="$style.tag"
+						>
+							{{ element.name }}
+						</q-item>
+					</template>
+				</draggable>
+			</q-scroll-area>
 		</div>
 	</div>
 </template>
@@ -120,6 +110,7 @@ const { notifyError } = useNotification()
 
 const drag = ref(false)
 
+// todo - ghost block does not get valid position when dragging from bottom to top
 const tagCloud = ref([])
 const isLoadingTagCloud = ref(true)
 
@@ -159,7 +150,6 @@ const sortTag = () => {
 
 const dragOptions = {
 	animation: 200,
-	group: "description",
 	disabled: false,
 	ghostClass: "low-opacity"
 }
