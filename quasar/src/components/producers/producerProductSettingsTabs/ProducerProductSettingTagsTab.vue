@@ -57,45 +57,43 @@
 
 		<div class="col">
 			<div class="row justify-center">
-				<div class="col-xs-12 col-sm-9 col-md-8 col-lg-6">
-					<q-scroll-area
-						visible
-						style="height:25vh"
-						:thumb-style="{ width: '15px' }"
+				<q-scroll-area
+					visible
+					style="height:25vh"
+					:thumb-style="{ width: '15px' }"
+					class="relative-position col-xs-12 col-sm-9 col-md-8 col-lg-6"
+				>
+					<draggable
+						:list="tagCloud"
+						group="tags"
+						@start="drag=true"
+						@end="drag=false"
+						item-key="id"
+						class="row"
+						:component-data="{
+							type: 'transition-group',
+							name: 'fade',
+						}"
+						v-bind="dragOptions"
 					>
-						<draggable
-							:list="tagCloud"
-							:sort="false"
-							group="tags"
-							@start="drag=true"
-							@end="drag=false"
-							item-key="id"
-							class="row"
-							:component-data="{
-								tag: 'div',
-								type: 'transition-group',
-								name: 'fade',
-							}"
-							v-bind="dragOptions"
-						>
-							<template #item="{ element }">
-								<q-item
-									clickable
-									class="col-xs-4 col-md-3 flex-center text-center text-body1"
-									:class="$style.tag"
-								>
-									{{ element.name }}
-								</q-item>
-							</template>
-						</draggable>
-						<q-inner-loading :showing="isLoadingTagCloud">
-							<q-spinner-gears
-								size="md"
-								color="primary"
-							/>
-						</q-inner-loading>
-					</q-scroll-area>
-				</div>
+						<template #item="{ element }">
+							<q-item
+								clickable
+								class="col-xs-4 col-md-3 flex-center text-center text-body1"
+								:class="$style.tag"
+							>
+								{{ element.name }}
+							</q-item>
+						</template>
+					</draggable>
+					<q-inner-loading :showing="isLoadingTagCloud">
+						<q-spinner-gears
+							size="md"
+							color="primary"
+						/>
+					</q-inner-loading>
+				</q-scroll-area>
+
 			</div>
 		</div>
 	</div>
@@ -200,10 +198,6 @@ onMounted(() => {
 		flex-flow: row wrap;
 		align-content: flex-start;
 		height: 100%;
-	}
-
-	&__ghost {
-		opacity: 0.8
 	}
 }
 </style>
