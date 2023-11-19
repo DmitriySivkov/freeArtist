@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Permission;
+use App\Models\Producer;
 use App\Models\Product;
 use App\Models\Image;
 use App\Models\Team;
@@ -31,7 +32,9 @@ class ProductService
 		try {
 			\DB::beginTransaction();
 
-			$team = Team::find(request()->input('team_id'));
+			$producer = Producer::findOrFail(request()->input('producer_id'));
+
+			$team = $producer->team;
 
 			$this->checkProduct();
 			$this->checkPermission($team);
@@ -53,7 +56,7 @@ class ProductService
 			}
 
 			$this->product->fill([
-				'producer_id' => $team->detailed_id,
+				'producer_id' => $producer->id,
 				'title' => $data['title'],
 				'price' => $data['price'],
 				'amount' => !$data['amount'] ? 0 : $data['amount'],
@@ -74,7 +77,6 @@ class ProductService
 				$basePath = 'team_' . $team->id . '/product_images';
 
 				foreach ($committedImages as $image) {
-
 					$path = Storage::disk('public')->putFile(
 						$basePath,
 						$image
@@ -86,7 +88,6 @@ class ProductService
 						'path' => $path
 					]);
 				}
-
 			}
 
 			\DB::commit();

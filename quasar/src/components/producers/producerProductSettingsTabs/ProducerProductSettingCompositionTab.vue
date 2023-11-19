@@ -3,7 +3,7 @@
 		<div class="col-xs-12 col-sm-auto">
 			<q-btn
 				label="Добавить ингредиент"
-				color="green-4"
+				color="green-5"
 				class="q-pa-md text-body2 full-width"
 				@click="addIngredient"
 			/>
@@ -31,7 +31,7 @@
 						flat
 						square
 						icon="restore"
-						class="bg-green-4 text-white full-height"
+						class="bg-green-5 text-white full-height"
 						@click="restoreIngredient(index)"
 						style="border-top-right-radius: 4px"
 					/>
@@ -73,13 +73,17 @@ const props = defineProps({
 	},
 })
 
+defineExpose({
+	validate
+})
+
 const emit = defineEmits([
 	"update:modelValue"
 ])
 
 const form = ref(null)
 
-const validate = () => {
+function validate() {
 	return form.value.validate()
 }
 

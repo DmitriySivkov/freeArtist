@@ -40,40 +40,36 @@
 	</q-form>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue"
 import CurrencyInput from "src/components/helpers/CurrencyInput.vue"
-export default {
-	components: {
-		CurrencyInput
+
+const props = defineProps({
+	modelValue: {
+		type: Object,
+		default: () => ({})
 	},
-	props: {
-		modelValue: {
-			type: Object,
-			default: () => ({})
-		},
-	},
-	setup(props, { emit }) {
-		const form = ref(null)
+})
 
-		const validate = () => {
-			return form.value.validate()
-		}
+const emit = defineEmits([
+	"update:modelValue"
+])
 
-		const currency_config = {
-			currency: "RUB"
-		}
+defineExpose({
+	validate
+})
 
-		const commonPropChanged = (field) => {
-			emit("update:modelValue", Object.assign(props.modelValue, field))
-		}
+const form = ref(null)
 
-		return {
-			currency_config,
-			commonPropChanged,
-			validate,
-			form
-		}
-	}
+function validate() {
+	return form.value.validate()
+}
+
+const currency_config = {
+	currency: "RUB"
+}
+
+const commonPropChanged = (field) => {
+	emit("update:modelValue", Object.assign(props.modelValue, field))
 }
 </script>

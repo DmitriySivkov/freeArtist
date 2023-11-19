@@ -172,10 +172,6 @@ import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
 import draggable from "vuedraggable"
 
-defineComponent({
-	draggable
-})
-
 const props = defineProps({
 	modelValue: {
 		type: Object,

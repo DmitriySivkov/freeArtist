@@ -66,6 +66,7 @@ class AuthService
 		}
 
 		// todo - move to cookie helper (service)
+		// todo - save cookie for longer period of time ?
 		$cookie = cookie(
 			'token', $token, 0, "/", config('session.domain'),
 			true, true, false, 'lax'

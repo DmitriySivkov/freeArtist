@@ -93,6 +93,7 @@ import { Dialog } from "quasar"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
+import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
 
 const props = defineProps({
 	isAbleToManageProduct: Boolean
@@ -115,9 +116,11 @@ const show = (product) => {
 
 const showDeleteDialog = (product) => {
 	Dialog.create({
-		title: "Подтверждение",
-		message: `Удалить: ${product.title} ?`,
-		cancel: true,
+		component: CommonConfirmationDialog,
+		componentProps: {
+			text: `Удалить: &laquo;${product.title}&raquo; ?`,
+			headline: "Подтвердите действие"
+		}
 	}).onOk(() => {
 		product.is_loading = true
 

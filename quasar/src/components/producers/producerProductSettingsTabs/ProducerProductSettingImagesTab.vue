@@ -65,7 +65,7 @@
 				<div
 					v-for="(image, i) in modelValue.committed_images"
 					:key="i"
-					class="col-xs-4 col-sm-3 col-md-2 cursor-pointer"
+					class="col-xs-4 col-sm-3 cursor-pointer"
 					@click="showRemoveCommittedImageDialog(image.src)"
 				>
 					<q-card>

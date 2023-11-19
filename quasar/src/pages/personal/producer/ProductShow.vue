@@ -107,9 +107,9 @@
 <script setup>
 import { useRouter } from "vue-router"
 import { computed, ref, onMounted } from "vue"
-import { useProducerStore } from "src/stores/producer"
-import { useTeamStore } from "src/stores/team"
 import { useNotification } from "src/composables/notification"
+import { cloneDeep, isEqual } from "lodash"
+import { api } from "src/boot/axios"
 import ProducerProductSettingCommonTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
 import ProducerProductSettingCompositionTab
@@ -118,21 +118,10 @@ import ProducerProductSettingImagesTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
 import ProducerProductSettingTagsTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingTagsTab.vue"
-// todo - replace all '_' lodash imports for specific functions
-import { cloneDeep, isEqual } from "lodash"
-import { api } from "src/boot/axios"
 
-const team_store = useTeamStore()
-const producer_store = useProducerStore()
 const $router = useRouter()
 
 const { notifySuccess, notifyError } = useNotification()
-
-const user_teams = computed(() => team_store.user_teams)
-
-const team = computed(() =>
-	user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
-)
 
 const isLoading = ref(false)
 

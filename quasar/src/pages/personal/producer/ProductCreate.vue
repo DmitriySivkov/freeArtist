@@ -30,8 +30,11 @@
 		/>
 	</q-tabs>
 
-	<q-page-container>
-		<q-page>
+	<div
+		class="absolute column full-width no-wrap"
+		style="min-height:100vh"
+	>
+		<div class="col">
 			<q-tab-panels
 				:model-value="tab"
 				animated
@@ -68,32 +71,29 @@
 					/>
 				</q-tab-panel>
 			</q-tab-panels>
-			<q-page-sticky
-				position="bottom-right"
-				class="transform-none"
-				:offset="[18,18]"
-			>
-				<!-- todo - button reloads app on click on mobile resolution -->
+		</div>
+		<div class="col-auto sticky__common_bottom bg-white">
+			<div class="row q-pa-sm">
 				<q-btn
 					round
-					size="1.5em"
+					class="q-pa-md"
 					:class="{'composition__button_done_active': isProductChanged}"
 					icon="done"
 					:loading="isLoading"
 					color="primary"
 					@click="storeProduct"
 				/>
-			</q-page-sticky>
-		</q-page>
-	</q-page-container>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router"
-import { computed, ref, defineComponent } from "vue"
-import { useProducerStore } from "src/stores/producer"
-import { useTeamStore } from "src/stores/team"
+import { computed, ref } from "vue"
 import { useNotification } from "src/composables/notification"
+import { isEqual } from "lodash"
+import { api } from "src/boot/axios"
 import ProducerProductSettingCommonTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
 import ProducerProductSettingCompositionTab
@@ -102,18 +102,7 @@ import ProducerProductSettingImagesTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingImagesTab.vue"
 import ProducerProductSettingTagsTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingTagsTab.vue"
-import _ from "lodash"
-import { api } from "src/boot/axios"
 
-defineComponent({
-	ProducerProductSettingCommonTab,
-	ProducerProductSettingCompositionTab,
-	ProducerProductSettingImagesTab,
-	ProducerProductSettingTagsTab
-})
-
-const teamStore = useTeamStore()
-const producerStore = useProducerStore()
 const $router = useRouter()
 
 const { notifySuccess, notifyError } = useNotification()
@@ -137,14 +126,8 @@ const commonTab = ref(null)
 const compositionTab = ref(null)
 const tagsTab = ref(null)
 
-const user_teams = computed(() => teamStore.user_teams)
-
-const team = computed(() =>
-	user_teams.value.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
-)
-
 const isProductChanged = computed(() =>
-	!_.isEqual(product.value, defaultProduct)
+	!isEqual(product.value, defaultProduct)
 )
 
 const storeProduct = () => {
@@ -181,7 +164,7 @@ const store = () => {
 	let data = new FormData()
 
 	data.append("product", JSON.stringify(product.value))
-	data.append("team_id", team.value.id)
+	data.append("producer_id", $router.currentRoute.value.params.producer_id)
 
 	for (let i in product.value.committed_images) {
 		data.append("images[]", product.value.committed_images[i].instance)
