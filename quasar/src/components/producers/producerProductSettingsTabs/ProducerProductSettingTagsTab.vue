@@ -69,7 +69,8 @@
 				<div class="col-xs-12 col-sm-9 col-md-8 col-lg-6">
 					<q-scroll-area
 						visible
-						style="height:30vh"
+						style="height:25vh"
+						:thumb-style="{ width: '15px' }"
 					>
 						<draggable
 							:list="tagCloud"
@@ -82,7 +83,7 @@
 							:component-data="{
 								tag: 'div',
 								type: 'transition-group',
-								name: 'fade'
+								name: 'fade',
 							}"
 							v-bind="dragOptions"
 						>
@@ -103,7 +104,6 @@
 							/>
 						</q-inner-loading>
 					</q-scroll-area>
-
 				</div>
 			</div>
 		</div>
