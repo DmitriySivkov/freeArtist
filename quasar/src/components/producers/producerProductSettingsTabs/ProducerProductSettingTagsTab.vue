@@ -39,7 +39,7 @@
 							>
 								<q-item-section
 									side
-									@click="removeTag(element)"
+									@click.prevent="removeTag(element)"
 								>
 									<q-icon
 										name="clear"
