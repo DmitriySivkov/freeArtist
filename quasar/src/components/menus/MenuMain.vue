@@ -113,7 +113,7 @@ const logout = () => {
 }
 
 const cartCounter = computed(() =>
-	cartStore.data.reduce((carry, item) =>
+	cartStore.data?.reduce((carry, item) =>
 		carry + item.products.length, 0)
 )
 </script>

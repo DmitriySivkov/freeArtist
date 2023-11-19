@@ -88,7 +88,7 @@ const route = $router.currentRoute
 const isUserLogged = computed(() => userStore.is_logged)
 
 const cartCounter = computed(() =>
-	cartStore.data.reduce((carry, item) =>
+	cartStore.data?.reduce((carry, item) =>
 		carry + item.products.length, 0)
 )
 

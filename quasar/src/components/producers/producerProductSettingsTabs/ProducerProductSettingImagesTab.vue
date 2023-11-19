@@ -96,7 +96,7 @@
 	</div>
 
 	<div class="row justify-center">
-		<div class="col-xs-12 col-sm-11 col-md-10 col-lg-9 col-xl-8">
+		<div class="col-xs-12 col-sm-11 col-lg-10 col-xl-9">
 			<q-carousel
 				ref="carousel"
 				v-model="slide"
@@ -108,11 +108,11 @@
 				swipeable
 				animated
 				height="auto"
-				:arrows="modelValue.images.length > 2"
+				:arrows="modelValue.images.length > imagesPerSlide"
 			>
 				<template v-if="isWidthThreshold">
 					<q-carousel-slide
-						v-for="n in Math.ceil(modelValue.images.length/2)"
+						v-for="n in Math.ceil(modelValue.images.length/imagesPerSlide)"
 						:key="n"
 						:name="n"
 						class="column no-wrap q-px-none q-py-sm"
@@ -124,10 +124,10 @@
 							<div class="col-9">
 								<div class="row fit flex-center q-gutter-xs q-col-gutter no-wrap">
 									<q-img
-										v-for="image in modelValue.images.slice((n-1)*2, n*2)"
+										v-for="image in modelValue.images.slice((n-1)*imagesPerSlide, n*imagesPerSlide)"
 										:key="image.id"
 										no-spinner
-										class="rounded-borders col-6 full-height"
+										class="rounded-borders col-4 full-height"
 										fit="cover"
 										:src="`${backendServer}/storage/${image.path}`"
 										:ratio="16/9"
@@ -135,7 +135,7 @@
 										<div
 											class="row absolute-bottom"
 											:class="{'full-height': image.to_delete}"
-											style="padding:8px 12px"
+											style="padding:4px 8px"
 										>
 											<div class="col self-end">
 												<q-icon
@@ -242,6 +242,7 @@ const image = ref(null)
 const tmpImage = ref(null)
 
 const slide = ref(1)
+const imagesPerSlide = 3
 
 const filePicker = ref(null)
 const cropper = ref(null)
