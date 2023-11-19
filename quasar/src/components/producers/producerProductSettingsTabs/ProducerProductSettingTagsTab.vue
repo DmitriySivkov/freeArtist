@@ -1,167 +1,111 @@
 <template>
-	<div class="q-pb-md">
-		<span class="text-h5">Выберите теги для поиска</span>
-	</div>
-	<div class="row q-gutter-sm">
-		<div
-			class="col-xs-12 col-lg-4"
-			:class="$style.tag__container"
-		>
-			<draggable
-				:list="tags"
-				group="tags"
-				@start="drag=true"
-				@end="drag=false"
-				@add="addTag"
-				@sort="sortTag"
-				item-key="id"
-				class="row"
-				:class="$style.tag__container_draggable"
-				:component-data="{
-					type: 'transition-group',
-					name: 'fade'
-				}"
-				v-bind="dragOptions"
-			>
-				<template #item="{ element }">
-					<q-item
-						clickable
-						class="col-xs-6 col-md-4 flex-center text-center"
-						:class="$style.tag"
+	<div
+		class="column"
+		style="min-height:100vh"
+	>
+		<div class="col-auto">
+			<div class="row justify-center">
+				<div
+					class="relative-position col-xs-12 col-sm-9 col-md-8 col-lg-6"
+					:class="$style.tag__container"
+				>
+					<div
+						v-if="!tags.length"
+						class="absolute flex flex-center fit text-body1"
 					>
-						<q-item-section
-							side
-							@click="removeTag(element)"
-						>
-							<q-icon
-								name="clear"
-								color="white"
-							/>
-						</q-item-section>
-						<q-item-section>
-							{{ element.name }}
-						</q-item-section>
-					</q-item>
-				</template>
-			</draggable>
+						Переместите теги из окна ниже
+					</div>
+					<draggable
+						:list="tags"
+						group="tags"
+						@start="drag=true"
+						@end="drag=false"
+						@add="addTag"
+						@sort="sortTag"
+						item-key="id"
+						class="row"
+						:class="$style.tag__container_draggable"
+						:component-data="{
+							type: 'transition-group',
+							name: 'fade'
+						}"
+						v-bind="dragOptions"
+					>
+						<template #item="{ element }">
+							<q-item
+								clickable
+								class="col-xs-6 col-md-4 flex-center text-center"
+								:class="$style.tag"
+							>
+								<q-item-section
+									side
+									@click="removeTag(element)"
+								>
+									<q-icon
+										name="clear"
+										color="white"
+									/>
+								</q-item-section>
+								<q-item-section class="text-body1">
+									{{ element.name }}
+								</q-item-section>
+							</q-item>
+						</template>
+					</draggable>
+				</div>
+			</div>
 		</div>
 
-		<div class="col-xs-12 col-lg-6">
-			<q-scroll-area
-				style="height:150px;"
-				visible
-			>
-				<draggable
-					v-if="!isLoadingTagCloud"
-					:list="tagCloud"
-					:sort="false"
-					group="tags"
-					@start="drag=true"
-					@end="drag=false"
-					item-key="id"
-					class="row"
-					:component-data="{
-						tag: 'div',
-						type: 'transition-group',
-						name: 'fade'
-					}"
-					v-bind="dragOptions"
-				>
-					<template #item="{ element }">
-						<q-item
-							clickable
-							class="col-xs-4 col-md-3 flex-center text-center"
-							:class="$style.tag"
-						>
-							{{ element.name }}
-						</q-item>
-					</template>
-				</draggable>
-				<div
-					v-else
-					class="row"
-				>
-					<q-skeleton
-						v-for="i in 8"
-						:key="i"
-						type="rect"
-						square
-						class="col-xs-4 col-md-3 flex-center text-center"
-						:class="$style.tag"
-					/>
-				</div>
-			</q-scroll-area>
-		</div>
-	</div>
-	<!-- todo zanesti kategorii v konstanti i vivodit na glavnoy -->
-	<div class="q-py-md">
-		<span class="text-h5">Добавьте слова наиболее точно описывающие продукт</span>
-	</div>
-	<div class="row">
-		<div class="col-xs-12 col-lg-6">
-			<q-select
-				ref="select"
-				label="Введите название"
-				hint="Нажмите 'enter' чтобы добавить (максимум 8)"
-				filled
-				class="q-mb-sm"
-				:model-value="keywords"
-				use-input
-				hide-dropdown-icon
-				input-debounce="300"
-				options-selected-class="primary"
-				hide-selected
-				@add="addKeyword"
-				@new-value="addKeyword"
-				@remove="removeKeyword($event)"
+		<div class="row justify-center">
+			<q-icon
+				name="swap_vert"
+				class="q-my-sm"
+				size="md"
 			/>
 		</div>
-	</div>
-	<div
-		class="row"
-		style="min-height:160px"
-	>
-		<div
-			class="col-xs-12 col-lg-6"
-			style="border:1px solid rgba(0, 0, 0, 0.12)"
-		>
-			<!-- todo - draggable mix up with scroll event on mobile resolution - unable to scroll -->
-			<draggable
-				:list="keywords"
-				group="keywords"
-				@start="drag=true"
-				@end="drag=false"
-				@sort="sortKeyword"
-				:item-key="(keyword) => keyword"
-				class="q-list--separator"
-				:class="$style.keyword__container_draggable"
-				:component-data="{
-					tag: 'div',
-					type: 'transition-group',
-					name: 'fade'
-				}"
-				v-bind="dragOptions"
-			>
-				<template #item="{ element }">
-					<q-item
-						clickable
-						class="bg-primary text-white"
+
+		<div class="col">
+			<div class="row justify-center">
+				<div class="col-xs-12 col-sm-9 col-md-8 col-lg-6">
+					<q-scroll-area
+						visible
+						style="height:30vh"
 					>
-						<q-item-section
-							side
-							@click="removeKeyword(element)"
+						<draggable
+							:list="tagCloud"
+							:sort="false"
+							group="tags"
+							@start="drag=true"
+							@end="drag=false"
+							item-key="id"
+							class="row"
+							:component-data="{
+								tag: 'div',
+								type: 'transition-group',
+								name: 'fade'
+							}"
+							v-bind="dragOptions"
 						>
-							<q-icon
-								name="clear"
-								color="white"
+							<template #item="{ element }">
+								<q-item
+									clickable
+									class="col-xs-4 col-md-3 flex-center text-center text-body1"
+									:class="$style.tag"
+								>
+									{{ element.name }}
+								</q-item>
+							</template>
+						</draggable>
+						<q-inner-loading :showing="isLoadingTagCloud">
+							<q-spinner-gears
+								size="md"
+								color="primary"
 							/>
-						</q-item-section>
-						<q-item-section>
-							{{ element }}
-						</q-item-section>
-					</q-item>
-				</template>
-			</draggable>
+						</q-inner-loading>
+					</q-scroll-area>
+
+				</div>
+			</div>
 		</div>
 	</div>
 </template>

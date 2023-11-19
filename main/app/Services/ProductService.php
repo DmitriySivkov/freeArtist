@@ -61,7 +61,6 @@ class ProductService
 				'price' => $data['price'],
 				'amount' => !$data['amount'] ? 0 : $data['amount'],
 				'thumbnail_id' => $data['thumbnail_id'] ?? null,
-				'keywords' => $data['keywords'] ?? null,
 				'composition' => $composition
 			]);
 
@@ -105,7 +104,7 @@ class ProductService
 	 */
 	public function updateProduct()
 	{
-		// todo - check for maximum amount of pictures & tags/keywords
+		// todo - check for maximum amount of pictures & tags
 		try {
 			\DB::beginTransaction();
 
@@ -120,7 +119,6 @@ class ProductService
 				'price' => $data['price'],
 				'amount' => !$data['amount'] ? 0 : $data['amount'],
 				'thumbnail_id' => $data['thumbnail_id'],
-				'keywords' => $data['keywords']
 			]);
 
 			$tagIds = collect($data['tags'])->pluck('id');

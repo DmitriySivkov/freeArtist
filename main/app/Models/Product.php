@@ -41,8 +41,6 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
  * @property-read int|null $tags_count
- * @property array|null $keywords
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereKeywords($value)
  */
 class Product extends Model
 {
@@ -53,7 +51,6 @@ class Product extends Model
 
 	protected $casts = [
 		'composition' => 'json',
-		'keywords' => 'json',
 		'price' => 'float'
 	];
 
