@@ -34,18 +34,9 @@
 						<template #item="{ element }">
 							<q-item
 								clickable
-								class="col-xs-6 col-md-4 flex-center text-center"
+								class="col-xs-6 col-md-4 flex-center text-center bg-green-5"
 								:class="$style.tag"
 							>
-								<q-item-section
-									side
-									@click.stop="removeTag(element)"
-								>
-									<q-icon
-										name="clear"
-										color="white"
-									/>
-								</q-item-section>
 								<q-item-section class="text-body1">
 									{{ element.name }}
 								</q-item-section>
@@ -111,7 +102,7 @@
 </template>
 
 <script setup>
-import { defineComponent, onMounted, ref } from "vue"
+import { onMounted, ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
 import draggable from "vuedraggable"
@@ -168,80 +159,11 @@ const sortTag = () => {
 	)
 }
 
-const removeTag = (tag) => {
-	const index = tags.value.findIndex((t) => t.id === tag.id)
-
-	const removedTag = tags.value.splice(index, 1)[0]
-
-	tagCloud.value.push(removedTag)
-
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{tags: tags.value}
-		)
-	)
-}
-
-const keywords = ref(props.modelValue.keywords)
-
-const addKeyword = (keyword, doneFn) => {
-	if (keywords.value.length === 8) {
-		notifyError("Нельзя добавить больше ключевых слов")
-		return
-	}
-
-	if (keyword.length > 20) {
-		notifyError("Максимум 20 символов")
-		return
-	}
-
-	doneFn(keyword, "add-unique")
-
-	if (keywords.value.find((k) => k === keyword))
-		return
-
-	keywords.value.push(keyword)
-
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{keywords: keywords.value}
-		)
-	)
-}
-
-const removeKeyword = (keyword) => {
-	const index = keywords.value.findIndex((k) => k === keyword)
-
-	keywords.value.splice(index, 1)
-
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{keywords: keywords.value}
-		)
-	)
-}
-
-const sortKeyword = () => {
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{keywords: keywords.value}
-		)
-	)
-}
-
 const dragOptions = {
 	animation: 200,
 	group: "description",
 	disabled: false,
-	ghostClass: "bg-green"
+	ghostClass: "low-opacity"
 }
 
 onMounted(() => {
@@ -279,12 +201,9 @@ onMounted(() => {
 		align-content: flex-start;
 		height: 100%;
 	}
-}
 
-.keyword {
-	&__container_draggable {
-		background: #F1F1F1;
-		height: 100%
+	&__ghost {
+		opacity: 0.8
 	}
 }
 </style>

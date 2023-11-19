@@ -115,8 +115,7 @@ const defaultProduct = {
 	amount: "",
 	composition: [],
 	images: [],
-	tags: [],
-	keywords: []
+	tags: []
 }
 
 const product = ref({...defaultProduct})
