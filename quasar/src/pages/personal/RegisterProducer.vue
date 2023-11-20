@@ -1,10 +1,11 @@
 <template>
-	<ProducerRegister />
+	<div class="absolute column fit">
+		<div class="col">
+			<ProducerRegister />
+		</div>
+	</div>
 </template>
 
-<script>
+<script setup>
 import ProducerRegister from "src/components/producers/ProducerRegister.vue"
-export default {
-	components: { ProducerRegister }
-}
 </script>

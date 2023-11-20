@@ -127,14 +127,13 @@ class ProducerController extends Controller
 	/**
 	 * @param ProducerRegisterRequest $request
 	 * @param ProducerService $producerService
-	 * @return JsonResponse
+	 * @return array|JsonResponse
 	 */
 	public function register(ProducerRegisterRequest $request, ProducerService $producerService)
 	{
 		try {
 			return $producerService->register($request->validated());
 		} catch (\Throwable $e) {
-			// todo - bring dis bullshit to common format
 			return ResponseService::error($e->getMessage());
 		}
 	}

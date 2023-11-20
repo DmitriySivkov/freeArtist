@@ -130,7 +130,7 @@ class ProducerService implements ProducerServiceContract
 
 	/**
 	 * @param $producerData
-	 * @return JsonResponse
+	 * @return array
 	 * @throws \Throwable
 	 */
 	public function register($producerData)
@@ -163,30 +163,21 @@ class ProducerService implements ProducerServiceContract
 				['user_type' => User::class, 'team_id' => $team->id]
 			);
 
-
 			DB::commit();
 		} catch (\Throwable $e) {
 			DB::rollBack();
-			throw new \Exception($e->getMessage());
+			throw new \LogicException($e->getMessage());
 		}
 
-		return response()->json([
+		return [
 			'team' => $team->loadMorph('detailed', [
 				Producer::class => 'city'
 			]),
-			'role' => $user->roles()
-				->select([
-					'roles.id',
-					'roles.name',
-					'roles.display_name',
-					'roles.description',
-					'teams.id as team_id'
-				])
-				->leftJoin('teams', 'role_user.team_id', '=', 'teams.id')
-				->where('role_id', Role::PRODUCER)
-				->where('team_id', $team->id)
-				->first()
-		]);
+			'role' => [
+				'id' => Role::PRODUCER,
+				'team_id' => $team->id
+			]
+		];
 	}
 
 	/**
