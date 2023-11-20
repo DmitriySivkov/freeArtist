@@ -39,10 +39,10 @@
 		<div class="row">
 			<div class="col q-pl-none">
 				<q-btn
-					label="Подтвердить"
+					label="Войти"
 					type="submit"
 					color="primary"
-					class="q-pa-lg full-width"
+					class="q-pa-lg full-width text-body1"
 					:loading="isLoading"
 				/>
 			</div>
@@ -55,7 +55,7 @@
 		label="Зарегистрироваться"
 		to="/register"
 		color="primary"
-		class="q-pa-lg full-width"
+		class="q-pa-lg full-width text-body1"
 	/>
 </template>
 

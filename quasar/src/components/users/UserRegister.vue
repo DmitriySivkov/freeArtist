@@ -63,7 +63,7 @@
 					label="Зарегистрироваться и войти"
 					type="submit"
 					color="primary"
-					class="q-pa-lg full-width full-height"
+					class="q-pa-lg full-width full-height text-body1"
 					:loading="isLoading"
 				/>
 			</div>

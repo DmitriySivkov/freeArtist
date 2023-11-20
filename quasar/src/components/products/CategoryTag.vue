@@ -27,7 +27,7 @@ const toggleCategory = () => {
 	<q-card
 		bordered
 		clickable
-		class="full-height cursor-pointer q-hoverable"
+		class="col q-pa-xs cursor-pointer q-hoverable"
 		:class="[
 			$style.category__tag,
 			{[$style.category__tag_active]: isSelected},
@@ -35,18 +35,19 @@ const toggleCategory = () => {
 		@click="toggleCategory"
 	>
 		<span class="q-focus-helper"></span>
-		<div class="column fit flex-center">
-			<q-icon
-				class="col-6 text-center bg-white"
+		<div class="column items-center full-height">
+
+			<div
+				class="col-auto bg-white"
 				:class="$style.category__icon"
 			>
 				<img
 					:src="category.picture"
-					style="width:auto"
+					style="height:50px;"
 				/>
-			</q-icon>
+			</div>
 
-			<div class="col flex flex-center text-center">
+			<div class="col flex items-center text-center">
 				<span class="text-body1">{{ category.name }}</span>
 			</div>
 		</div>
@@ -57,15 +58,14 @@ const toggleCategory = () => {
 .category {
 	&__icon {
 		border-radius: 50%;
-		padding: 7%;
-		margin-top: 8px;
+		padding: 7px;
 	}
 	&__tag {
 		background-color: rgba(black, 0.4);
 		color:white;
 
 		&_active {
-			background-color: rgba(black, 0.7);
+			background-color: rgba(black, 0.6);
 		}
 	}
 }

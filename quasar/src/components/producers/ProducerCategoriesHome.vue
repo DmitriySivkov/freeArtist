@@ -23,11 +23,11 @@ const removeSelectedCategory = (categoryId) => {
 </script>
 
 <template>
-	<div class="row q-col-gutter-xs full-height">
+	<div class="row q-col-gutter-xs">
 		<div
 			v-for="category in PRODUCT_CATEGORY_LIST"
 			:key="category.id"
-			class="col-xs-4 col-sm-3 col-md-2"
+			class="col-xs-4 col-sm-3 col-md-2 column"
 		>
 			<CategoryTag
 				:category="category"
