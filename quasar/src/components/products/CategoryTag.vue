@@ -38,12 +38,13 @@ const toggleCategory = () => {
 		<div class="column items-center full-height">
 
 			<div
-				class="col-auto bg-white"
+				class="bg-white"
 				:class="$style.category__icon"
+				style="height:50px;"
 			>
 				<img
 					:src="category.picture"
-					style="height:50px;"
+					class="fit"
 				/>
 			</div>
 
