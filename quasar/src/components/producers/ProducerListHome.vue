@@ -6,15 +6,14 @@
 		<q-page>
 			<template v-if="producers.length && !isInitializing">
 				<q-card
-					v-for="producer in producers"
+					v-for="(producer, i) in producers"
 					:key="producer.id"
-					class="row product__card"
-					:class="`product__card_${isWidthThreshold ? 'expand' : 'shrink'}`"
+					class="row product__card_shrink"
 				>
 					<div class="column no-wrap full-width">
 						<div class="col row">
 							<div
-								class="col-xs-12 col-sm cursor-pointer"
+								class="col-12 cursor-pointer"
 								@click="$router.push({
 									name: 'producer_products',
 									params: { producer_id: producer.id },
@@ -25,60 +24,83 @@
 									no-spinner
 									class="product__card-image fit"
 									:src="producer.storefront_image ? `${backendServer}/storage/${producer.storefront_image.path}` : '/no-image.png'"
-									fit="cover"
 									:ratio="16/9"
 								/>
 							</div>
 							<q-carousel
+								:ref="el => carousel.push(el)"
 								v-model="slide[producer.id]"
-								:vertical="isWidthThreshold"
-								class="col-xs-12 col-sm-4 bg-secondary product__card-carousel"
-								transition-prev="fade"
-								transition-next="fade"
+								class="col-12 bg-secondary product__card-carousel q-px-sm"
+								transition-prev="slide-right"
+								transition-next="slide-left"
 								swipeable
 								animated
-								control-color="dark"
-								infinite
-								:arrows="producer.products.length > 2"
 							>
 								<q-carousel-slide
-									v-for="i in Math.ceil(producer.products.length/2)"
+									v-for="i in Math.ceil(producer.products.length/3)"
 									:key="i"
 									:name="i"
-									class="q-pa-none"
+									class="q-pa-none overflow-hidden"
 								>
-									<div
-										v-if="!isWidthThreshold"
-										class="col row justify-center"
-									>
-										<div class="col-xs-9">
-											<div class="row justify-center q-gutter-x-xs">
-												<q-img
-													v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
-													:key="thumbnail.id"
-													no-spinner
-													class="col"
-													fit="cover"
-													:src="backendServer + '/storage/' + thumbnail.path"
-													:ratio="4/3"
-												/>
+									<div class="col row">
+										<div class="col-9">
+											<div
+												class="row q-gutter-xs no-wrap q-py-sm"
+												:class="{'justify-center': i !== 1}"
+											>
+												<q-card
+													v-for="(product, productIndex) in producer.products.slice((i-1)*3 - (i !== 1 ? 2 : 0), i*3 - (i !== 1 ? 1 : 0))"
+													:key="product.thumbnail.id"
+													class="col-6 full-height"
+													:class="{[$style.tilted]: productIndex === 0 && i !== 1}"
+												>
+													<q-img
+														no-spinner
+														:src="backendServer + '/storage/' + product.thumbnail.path"
+													/>
+												</q-card>
 											</div>
 										</div>
 									</div>
-									<div
-										v-else
-										class="column fit justify-center q-gutter-xs q-mx-none"
-									>
-										<q-img
-											v-for="thumbnail in producer.products.map((p) => p.thumbnail).slice((i-1)*2, i*2)"
-											:key="thumbnail.id"
-											no-spinner
-											class="col-4 q-mx-none"
-											fit="cover"
-											:src="backendServer + '/storage/' + thumbnail.path"
-										/>
-									</div>
 								</q-carousel-slide>
+
+								<template #control>
+									<q-carousel-control
+										v-if="slide[producer.id] !== 1"
+										position="left"
+										:offset="[0, 0]"
+										class="flex flex-center"
+									>
+										<q-btn
+											push
+											round
+											dense
+											color="orange"
+											text-color="black"
+											icon="arrow_left"
+											@click="carousel[i].previous()"
+										/>
+									</q-carousel-control>
+
+									<q-carousel-control
+										v-if="
+											producer.products.length > 3
+										"
+										position="right"
+										:offset="[0, 0]"
+										class="flex flex-center"
+									>
+										<q-btn
+											push
+											round
+											dense
+											color="orange"
+											text-color="black"
+											icon="arrow_right"
+											@click="carousel[i].next()"
+										/>
+									</q-carousel-control>
+								</template>
 							</q-carousel>
 						</div>
 						<q-separator />
@@ -125,12 +147,11 @@ const userRange = computed(() => userStore.location_range)
 
 const producers = ref([])
 const slide = ref({})
+const carousel = ref([])
 
 const cart = computed(() => cartStore.data)
 
 const scrollComponent = ref(null)
-
-const isWidthThreshold = computed(() => $q.screen.width >= $q.screen.sizes.sm)
 
 onBeforeUnmount(() => {
 	scrollComponent.value.stop()
@@ -198,3 +219,9 @@ watch([
 	deep: true
 })
 </script>
+
+<style lang="scss" module>
+.tilted {
+	margin-left: 32%;
+}
+</style>

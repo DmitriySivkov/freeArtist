@@ -1,18 +1,18 @@
 <template>
 	<div
 		v-if="userLocation"
-		class="column no-wrap fit q-px-md absolute"
+		class="column no-wrap fit q-px-sm absolute"
 	>
 		<div class="col-auto">
 			<div class="row justify-center">
-				<div class="col-xs col-lg-8">
+				<div class="col-xs-12 col-sm-7 col-lg-6 col-xl-5">
 					<ProducerFilterHome />
 				</div>
 			</div>
 		</div>
 		<div class="col-auto q-mb-sm">
 			<div class="row justify-center">
-				<div class="col-xs col-lg-8">
+				<div class="col-xs-12 col-sm-7 col-lg-6 col-xl-5">
 					<ProducerCategoriesHome
 						@change="setCategories"
 					/>
@@ -21,7 +21,7 @@
 		</div>
 		<div class="col-grow">
 			<div class="row justify-center">
-				<div class="col-xs col-lg-8">
+				<div class="col-xs-12 col-sm-7 col-lg-6 col-xl-5">
 					<ProducerListHome
 						:categories="selectedCategories"
 					/>

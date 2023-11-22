@@ -376,4 +376,6 @@ const toggleImageThumbnail = (image_id) => {
 
 	emit("update:modelValue", Object.assign(props.modelValue, { thumbnail_id }))
 }
+
+// todo - if images are deleted from the last slide then all images disappear (reset count slide on save)
 </script>
