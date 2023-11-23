@@ -37,6 +37,7 @@ const filterTags = (val, update) => {
 <template>
 	<div class="sticky__common_top q-my-sm">
 		<q-select
+			square
 			filled
 			multiple
 			clearable

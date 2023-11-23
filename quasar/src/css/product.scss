@@ -6,7 +6,7 @@
 
 		&_expand {
 			& .product__card-image {
-				border-radius: 4px 0 0 0;
+				border-radius: 0 0 0 0;
 			}
 
 			& .product__card-carousel {
@@ -16,7 +16,7 @@
 
 		&_shrink {
 			& .product__card-image {
-				border-radius: 8px 8px 0 0;
+				border-radius: 4px 4px 0 0;
 			}
 		}
 

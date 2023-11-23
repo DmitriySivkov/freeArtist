@@ -35,30 +35,52 @@
 								transition-next="slide-left"
 								swipeable
 								animated
+								:draggable="false"
+								keep-alive
 							>
 								<q-carousel-slide
-									v-for="i in Math.ceil(producer.products.length/3)"
+									v-for="i in Math.ceil(producer.products.length/2)"
 									:key="i"
 									:name="i"
 									class="q-pa-none overflow-hidden"
 								>
-									<div class="col row">
-										<div class="col-9">
+									<div
+										class="col row"
+										:class="
+											producer.products.length > 2 ?
+												(
+													i === 1 ? 'justify-start'
+													: (i === Math.ceil(producer.products.length/2) ? 'justify-end' : 'justify-center')
+												)
+												: 'justify-center'
+										"
+									>
+										<div class="col-10">
 											<div
-												class="row q-gutter-xs no-wrap q-py-sm"
-												:class="{'justify-center': i !== 1}"
+												class="row q-gutter-xs q-py-sm no-wrap"
+												:class="
+													producer.products.length > 2 ?
+														(
+															i === 1 ? 'justify-start'
+															: (i === Math.ceil(producer.products.length/2) ? 'justify-end' : 'justify-center')
+														)
+														: 'justify-center'
+												"
 											>
 												<q-card
-													v-for="(product, productIndex) in producer.products.slice((i-1)*3 - (i !== 1 ? 2 : 0), i*3 - (i !== 1 ? 1 : 0))"
+													v-for="product in producer.products.slice((i-1)*3 - (i === 1 ? 0 : i), i*3 - (i === 1 ? 0 : i-1))"
 													:key="product.thumbnail.id"
 													class="col-6 full-height"
-													:class="{[$style.tilted]: productIndex === 0 && i !== 1}"
 												>
 													<q-img
 														no-spinner
 														:src="backendServer + '/storage/' + product.thumbnail.path"
 													/>
 												</q-card>
+												<div
+													v-if="producer.products.length % 2 !== 0 && i === Math.ceil(producer.products.length/2)"
+													class="col-6"
+												></div>
 											</div>
 										</div>
 									</div>
@@ -83,9 +105,7 @@
 									</q-carousel-control>
 
 									<q-carousel-control
-										v-if="
-											producer.products.length > 3
-										"
+										v-if="producer.products.length > 2 && slide[producer.id] !== Math.ceil(producer.products.length/2)"
 										position="right"
 										:offset="[0, 0]"
 										class="flex flex-center"
@@ -219,9 +239,3 @@ watch([
 	deep: true
 })
 </script>
-
-<style lang="scss" module>
-.tilted {
-	margin-left: 32%;
-}
-</style>
