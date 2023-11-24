@@ -36,7 +36,6 @@ const items = [
 	{ title: "Заявки", link: "/personal/team/requests" },
 	{ title: "Разрешения", link: "/personal/team/permissions" },
 	{ title: "Управлять продуктами", link: "/personal/producer/products" },
-	{ title: "Управлять витриной", link: "/personal/producer/storefront" },
 	{ title: "Способы оплаты", link: "/personal/producer/payment-methods" }
 ]
 

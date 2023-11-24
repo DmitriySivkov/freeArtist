@@ -23,14 +23,14 @@
 								<q-img
 									no-spinner
 									class="product__card-image fit"
-									:src="producer.storefront_image ? `${backendServer}/storage/${producer.storefront_image.path}` : '/no-image.png'"
+									:src="producer.logo ? `${backendServer}/storage/${producer.logo.path}` : '/no-image.png'"
 									:ratio="16/9"
 								/>
 							</div>
 							<q-carousel
 								:ref="el => carousel.push(el)"
 								v-model="slide[producer.id]"
-								class="col-12 bg-secondary product__card-carousel q-px-sm"
+								class="col-12 bg-secondary product__card-carousel q-px-xs"
 								transition-prev="slide-right"
 								transition-next="slide-left"
 								swipeable
@@ -57,7 +57,7 @@
 									>
 										<div class="col-10">
 											<div
-												class="row q-gutter-xs q-py-sm no-wrap"
+												class="row q-gutter-xs q-py-xs no-wrap"
 												:class="
 													producer.products.length > 2 ?
 														(
@@ -145,7 +145,6 @@ import { computed, ref, watch, onBeforeUnmount } from "vue"
 import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
-import { useProducerStore } from "src/stores/producer"
 import { useQuasar } from "quasar"
 import { debounce } from "lodash"
 import ProducerListHomeSkeleton from "src/components/skeletons/ProducerListHomeSkeleton.vue"
@@ -157,7 +156,6 @@ const props = defineProps({
 const $q = useQuasar()
 const cartStore = useCartStore()
 const userStore = useUserStore()
-const producerStore = useProducerStore()
 
 const backendServer = process.env.BACKEND_SERVER
 

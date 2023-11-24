@@ -9,7 +9,7 @@
 					<Cropper
 						v-if="tmpImage"
 						ref="cropper"
-						class="absolute"
+						class="absolute fit"
 						:src="tmpImage"
 						:stencil-props="{aspectRatio: 16/9}"
 					/>
@@ -219,9 +219,6 @@
 <script setup>
 import { useQuasar, Dialog } from "quasar"
 import { computed, ref} from "vue"
-import { Plugins, CameraResultType } from "@capacitor/core"
-import { cameraService } from "src/services/cameraService"
-import AddImageDialog from "src/components/dialogs/AddImageDialog.vue"
 import { clone, omit } from "lodash"
 import { Cropper } from "vue-advanced-cropper"
 import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
@@ -248,9 +245,6 @@ const filePicker = ref(null)
 const cropper = ref(null)
 
 const isDragging = ref(false)
-
-const { base64ToBlob } = cameraService()
-const { Camera } = Plugins
 
 const backendServer = process.env.BACKEND_SERVER
 
@@ -319,37 +313,7 @@ const drop = (e) => {
 }
 
 const showFilePrompt = () => {
-	if ($q.platform.is.desktop) {
-		fromGallery()
-		return
-	}
-
-	$q.dialog({
-		component: AddImageDialog
-	}).onOk((option) => {
-		if (option === 1)
-			fromGallery()
-		if (option === 2)
-			fromCamera()
-	})
-}
-
-const fromGallery = () => {
 	filePicker.value.pickFiles()
-}
-
-// todo - check camera
-const fromCamera = async () => {
-	const img = await Camera.getPhoto({
-		quality: 90,
-		allowEditing: false,
-		resultType: CameraResultType.DataUrl
-	})
-
-	const blob = await base64ToBlob(img.dataUrl)
-	const imgFile = new File([blob], "no-matter.jpg")
-
-	filePicker.value.addFiles([imgFile])
 }
 
 const toggleImageRemoval = (image_id) => {

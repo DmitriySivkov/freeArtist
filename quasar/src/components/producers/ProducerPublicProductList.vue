@@ -64,7 +64,6 @@ import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
 import { computed, ref, watch, onBeforeUnmount } from "vue"
 import { useCartStore } from "src/stores/cart"
-import { useProducerStore } from "src/stores/producer"
 import ProducerPublicProductListSkeleton from "src/components/skeletons/ProducerPublicProductListSkeleton.vue"
 import { debounce } from "lodash"
 
@@ -76,9 +75,8 @@ const props = defineProps({
 })
 
 const $router = useRouter()
-const cart_store = useCartStore()
-const producerStore = useProducerStore()
-const cart = computed(() => cart_store.data)
+const cartStore = useCartStore()
+const cart = computed(() => cartStore.data)
 const backendServer = process.env.BACKEND_SERVER
 
 const products = ref([])

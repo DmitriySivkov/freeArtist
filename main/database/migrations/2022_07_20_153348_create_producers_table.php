@@ -19,8 +19,6 @@ return new class extends Migration
 				->nullable();
 			$table->unsignedInteger('city_id')
 				->nullable();
-			$table->unsignedInteger('storefront_image_id')
-				->nullable();
             $table->timestamps();
         });
     }

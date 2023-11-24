@@ -40,7 +40,7 @@ class ProducerController extends Controller
 							);
 						});
 				},
-				'storefrontImage'
+				'logo'
 			])
 			->whereHas('products.images')
 			->when((int)$request->input('range') === User::RANGE_NEARBY,

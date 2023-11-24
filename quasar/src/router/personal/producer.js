@@ -72,23 +72,6 @@ export default [
 		}
 	},
 	{
-		name: "personal_producer_storefront",
-		path: "personal/producer/storefront",
-		component: () => import("pages/personal/producer/Storefront.vue"),
-		meta: {
-			route_name: "Настройки витрины"
-		}
-	},
-	{
-		name: "personal_producer_storefront_detail",
-		path: "personal/producer/:producer_id/storefront",
-		component: () => import("pages/personal/producer/StorefrontDetail.vue"),
-		meta: {
-			route_name: "Настройки витрины"
-		}
-	},
-
-	{
 		name: "personal_producer_payment_methods",
 		path: "personal/producer/payment-methods",
 		component: () => import("pages/personal/producer/PaymentMethods.vue"),

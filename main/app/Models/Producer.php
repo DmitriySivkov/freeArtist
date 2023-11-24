@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string|null $logo_id
  * @property int|null $city_id
- * @property int|null $storefront_image_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\City|null $city
@@ -26,7 +25,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $payment_methods_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
  * @property-read int|null $products_count
- * @property-read \App\Models\Image|null $storefrontImage
  * @property-read \App\Models\Team|null $team
  * @method static \Illuminate\Database\Eloquent\Builder|Producer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Producer newQuery()
@@ -35,7 +33,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereLogoId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Producer whereStorefrontImageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerOrderPriority[] $orderPriorities
@@ -45,24 +42,12 @@ class Producer extends Model
 {
 	protected $guarded = [];
 
-	protected $casts = [
-		'storefront' => 'json'
-	];
-
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function logo()
 	{
 		return $this->belongsTo(Image::class, 'logo_id');
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function storefrontImage()
-	{
-		return $this->belongsTo(Image::class, 'storefront_image_id');
 	}
 
 	/**
