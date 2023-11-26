@@ -9,7 +9,7 @@
 					<q-card
 						v-for="order in orders"
 						:key="order.id"
-						class="col q-mb-xs"
+						class="col q-my-xs q-pa-sm"
 					>
 						<div class="row">
 							<div class="col-12">
