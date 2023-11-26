@@ -8,6 +8,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
@@ -31,9 +32,11 @@ class AuthController extends Controller
 			$currentToken->delete();
 		}
 
-		Auth::guard('web')->logout();
+		$forgetCookie = Cookie::forget('token');
 
-        return response('Успешно', 200);
+		Auth::guard('web')->logout(); // todo - check if required
+
+        return response('Успешно', 200)->withCookie($forgetCookie);
     }
 
 	/**

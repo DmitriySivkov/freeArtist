@@ -70,7 +70,8 @@ Route::group(['prefix' => 'cart'], function() {
 	Route::post('checkProducts', [\App\Http\Controllers\CartController::class, 'checkProducts']);
 });
 
-Route::group(['prefix' => 'orders'], function () {
+// do append a middleware since routes below apply both for auth & unauth users
+Route::group(['prefix' => 'orders', 'middleware' => [\App\Http\Middleware\AppendAuthHeader::class]], function () {
 	Route::get('', [OrderController::class, 'index']);
 	Route::post('', [OrderController::class, 'store']);
 });

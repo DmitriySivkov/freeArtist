@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\TokenHelper;
 use App\Http\Requests\UserNewOrderRequest;
 use App\Models\Order;
 use App\Models\ProducerOrderPriority;
@@ -12,8 +13,8 @@ class OrderController extends Controller
 {
     public function index(UserOrderService $orderService)
     {
-		/** @var User $user */
-		$user = auth()->user();
+		/** @var User|null $user */
+		$user = TokenHelper::getUserByToken(request()->cookie('token'));
 
 		$orderService->setUser($user);
 
@@ -22,6 +23,9 @@ class OrderController extends Controller
 
     public function store(UserNewOrderRequest $request, UserOrderService $orderService)
 	{
+		/** @var User|null $user */
+		$user = TokenHelper::getUserByToken(request()->cookie('token'));
+
 		$orderData = $request->validated();
 
 		$invalidProducts = $orderService->findInvalidProducts($orderData['order_products']);
@@ -39,6 +43,8 @@ class OrderController extends Controller
 
 		try {
 			\DB::beginTransaction();
+
+			$orderService->setUser($user);
 
 			$order = $orderService->processOrder($orderData);
 
