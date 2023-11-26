@@ -39,7 +39,6 @@ class Permission extends LaratrustPermission
 		self::PERMISSION_PRODUCER_PERMISSIONS,
 		self::PERMISSION_PRODUCER_PRODUCT,
 		self::PERMISSION_PRODUCER_LOGO,
-		self::PERMISSION_PRODUCER_STOREFRONT,
 		self::PERMISSION_PRODUCER_PAYMENT_METHODS
 	];
 
@@ -61,11 +60,6 @@ class Permission extends LaratrustPermission
 	const PERMISSION_PRODUCER_LOGO = [
 		'name' => 'producer_logo',
 		'display_name' => 'Изменение логотипа',
-		'description' => ''
-	];
-	const PERMISSION_PRODUCER_STOREFRONT = [
-		'name' => 'producer_storefront',
-		'display_name' => 'Управление витриной',
 		'description' => ''
 	];
 	const PERMISSION_PRODUCER_PAYMENT_METHODS = [

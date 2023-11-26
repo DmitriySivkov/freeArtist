@@ -129,8 +129,7 @@ class AuthService
 			$team->loadMorph('detailed', [
 				Producer::class => [
 					'city',
-					'logo',
-					'storefrontImage'
+					'logo'
 				]
 			]);
 			return $team;
