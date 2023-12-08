@@ -4,7 +4,7 @@
 		:class="boardClass"
 	>
 		<div class="column full-height q-pb-xs q-ml-sm">
-			<div class="col-shrink">
+			<div class="col-auto">
 				<div class="row q-py-sm">
 					<q-chip
 						square
@@ -16,45 +16,47 @@
 					</q-chip>
 				</div>
 			</div>
-			<q-scroll-area class="col full-height">
-				<div class="absolute fit column no-wrap">
-					<!-- todo - stretch and make gutter -->
-					<draggable
-						:list="orders"
-						group="orders"
-						@start="drag=true"
-						@end="onEnd"
-						:item-key="(order) => order.id"
-						class="row full-height q-gutter-xs"
-						:component-data="{
-							tag: 'div',
-							type: 'transition-group',
-							name: 'fade',
-							id: boardId
-						}"
-						v-bind="{
-							animation: 200,
-							group: 'orders',
-							disabled: false,
-							ghostClass
-						}"
-					>
-						<template #item="{ element }">
-							<q-card
-								class="col-3 full-height flex flex-center cursor-pointer q-hoverable"
-								:class="cardClass"
-								@click="$emit('show', element)"
-								style="max-height:45%"
-							>
-								<span class="q-focus-helper"></span>
-								<div class="text-center">
-									#{{ element.id }}
-								</div>
-							</q-card>
-						</template>
-					</draggable>
-				</div>
-			</q-scroll-area>
+
+			<div
+				class="col"
+				:class="$style['board__scrollable']"
+			>
+				<draggable
+					:list="orders"
+					group="orders"
+					@start="drag=true"
+					@end="onEnd"
+					:item-key="(order) => order.id"
+					class="row full-height q-gutter-xs"
+					:component-data="{
+						type: 'transition-group',
+						name: 'fade',
+						id: boardId
+					}"
+					v-bind="{
+						animation: 200,
+						group: 'orders',
+						disabled: false,
+						ghostClass,
+						delay: 700,
+						delayOnTouchOnly: true
+					}"
+				>
+					<template #item="{ element }">
+						<q-card
+							class="col-3 flex flex-center cursor-pointer q-hoverable"
+							:class="cardClass"
+							@click="$emit('show', element)"
+							style="height:45%"
+						>
+							<span class="q-focus-helper"></span>
+							<div class="text-center">
+								#{{ element.id }}
+							</div>
+						</q-card>
+					</template>
+				</draggable>
+			</div>
 		</div>
 	</q-card>
 </template>
@@ -105,3 +107,14 @@ const props = defineProps({
 
 const drag = ref(false)
 </script>
+
+<style lang="scss" module>
+.board {
+	&__scrollable {
+		overflow-y: scroll;
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+}
+</style>
