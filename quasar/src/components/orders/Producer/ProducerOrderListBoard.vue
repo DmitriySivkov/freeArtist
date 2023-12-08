@@ -1,31 +1,44 @@
 <template>
 	<q-card
-		class="col"
+		class="col q-px-xs"
 		:class="boardClass"
 	>
-		<div class="column full-height q-pb-xs q-ml-sm">
+		<div class="column full-height q-pb-xs">
 			<div class="col-auto">
-				<div class="row q-py-sm">
-					<q-chip
-						square
-						:color="chipColor"
-						text-color="white"
-						class="q-ma-none"
+				<div class="row q-py-xs">
+					<div class="col">
+						<q-btn
+							no-caps
+							:color="chipColor"
+							:label="boardName"
+							:loading="isMounting"
+							class="cursor-inherit"
+						/>
+					</div>
+					<div
+						v-if="withCalendar"
+						class="col-shrink"
 					>
-						{{ boardName }}
-					</q-chip>
+						<q-btn
+							:color="chipColor"
+							icon="date_range"
+							:loading="loadingBoard === boardId"
+							@click="showCalendarDialog"
+						/>
+					</div>
 				</div>
 			</div>
 
 			<div
 				class="col"
-				:class="$style['board__scrollable']"
+				:class="draggableContainerClass"
 			>
 				<draggable
 					:list="orders"
 					group="orders"
 					@start="drag=true"
 					@end="onEnd"
+					:sort="isSortable"
 					:item-key="(order) => order.id"
 					class="row full-height q-gutter-xs"
 					:component-data="{
@@ -46,7 +59,7 @@
 						<q-card
 							class="col-3 flex flex-center cursor-pointer q-hoverable"
 							:class="cardClass"
-							@click="$emit('show', element)"
+							@click="showCalendarDialog"
 							style="height:45%"
 						>
 							<span class="q-focus-helper"></span>
@@ -62,15 +75,15 @@
 </template>
 
 <script setup>
-import { defineComponent, ref } from "vue"
+import { ref } from "vue"
+import { date, Dialog} from "quasar"
 import draggable from "vuedraggable"
-
-defineComponent({
-	draggable
-})
+import ProducerOrderListCalendarDialog from "src/components/dialogs/ProducerOrderListCalendarDialog.vue"
 
 const emit = defineEmits([
-	"show", "change"
+	"show",
+	"change",
+	"calendar"
 ])
 
 const onEnd = (e) => {
@@ -102,19 +115,40 @@ const props = defineProps({
 	boardClass: String,
 	cardClass: String,
 	chipColor: String,
+	isMounting: Boolean,
 	ghostClass: String,
+	draggableContainerClass: String,
+	withCalendar: {
+		type: Boolean,
+		default: false
+	},
+	loadingBoard: {
+		type: Number,
+		required: false
+	},
+	isSortable: {
+		type: Boolean,
+		default: false
+	}
 })
 
 const drag = ref(false)
-</script>
 
-<style lang="scss" module>
-.board {
-	&__scrollable {
-		overflow-y: scroll;
-		&::-webkit-scrollbar {
-			display: none;
+const calendarDate = ref(
+	date.formatDate(Date.now(), "DD.MM.YYYY")
+)
+
+const showCalendarDialog = () => {
+	Dialog.create({
+		component: ProducerOrderListCalendarDialog,
+		componentProps: {
+			date: calendarDate.value,
+			calendarColor: props.chipColor
 		}
-	}
+	}).onOk((date) => {
+		calendarDate.value = date
+
+		emit("calendar", date)
+	})
 }
-</style>
+</script>

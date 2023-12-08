@@ -8,7 +8,13 @@
 			:card-class="'text-white bg-blue-9'"
 			:chip-color="'blue-9'"
 			:ghost-class="$style.ghost__new"
-			@show="showOrderDetails"
+			:draggable-container-class="$style.board__scrollable"
+			:is-mounting="isMounting"
+			is-sortable
+			@show="showOrderDetails({
+				order: $event,
+				popupClass: 'text-white bg-blue-9'
+			})"
 			@change="changeOrderStatus"
 		/>
 
@@ -20,7 +26,13 @@
 			:card-class="'text-white bg-green-9'"
 			:chip-color="'green-9'"
 			:ghost-class="$style.ghost__process"
-			@show="showOrderDetails"
+			:draggable-container-class="$style.board__scrollable"
+			:is-mounting="isMounting"
+			is-sortable
+			@show="showOrderDetails({
+				order: $event,
+				popupClass: 'text-white bg-green-9'
+			})"
 			@change="changeOrderStatus"
 		/>
 
@@ -32,8 +44,20 @@
 			:card-class="'text-white bg-red-9'"
 			:chip-color="'red-9'"
 			:ghost-class="$style.ghost__cancel"
-			@show="showOrderDetails"
+			:draggable-container-class="$style.board__scrollable"
+			:is-mounting="isMounting"
+			with-calendar
+			:loading-board="loadingBoard"
+			@show="showOrderDetails({
+				order: $event,
+				popupClass: 'text-white bg-red-9'
+			})"
 			@change="changeOrderStatus"
+			@calendar="loadOrders({
+				date:$event,
+				status:ORDER_STATUSES.CANCEL,
+				isMount:false
+			})"
 		/>
 
 		<ProducerOrderListBoard
@@ -44,31 +68,39 @@
 			:card-class="'text-white bg-grey-8'"
 			:chip-color="'grey-8'"
 			:ghost-class="$style.ghost__done"
-			@show="showOrderDetails"
+			:draggable-container-class="$style.board__scrollable"
+			:is-mounting="isMounting"
+			with-calendar
+			:loading-board="loadingBoard"
+			@show="showOrderDetails({
+				order: $event,
+				popupClass: 'text-white bg-grey-8'
+			})"
 			@change="changeOrderStatus"
+			@calendar="loadOrders({
+				date:$event,
+				status:ORDER_STATUSES.DONE,
+				isMount:false
+			})"
 		/>
 
 	</div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue"
+import { ref, onMounted } from "vue"
 import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
 import { Dialog } from "quasar"
+import { debounce } from "lodash"
 import { ORDER_STATUSES, ORDER_STATUS_NAMES } from "src/const/orderStatuses"
 import OrderCardDetailDialog from "src/components/dialogs/OrderCardDetailDialog.vue"
 import ProducerOrderListBoard from "src/components/orders/Producer/ProducerOrderListBoard.vue"
-
-const props = defineProps({
-	date: [String, Object]
-})
-
-const emit = defineEmits([
-	"load"
-])
+import { useNotification } from "src/composables/notification"
 
 const $router = useRouter()
+
+const { notifyError } = useNotification()
 
 const orderList = ref({
 	[ORDER_STATUSES.NEW]: [],
@@ -77,61 +109,95 @@ const orderList = ref({
 	[ORDER_STATUSES.DONE]: []
 })
 
+const isMounting = ref(true)
+
 onMounted(() => {
-	loadOrders(props.date)
+	loadOrders({
+		date: null,
+		status: null,
+		isMount: true
+	})
 })
 
-const loadOrders = (date) => {
-	emit("load", true)
+const loadingBoard = ref(null)
+
+const loadOrders = async({ date, status, isMount }) => {
+	if (status) {
+		loadingBoard.value = status
+	}
 
 	const promise = api.get(`personal/producers/${$router.currentRoute.value.params.producer_id}/orders`,{
 		params: {
-			date
+			date,
+			status
 		}
 	})
 
 	// todo - catch
 	promise.then((response) => {
-		orderList.value = response.data
+		if (!status) {
+			orderList.value = response.data
+		} else {
+			orderList.value[status] = response.data
+		}
 	})
 
-	promise.finally(() => emit("load", false))
+	promise.finally(() => {
+		if (isMount) {
+			isMounting.value = false
+		}
+		if (loadingBoard.value) {
+			loadingBoard.value = null
+		}
+	})
 }
 
-const showOrderDetails = (order) => {
+const showOrderDetails = ({order, popupClass}) => {
 	Dialog.create({
 		component: OrderCardDetailDialog,
-		componentProps: { order }
+		componentProps: {
+			producerId: $router.currentRoute.value.params.producer_id,
+			order,
+			popupClass
+		}
 	})
 }
 
-const changeOrderStatus = ({ orderId, statusId, previousStatusId, index, previousIndex }) => {
+const fromBoard = ref(null)
+
+const moveOrders = ref({})
+
+const changeOrderStatus = ({ orderId, fromStatus, statusId }) => {
+	fromBoard.value = null
+
+	moveOrders.value[orderId] = {
+		order_id: orderId,
+		status_id: statusId,
+	}
+
+	const movableOrderIndex = orderList.value[fromStatus].findIndex((o) => o.id === orderId)
+
+	const movableOrder = orderList.value[fromStatus].splice(movableOrderIndex, 1)[0]
+
+	orderList.value[statusId].unshift(movableOrder)
+
+	moveOrdersAction()
+}
+
+const moveOrdersAction = debounce(() => {
+	const movableOrders = Object.values(moveOrders.value)
+
 	const promise = api.post(
-		`personal/producers/${$router.currentRoute.value.params.producer_id}/orders/${orderId}/move`,
+		`personal/producers/${$router.currentRoute.value.params.producer_id}/orders/move`,
 		{
-			status: statusId,
-			position: index,
-			from_status: previousStatusId
+			movableOrders
 		}
 	)
 
-	promise.then(() => {
-		const order = orderList.value[statusId].find((o) => o.id === orderId)
-		order.status = statusId
+	promise.catch((error) => {
+		notifyError(error.response.data)
 	})
-
-	promise.catch(() => {
-		const order = orderList.value[statusId].find((o) => o.id === orderId)
-
-		orderList.value[previousStatusId].splice(previousIndex, 0, order)
-		orderList.value[statusId] = orderList.value[statusId].filter((o) => o.id !== orderId)
-	})
-}
-
-watch(
-	() => props.date,
-	(date) => loadOrders(date)
-)
+}, 3000)
 </script>
 
 <style lang="scss" module>
@@ -151,6 +217,14 @@ watch(
 	&__done {
 		opacity: 0.5;
 		background: #616161;
+	}
+}
+.board {
+	&__scrollable {
+		overflow-y: scroll;
+		&::-webkit-scrollbar {
+			display: none;
+		}
 	}
 }
 </style>

@@ -13,6 +13,7 @@
 				minimal
 				range
 				style="width:100%"
+				:color="calendarColor"
 			/>
 		</q-card>
 	</q-dialog>
@@ -28,7 +29,8 @@ defineEmits([
 ])
 
 defineProps({
-	date: [String, Object]
+	date: [String, Object],
+	calendarColor: String
 })
 
 const ruLocale = {
