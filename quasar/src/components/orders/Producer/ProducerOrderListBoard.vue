@@ -60,7 +60,7 @@
 							class="col-3 flex flex-center cursor-pointer q-hoverable"
 							:class="cardClass"
 							@click="$emit('show', element)"
-							style="max-height:45%"
+							style="height:45%"
 						>
 							<span class="q-focus-helper"></span>
 							<div class="text-center">
