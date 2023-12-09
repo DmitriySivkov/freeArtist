@@ -5,14 +5,13 @@
 	>
 		<div class="col-auto sticky__common_top">
 			<div class="row full-height">
-				<q-card
-					square
-					class="col-12 flex flex-center q-px-md q-py-lg bg-green-4 cursor-pointer q-hoverable"
-					@click.prevent="$router.go({name:'personal_producer_products_detail_create'})"
+				<q-btn
+					no-caps
+					class="col-12 flex flex-center q-px-md q-py-lg bg-green-4 cursor-pointer"
+					:to="{name:'personal_producer_products_detail_create'}"
 				>
-					<span class="q-focus-helper"></span>
 					<span class="text-body1 text-white">Создать продукт</span>
-				</q-card>
+				</q-btn>
 			</div>
 		</div>
 

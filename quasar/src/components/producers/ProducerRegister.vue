@@ -30,7 +30,6 @@
 					label="Начните вводить название города"
 					:options="locationOptions"
 					@filter="loadLocation"
-					behavior="dialog"
 					:lazy-rules="true"
 					:rules="[
 						val => !!val,

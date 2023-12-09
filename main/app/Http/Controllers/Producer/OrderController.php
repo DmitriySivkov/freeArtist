@@ -30,9 +30,20 @@ class OrderController extends Controller
 			foreach($request->all() as $status => $orderIds) {
 				// priority only for 'new' & 'process' statuses because other are affected by calendar filter + amount issue
 				if (in_array($status, [Order::ORDER_STATUS_NEW, Order::ORDER_STATUS_PROCESS])) {
-					ProducerOrderPriority::where('producer_id', $producer->id)
+					$orderPriority = ProducerOrderPriority::where('producer_id', $producer->id)
 						->where('status', $status)
-						->update(['order_priority' => $orderIds]);
+						->first();
+
+					if ($orderPriority) {
+						$orderPriority->order_priority = $orderIds;
+						$orderPriority->save();
+					} else {
+						ProducerOrderPriority::create([
+							'producer_id' => $producer->id,
+							'status' => $status,
+							'order_priority' => $orderIds
+						]);
+					}
 				}
 
 				Order::whereIn('id', $orderIds)
