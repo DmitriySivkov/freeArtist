@@ -3,19 +3,19 @@
 		ref="dialogRef"
 		@hide="onDialogHide"
 	>
-		<q-card class="q-dialog-plugin bg-primary text-white">
-			<q-card-section class="q-py-none">
-				<q-item class="q-pa-none">
-					<q-item-section
-						side
-						class="text-white"
-					>
+		<q-card
+			class="q-dialog-plugin"
+			:class="popupClass"
+		>
+			<q-card-section class="q-py-sm">
+				<div class="row">
+					<div class="col-shrink">
 						#{{ order.id }}
-					</q-item-section>
-					<q-item-section class="text-right">
+					</div>
+					<div class="col text-right">
 						{{ order.created_at }}
-					</q-item-section>
-				</q-item>
+					</div>
+				</div>
 			</q-card-section>
 			<q-separator class="full-width" />
 			<q-card-section>
@@ -51,10 +51,11 @@ defineEmits([
 	...useDialogPluginComponent.emits,
 ])
 
-defineProps({
-	order: Object
+const props = defineProps({
+	producerId: String,
+	order: Object,
+	popupClass: String
 })
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
-
 </script>

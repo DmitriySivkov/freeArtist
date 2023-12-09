@@ -15,7 +15,7 @@
 				order: $event,
 				popupClass: 'text-white bg-blue-9'
 			})"
-			@change="changeOrderStatus"
+			@change="moveOrder"
 		/>
 
 		<ProducerOrderListBoard
@@ -33,7 +33,7 @@
 				order: $event,
 				popupClass: 'text-white bg-green-9'
 			})"
-			@change="changeOrderStatus"
+			@change="moveOrder"
 		/>
 
 		<ProducerOrderListBoard
@@ -52,7 +52,7 @@
 				order: $event,
 				popupClass: 'text-white bg-red-9'
 			})"
-			@change="changeOrderStatus"
+			@change="moveOrder"
 			@calendar="loadOrders({
 				date:$event,
 				status:ORDER_STATUSES.CANCEL,
@@ -76,7 +76,7 @@
 				order: $event,
 				popupClass: 'text-white bg-grey-8'
 			})"
-			@change="changeOrderStatus"
+			@change="moveOrder"
 			@calendar="loadOrders({
 				date:$event,
 				status:ORDER_STATUSES.DONE,
@@ -97,9 +97,10 @@ import { ORDER_STATUSES, ORDER_STATUS_NAMES } from "src/const/orderStatuses"
 import OrderCardDetailDialog from "src/components/dialogs/OrderCardDetailDialog.vue"
 import ProducerOrderListBoard from "src/components/orders/Producer/ProducerOrderListBoard.vue"
 import { useNotification } from "src/composables/notification"
+import { map, mapValues } from "lodash"
 
 const $router = useRouter()
-
+// todo - calendar + init load + backend controllers
 const { notifyError } = useNotification()
 
 const orderList = ref({
@@ -163,40 +164,20 @@ const showOrderDetails = ({order, popupClass}) => {
 	})
 }
 
-const fromBoard = ref(null)
+const movableOrders = ref({})
 
-const moveOrders = ref({})
-
-const changeOrderStatus = ({ orderId, fromStatus, statusId }) => {
-	fromBoard.value = null
-
-	moveOrders.value[orderId] = {
-		order_id: orderId,
-		status_id: statusId,
-	}
-
-	const movableOrderIndex = orderList.value[fromStatus].findIndex((o) => o.id === orderId)
-
-	const movableOrder = orderList.value[fromStatus].splice(movableOrderIndex, 1)[0]
-
-	orderList.value[statusId].unshift(movableOrder)
-
-	moveOrdersAction()
-}
-
-const moveOrdersAction = debounce(() => {
-	const movableOrders = Object.values(moveOrders.value)
-
+const moveOrder = debounce(() => {
 	const promise = api.post(
 		`personal/producers/${$router.currentRoute.value.params.producer_id}/orders/move`,
-		{
-			movableOrders
-		}
+		mapValues(orderList.value, (orderStatusList) => map(orderStatusList, "id"))
 	)
 
-	promise.catch((error) => {
-		notifyError(error.response.data)
+	promise.catch(() => {
+		notifyError("Что-то пошло не так") // todo - return back failed orders
 	})
+
+	promise.finally(() => movableOrders.value = {})
+	// //todo - clear movableOrders on success
 }, 3000)
 </script>
 

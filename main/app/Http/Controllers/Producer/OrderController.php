@@ -18,50 +18,31 @@ class OrderController extends Controller
         return $orderService->getOrderList();
     }
 
-	public function move(Request $request, Producer $producer, Order $order, ProducerOrderService $orderService)
+	public function move(Request $request, Producer $producer, ProducerOrderService $orderService)
 	{
+		// todo - request
 		// todo - check producer rights
-		$fromStatus = $request->input('from_status');
-		$orderStatus = $request->input('status');
-		$position = $request->input('position');
-
-		// todo - try catch + db migration (commit/rollback)
 		// todo - move to service
-		$producerOrderPriority = ProducerOrderPriority::where('producer_id', $producer->id)
-			->where('status', $orderStatus)
-			->first();
 
-		if ($producerOrderPriority) {
-			$priority = collect($producerOrderPriority->order_priority)
-				->filter(fn($orderId) => $orderId !== $order->id)
-				->toArray();
+		try {
+			\DB::beginTransaction();
 
-			array_splice($priority, $position, 0, $order->id);
+			foreach($request->all() as $status => $orderIds) {
+				// priority only for 'new' & 'process' statuses because other are affected by calendar filter + amount issue
+				if (in_array($status, [Order::ORDER_STATUS_NEW, Order::ORDER_STATUS_PROCESS])) {
+					ProducerOrderPriority::where('producer_id', $producer->id)
+						->where('status', $status)
+						->update(['order_priority' => $orderIds]);
+				}
 
-			$producerOrderPriority->order_priority = $priority;
+				Order::whereIn('id', $orderIds)
+					->where('status', '!=', $status)
+					->update(['status' => $status]);
+			}
 
-			$producerOrderPriority->save();
-		} else {
-			ProducerOrderPriority::create([
-				'producer_id' => $producer->id,
-				'status' => $orderStatus,
-				'order_priority' => [$order->id]
-			]);
+			\DB::commit();
+		} catch (\Throwable) {
+			\DB::rollBack();
 		}
-
-		if ($orderStatus !== $fromStatus) {
-			$fromBoard = ProducerOrderPriority::where('producer_id', $producer->id)
-				->where('status', $fromStatus)
-				->first();
-
-			$fromBoard->order_priority = collect($fromBoard->order_priority)
-				->filter(fn($orderId) => $orderId !== $order->id)
-				->values();
-
-			$fromBoard->save();
-		}
-
-		$order->status = $orderStatus;
-		$order->save();
 	}
 }

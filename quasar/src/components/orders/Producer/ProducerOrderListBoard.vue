@@ -59,8 +59,8 @@
 						<q-card
 							class="col-3 flex flex-center cursor-pointer q-hoverable"
 							:class="cardClass"
-							@click="showCalendarDialog"
-							style="height:45%"
+							@click="$emit('show', element)"
+							style="max-height:45%"
 						>
 							<span class="q-focus-helper"></span>
 							<div class="text-center">
@@ -79,7 +79,7 @@ import { ref } from "vue"
 import { date, Dialog} from "quasar"
 import draggable from "vuedraggable"
 import ProducerOrderListCalendarDialog from "src/components/dialogs/ProducerOrderListCalendarDialog.vue"
-
+// todo - gutter height is unequal when 2 rows of orders
 const emit = defineEmits([
 	"show",
 	"change",
@@ -91,21 +91,13 @@ const onEnd = (e) => {
 
 	const statusId = parseInt(e.to.getAttribute("id"))
 
-	const orderId = e.item.__draggable_context.element.id
-
 	// if dropped to the same board & the same position
 	if (
 		props.boardId === statusId &&
 		e.oldIndex === e.newIndex
 	) return
 
-	emit("change", {
-		orderId,
-		statusId,
-		previousStatusId: props.boardId,
-		index: e.newIndex,
-		previousIndex: e.oldIndex
-	})
+	emit("change")
 }
 
 const props = defineProps({

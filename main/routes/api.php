@@ -109,7 +109,7 @@ Route::group([
 
 		Route::group(['prefix' => '{producer}/orders'], function () {
 			Route::get('', [\App\Http\Controllers\Producer\OrderController::class, 'index']);
-			Route::post('{order}/move', [\App\Http\Controllers\Producer\OrderController::class, 'move']);
+			Route::post('move', [\App\Http\Controllers\Producer\OrderController::class, 'move']);
 		});
 	});
 

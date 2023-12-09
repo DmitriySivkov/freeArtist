@@ -4,7 +4,6 @@
 namespace App\Services\Orders;
 
 use App\Contracts\OrderServiceContract;
-use App\Helpers\SortHelper;
 use App\Http\Resources\ProducerOrdersResource;
 use App\Models\Order;
 use App\Models\Producer;
@@ -24,7 +23,8 @@ class ProducerOrderService implements OrderServiceContract
 	public function getOrderList()
 	{
 		// todo - check access (middleware?)
-		$date = json_decode(request()->input('date'),true);
+		$date = json_decode(request()->input('date'), true);
+		$status = request()->input('status');
 
 		if (is_array($date)) {
 			$dateFrom = Carbon::parse($date['from'])->startOfDay();
@@ -34,32 +34,57 @@ class ProducerOrderService implements OrderServiceContract
 			$dateTo = Carbon::parse(request()->input('date'))->endOfDay();
 		}
 
-		$query = Order::where('producer_id', $this->producer->id)
-			->whereBetween('created_at', [$dateFrom, $dateTo]);
+		if ($status) {
+			$orders = Order::where('producer_id', $this->producer->id)
+				->where('status', $status)
+				->whereBetween('created_at', [$dateFrom, $dateTo])
+				->with([
+					'user',
+					'products'
+				])
+				->orderBy('created_at', 'desc')
+				->get();
 
-		$ordersRaw = $query->with([
-			'user',
-			'products'
-		])->get();
+			return ProducerOrdersResource::collection($orders)->collection;
+		} else {
+			$commonOrders = Order::where('producer_id', $this->producer->id)
+				->whereIn('status', [Order::ORDER_STATUS_NEW, Order::ORDER_STATUS_PROCESS])
+				->with([
+					'user',
+					'products'
+				])
+				->orderBy('created_at', 'desc')
+				->get();
 
-		$orderPriority = ProducerOrderPriority::where('producer_id', $this->producer->id)
-			->get();
+			$calendarOrders = Order::where('producer_id', $this->producer->id)
+				->whereBetween('created_at', [$dateFrom, $dateTo])
+				->whereIn('status', [Order::ORDER_STATUS_CANCEL, Order::ORDER_STATUS_DONE])
+				->with([
+					'user',
+					'products'
+				])
+				->orderBy('created_at', 'desc')
+				->get();
 
-		$orders = ProducerOrdersResource::collection($ordersRaw)->collection;
+			$orderPriority = ProducerOrderPriority::where('producer_id', $this->producer->id)
+				->get();
 
-		return [
-			Order::ORDER_STATUS_NEW => $this->getSortedOrders($orders, Order::ORDER_STATUS_NEW, $orderPriority)
-				->values(),
+			$orders = ProducerOrdersResource::collection($commonOrders->merge($calendarOrders))->collection;
 
-			Order::ORDER_STATUS_PROCESS => $this->getSortedOrders($orders, Order::ORDER_STATUS_PROCESS, $orderPriority)
-				->values(),
+			return [
+				Order::ORDER_STATUS_NEW => $this->getSortedOrders($orders, Order::ORDER_STATUS_NEW, $orderPriority)
+					->values(),
 
-			Order::ORDER_STATUS_CANCEL => $this->getSortedOrders($orders, Order::ORDER_STATUS_CANCEL, $orderPriority)
-				->values(),
+				Order::ORDER_STATUS_PROCESS => $this->getSortedOrders($orders, Order::ORDER_STATUS_PROCESS, $orderPriority)
+					->values(),
 
-			Order::ORDER_STATUS_DONE => $this->getSortedOrders($orders, Order::ORDER_STATUS_DONE, $orderPriority)
-				->values(),
-		];
+				Order::ORDER_STATUS_CANCEL => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_CANCEL)
+					->values(),
+
+				Order::ORDER_STATUS_DONE => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_DONE)
+					->values(),
+			];
+		}
 	}
 
 	public function processOrder($orderData)
