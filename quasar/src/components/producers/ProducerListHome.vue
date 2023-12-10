@@ -78,7 +78,11 @@
 													/>
 												</q-card>
 												<div
-													v-if="producer.products.length % 2 !== 0 && i === Math.ceil(producer.products.length/2)"
+													v-if="
+														producer.products.length > 2 &&
+															producer.products.length % 2 !== 0 &&
+															i === Math.ceil(producer.products.length/2)
+													"
 													class="col-6"
 												></div>
 											</div>
