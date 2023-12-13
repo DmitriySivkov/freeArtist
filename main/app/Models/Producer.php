@@ -17,12 +17,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingRelationRequests
  * @property-read int|null $incoming_relation_requests_count
  * @property-read \App\Models\Image|null $logo
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerOrderPriority[] $orderPriorities
+ * @property-read int|null $order_priorities_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
  * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingRelationRequests
  * @property-read int|null $outgoing_relation_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PaymentMethod[] $paymentMethods
  * @property-read int|null $payment_methods_count
+ * @property-read \App\Models\ProducerPaymentProvider|null $paymentProvider
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
  * @property-read int|null $products_count
  * @property-read \App\Models\Team|null $team
@@ -35,8 +38,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereLogoId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerOrderPriority[] $orderPriorities
- * @property-read int|null $order_priorities_count
  */
 class Producer extends Model
 {
@@ -72,6 +73,14 @@ class Producer extends Model
 	public function products()
 	{
 		return $this->hasMany(Product::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function paymentProvider()
+	{
+		return $this->hasOne(ProducerPaymentProvider::class);
 	}
 
 	/**
