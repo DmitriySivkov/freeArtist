@@ -7,6 +7,5 @@
 		>
 			<q-skeleton class="fit" />
 		</q-card>
-		<q-skeleton class="col-shrink q-py-lg bg-primary" />
 	</div>
 </template>

@@ -1,0 +1,9 @@
+export const PAYMENT_PROVIDERS = {
+	YOOKASSA: 1,
+	ROBOKASSA: 2
+}
+
+export const PAYMENT_PROVIDER_NAMES = {
+	[PAYMENT_PROVIDERS.YOOKASSA]: "ЮКаssа",
+	[PAYMENT_PROVIDERS.ROBOKASSA]: "Robokassa"
+}

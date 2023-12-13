@@ -3,7 +3,7 @@
 		<div class="row full-height justify-center">
 			<div
 				v-if="!isMounting"
-				class="col-xs-12 col-sm-9 col-md-6 col-lg-5 full-height q-pt-xs"
+				class="col-xs-12 col-sm-9 col-md-6 col-lg-5 full-height"
 			>
 				<div class="column full-height q-gutter-xs">
 					<q-card
@@ -18,7 +18,7 @@
 					>
 						<span class="q-focus-helper"></span>
 						<div class="row full-width">
-							<q-card-section class="col-4">
+							<q-card-section class="col-3">
 								<q-checkbox
 									:model-value="selectedPaymentMethods[pmid]"
 									color="primary"
@@ -26,20 +26,22 @@
 									:name="pmid"
 								/>
 							</q-card-section>
-							<q-card-section class="col-8 self-center">
+							<q-card-section class="col-6 self-center">
 								<span class="text-body1">{{ method }}</span>
+							</q-card-section>
+							<q-card-section
+								v-if="[PAYMENT_METHODS.CARD, PAYMENT_METHODS.SBP].includes(Number(pmid))"
+								class="col-3 self-center text-center"
+							>
+								<q-icon
+									name="settings"
+									size="sm"
+									:color="!!selectedPaymentMethods[pmid] ? 'white' : 'black'"
+									@click.stop="showPaymentMethodAcquiringSettingsDialog"
+								/>
 							</q-card-section>
 						</div>
 					</q-card>
-					<q-btn
-						v-if="isAbleToManagePaymentMethods"
-						label="Сохранить"
-						color="primary"
-						class="col-shrink q-py-lg"
-						:loading="isSettingMethods"
-						:disable="isSettingMethods || isNoPaymentMethodsSelected"
-						@click="setPaymentMethods"
-					/>
 				</div>
 			</div>
 			<div
@@ -53,11 +55,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
+import { ref, onMounted } from "vue"
 import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
-import { PAYMENT_METHOD_NAMES } from "src/const/paymentMethods.js"
+import { PAYMENT_METHOD_NAMES, PAYMENT_METHODS } from "src/const/paymentMethods.js"
+import { debounce } from "lodash"
+import { Dialog } from "quasar"
 import ProducerPersonalPaymentMethodsSkeleton from "src/components/skeletons/ProducerPersonalPaymentMethodsSkeleton.vue"
+import PaymentMethodAcquiringSettingsDialog from "src/components/dialogs/PaymentMethodAcquiringSettingsDialog.vue"
 
 const props = defineProps({
 	isAbleToManagePaymentMethods: Boolean
@@ -66,27 +71,29 @@ const props = defineProps({
 const $router = useRouter()
 
 const selectedPaymentMethods = ref(null)
-const isNoPaymentMethodsSelected = computed(() =>
-	!selectedPaymentMethods.value || Object.values(selectedPaymentMethods.value).filter((pm) => pm).length < 1
-)
 
-const isSettingMethods = ref(false)
 const isMounting = ref(true)
 
 const selectPaymentMethod = ({ pmid, val }) => {
 	if (!props.isAbleToManagePaymentMethods) return
 
 	selectedPaymentMethods.value[pmid] = val
+
+	setPaymentMethodsAction()
 }
 
-const setPaymentMethods = () => {
-	isSettingMethods.value = true
-
+const setPaymentMethodsAction = debounce(() => {
 	const promise = api.post(`/personal/paymentMethods/${$router.currentRoute.value.params.producer_id}`, {
 		payment_methods: Object.keys(selectedPaymentMethods.value).filter((pm) => !!selectedPaymentMethods.value[pm])
 	})
+}, 3000)
 
-	promise.finally(() => isSettingMethods.value = false)
+const showPaymentMethodAcquiringSettingsDialog = () => {
+	Dialog.create({
+		component: PaymentMethodAcquiringSettingsDialog,
+	}).onOk(() => {
+		console.log("on Ok")
+	})
 }
 
 onMounted(() => {

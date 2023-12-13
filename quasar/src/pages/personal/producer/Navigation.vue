@@ -25,9 +25,6 @@
 
 <script setup>
 import { computed } from "vue"
-import { useUserTeam } from "src/composables/userTeam"
-
-const { userOwnTeam } = useUserTeam()
 
 // todo - remove 'links' - add route names instead
 const items = [

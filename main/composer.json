@@ -16,7 +16,8 @@
         "pusher/pusher-php-server": "7.0.2",
         "santigarcor/laratrust": "^7.1",
         "staudenmeir/eloquent-json-relations": "^1.1",
-        "vladimir-yuldashev/laravel-queue-rabbitmq": "^13.0"
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "^13.0",
+        "yoomoney/yookassa-sdk-php": "^3.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",
