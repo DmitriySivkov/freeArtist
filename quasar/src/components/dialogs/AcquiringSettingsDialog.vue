@@ -8,13 +8,27 @@
 	>
 		<q-card
 			class="q-dialog-plugin q-pa-md"
-			style="height:50vh;overflow-x:hidden"
+			:class="{[$style['half-height']]: !isMobileWidthThreshold }"
+			style="overflow-x:hidden"
 		>
 			<transition
 				mode="out-in"
 				enter-active-class="animated fadeInLeft"
 			>
 				<div v-if="!selectedPaymentProvider">
+					<div
+						v-if="isMobileWidthThreshold"
+						class="row q-mb-sm"
+					>
+						<div class="col text-right">
+							<q-icon
+								v-close-popup
+								name="close"
+								size="md"
+								class="cursor-pointer"
+							/>
+						</div>
+					</div>
 					<ProducerAcquiringSettingsProviderList
 						v-model="selectedPaymentProvider"
 					/>
@@ -54,3 +68,9 @@ const isMobileWidthThreshold = computed(() => $q.screen.width < $q.screen.sizes.
 
 const selectedPaymentProvider = ref(null)
 </script>
+
+<style lang="scss" module>
+.half-height {
+	height: 50vh;
+}
+</style>
