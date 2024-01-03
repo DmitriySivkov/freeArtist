@@ -37,7 +37,7 @@
 									name="settings"
 									size="sm"
 									:color="!!selectedPaymentMethods[pmid] ? 'white' : 'black'"
-									@click.stop="showPaymentMethodAcquiringSettingsDialog"
+									@click.stop="showAcquiringSettingsDialog"
 								/>
 							</q-card-section>
 						</div>
@@ -62,7 +62,7 @@ import { PAYMENT_METHOD_NAMES, PAYMENT_METHODS } from "src/const/paymentMethods.
 import { debounce } from "lodash"
 import { Dialog } from "quasar"
 import ProducerPersonalPaymentMethodsSkeleton from "src/components/skeletons/ProducerPersonalPaymentMethodsSkeleton.vue"
-import PaymentMethodAcquiringSettingsDialog from "src/components/dialogs/PaymentMethodAcquiringSettingsDialog.vue"
+import AcquiringSettingsDialog from "src/components/dialogs/AcquiringSettingsDialog.vue"
 
 const props = defineProps({
 	isAbleToManagePaymentMethods: Boolean
@@ -88,11 +88,11 @@ const setPaymentMethodsAction = debounce(() => {
 	})
 }, 3000)
 
-const showPaymentMethodAcquiringSettingsDialog = () => {
+const showAcquiringSettingsDialog = () => {
 	Dialog.create({
-		component: PaymentMethodAcquiringSettingsDialog,
+		component: AcquiringSettingsDialog,
 	}).onOk(() => {
-		console.log("on Ok")
+		// todo
 	})
 }
 

@@ -111,6 +111,11 @@ Route::group([
 			Route::get('', [\App\Http\Controllers\Producer\OrderController::class, 'index']);
 			Route::post('move', [\App\Http\Controllers\Producer\OrderController::class, 'move']);
 		});
+
+		Route::group(['prefix' => '{producer}/payment-providers'], function () {
+			Route::get('', [\App\Http\Controllers\ProducerPaymentProviderController::class, 'index']);
+			Route::post('', [\App\Http\Controllers\ProducerPaymentProviderController::class, 'store']);
+		});
 	});
 
 	Route::group(['prefix' => 'paymentMethods'], function() {
