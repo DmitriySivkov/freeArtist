@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
 import { PAYMENT_PROVIDER_NAMES, PAYMENT_PROVIDER_INPUTS } from "src/const/paymentProviders.js"
 import { api } from "src/boot/axios"
 import { useRouter } from "vue-router"
@@ -44,6 +44,32 @@ const setPaymentProvider = () => {
 
 	promise.finally(() => isLoading.value = false)
 }
+
+const isMounting = ref(true)
+
+onMounted(() => {
+	const promise = api.get(
+		`personal/producers/${$router.currentRoute.value.params.producer_id}/payment-providers`,
+		{
+			params: {
+				payment_provider_id: props.modelValue
+			}
+		}
+	)
+
+	promise.catch((error) => {
+		// todo
+	})
+
+	promise.then((response) => {
+		if (response.data) {
+			paymentProviderData.value = response.data
+		}
+	})
+
+	promise.finally(() => isMounting.value = false)
+
+})
 </script>
 
 <template>
@@ -69,6 +95,7 @@ const setPaymentProvider = () => {
 			filled
 			:label="inputData.label"
 			:type="inputData.type"
+			:disable="isLoading || isMounting"
 			v-model="paymentProviderData[inputData.name]"
 			class="q-mb-xs"
 		/>
@@ -78,7 +105,7 @@ const setPaymentProvider = () => {
 			type="submit"
 			color="primary"
 			class="q-pa-lg q-mt-md full-width text-body1"
-			:loading="isLoading"
+			:loading="isLoading || isMounting"
 		/>
 	</q-form>
 </template>

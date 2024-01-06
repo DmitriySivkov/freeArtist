@@ -10,9 +10,29 @@ use Illuminate\Support\Facades\Crypt;
 
 class ProducerPaymentProviderController extends Controller
 {
-	public function index(Producer $producer)
+	public function index(Producer $producer, Request $request)
 	{
-		//Crypt::decryptString();
+		$paymentProviderId = $request->input('payment_provider_id');
+
+		$paymentProvider = ProducerPaymentProvider::where('producer_id', $producer->id)
+			->where('payment_provider_id', $paymentProviderId)
+			->first();
+
+		if (!$paymentProvider) {
+			return false;
+		}
+
+		if ($secretKey = PaymentProviderEnum::getPaymentProviderSecretKey($paymentProviderId)) {
+			$paymentProvider->setAttribute(
+				'payment_provider_data',
+				array_merge(
+					$paymentProvider->payment_provider_data,
+					[$secretKey => Crypt::decryptString($paymentProvider->payment_provider_data[$secretKey])]
+				)
+			);
+		}
+
+		return $paymentProvider->payment_provider_data;
 	}
 
     public function store(Producer $producer, Request $request)
