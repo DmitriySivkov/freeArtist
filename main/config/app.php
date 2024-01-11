@@ -177,7 +177,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 		App\Providers\UserServiceProvider::class,
 		App\Providers\ProducerServiceProvider::class,
-		App\Providers\TeamServiceProvider::class
+		App\Providers\TeamServiceProvider::class,
+		App\Providers\YookassaClientServiceProvider::class
     ],
 
     /*

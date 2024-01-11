@@ -76,6 +76,11 @@ Route::group(['prefix' => 'orders', 'middleware' => [\App\Http\Middleware\Append
 	Route::post('', [OrderController::class, 'store']);
 });
 
+Route::group(['prefix' => 'yookassa'], function() {
+	Route::post('createPayment', [\App\Http\Controllers\Yookassa\YookassaController::class, 'createPayment']);
+	Route::match(['POST', 'GET'], 'status', [\App\Http\Controllers\Yookassa\YookassaController::class, 'status']);
+});
+
 /** auth requiring routes */
 Route::group([
 	'middleware' => [
