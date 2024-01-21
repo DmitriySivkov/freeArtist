@@ -141,7 +141,7 @@
 										color="primary"
 										@click="makeNewOrder(cartItem.producer_id)"
 										:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
-										:loading="isLoading"
+										:loading="isLoading || isCreatingPayment"
 									/>
 								</div>
 							</div>
@@ -203,7 +203,7 @@
 								color="primary"
 								@click="makeNewOrder(cartItem.producer_id)"
 								:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
-								:loading="isLoading"
+								:loading="isLoading || isCreatingPayment"
 							/>
 						</div>
 					</div>
@@ -226,11 +226,12 @@ import { api } from "src/boot/axios"
 import EmptyCart from "src/components/cart/EmptyCart.vue"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { useNotification } from "src/composables/notification"
-import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
-import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import { useUserStore } from "src/stores/user"
 import { Dialog } from "quasar"
 import { Cookies } from "quasar"
+import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
+import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
+import ShowPaymentPageDialog from "src/components/dialogs/ShowPaymentPageDialog.vue"
 
 const { notifySuccess, notifyError } = useNotification()
 
@@ -297,9 +298,32 @@ const totalPrice = computed(() =>
 
 const userStore = useUserStore()
 
-const makeNewOrder = (producerId) => {
+const makeNewOrder = async (producerId) => {
 	if (userStore.is_logged) {
-		orderAction({ producerId, orderMeta: null })
+		isCreatingPayment.value = true
+
+		const promise = api.post("yookassa/createPayment", {
+			producer_id: producerId,
+			price: totalPrice.value[producerId]
+		})
+
+		promise.then((response) => {
+			console.log(response)
+			Dialog.create({
+				component: ShowPaymentPageDialog,
+				componentProps: {
+					confirmationToken: response.data.confirmation_token
+				}
+			})
+		})
+
+		promise.catch(() => {
+			notifyError("Что-то пошло не так")
+		})
+
+		promise.finally(() => isCreatingPayment.value = false)
+
+		// orderAction({ producerId, orderMeta: null })
 	} else {
 		Dialog.create({
 			component: OrderMetaDialog,
@@ -310,6 +334,7 @@ const makeNewOrder = (producerId) => {
 }
 
 const isLoading = ref(false)
+const isCreatingPayment = ref(false)
 
 function orderAction({ producerId, orderMeta }) {
 	let order = Object.assign({}, cart.value.find((item) => item.producer_id === producerId))

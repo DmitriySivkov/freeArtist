@@ -35,18 +35,17 @@ class YookassaController extends Controller
 			$builder = \YooKassa\Request\Payments\CreatePaymentRequest::builder();
 			$builder->setAmount($price)
 				->setCurrency(\YooKassa\Model\CurrencyCode::RUB)
-				->setCapture(true)
-				->setMetadata([
-					'cms_name'       => 'yoo_api_test',
-					'order_id'       => '112233',
-					'language'       => 'ru',
-					'transaction_id' => '123-456-789',
-				]);
+				->setCapture(true);
+//				->setMetadata([
+//					'cms_name'       => 'yoo_api_test',
+//					'order_id'       => '112233',
+//					'language'       => 'ru',
+//					'transaction_id' => '123-456-789',
+//				]);
 
-			// Устанавливаем страницу для редиректа после оплаты
+			// Устанавливаем способ подтверждения
 			$builder->setConfirmation([
-				'type'      => \YooKassa\Model\Payment\ConfirmationType::REDIRECT,
-				'returnUrl' => 'https://c1ce-217-15-159-95.ngrok-free.app',
+				'type'      => \YooKassa\Model\Payment\ConfirmationType::EMBEDDED
 			]);
 
 			// Составляем чек
@@ -61,32 +60,15 @@ class YookassaController extends Controller
 				'full_payment',
 				'commodity'
 			);
-			// Добавим доставку
-			$builder->addReceiptShipping(
-				'Delivery/Shipping/Доставка',
-				100,
-				1,
-				\YooKassa\Model\Receipt\PaymentMode::FULL_PAYMENT,
-				\YooKassa\Model\Receipt\PaymentSubject::SERVICE
-			);
 
-			// Можно добавить распределение денег по магазинам
-			$builder->setTransfers([
-				[
-					'account_id' => 123456,
-					'amount' => [
-						'value' => 1000,
-						'currency' => \YooKassa\Model\CurrencyCode::RUB
-					],
-				],
-				[
-					'account_id' => 654321,
-					'amount' => [
-						'value' => 2000,
-						'currency' => \YooKassa\Model\CurrencyCode::RUB
-					],
-				]
-			]);
+			// Добавим доставку
+//			$builder->addReceiptShipping(
+//				'Delivery/Shipping/Доставка',
+//				100,
+//				1,
+//				\YooKassa\Model\Receipt\PaymentMode::FULL_PAYMENT,
+//				\YooKassa\Model\Receipt\PaymentSubject::SERVICE
+//			);
 
 			// Создаем объект запроса
 			$request = $builder->build();
@@ -97,12 +79,10 @@ class YookassaController extends Controller
 			$idempotenceKey = uniqid('', true);
 			$response = $client->createPayment($request, $idempotenceKey);
 
-			//получаем confirmationUrl для дальнейшего редиректа
-			$confirmationUrl = $response->getConfirmation()->getConfirmationUrl();
-
-			info(print_r($confirmationUrl,true));
+			//получаем confirmation
+			return $response->getConfirmation();
 		} catch (\Exception $e) {
-			$response = $e;
+			return response($e->getMessage(), 422);
 		}
 	}
 
