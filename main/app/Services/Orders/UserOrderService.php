@@ -53,7 +53,9 @@ class UserOrderService implements OrderServiceContract
 			$order->setAttribute(
 				'order_products',
 				array_combine(
-					collect($order->order_products)->pluck('product_id')->toArray(),
+					collect($order->order_products)
+						->pluck('product_id')
+						->toArray(),
 					$order->order_products
 				)
 			);

@@ -6,16 +6,25 @@ use App\Contracts\YookassaClientServiceContract;
 use App\Enums\PaymentProviderEnum;
 use App\Http\Controllers\Controller;
 use App\Models\ProducerPaymentProvider;
+use App\Models\Product;
 use App\Services\YookassaClientService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class YookassaController extends Controller
 {
 	public function createPayment(Request $request)
 	{
-		$producerId = $request->input('producer_id');
-		$price = $request->input('price');
+		$producerId 		= $request->input('producer_id');
+		$totalPrice 		= $request->input('price');
+		$requestProducts 	= array_combine(
+			collect($request->input('products'))
+				->pluck('product_id')
+				->toArray(),
+			$request->input('products')
+		);
 
 		$paymentProvider = ProducerPaymentProvider::where('producer_id', $producerId)
 			->where('payment_provider_id', PaymentProviderEnum::YOOKASSA)
@@ -33,56 +42,45 @@ class YookassaController extends Controller
 
 		try {
 			$builder = \YooKassa\Request\Payments\CreatePaymentRequest::builder();
-			$builder->setAmount($price)
+			$builder->setAmount($totalPrice)
 				->setCurrency(\YooKassa\Model\CurrencyCode::RUB)
-				->setCapture(true);
-//				->setMetadata([
-//					'cms_name'       => 'yoo_api_test',
-//					'order_id'       => '112233',
-//					'language'       => 'ru',
-//					'transaction_id' => '123-456-789',
-//				]);
+				->setCapture(true)
+				->setMetadata([
+					'producer_id'		=> $producerId,
+					'transaction_id'	=> Str::uuid()->toString(),
+				]);
 
-			// Устанавливаем способ подтверждения
 			$builder->setConfirmation([
-				'type'      => \YooKassa\Model\Payment\ConfirmationType::EMBEDDED
+				'type'	=> \YooKassa\Model\Payment\ConfirmationType::EMBEDDED
 			]);
 
-			// Составляем чек
-			$builder->setReceiptEmail('john.doe@merchant.com');
-			$builder->setReceiptPhone('71111111111');
-			// Добавим товар
-			$builder->addReceiptItem(
-				'Платок Gucci',
-				3000,
-				1.0,
-				2,
-				'full_payment',
-				'commodity'
-			);
+			$builder->setReceiptEmail(config('yookassa.test_email'));
+			$builder->setReceiptPhone(config('yookassa.test_phone'));
 
-			// Добавим доставку
-//			$builder->addReceiptShipping(
-//				'Delivery/Shipping/Доставка',
-//				100,
-//				1,
-//				\YooKassa\Model\Receipt\PaymentMode::FULL_PAYMENT,
-//				\YooKassa\Model\Receipt\PaymentSubject::SERVICE
-//			);
+			$products = Product::whereIn('id', array_keys($requestProducts))
+				->get();
 
-			// Создаем объект запроса
+			/** @var Product $product */
+			foreach ($products as $product) {
+				// todo - request vat from user
+				$builder->addReceiptItem(
+					$product->title,
+					$product->price,
+					$requestProducts[$product->id]['amount'],
+					2,
+				);
+			}
+
 			$request = $builder->build();
 
-			// Можно изменить данные, если нужно
-			$request->setDescription($request->getDescription() . ' - merchant comment');
+			$request->setDescription('Операция из приложения FreeArtist');
 
 			$idempotenceKey = uniqid('', true);
 			$response = $client->createPayment($request, $idempotenceKey);
 
-			//получаем confirmation
 			return $response->getConfirmation();
 		} catch (\Exception $e) {
-			return response($e->getMessage(), 422);
+			return response($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 	}
 

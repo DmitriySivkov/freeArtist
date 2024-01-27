@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\ProducerOrderPriority;
 use App\Models\User;
 use App\Services\Orders\UserOrderService;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
@@ -38,7 +39,7 @@ class OrderController extends Controller
 					'title' => $product->title,
 					'amount' => $product->is_active ? $product->amount : 0
 				])->values(),
-			], 422);
+			], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 
 		try {

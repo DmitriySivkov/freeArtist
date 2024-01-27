@@ -40,7 +40,6 @@ const $q = useQuasar()
 const isMobileWidthThreshold = computed(() => $q.screen.width < $q.screen.sizes.md)
 
 function renderForm() {
-	console.log(12333)
 	const checkout = new window.YooMoneyCheckoutWidget({
 		confirmation_token: props.confirmationToken, //Token that must be obtained from YooMoney before the payment process
 		// return_url: "https://example.com/", //Link to the payment completion page, it could be any page on your website

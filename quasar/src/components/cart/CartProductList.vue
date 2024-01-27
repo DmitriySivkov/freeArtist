@@ -302,13 +302,18 @@ const makeNewOrder = async (producerId) => {
 	if (userStore.is_logged) {
 		isCreatingPayment.value = true
 
+		const producerOrderObject = cart.value.find((i) => i.producer_id === producerId)
+
 		const promise = api.post("yookassa/createPayment", {
 			producer_id: producerId,
-			price: totalPrice.value[producerId]
+			price: totalPrice.value[producerId],
+			products: producerOrderObject.products.map((p) => ({
+				amount: p.cart_amount,
+				product_id: p.data.id
+			}))
 		})
 
 		promise.then((response) => {
-			console.log(response)
 			Dialog.create({
 				component: ShowPaymentPageDialog,
 				componentProps: {
@@ -410,6 +415,7 @@ function init() {
 		checkedProducers.value = response.data.producers.reduce((carry, p) =>
 			({...carry, [p.id]: p}), {}
 		)
+
 		checkedProducts.value = response.data.products.reduce((carry, p) =>
 			({...carry, [p.id]: p}), {}
 		)
