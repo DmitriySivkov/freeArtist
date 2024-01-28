@@ -304,7 +304,7 @@ const makeNewOrder = async (producerId) => {
 
 		const producerOrderObject = cart.value.find((i) => i.producer_id === producerId)
 
-		const promise = api.post("yookassa/createPayment", {
+		const promise = api.post("yookassa/create", {
 			producer_id: producerId,
 			price: totalPrice.value[producerId],
 			products: producerOrderObject.products.map((p) => ({
