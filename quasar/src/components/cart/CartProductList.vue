@@ -139,9 +139,9 @@
 										class="q-py-md full-width"
 										label="Оформить заказ"
 										color="primary"
-										@click="makeNewOrder(cartItem.producer_id)"
+										@click="makeOrder(cartItem.producer_id)"
 										:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
-										:loading="isLoading || isCreatingPayment"
+										:loading="isLoading"
 									/>
 								</div>
 							</div>
@@ -201,9 +201,9 @@
 								class="q-py-lg full-width"
 								label="Оформить заказ"
 								color="primary"
-								@click="makeNewOrder(cartItem.producer_id)"
+								@click="makeOrder(cartItem.producer_id)"
 								:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
-								:loading="isLoading || isCreatingPayment"
+								:loading="isLoading"
 							/>
 						</div>
 					</div>
@@ -298,9 +298,9 @@ const totalPrice = computed(() =>
 
 const userStore = useUserStore()
 
-const makeNewOrder = async (producerId) => {
+const makeOrder = async (producerId) => {
 	if (userStore.is_logged) {
-		isCreatingPayment.value = true
+		isLoading.value = true
 
 		const producerOrderObject = cart.value.find((i) => i.producer_id === producerId)
 
@@ -308,87 +308,86 @@ const makeNewOrder = async (producerId) => {
 			producer_id: producerId,
 			price: totalPrice.value[producerId],
 			products: producerOrderObject.products.map((p) => ({
-				amount: p.cart_amount,
-				product_id: p.data.id
-			}))
+				id: p.data.id,
+				price: p.data.price,
+				amount: p.cart_amount
+			})),
+			payment_method: paymentMethods.value[producerId].selectedPaymentMethodId
 		})
 
 		promise.then((response) => {
 			Dialog.create({
 				component: ShowPaymentPageDialog,
 				componentProps: {
-					confirmationToken: response.data.confirmation_token
+					confirmationToken: response.data.confirmation.confirmation_token
 				}
 			})
+				.onOk(() => {
+					orderAction({
+						transactionUuid: response.data.transaction_uuid,
+						orderMeta: null
+					})
+				})
+				.onCancel(() => {
+					notifyError("Не получилось оплатить заказ")
+				})
+				.onDismiss(() => {
+					isLoading.value = false
+				})
 		})
 
 		promise.catch(() => {
-			notifyError("Что-то пошло не так")
+			if (
+				typeof error.response.data === "object" &&
+				error.response.data.hasOwnProperty("invalid_items")
+			) {
+				Dialog.create({
+					component: OrderInvalidProductDialog,
+					componentProps: {
+						message: error.response.data.message,
+						invalidProducts: error.response.data.invalid_items
+					}
+				}).onDismiss(() => {
+					isCartChecked.value = false
+					init()
+				})
+
+				return
+			}
+
+			notifyError(error.response.data.message)
 		})
 
-		promise.finally(() => isCreatingPayment.value = false)
-
-		// orderAction({ producerId, orderMeta: null })
+		promise.finally(() => isLoading.value = false)
 	} else {
-		Dialog.create({
-			component: OrderMetaDialog,
-		}).onOk((orderMeta) => {
-			orderAction({ producerId, orderMeta })
-		})
+		// todo
+		// Dialog.create({
+		// 	component: OrderMetaDialog,
+		// }).onOk((orderMeta) => {
+		// 	orderAction({ producerId, orderMeta })
+		// })
 	}
 }
 
 const isLoading = ref(false)
-const isCreatingPayment = ref(false)
 
-function orderAction({ producerId, orderMeta }) {
-	let order = Object.assign({}, cart.value.find((item) => item.producer_id === producerId))
-
-	order.payment_method = paymentMethods.value[producerId].selectedPaymentMethodId
-
-	order.order_products = order.products.map((p) => ({
-		product_id: p.data.id,
-		amount: p.cart_amount
-	}))
-
-	isLoading.value = true
-
+function orderAction({ transactionUuid, orderMeta }) {
 	const promise = api.post("orders", {
-		...order,
+		transaction_uuid: transactionUuid,
 		meta: orderMeta
 	})
 
 	promise.then((response) => {
 		setOrderCookie(response.data.uuid)
 
-		cartStore.clearCartProducer(producerId)
+		cartStore.clearCartProducer(response.data.producer_id)
 
 		notifySuccess(response.data.message)
 	})
 
 	promise.catch((error) => {
-		if (
-			typeof error.response.data === "object" &&
-			error.response.data.hasOwnProperty("invalid_items")
-		) {
-			Dialog.create({
-				component: OrderInvalidProductDialog,
-				componentProps: {
-					message: error.response.data.message,
-					invalidProducts: error.response.data.invalid_items
-				}
-			}).onDismiss(() => {
-				isCartChecked.value = false
-				init()
-			})
-
-			return
-		}
-
 		notifyError(error.response.data.message)
 	})
-
-	promise.finally(() => isLoading.value = false)
 }
 
 onMounted(() => {

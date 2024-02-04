@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Producer;
 
+use App\Contracts\OrderServiceContract;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Producer;
@@ -11,18 +12,24 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index(Producer $producer, ProducerOrderService $orderService)
+    public function index(Producer $producer)
     {
+		/** @var ProducerOrderService $orderService */
+		$orderService = app(OrderServiceContract::class);
+
 		$orderService->setProducer($producer);
 
         return $orderService->getOrderList();
     }
 
-	public function move(Request $request, Producer $producer, ProducerOrderService $orderService)
+	public function move(Request $request, Producer $producer)
 	{
 		// todo - request
 		// todo - check producer rights
 		// todo - move to service
+
+		/** @var ProducerOrderService $orderService */
+		$orderService = app(OrderServiceContract::class);
 
 		try {
 			\DB::beginTransaction();

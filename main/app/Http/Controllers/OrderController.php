@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\OrderServiceContract;
 use App\Helpers\TokenHelper;
 use App\Http\Requests\UserNewOrderRequest;
 use App\Models\Order;
 use App\Models\ProducerOrderPriority;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Services\Orders\UserOrderService;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
-    public function index(UserOrderService $orderService)
+	private OrderServiceContract $orderService;
+
+	public function __construct(OrderServiceContract $orderService)
+	{
+		/** @var UserOrderService $orderService */
+		$this->orderService = $orderService;
+	}
+
+	public function index(UserOrderService $orderService)
     {
 		/** @var User|null $user */
 		$user = TokenHelper::getUserByToken(request()->cookie('token'));
@@ -22,32 +32,22 @@ class OrderController extends Controller
         return $orderService->getOrderList();
     }
 
-    public function store(UserNewOrderRequest $request, UserOrderService $orderService)
+    public function store(UserNewOrderRequest $request)
 	{
 		/** @var User|null $user */
 		$user = TokenHelper::getUserByToken(request()->cookie('token'));
+		$meta = $request->input('meta');
 
-		$orderData = $request->validated();
-
-		$invalidProducts = $orderService->findInvalidProducts($orderData['order_products']);
-
-		if ($invalidProducts->isNotEmpty()) {
-			return response([
-				'message' => 'Ой, кажется кто-то вас опередил',
-				'invalid_items' => $invalidProducts->map(fn(\App\Models\Product $product) => [
-					'id' => $product->id,
-					'title' => $product->title,
-					'amount' => $product->is_active ? $product->amount : 0
-				])->values(),
-			], Response::HTTP_UNPROCESSABLE_ENTITY);
-		}
+		$transaction = Transaction::where('uuid', $request->input('transaction_uuid'))
+			->firstOrFail();
 
 		try {
 			\DB::beginTransaction();
 
-			$orderService->setUser($user);
+			$this->orderService->setUser($user);
+			$this->orderService->setMeta($meta);
 
-			$order = $orderService->processOrder($orderData);
+			$order = $this->orderService->processOrder($transaction);
 
 			// todo - move to service
 			$orderPriority = ProducerOrderPriority::where('producer_id', $order->producer_id)
@@ -69,12 +69,15 @@ class OrderController extends Controller
 		} catch (\Throwable $e) {
 			\DB::rollBack();
 
-			return response(['message' => 'Что-то пошло не так'], 422);
+			return response(
+				['message' => 'Что-то пошло не так'],
+				Response::HTTP_UNPROCESSABLE_ENTITY
+			);
 		}
 
 		return response([
 			'message' => 'Заказ принят',
-			'uuid' => $order->uuid
+			'uuid' => $order->transaction_uuid
 		], 200);
 	}
 

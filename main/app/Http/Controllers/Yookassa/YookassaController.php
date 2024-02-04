@@ -20,13 +20,17 @@ class YookassaController extends Controller
 	public function create(Request $request)
 	{
 		$producerId 		= $request->input('producer_id');
+		$paymentMethod 		= $request->input('payment_method');
 		$totalPrice 		= $request->input('price');
 		$requestProducts 	= array_combine(
 			collect($request->input('products'))
-				->pluck('product_id')
+				->pluck('id')
 				->toArray(),
 			$request->input('products')
 		);
+
+		$products = Product::whereIn('id', array_keys($requestProducts))
+			->get();
 
 		$paymentProvider = ProducerPaymentProvider::where('producer_id', $producerId)
 			->where('payment_provider_id', PaymentProviderEnum::YOOKASSA)
@@ -61,15 +65,12 @@ class YookassaController extends Controller
 			$builder->setReceiptEmail(config('yookassa.test_email')); // todo email
 			$builder->setReceiptPhone(config('yookassa.test_phone')); // todo phone
 
-			$products = Product::whereIn('id', array_keys($requestProducts))
-				->get();
-
 			/** @var Product $product */
 			foreach ($products as $product) {
 				// todo vat
 				$builder->addReceiptItem(
 					$product->title,
-					$product->price,
+					$requestProducts[$product->id]['price'],
 					$requestProducts[$product->id]['amount'],
 					2,
 				);
@@ -84,12 +85,17 @@ class YookassaController extends Controller
 
 			Transaction::create([
 				'uuid'					=> $transactionUuid,
-				'order_id'				=> null,
+				'producer_id'			=> $producerId,
+				'order_data'			=> array_values($requestProducts),
+				'payment_method'		=> $paymentMethod,
 				'payment_provider_id'	=> PaymentProviderEnum::YOOKASSA,
-				'status'				=> TransactionEnum::TRANSACTION_STATUS_NEW
+				'status'				=> TransactionEnum::TRANSACTION_STATUS_NEW,
 			]);
 
-			return $response->getConfirmation();
+			return [
+				'confirmation' 		=> $response->getConfirmation(),
+				'transaction_uuid'	=> $transactionUuid,
+			];
 		} catch (\Exception $e) {
 			return response($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
@@ -104,6 +110,8 @@ class YookassaController extends Controller
 			->first();
 
 		if (!$transaction) {
+			\Log::error("Could not find transaction with uuid: {$data['metadata']['transaction_uuid']}");
+
 			return ;
 		}
 

@@ -4,11 +4,13 @@
 namespace App\Contracts;
 
 
+use App\Models\Transaction;
+
 interface OrderServiceContract
 {
 	/**
-	 * @param array $orderData
-	 * @return \Illuminate\Database\Eloquent\Collection
+	 * @param Transaction $transaction
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
-	public function processOrder($orderData);
+	public function processOrder(Transaction $transaction);
 }

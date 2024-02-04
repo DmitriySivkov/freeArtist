@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserNewOrderRequest extends FormRequest
@@ -25,24 +24,9 @@ class UserNewOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => [
-				'nullable'
-			],
-			'producer_id' => [
+			'transaction_uuid' => [
 				'required',
-				'exists:producers,id'
-			],
-			'order_products.*.product_id' => [
-				'required',
-				'exists:products,id'
-			],
-			'order_products.*.amount' => [
-				'required',
-				'gt:0'
-			],
-			'payment_method' => [
-				'required',
-				'exists:payment_methods,id'
+				'exists:transactions,uuid'
 			],
 			'meta' => [
 				'nullable'

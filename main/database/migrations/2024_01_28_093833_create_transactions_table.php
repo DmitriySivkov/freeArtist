@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
 			$table->uuid();
-			$table->unsignedInteger('order_id')
+			$table->unsignedInteger('producer_id');
+			$table->json('order_data');
+			$table->unsignedInteger('payment_method');
+			$table->unsignedInteger('payment_provider_id')
 				->nullable();
-			$table->unsignedInteger('payment_provider_id');
 			$table->unsignedInteger('status');
             $table->timestamps();
         });

@@ -10,31 +10,30 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * App\Models\Order
  *
  * @property int $id
- * @property int $user_id
+ * @property string $transaction_uuid
+ * @property int|null $user_id
  * @property int $producer_id
  * @property array $order_products
- * @property int $payment_method
+ * @property array|null $order_meta
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Producer|null $producer
+ * @property-read \App\Models\Transaction|null $transaction
  * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order query()
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereOrderMeta($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereOrderProducts($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Order wherePaymentMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereProducerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereTransactionUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  * @mixin \Eloquent
- * @property mixed $order_meta
- * @method static \Illuminate\Database\Eloquent\Builder|Order whereOrderMeta($value)
- * @property string $uuid
- * @method static \Illuminate\Database\Eloquent\Builder|Order whereUuid($value)
  */
 class Order extends Model
 {
@@ -76,7 +75,14 @@ class Order extends Model
 	 */
 	public function products()
 	{
-		return $this->belongsToJson(Product::class, 'order_products[]->product_id');
+		return $this->belongsToJson(Product::class, 'order_products[]->id');
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function transaction()
+	{
+		return $this->belongsTo(Transaction::class, 'transaction_uuid', 'uuid');
+	}
 }

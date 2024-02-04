@@ -7,13 +7,15 @@ namespace App\Services\Orders;
 use App\Contracts\OrderServiceContract;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Symfony\Component\Mime\Exception\LogicException;
 
 class UserOrderService implements OrderServiceContract
 {
-	private ?User $user = null;
+	private ?User $user;
+	private ?array $meta;
 
 	/**
 	 * @param User|null $user
@@ -22,6 +24,15 @@ class UserOrderService implements OrderServiceContract
 	public function setUser(?User $user)
 	{
 		$this->user = $user;
+	}
+
+	/**
+	 * @param array|null $meta
+	 * @return void
+	 */
+	public function setMeta(?array $meta)
+	{
+		$this->meta = $meta;
 	}
 
 	/**
@@ -65,22 +76,21 @@ class UserOrderService implements OrderServiceContract
 	}
 
 	/**
-	 * @param $orderData
-	 * @return Order|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+	 * @param Transaction $transaction
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
-	public function processOrder($orderData)
+	public function processOrder(Transaction $transaction)
 	{
 		$order = Order::create([
-			'uuid' => (string)Str::uuid(),
+			'transaction_uuid' => $transaction->uuid,
 			'user_id' => $this->user ? $this->user->id : null,
-			'producer_id' => $orderData['producer_id'],
-			'payment_method' => $orderData['payment_method'],
+			'producer_id' => $transaction->producer_id,
 			'status' => Order::ORDER_STATUS_NEW,
-			'order_products' => $orderData['order_products'],
-			'order_meta' => $orderData['meta']
+			'order_products' => $transaction->order_data,
+			'order_meta' => $this->meta
 		]);
 
-		$this->decreaseProducts($orderData['order_products']);
+		$this->decreaseProducts($transaction->order_data);
 
 		return $order;
 	}
@@ -91,7 +101,7 @@ class UserOrderService implements OrderServiceContract
 	 */
 	public function findInvalidProducts(array $orderProducts)
 	{
-		$orderProducts = collect($orderProducts)->pluck('amount', 'product_id');
+		$orderProducts = collect($orderProducts)->pluck('amount', 'id');
 
 		$products = Product::whereIn('id', $orderProducts->keys())
 			->get();
@@ -107,7 +117,7 @@ class UserOrderService implements OrderServiceContract
 	 */
 	private function decreaseProducts($orderProducts)
 	{
-		$orderProductAmounts = collect($orderProducts)->pluck('amount', 'product_id');
+		$orderProductAmounts = collect($orderProducts)->pluck('amount', 'id');
 
 		$products = Product::whereIn('id', $orderProductAmounts->keys())->get();
 

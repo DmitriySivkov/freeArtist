@@ -17,7 +17,6 @@ import { computed, onMounted } from "vue"
 onMounted(() => {
 	let script = document.createElement("script")
 
-	// мы можем загрузить любой скрипт с любого домена
 	script.src = "https://yookassa.ru/checkout-widget/v1/checkout-widget.js"
 	document.head.append(script)
 
@@ -34,7 +33,7 @@ const props = defineProps({
 	confirmationToken: String
 })
 
-const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 const $q = useQuasar()
 const isMobileWidthThreshold = computed(() => $q.screen.width < $q.screen.sizes.md)
@@ -58,6 +57,18 @@ function renderForm() {
 		error_callback: function(error) {
 			console.log(error)
 		}
+	})
+
+	checkout.on("complete", () => {
+		checkout.destroy()
+
+		onDialogOK()
+	})
+
+	checkout.on("fail", () => {
+		checkout.destroy()
+
+		onDialogCancel()
 	})
 
 	//Display of payment form in the container

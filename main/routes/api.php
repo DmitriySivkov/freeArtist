@@ -77,7 +77,9 @@ Route::group(['prefix' => 'orders', 'middleware' => [\App\Http\Middleware\Append
 });
 
 Route::group(['prefix' => 'yookassa'], function() {
-	Route::post('create', [\App\Http\Controllers\Yookassa\YookassaController::class, 'create']);
+	Route::post('create', [\App\Http\Controllers\Yookassa\YookassaController::class, 'create'])
+		->middleware([\App\Http\Middleware\CheckProducts::class]);
+
 	Route::match(['POST', 'GET'], 'status', [\App\Http\Controllers\Yookassa\YookassaController::class, 'status']);
 });
 
