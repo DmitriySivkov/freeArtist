@@ -50,7 +50,7 @@ class Product extends Model
 
 	protected $casts = [
 		'composition' => 'json',
-		'price' => 'float'
+		'price' => 'float' // decimal:2 returns string
 	];
 
 	/**

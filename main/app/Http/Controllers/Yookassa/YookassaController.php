@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Yookassa;
 use App\Contracts\YookassaClientServiceContract;
 use App\Enums\PaymentProviderEnum;
 use App\Enums\TransactionEnum;
+use App\Exceptions\OrderPriceException;
 use App\Http\Controllers\Controller;
 use App\Models\ProducerPaymentProvider;
 use App\Models\Product;
@@ -21,7 +22,6 @@ class YookassaController extends Controller
 	{
 		$producerId 		= $request->input('producer_id');
 		$paymentMethod 		= $request->input('payment_method');
-		$totalPrice 		= $request->input('price');
 		$requestProducts 	= array_combine(
 			collect($request->input('products'))
 				->pluck('id')
@@ -51,7 +51,7 @@ class YookassaController extends Controller
 
 			$transactionUuid = Str::uuid()->toString();
 
-			$builder->setAmount($totalPrice)
+			$builder->setAmount($products->sum('price'))
 				->setCurrency(\YooKassa\Model\CurrencyCode::RUB)
 				->setCapture(true)
 				->setMetadata([

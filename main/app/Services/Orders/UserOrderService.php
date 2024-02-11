@@ -101,13 +101,22 @@ class UserOrderService implements OrderServiceContract
 	 */
 	public function findInvalidProducts(array $orderProducts)
 	{
-		$orderProducts = collect($orderProducts)->pluck('amount', 'id');
+		$orderProducts = collect(
+			array_combine(
+				collect($orderProducts)
+					->pluck('id')
+					->toArray(),
+				$orderProducts
+			)
+		);
 
 		$products = Product::whereIn('id', $orderProducts->keys())
 			->get();
 
 		return $products->filter(fn(Product $product) =>
-			$product->amount < $orderProducts[$product->id] || !$product->is_active
+			$product->amount < $orderProducts[$product->id]['amount']
+			|| !$product->is_active
+			|| $product->price !== (float)$orderProducts[$product->id]['price']
 		);
 	}
 

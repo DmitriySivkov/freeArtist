@@ -18,6 +18,8 @@ class OrderController extends Controller
 
 	public function __construct(OrderServiceContract $orderService)
 	{
+		// todo - make construct for producerOrderController
+
 		/** @var UserOrderService $orderService */
 		$this->orderService = $orderService;
 	}

@@ -11,10 +11,10 @@
 			<q-card class="col">
 				<q-card-section>
 					<span
-						v-if="isCartChecked"
+						v-if="isCartLoaded"
 						class="text-h6"
 					>
-						{{ checkedProducers[cartItem.producer_id].display_name }}
+						{{ producers[cartItem.producer_id].display_name }}
 					</span>
 					<q-spinner
 						v-else
@@ -36,7 +36,7 @@
 						<q-input
 							dense
 							filled
-							:disable="!isCartChecked"
+							:disable="!isCartLoaded"
 							:model-value="cart[cartItemIndex].products[productIndex].cart_amount"
 							@update:model-value="setProductAmount({
 								producerId: cart[cartItemIndex].producer_id,
@@ -45,11 +45,11 @@
 							})"
 							type="number"
 							:bg-color="
-								isCartChecked && cart[cartItemIndex].products[productIndex].cart_amount > checkedProducts[product.data.id].amount ? 'negative': ''
+								isCartLoaded && cart[cartItemIndex].products[productIndex].cart_amount > products[product.data.id].amount ? 'negative': ''
 							"
 							:input-class="[
 								{'text-center': true},
-								{'text-white': isCartChecked && cart[cartItemIndex].products[productIndex].cart_amount > checkedProducts[product.data.id].amount}
+								{'text-white': isCartLoaded && cart[cartItemIndex].products[productIndex].cart_amount > products[product.data.id].amount}
 							]"
 						>
 							<template v-slot:before>
@@ -57,7 +57,7 @@
 									icon="remove"
 									size="md"
 									color="primary"
-									:disable="!isCartChecked"
+									:disable="!isCartLoaded"
 									@click="removeFromCart({
 										producerId: cart[cartItemIndex].producer_id,
 										product: cart[cartItemIndex].products[productIndex]
@@ -70,7 +70,7 @@
 									icon="add"
 									size="md"
 									color="primary"
-									:disable="!isCartChecked"
+									:disable="!isCartLoaded"
 									@click="addToCart({
 										producerId: cart[cartItemIndex].producer_id,
 										product: cart[cartItemIndex].products[productIndex]
@@ -89,7 +89,7 @@
 					>
 						<div class="col-xs-12 col-sm-8">
 							<div
-								v-if="isCartChecked"
+								v-if="isCartLoaded"
 								class="row q-col-gutter-xs full-height"
 							>
 								<div
@@ -140,7 +140,7 @@
 										label="Оформить заказ"
 										color="primary"
 										@click="makeOrder(cartItem.producer_id)"
-										:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
+										:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
 										:loading="isLoading"
 									/>
 								</div>
@@ -156,7 +156,7 @@
 						</div>
 						<div class="col-12 q-py-md">
 							<div
-								v-if="isCartChecked"
+								v-if="isCartLoaded"
 								class="row q-col-gutter-xs"
 							>
 								<div
@@ -202,7 +202,7 @@
 								label="Оформить заказ"
 								color="primary"
 								@click="makeOrder(cartItem.producer_id)"
-								:disable="!isCartChecked || !!hasInvalidAmount[cartItem.producer_id]"
+								:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
 								:loading="isLoading"
 							/>
 						</div>
@@ -227,7 +227,7 @@ import EmptyCart from "src/components/cart/EmptyCart.vue"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { useNotification } from "src/composables/notification"
 import { useUserStore } from "src/stores/user"
-import { Dialog } from "quasar"
+import {Dialog, LocalStorage} from "quasar"
 import { Cookies } from "quasar"
 import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
@@ -239,17 +239,17 @@ const cartStore = useCartStore()
 const cart = computed(() => cartStore.data)
 
 const hasInvalidAmount = computed(() =>
-	!isCartChecked.value ? {} :
+	!isCartLoaded.value ? {} :
 		cart.value.reduce((carry, producerSet) =>
 			({
 				...carry,
 				[producerSet.producer_id]:
-				producerSet.products.filter((productSet) => productSet.cart_amount > checkedProducts.value[productSet.data.id].amount).length
+				producerSet.products.filter((productSet) => productSet.cart_amount > products.value[productSet.data.id].amount).length
 			}), {})
 )
 
 function addToCart({producerId, product}) {
-	if (product.cart_amount >= checkedProducts.value[product.data.id].amount) return
+	if (product.cart_amount >= products.value[product.data.id].amount) return
 
 	cartStore.increaseProductAmount({
 		producerId,
@@ -267,8 +267,8 @@ function removeFromCart({producerId, product}) {
 }
 
 function setProductAmount({producerId, product, amount}) {
-	if (parseInt(amount) > checkedProducts.value[product.data.id].amount) {
-		amount = checkedProducts.value[product.data.id].amount
+	if (parseInt(amount) > products.value[product.data.id].amount) {
+		amount = products.value[product.data.id].amount
 	}
 
 	cartStore.setProductAmount({
@@ -284,9 +284,9 @@ const selectPaymentMethod = ({ producerId, methodId }) => {
 	paymentMethods.value[producerId].selectedPaymentMethodId = methodId
 }
 
-const isCartChecked = ref(false)
-const checkedProducers = ref({})
-const checkedProducts = ref({})
+const isCartLoaded = ref(false)
+const producers = ref({})
+const products = ref({})
 
 const totalPrice = computed(() =>
 	cart.value.reduce((carry, producerSet) =>
@@ -336,19 +336,19 @@ const makeOrder = async (producerId) => {
 				})
 		})
 
-		promise.catch(() => {
+		promise.catch((error) => {
 			if (
 				typeof error.response.data === "object" &&
-				error.response.data.hasOwnProperty("invalid_items")
+				error.response.data.exception === "App\\Exceptions\\OrderInvalidItemsException"
 			) {
 				Dialog.create({
 					component: OrderInvalidProductDialog,
 					componentProps: {
 						message: error.response.data.message,
-						invalidProducts: error.response.data.invalid_items
+						invalidProducts: error.response.data
 					}
 				}).onDismiss(() => {
-					isCartChecked.value = false
+					isCartLoaded.value = false
 					init()
 				})
 
@@ -397,25 +397,75 @@ onMounted(() => {
 function init() {
 	if (!cart.value.length) return
 
-	let producers = cart.value.map((producerSet) => producerSet.producer_id)
+	let cartProducers = cart.value.map((producerSet) =>
+		producerSet.producer_id
+	)
 
-	let products = cart.value.reduce((carry, producerSet) =>
+	let cartProducts = cart.value.reduce((carry, producerSet) =>
 		[
 			...carry,
-			...producerSet.products.map((productSet) => productSet.data.id)
+			...producerSet.products.map((p) => ({
+				id: p.data.id,
+				price: p.data.price,
+				amount: p.cart_amount
+			}))
 		], [])
 
-	const promise = api.post("cart/checkProducts", {
-		producers,
-		products
+	const promise = api.post("cart/load", {
+		producers: cartProducers,
+		products: cartProducts
+	})
+
+	promise.catch((error) => {
+		if (
+			typeof error.response.data === "object" &&
+			error.response.data.exception === "App\\Exceptions\\OrderInvalidItemsException"
+		) {
+			let invalidProducts = error.response.data.invalid_items.map(function(p) {
+				const cartProduct = cartProducts.find((cp) => cp.id === p.id)
+				p.cartAmount = cartProduct.amount
+				p.cartPrice = cartProduct.price
+				return p
+			})
+
+			Dialog.create({
+				component: OrderInvalidProductDialog,
+				componentProps: {
+					message: error.response.data.message,
+					invalidProducts
+				}
+			}).onDismiss(() => {
+				// setting real amount and price
+				invalidProducts.forEach((ip) =>
+					cartStore.setCartProducerProductData({
+						producerId: ip.producer_id,
+						productId: ip.id,
+						data: {
+							price: ip.price,
+							amount: ip.amount
+						},
+						cartAmount: ip.amount < ip.cartAmount ? ip.amount : ip.cartAmount
+					})
+				)
+
+				LocalStorage.set("cart", cart.value)
+
+				isCartLoaded.value = false
+				init()
+			})
+
+			return
+		}
+
+		notifyError(error.response.data.message)
 	})
 
 	promise.then((response) => {
-		checkedProducers.value = response.data.producers.reduce((carry, p) =>
+		producers.value = response.data.producers.reduce((carry, p) =>
 			({...carry, [p.id]: p}), {}
 		)
 
-		checkedProducts.value = response.data.products.reduce((carry, p) =>
+		products.value = response.data.products.reduce((carry, p) =>
 			({...carry, [p.id]: p}), {}
 		)
 
@@ -429,7 +479,7 @@ function init() {
 			}), {}
 		)
 
-		isCartChecked.value = true
+		isCartLoaded.value = true
 	})
 }
 

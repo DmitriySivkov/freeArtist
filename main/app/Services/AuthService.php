@@ -219,7 +219,7 @@ class AuthService
 		$orderUuid = json_decode(request()->cookie('orders'));
 
 		if ($orderUuid) {
-			Order::whereIn('uuid', $orderUuid)
+			Order::whereIn('transaction_uuid', $orderUuid)
 				->whereNull('user_id')
 				->update([
 					'user_id' => $this->user->id

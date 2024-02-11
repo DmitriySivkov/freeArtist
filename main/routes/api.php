@@ -67,7 +67,8 @@ Route::group(['prefix' => 'tags'], function() {
 });
 
 Route::group(['prefix' => 'cart'], function() {
-	Route::post('checkProducts', [\App\Http\Controllers\CartController::class, 'checkProducts']);
+	Route::post('load', [\App\Http\Controllers\CartController::class, 'load'])
+		->middleware([\App\Http\Middleware\CheckProducts::class]);
 });
 
 // do append a middleware since routes below apply both for auth & unauth users

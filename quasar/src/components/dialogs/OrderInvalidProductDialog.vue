@@ -3,7 +3,7 @@
 		ref="dialogRef"
 		@hide="onDialogHide"
 	>
-		<q-card class="q-dialog-plugin q-pa-md">
+		<q-card class="q-dialog-plugin q-px-sm">
 			<q-card-section class="row">
 				<div class="col-12 text-center text-h5">
 					{{ message }}
@@ -13,19 +13,41 @@
 						<q-item
 							v-for="invalidProduct in invalidProducts"
 							:key="invalidProduct.id"
+							class="q-px-xs"
 						>
 							<div class="col-12">
 								<div class="row">
 									<div class="col-12 text-h5">
+										<q-badge :label="invalidProduct.producer" />
+									</div>
+									<div class="col-12 text-h5">
 										{{ invalidProduct.title }}
 									</div>
-									<div class="col-12 text-h6 text-grey-7">
+									<div
+										v-if="invalidProduct.cartAmount > invalidProduct.amount"
+										class="col-12 text-h6 text-grey-7"
+									>
 										<div class="row justify-between">
 											<div class="col">
 												осталось:
 											</div>
 											<div class="col text-right">
 												{{ invalidProduct.amount }}
+											</div>
+										</div>
+									</div>
+									<div
+										v-if="invalidProduct.cartPrice !== invalidProduct.price"
+										class="col-12 text-h6 text-grey-7"
+									>
+										<div class="row justify-between">
+											<div class="col">
+												стоимость:
+											</div>
+											<div class="col text-right">
+												{{ invalidProduct.cartPrice }}<small>₽</small>
+												<q-icon name="arrow_right_alt" />
+												{{ invalidProduct.price }}<small>₽</small>
 											</div>
 										</div>
 									</div>
@@ -36,7 +58,7 @@
 				</div>
 				<div class="col-12">
 					<q-btn
-						label="Продолжить"
+						label="Пересчитать"
 						color="primary"
 						class="q-pa-lg full-width"
 						@click="onDialogOK"

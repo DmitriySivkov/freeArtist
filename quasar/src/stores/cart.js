@@ -108,6 +108,18 @@ export const useCartStore = defineStore("cart", {
 			this.data = data
 		},
 
+		setCartProducerProductData({producerId, productId, data, cartAmount}) {
+			let producerSet = this.data.find((producerSet) => producerSet.producer_id === producerId)
+
+			let product = producerSet.products.find((p) => p.data.id === productId)
+
+			Object.assign(product.data, data)
+
+			if (cartAmount) {
+				product.cart_amount = cartAmount
+			}
+		},
+
 		clearCartProducer(producerId) {
 			this.data = this.data.filter((producerSet) => producerSet.producer_id !== producerId)
 			LocalStorage.set("cart", this.data)

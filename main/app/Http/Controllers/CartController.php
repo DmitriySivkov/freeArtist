@@ -14,16 +14,19 @@ class CartController extends Controller
 	 * @param Request $request
 	 * @return array
 	 */
-	public function checkProducts(Request $request)
+	public function load(Request $request)
 	{
-		$producers = Producer::whereIn('id', $request->input('producers'))
+		$products = $request->input('products');
+		$producerIds = $request->input('producers');
+
+		$producers = Producer::whereIn('id', $producerIds)
 			->with([
 				'team',
 				'paymentMethods'
 			])
 			->get();
 
-		$products = Product::whereIn('id', $request->input('products'))
+		$products = Product::whereIn('id', collect($products)->pluck('id'))
 			->get();
 
 		return [
