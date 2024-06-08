@@ -113,11 +113,17 @@ class UserOrderService implements OrderServiceContract
 		$products = Product::whereIn('id', $orderProducts->keys())
 			->get();
 
-		return $products->filter(fn(Product $product) =>
-			$product->amount < $orderProducts[$product->id]['amount']
-			|| !$product->is_active
-			|| $product->price !== (float)$orderProducts[$product->id]['price']
-		);
+		return $products->filter(function(Product $product) use ($orderProducts) {
+			return $product->amount < $orderProducts[$product->id]['amount']
+				|| !$product->is_active
+				|| $product->price !== (float)$orderProducts[$product->id]['price'];
+			})
+			->map(function(Product $product) use ($orderProducts) {
+				$product->cartAmount = $orderProducts[$product->id]['amount'];
+				$product->cartPrice = $orderProducts[$product->id]['price'];
+
+				return $product;
+			});
 	}
 
 	/**

@@ -24,7 +24,7 @@
 										{{ invalidProduct.title }}
 									</div>
 									<div
-										v-if="invalidProduct.cartAmount > invalidProduct.amount"
+										v-if="invalidProduct.cart_amount > invalidProduct.amount"
 										class="col-12 text-h6 text-grey-7"
 									>
 										<div class="row justify-between">
@@ -37,7 +37,7 @@
 										</div>
 									</div>
 									<div
-										v-if="invalidProduct.cartPrice !== invalidProduct.price"
+										v-if="invalidProduct.cart_price !== invalidProduct.price"
 										class="col-12 text-h6 text-grey-7"
 									>
 										<div class="row justify-between">
@@ -45,7 +45,7 @@
 												стоимость:
 											</div>
 											<div class="col text-right">
-												{{ invalidProduct.cartPrice }}<small>₽</small>
+												{{ invalidProduct.cart_price }}<small>₽</small>
 												<q-icon name="arrow_right_alt" />
 												{{ invalidProduct.price }}<small>₽</small>
 											</div>

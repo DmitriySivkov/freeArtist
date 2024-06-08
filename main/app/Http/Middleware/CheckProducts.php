@@ -29,7 +29,9 @@ class CheckProducts
 					'id' 			=> $product->id,
 					'title' 		=> $product->title,
 					'amount' 		=> $product->is_active ? $product->amount : 0,
+					'cart_amount'	=> $product->cartAmount,
 					'price'			=> $product->price,
+					'cart_price'	=> $product->cartPrice,
 					'producer'		=> $product->producer->team->display_name,
 					'producer_id'	=> $product->producer->id
 				])
