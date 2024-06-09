@@ -232,6 +232,7 @@ import { Cookies } from "quasar"
 import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import ShowPaymentPageDialog from "src/components/dialogs/ShowPaymentPageDialog.vue"
+import OrderCompletedDialog from "src/components/dialogs/OrderCompletedDialog.vue"
 
 const { notifySuccess, notifyError } = useNotification()
 
@@ -299,6 +300,7 @@ const totalPrice = computed(() =>
 const userStore = useUserStore()
 
 const makeOrder = async (producerId) => {
+	// todo - integrate with reworked 'init()' function
 	if (userStore.is_logged) {
 		isLoading.value = true
 
@@ -331,9 +333,6 @@ const makeOrder = async (producerId) => {
 				.onCancel(() => {
 					notifyError("Не получилось оплатить заказ")
 				})
-				.onDismiss(() => {
-					isLoading.value = false
-				})
 		})
 
 		promise.catch((error) => {
@@ -345,7 +344,7 @@ const makeOrder = async (producerId) => {
 					component: OrderInvalidProductDialog,
 					componentProps: {
 						message: error.response.data.message,
-						invalidProducts: error.response.data
+						invalidProducts: error.response.data.invalid_items
 					}
 				}).onDismiss(() => {
 					isCartLoaded.value = false
@@ -372,6 +371,8 @@ const makeOrder = async (producerId) => {
 const isLoading = ref(false)
 
 function orderAction({ transactionUuid, orderMeta }) {
+	isLoading.value = true
+
 	const promise = api.post("orders", {
 		transaction_uuid: transactionUuid,
 		meta: orderMeta
@@ -382,12 +383,16 @@ function orderAction({ transactionUuid, orderMeta }) {
 
 		cartStore.clearCartProducer(response.data.producer_id)
 
-		notifySuccess(response.data.message)
+		Dialog.create({
+			component: OrderCompletedDialog,
+		})
 	})
 
 	promise.catch((error) => {
 		notifyError(error.response.data.message)
 	})
+
+	promise.finally(() => isLoading.value = false)
 }
 
 onMounted(() => {

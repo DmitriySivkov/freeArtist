@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Yookassa;
 use App\Contracts\YookassaClientServiceContract;
 use App\Enums\PaymentProviderEnum;
 use App\Enums\TransactionEnum;
-use App\Exceptions\OrderPriceException;
 use App\Http\Controllers\Controller;
 use App\Models\ProducerPaymentProvider;
 use App\Models\Product;
@@ -22,6 +21,7 @@ class YookassaController extends Controller
 	{
 		$producerId 		= $request->input('producer_id');
 		$paymentMethod 		= $request->input('payment_method');
+		$totalPrice			= $request->input('price');
 		$requestProducts 	= array_combine(
 			collect($request->input('products'))
 				->pluck('id')
@@ -29,8 +29,8 @@ class YookassaController extends Controller
 			$request->input('products')
 		);
 
-		$products = Product::whereIn('id', array_keys($requestProducts))
-			->get();
+		$productNames = Product::whereIn('id', array_keys($requestProducts))
+			->pluck('title', 'id');
 
 		$paymentProvider = ProducerPaymentProvider::where('producer_id', $producerId)
 			->where('payment_provider_id', PaymentProviderEnum::YOOKASSA)
@@ -51,7 +51,7 @@ class YookassaController extends Controller
 
 			$transactionUuid = Str::uuid()->toString();
 
-			$builder->setAmount($products->sum('price'))
+			$builder->setAmount($totalPrice)
 				->setCurrency(\YooKassa\Model\CurrencyCode::RUB)
 				->setCapture(true)
 				->setMetadata([
@@ -65,13 +65,14 @@ class YookassaController extends Controller
 			$builder->setReceiptEmail(config('yookassa.test_email')); // todo email
 			$builder->setReceiptPhone(config('yookassa.test_phone')); // todo phone
 
-			/** @var Product $product */
-			foreach ($products as $product) {
+			foreach ($requestProducts as $productId => $product) {
+				$product['title'] = $productNames[$productId];
+
 				// todo vat
 				$builder->addReceiptItem(
-					$product->title,
-					$requestProducts[$product->id]['price'],
-					$requestProducts[$product->id]['amount'],
+					$product['title'],
+					$product['price'],
+					$product['amount'],
 					2,
 				);
 			}
@@ -81,6 +82,7 @@ class YookassaController extends Controller
 			$request->setDescription('Операция из приложения FreeArtist');
 
 			$idempotenceKey = uniqid('', true);
+
 			$response = $client->createPayment($request, $idempotenceKey);
 
 			Transaction::create([
@@ -89,8 +91,21 @@ class YookassaController extends Controller
 				'order_data'			=> array_values($requestProducts),
 				'payment_method'		=> $paymentMethod,
 				'payment_provider_id'	=> PaymentProviderEnum::YOOKASSA,
-				'status'				=> TransactionEnum::TRANSACTION_STATUS_NEW,
+				'status'				=> TransactionEnum::YOOKASSA_STATUSES[$response->status] ?? 0, // '0' status === 'unknown'
 			]);
+
+			if (
+				$response->status === TransactionEnum::YOOKASSA_STATUS_ID_TO_NAME[TransactionEnum::TRANSACTION_STATUS_CANCEL]
+				|| \Arr::exists($response->toArray(), 'error')
+			) {
+				\Log::info(
+					'Не удалось принять платеж, ответ провайдера: ' .
+					PHP_EOL .
+					print_r($response->toArray(),true)
+				);
+
+				throw new \LogicException('Не удалось выполнить платеж');
+			}
 
 			return [
 				'confirmation' 		=> $response->getConfirmation(),
@@ -103,8 +118,7 @@ class YookassaController extends Controller
 
     public function status(Request $request)
 	{
-		$event	= $request->input('event');
-		$data	= $request->input('object');
+		$data = $request->input('object');
 
 		$transaction = Transaction::where('uuid', $data['metadata']['transaction_uuid'])
 			->first();
@@ -116,7 +130,7 @@ class YookassaController extends Controller
 		}
 
 		$transaction->update([
-			'status' => TransactionEnum::YOOKASSA_TRANSACTION_STATUSES[$event]
+			'status' => TransactionEnum::YOOKASSA_STATUSES[$data['status']]
 		]);
 	}
 }

@@ -7,7 +7,7 @@ export const PAYMENT_METHODS = {
 
 export const PAYMENT_METHOD_NAMES = {
 	[PAYMENT_METHODS.CARD]: "Оплата картой",
-	[PAYMENT_METHODS.SBP]: "Оплата через СБП",
+	// [PAYMENT_METHODS.SBP]: "Оплата через СБП",
 	[PAYMENT_METHODS.CASH]: "Оплата наличными",
 	// [PAYMENT_METHODS.QIWI]: "Оплата с помощью QIWI",
 }

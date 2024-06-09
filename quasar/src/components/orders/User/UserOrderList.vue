@@ -61,8 +61,14 @@
 												color="white"
 												class="full-width q-my-sm"
 											/>
-											<div class="text-body1 text-uppercase">Статус</div>
+											<div class="text-body1 text-uppercase">Статус заказа</div>
 											<div class="text-h6">{{ ORDER_STATUS_NAMES[order.status] }}</div>
+											<q-separator
+												color="white"
+												class="full-width q-my-sm"
+											/>
+											<div class="text-body1 text-uppercase">Статус платежа</div>
+											<div class="text-h6">{{ TRANSACTION_STATUS_NAMES[order.transaction.status] }}</div>
 										</div>
 									</div>
 								</q-card>
@@ -85,6 +91,7 @@
 import { ref, onMounted } from "vue"
 import { api } from "src/boot/axios"
 import { ORDER_STATUS_NAMES } from "src/const/orderStatuses"
+import { TRANSACTION_STATUS_NAMES } from "src/const/transactionStatuses"
 import UserPersonalOrdersSkeleton from "src/components/skeletons/UserPersonalOrdersSkeleton.vue"
 
 const backendServer = process.env.BACKEND_SERVER

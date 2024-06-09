@@ -1,0 +1,11 @@
+export const TRANSACTION_STATUSES = {
+	SUCCESS: 1,
+	PROCESS: 2,
+	CANCEL: 3,
+}
+
+export const TRANSACTION_STATUS_NAMES = {
+	[TRANSACTION_STATUSES.SUCCESS]: "Успешно",
+	[TRANSACTION_STATUSES.PROCESS]: "Платеж ожидается",
+	[TRANSACTION_STATUSES.CANCEL]: "Ошибка платежа",
+}

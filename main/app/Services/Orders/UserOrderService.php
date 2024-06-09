@@ -57,19 +57,19 @@ class UserOrderService implements OrderServiceContract
 		$orders = $query->with([
 			'producer.team',
 			'products.images',
-			'products.thumbnail'
+			'products.thumbnail',
+			'transaction:id,uuid,status'
 		])->get();
 
-		$orders->each(function(Order $order) {
-			$order->setAttribute(
-				'order_products',
-				array_combine(
-					collect($order->order_products)
-						->pluck('product_id')
-						->toArray(),
-					$order->order_products
-				)
+		$orders->map(function(Order $order) {
+			$order->order_products = array_combine(
+				collect($order->order_products)
+					->pluck('id')
+					->toArray(),
+				$order->order_products
 			);
+
+			return $order;
 		});
 
 		return $orders;
