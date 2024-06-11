@@ -12,14 +12,19 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+	private OrderServiceContract $orderService;
+
+	public function __construct(OrderServiceContract $orderService)
+	{
+		/** @var ProducerOrderService $orderService */
+		$this->orderService = $orderService;
+	}
+
     public function index(Producer $producer)
     {
-		/** @var ProducerOrderService $orderService */
-		$orderService = app(OrderServiceContract::class);
+		$this->orderService->setProducer($producer);
 
-		$orderService->setProducer($producer);
-
-        return $orderService->getOrderList();
+        return $this->orderService->getOrderList();
     }
 
 	public function move(Request $request, Producer $producer)
@@ -27,9 +32,6 @@ class OrderController extends Controller
 		// todo - request
 		// todo - check producer rights
 		// todo - move to service
-
-		/** @var ProducerOrderService $orderService */
-		$orderService = app(OrderServiceContract::class);
 
 		try {
 			\DB::beginTransaction();

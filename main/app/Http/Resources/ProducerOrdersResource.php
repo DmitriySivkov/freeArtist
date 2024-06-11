@@ -21,8 +21,8 @@ class ProducerOrdersResource extends JsonResource
     {
         return [
 			'id' => $this->id,
-			'order_products' => collect($this->order_products)->pluck('amount', 'product_id'),
-			'payment_method' => PaymentMethod::PAYMENT_METHODS[$this->payment_method],
+			'order_products' => collect($this->order_products)->pluck('amount', 'id'),
+			'payment_method' => PaymentMethod::PAYMENT_METHODS[$this->transaction->payment_method],
 			'status' => $this->status,
 			'user' => $this->user->name ?? $this->user->phone,
 			'products' => collect($this->products)->map(

@@ -51,7 +51,8 @@ class ProducerOrderService implements OrderServiceContract
 				->whereIn('status', [Order::ORDER_STATUS_NEW, Order::ORDER_STATUS_PROCESS])
 				->with([
 					'user',
-					'products'
+					'products',
+					'transaction',
 				])
 				->orderBy('created_at', 'desc')
 				->get();
@@ -61,7 +62,8 @@ class ProducerOrderService implements OrderServiceContract
 				->whereIn('status', [Order::ORDER_STATUS_CANCEL, Order::ORDER_STATUS_DONE])
 				->with([
 					'user',
-					'products'
+					'products',
+					'transaction',
 				])
 				->orderBy('created_at', 'desc')
 				->get();
