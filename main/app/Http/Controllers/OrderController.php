@@ -71,6 +71,8 @@ class OrderController extends Controller
 		} catch (\Throwable $e) {
 			\DB::rollBack();
 
+			\Log::error('Не удалось создать заказ, текст ошибки: ' . $e->getMessage());
+
 			return response(
 				['message' => 'Что-то пошло не так'],
 				Response::HTTP_UNPROCESSABLE_ENTITY
