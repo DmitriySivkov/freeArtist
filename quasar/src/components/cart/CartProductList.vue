@@ -92,41 +92,41 @@
 								v-if="isCartLoaded"
 								class="row q-col-gutter-xs full-height"
 							>
-								<div
-									v-for="method in paymentMethods[cartItem.producer_id].methods"
-									:key="method.id"
-									class="col-6 flex"
-								>
-									<q-card
-										class="q-py-md full-width text-body1 text-center q-hoverable cursor-pointer"
-										:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"
-										@click="selectPaymentMethod({
-											producerId: cartItem.producer_id,
-											methodId: method.id
-										})"
-									>
-										<span class="q-focus-helper"></span>
-										<div class="row">
-											<q-card-section class="col-3">
-												<q-radio
-													:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"
-													checked-icon="radio_button_checked"
-													unchecked-icon="radio_button_unchecked"
-													:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"
-													:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"
-													:val="method.id"
-													@update:model-value="selectPaymentMethod({
-														producerId: cartItem.producer_id,
-														methodId: $event
-													})"
-												/>
-											</q-card-section>
-											<q-card-section class="col-9 self-center">
-												<span class="text-body1">{{ method.name }}</span>
-											</q-card-section>
-										</div>
-									</q-card>
-								</div>
+								<!--																<div-->
+								<!--																	v-for="method in paymentMethods[cartItem.producer_id].methods"-->
+								<!--																	:key="method.id"-->
+								<!--																	class="col-6 flex"-->
+								<!--																>-->
+								<!--																	<q-card-->
+								<!--																		class="q-py-md full-width text-body1 text-center q-hoverable cursor-pointer"-->
+								<!--																		:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"-->
+								<!--																		@click="selectPaymentMethod({-->
+								<!--																			producerId: cartItem.producer_id,-->
+								<!--																			methodId: method.id-->
+								<!--																		})"-->
+								<!--																	>-->
+								<!--																		<span class="q-focus-helper"></span>-->
+								<!--																		<div class="row">-->
+								<!--																			<q-card-section class="col-3">-->
+								<!--																				<q-radio-->
+								<!--																					:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"-->
+								<!--																					checked-icon="radio_button_checked"-->
+								<!--																					unchecked-icon="radio_button_unchecked"-->
+								<!--																					:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"-->
+								<!--																					:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"-->
+								<!--																					:val="method.id"-->
+								<!--																					@update:model-value="selectPaymentMethod({-->
+								<!--																						producerId: cartItem.producer_id,-->
+								<!--																						methodId: $event-->
+								<!--																					})"-->
+								<!--																				/>-->
+								<!--																			</q-card-section>-->
+								<!--																			<q-card-section class="col-9 self-center">-->
+								<!--																				<span class="text-body1">{{ method.name }}</span>-->
+								<!--																			</q-card-section>-->
+								<!--																		</div>-->
+								<!--																	</q-card>-->
+								<!--																</div>-->
 							</div>
 						</div>
 						<div class="col-xs-12 col-sm">
@@ -139,7 +139,12 @@
 										class="q-py-md full-width"
 										label="Оформить заказ"
 										color="primary"
-										@click="makeOrder(cartItem.producer_id)"
+										:to="{
+											name: 'checkout',
+											params: {
+												producerId: cartItem.producer_id
+											}
+										}"
 										:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
 										:loading="isLoading"
 									/>
@@ -159,41 +164,41 @@
 								v-if="isCartLoaded"
 								class="row q-col-gutter-xs"
 							>
-								<div
-									v-for="method in paymentMethods[cartItem.producer_id].methods"
-									:key="method.id"
-									class="col-12"
-								>
-									<q-card
-										class="q-py-md text-body1 text-center q-hoverable cursor-pointer"
-										:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"
-										@click="selectPaymentMethod({
-											producerId: cartItem.producer_id,
-											methodId: method.id
-										})"
-									>
-										<span class="q-focus-helper"></span>
-										<div class="row">
-											<q-card-section class="col-3">
-												<q-radio
-													:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"
-													checked-icon="radio_button_checked"
-													unchecked-icon="radio_button_unchecked"
-													:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"
-													:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"
-													:val="method.id"
-													@update:model-value="selectPaymentMethod({
-														producerId: cartItem.producer_id,
-														methodId: $event
-													})"
-												/>
-											</q-card-section>
-											<q-card-section class="col-9 self-center">
-												<span class="text-body1">{{ method.name }}</span>
-											</q-card-section>
-										</div>
-									</q-card>
-								</div>
+								<!--								<div-->
+								<!--									v-for="method in paymentMethods[cartItem.producer_id].methods"-->
+								<!--									:key="method.id"-->
+								<!--									class="col-12"-->
+								<!--								>-->
+								<!--									<q-card-->
+								<!--										class="q-py-md text-body1 text-center q-hoverable cursor-pointer"-->
+								<!--										:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"-->
+								<!--										@click="selectPaymentMethod({-->
+								<!--											producerId: cartItem.producer_id,-->
+								<!--											methodId: method.id-->
+								<!--										})"-->
+								<!--									>-->
+								<!--										<span class="q-focus-helper"></span>-->
+								<!--										<div class="row">-->
+								<!--											<q-card-section class="col-3">-->
+								<!--												<q-radio-->
+								<!--													:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"-->
+								<!--													checked-icon="radio_button_checked"-->
+								<!--													unchecked-icon="radio_button_unchecked"-->
+								<!--													:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"-->
+								<!--													:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"-->
+								<!--													:val="method.id"-->
+								<!--													@update:model-value="selectPaymentMethod({-->
+								<!--														producerId: cartItem.producer_id,-->
+								<!--														methodId: $event-->
+								<!--													})"-->
+								<!--												/>-->
+								<!--											</q-card-section>-->
+								<!--											<q-card-section class="col-9 self-center">-->
+								<!--												<span class="text-body1">{{ method.name }}</span>-->
+								<!--											</q-card-section>-->
+								<!--										</div>-->
+								<!--									</q-card>-->
+								<!--								</div>-->
 							</div>
 						</div>
 						<div class="col-12">
@@ -201,7 +206,7 @@
 								class="q-py-lg full-width"
 								label="Оформить заказ"
 								color="primary"
-								@click="makeOrder(cartItem.producer_id)"
+								:to="{name: 'checkout'}"
 								:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
 								:loading="isLoading"
 							/>
@@ -227,7 +232,7 @@ import EmptyCart from "src/components/cart/EmptyCart.vue"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { useNotification } from "src/composables/notification"
 import { useUserStore } from "src/stores/user"
-import {Dialog, LocalStorage} from "quasar"
+import { Dialog, LocalStorage } from "quasar"
 import { Cookies } from "quasar"
 import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
@@ -474,15 +479,15 @@ function init() {
 			({...carry, [p.id]: p}), {}
 		)
 
-		paymentMethods.value = response.data.producers.reduce((carry, p) =>
-			({
-				...carry,
-				[p.id]: {
-					selectedPaymentMethodId: p.payment_methods.find((pm) => pm.id === PAYMENT_METHODS.CASH).id,
-					methods: p.payment_methods
-				}
-			}), {}
-		)
+		// paymentMethods.value = response.data.producers.reduce((carry, p) =>
+		// 	({
+		// 		...carry,
+		// 		[p.id]: {
+		// 			selectedPaymentMethodId: p.payment_methods.find((pm) => pm.id === PAYMENT_METHODS.CASH).id,
+		// 			methods: p.payment_methods
+		// 		}
+		// 	}), {}
+		// )
 
 		isCartLoaded.value = true
 	})

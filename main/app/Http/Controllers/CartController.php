@@ -21,8 +21,7 @@ class CartController extends Controller
 
 		$producers = Producer::whereIn('id', $producerIds)
 			->with([
-				'team',
-				'paymentMethods'
+				'team'
 			])
 			->get();
 
