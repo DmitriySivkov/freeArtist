@@ -87,48 +87,6 @@
 						v-if="$q.screen.width >= $q.screen.sizes.sm"
 						class="row q-col-gutter-sm"
 					>
-						<div class="col-xs-12 col-sm-8">
-							<div
-								v-if="isCartLoaded"
-								class="row q-col-gutter-xs full-height"
-							>
-								<!--																<div-->
-								<!--																	v-for="method in paymentMethods[cartItem.producer_id].methods"-->
-								<!--																	:key="method.id"-->
-								<!--																	class="col-6 flex"-->
-								<!--																>-->
-								<!--																	<q-card-->
-								<!--																		class="q-py-md full-width text-body1 text-center q-hoverable cursor-pointer"-->
-								<!--																		:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"-->
-								<!--																		@click="selectPaymentMethod({-->
-								<!--																			producerId: cartItem.producer_id,-->
-								<!--																			methodId: method.id-->
-								<!--																		})"-->
-								<!--																	>-->
-								<!--																		<span class="q-focus-helper"></span>-->
-								<!--																		<div class="row">-->
-								<!--																			<q-card-section class="col-3">-->
-								<!--																				<q-radio-->
-								<!--																					:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"-->
-								<!--																					checked-icon="radio_button_checked"-->
-								<!--																					unchecked-icon="radio_button_unchecked"-->
-								<!--																					:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"-->
-								<!--																					:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"-->
-								<!--																					:val="method.id"-->
-								<!--																					@update:model-value="selectPaymentMethod({-->
-								<!--																						producerId: cartItem.producer_id,-->
-								<!--																						methodId: $event-->
-								<!--																					})"-->
-								<!--																				/>-->
-								<!--																			</q-card-section>-->
-								<!--																			<q-card-section class="col-9 self-center">-->
-								<!--																				<span class="text-body1">{{ method.name }}</span>-->
-								<!--																			</q-card-section>-->
-								<!--																		</div>-->
-								<!--																	</q-card>-->
-								<!--																</div>-->
-							</div>
-						</div>
 						<div class="col-xs-12 col-sm">
 							<div class="column full-height">
 								<div class="col text-right text-h6">
@@ -139,12 +97,7 @@
 										class="q-py-md full-width"
 										label="Оформить заказ"
 										color="primary"
-										:to="{
-											name: 'checkout',
-											params: {
-												producerId: cartItem.producer_id
-											}
-										}"
+										@click="showOrderCheckoutDialog(cartItem.producer_id)"
 										:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
 										:loading="isLoading"
 									/>
@@ -159,54 +112,12 @@
 						<div class="col-12 text-right q-pb-sm text-h6">
 							{{ totalPrice[cartItem.producer_id] }} ₽
 						</div>
-						<div class="col-12 q-py-md">
-							<div
-								v-if="isCartLoaded"
-								class="row q-col-gutter-xs"
-							>
-								<!--								<div-->
-								<!--									v-for="method in paymentMethods[cartItem.producer_id].methods"-->
-								<!--									:key="method.id"-->
-								<!--									class="col-12"-->
-								<!--								>-->
-								<!--									<q-card-->
-								<!--										class="q-py-md text-body1 text-center q-hoverable cursor-pointer"-->
-								<!--										:class="{'bg-primary text-white': method.id === paymentMethods[cartItem.producer_id].selectedPaymentMethodId}"-->
-								<!--										@click="selectPaymentMethod({-->
-								<!--											producerId: cartItem.producer_id,-->
-								<!--											methodId: method.id-->
-								<!--										})"-->
-								<!--									>-->
-								<!--										<span class="q-focus-helper"></span>-->
-								<!--										<div class="row">-->
-								<!--											<q-card-section class="col-3">-->
-								<!--												<q-radio-->
-								<!--													:model-value="paymentMethods[cartItem.producer_id].selectedPaymentMethodId"-->
-								<!--													checked-icon="radio_button_checked"-->
-								<!--													unchecked-icon="radio_button_unchecked"-->
-								<!--													:color="paymentMethods[cartItem.producer_id].selectedPaymentMethodId === method.id ? 'white' : 'black'"-->
-								<!--													:name="`payment_method_${method.id}_producer_${cartItem.producer_id}`"-->
-								<!--													:val="method.id"-->
-								<!--													@update:model-value="selectPaymentMethod({-->
-								<!--														producerId: cartItem.producer_id,-->
-								<!--														methodId: $event-->
-								<!--													})"-->
-								<!--												/>-->
-								<!--											</q-card-section>-->
-								<!--											<q-card-section class="col-9 self-center">-->
-								<!--												<span class="text-body1">{{ method.name }}</span>-->
-								<!--											</q-card-section>-->
-								<!--										</div>-->
-								<!--									</q-card>-->
-								<!--								</div>-->
-							</div>
-						</div>
 						<div class="col-12">
 							<q-btn
 								class="q-py-lg full-width"
 								label="Оформить заказ"
 								color="primary"
-								:to="{name: 'checkout'}"
+								@click="showOrderCheckoutDialog(cartItem.producer_id)"
 								:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
 								:loading="isLoading"
 							/>
@@ -229,7 +140,6 @@ import { computed, ref, onMounted } from "vue"
 import { useCartStore } from "src/stores/cart"
 import { api } from "src/boot/axios"
 import EmptyCart from "src/components/cart/EmptyCart.vue"
-import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { useNotification } from "src/composables/notification"
 import { useUserStore } from "src/stores/user"
 import { Dialog, LocalStorage } from "quasar"
@@ -238,6 +148,7 @@ import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import ShowPaymentPageDialog from "src/components/dialogs/ShowPaymentPageDialog.vue"
 import OrderCompletedDialog from "src/components/dialogs/OrderCompletedDialog.vue"
+import OrderCheckoutDialog from "src/components/dialogs/OrderCheckoutDialog.vue"
 
 const { notifySuccess, notifyError } = useNotification()
 
@@ -286,10 +197,6 @@ function setProductAmount({producerId, product, amount}) {
 
 const paymentMethods = ref({})
 
-const selectPaymentMethod = ({ producerId, methodId }) => {
-	paymentMethods.value[producerId].selectedPaymentMethodId = methodId
-}
-
 const isCartLoaded = ref(false)
 const producers = ref({})
 const products = ref({})
@@ -303,6 +210,21 @@ const totalPrice = computed(() =>
 )
 
 const userStore = useUserStore()
+
+const showOrderCheckoutDialog = (producerId) => {
+	const producerOrderObject = cart.value.find((i) => i.producer_id === producerId)
+
+	Dialog.create({
+		component: OrderCheckoutDialog,
+		componentProps: {
+			totalPrice: totalPrice.value[producerId],
+			orderData: producerOrderObject,
+			paymentMethods: paymentMethods.value[producerId]
+		}
+	}).onOk(() => {
+		console.log("successful checkout")
+	})
+}
 
 const makeOrder = async (producerId) => {
 	// todo - integrate with reworked 'init()' function
@@ -479,15 +401,12 @@ function init() {
 			({...carry, [p.id]: p}), {}
 		)
 
-		// paymentMethods.value = response.data.producers.reduce((carry, p) =>
-		// 	({
-		// 		...carry,
-		// 		[p.id]: {
-		// 			selectedPaymentMethodId: p.payment_methods.find((pm) => pm.id === PAYMENT_METHODS.CASH).id,
-		// 			methods: p.payment_methods
-		// 		}
-		// 	}), {}
-		// )
+		paymentMethods.value = response.data.producers.reduce((carry, p) =>
+			({
+				...carry,
+				[p.id]: p.payment_methods
+			}), {}
+		)
 
 		isCartLoaded.value = true
 	})

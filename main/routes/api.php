@@ -71,10 +71,6 @@ Route::group(['prefix' => 'cart'], function() {
 		->middleware([\App\Http\Middleware\CheckProducts::class]);
 });
 
-Route::group(['prefix' => 'checkout'], function() {
-	Route::get('{producer}', [\App\Http\Controllers\CheckoutController::class, 'load']);
-});
-
 // do append a middleware since routes below apply both for auth & unauth users
 Route::group(['prefix' => 'orders', 'middleware' => [\App\Http\Middleware\AppendAuthHeader::class]], function () {
 	Route::get('', [OrderController::class, 'index']);
