@@ -1,10 +1,12 @@
 <script setup>
 import { ref } from "vue"
 import { api } from "src/boot/axios"
-import { Dialog, date, useDialogPluginComponent } from "quasar"
+import { Dialog, date, useDialogPluginComponent, Cookies } from "quasar"
 import ShowPaymentPageDialog from "src/components/dialogs/ShowPaymentPageDialog.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import { ORDER_TIME_PERIODS, ORDER_TIME_PERIOD_NAMES } from "src/const/orderTimePeriods"
+import OrderCompletedDialog from "src/components/dialogs/OrderCompletedDialog.vue"
+import {PAYMENT_METHODS} from "src/const/paymentMethods"
 
 const props = defineProps({
 	totalPrice: String,
@@ -18,9 +20,9 @@ const emit = defineEmits([
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
-const today = new Date()
+const today = date.formatDate(new Date(), "YYYY-MM-DD")
 
-const orderDate = ref(date.formatDate(today, "YYYY-MM-DD"))
+const orderDate = ref(today)
 
 const selectedPaymentMethod = ref(null)
 
@@ -32,39 +34,44 @@ const selectedTimePeriod = ref(null)
 
 const selectTimePeriod = (timePeriodId) => {
 	selectedTimePeriod.value = timePeriodId
+
+	if (timePeriodId === ORDER_TIME_PERIODS.ASAP) {
+		orderDate.value = today
+	}
 }
 
-const makeOrder = async (producerId) => {
+const makeOrder = async () => {
 	if (userStore.is_logged) {
 		isLoading.value = true
 
-		const promise = api.post("yookassa/create", {
-			producer_id: producerId,
+		const promise = api.post("orders", {
+			producer_id: props.orderData.producer_id,
 			price: props.totalPrice,
 			products: props.orderData.products.map((p) => ({
 				id: p.data.id,
 				price: p.data.price,
 				amount: p.cart_amount
 			})),
-			payment_method: selectedPaymentMethod.value
+			payment_method: selectedPaymentMethod.value,
+			order_date: orderDate.value
 		})
 
 		promise.then((response) => {
+			if (selectedPaymentMethod.value === PAYMENT_METHODS.CASH) {
+				cashAction()
+			}
+
+			if (selectedPaymentMethod.value === PAYMENT_METHODS.CARD) {
+				yookassaAction()
+			}
+
+			setOrderCookie(response.data.uuid)
+
 			Dialog.create({
-				component: ShowPaymentPageDialog,
-				componentProps: {
-					confirmationToken: response.data.confirmation.confirmation_token
-				}
+				component: OrderCompletedDialog,
+			}).onDismiss(() => {
+				onDialogOK(props.orderData.producer_id)
 			})
-				.onOk(() => {
-					orderAction({
-						transactionUuid: response.data.transaction_uuid,
-						orderMeta: null
-					})
-				})
-				.onCancel(() => {
-					notifyError("Не получилось оплатить заказ")
-				})
 		})
 
 		promise.catch((error) => {
@@ -97,6 +104,72 @@ const makeOrder = async (producerId) => {
 		// }).onOk((orderMeta) => {
 		// 	orderAction({ producerId, orderMeta })
 		// })
+	}
+}
+
+function yookassaAction() {
+	Dialog.create({
+		component: ShowPaymentPageDialog,
+		componentProps: {
+			confirmationToken: response.data.confirmation.confirmation_token
+		}
+	})
+		.onOk(() => {
+			orderAction({
+				transactionUuid: response.data.transaction_uuid,
+				orderMeta: null
+			})
+		})
+		.onCancel(() => {
+			notifyError("Не получилось оплатить заказ")
+		})
+}
+
+function cashAction() {
+	console.log("cash action")
+}
+
+function orderAction({ transactionUuid, orderMeta }) {
+	isLoading.value = true
+
+	const promise = api.post("orders", {
+		transaction_uuid: transactionUuid,
+		meta: orderMeta
+	})
+
+	promise.then((response) => {
+
+	})
+
+	promise.catch((error) => {
+		notifyError(error.response.data.message)
+	})
+
+	promise.finally(() => isLoading.value = false)
+}
+
+function setOrderCookie(orderUuid) {
+	const cookieParams = {
+		domain: process.env.SESSION_DOMAIN,
+		sameSite: "lax",
+		path: "/",
+		expires: 365
+	}
+
+	if (Cookies.has("orders")) {
+		const cookieOrders = Cookies.get("orders")
+
+		Cookies.set(
+			"orders",
+			JSON.stringify([orderUuid, ...cookieOrders]),
+			{...cookieParams}
+		)
+	} else {
+		Cookies.set(
+			"orders",
+			JSON.stringify([orderUuid]),
+			{...cookieParams}
+		)
 	}
 }
 </script>
@@ -145,6 +218,7 @@ const makeOrder = async (producerId) => {
 				<q-date
 					v-model="orderDate"
 					class="full-width"
+					no-unset
 					first-day-of-week="1"
 					mask="YYYY-MM-DD"
 					title="Выберите день"

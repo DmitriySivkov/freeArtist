@@ -2,26 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\OrderServiceContract;
 use App\Helpers\TokenHelper;
 use App\Http\Requests\UserNewOrderRequest;
 use App\Models\Order;
 use App\Models\ProducerOrderPriority;
-use App\Models\Transaction;
 use App\Models\User;
 use App\Services\Orders\UserOrderService;
+use App\Services\PaymentProviderService;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
-	private OrderServiceContract $orderService;
-
-	public function __construct(OrderServiceContract $orderService)
-	{
-		/** @var UserOrderService $orderService */
-		$this->orderService = $orderService;
-	}
-
 	public function index(UserOrderService $orderService)
     {
 		/** @var User|null $user */
@@ -32,22 +23,39 @@ class OrderController extends Controller
         return $orderService->getOrderList();
     }
 
-    public function store(UserNewOrderRequest $request)
+    public function store(
+		UserNewOrderRequest $request,
+		UserOrderService $orderService,
+		PaymentProviderService $paymentProviderService
+	)
 	{
 		/** @var User|null $user */
 		$user = TokenHelper::getUserByToken(request()->cookie('token'));
 		$meta = $request->input('meta');
 
-		$transaction = Transaction::where('uuid', $request->input('transaction_uuid'))
-			->firstOrFail();
+		$paymentMethod = $request->input('payment_method');
+		$producerId = $request->input('producer_id');
+		$requestProducts 	= array_combine(
+			collect($request->input('products'))
+				->pluck('id')
+				->toArray(),
+			$request->input('products')
+		);
+
+		$paymentProviderService->getPaymentProvider($paymentMethod)
+			->setProducerId($producerId)
+			->setRequestProducts(array_values($requestProducts))
+			->makePayment();
+
+		$transaction = $paymentProviderService->getTransaction();
 
 		try {
 			\DB::beginTransaction();
 
-			$this->orderService->setUser($user);
-			$this->orderService->setMeta($meta);
+			$orderService->setUser($user);
+			$orderService->setMeta($meta);
 
-			$order = $this->orderService->processOrder($transaction);
+			$order = $orderService->processOrder($transaction);
 
 			// todo - move to service
 			$orderPriority = ProducerOrderPriority::where('producer_id', $order->producer_id)

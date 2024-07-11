@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PaymentMethod;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserNewOrderRequest extends FormRequest
 {
@@ -25,8 +27,17 @@ class UserNewOrderRequest extends FormRequest
     {
         return [
 			'transaction_uuid' => [
+				Rule::requiredIf(fn() => $this->payment_method !== PaymentMethod::PAYMENT_METHOD_CASH_ID),
+			],
+			'producer_id' => [
+				Rule::requiredIf(fn() => $this->payment_method === PaymentMethod::PAYMENT_METHOD_CASH_ID),
+			],
+			'order_date' => [
 				'required',
-				'exists:transactions,uuid'
+				'date'
+			],
+			'payment_method' => [
+				'required'
 			],
 			'meta' => [
 				'nullable'

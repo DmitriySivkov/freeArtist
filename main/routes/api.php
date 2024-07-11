@@ -74,13 +74,10 @@ Route::group(['prefix' => 'cart'], function() {
 // do append a middleware since routes below apply both for auth & unauth users
 Route::group(['prefix' => 'orders', 'middleware' => [\App\Http\Middleware\AppendAuthHeader::class]], function () {
 	Route::get('', [OrderController::class, 'index']);
-	Route::post('', [OrderController::class, 'store']);
+	Route::post('', [OrderController::class, 'store'])->middleware([\App\Http\Middleware\CheckProducts::class]);
 });
 
 Route::group(['prefix' => 'yookassa'], function() {
-	Route::post('create', [\App\Http\Controllers\Yookassa\YookassaController::class, 'create'])
-		->middleware([\App\Http\Middleware\CheckProducts::class]);
-
 	Route::match(['POST', 'GET'], 'status', [\App\Http\Controllers\Yookassa\YookassaController::class, 'status']);
 });
 
@@ -116,8 +113,8 @@ Route::group([
 		});
 
 		Route::group(['prefix' => '{producer}/orders'], function () {
-			Route::get('', [\App\Http\Controllers\Producer\OrderController::class, 'index']);
-			Route::post('move', [\App\Http\Controllers\Producer\OrderController::class, 'move']);
+			Route::get('', [\App\Http\Controllers\Producer\ProducerOrderController::class, 'index']);
+			Route::post('move', [\App\Http\Controllers\Producer\ProducerOrderController::class, 'move']);
 		});
 
 		Route::group(['prefix' => '{producer}/payment-providers'], function () {

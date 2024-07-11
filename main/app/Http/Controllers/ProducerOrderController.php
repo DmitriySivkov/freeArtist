@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Producer;
 
-use App\Contracts\OrderServiceContract;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Producer;
@@ -10,21 +9,13 @@ use App\Models\ProducerOrderPriority;
 use App\Services\Orders\ProducerOrderService;
 use Illuminate\Http\Request;
 
-class OrderController extends Controller
+class ProducerOrderController extends Controller
 {
-	private OrderServiceContract $orderService;
-
-	public function __construct(OrderServiceContract $orderService)
-	{
-		/** @var ProducerOrderService $orderService */
-		$this->orderService = $orderService;
-	}
-
-    public function index(Producer $producer)
+    public function index(Producer $producer, ProducerOrderService $orderService)
     {
-		$this->orderService->setProducer($producer);
+		$orderService->setProducer($producer);
 
-        return $this->orderService->getOrderList();
+        return $orderService->getOrderList();
     }
 
 	public function move(Request $request, Producer $producer)

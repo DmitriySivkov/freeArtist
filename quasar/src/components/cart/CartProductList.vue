@@ -221,8 +221,8 @@ const showOrderCheckoutDialog = (producerId) => {
 			orderData: producerOrderObject,
 			paymentMethods: paymentMethods.value[producerId]
 		}
-	}).onOk(() => {
-		console.log("successful checkout")
+	}).onOk((producerId) => {
+		cartStore.clearCartProducer(producerId)
 	})
 }
 

@@ -77,7 +77,7 @@ class UserOrderService implements OrderServiceContract
 
 	/**
 	 * @param Transaction $transaction
-	 * @return \Illuminate\Database\Eloquent\Model
+	 * @return Order|\Illuminate\Database\Eloquent\Model
 	 */
 	public function processOrder(Transaction $transaction)
 	{
