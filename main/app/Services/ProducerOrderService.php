@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\Orders;
+namespace App\Services;
 
 use App\Contracts\OrderServiceContract;
 use App\Http\Resources\ProducerOrdersResource;

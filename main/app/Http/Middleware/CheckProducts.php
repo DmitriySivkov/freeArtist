@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\OrderInvalidItemsException;
-use App\Services\Orders\UserOrderService;
+use App\Services\UserOrderService;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -19,7 +19,7 @@ class CheckProducts
 	 */
     public function handle(Request $request, Closure $next)
     {
-		$service = new UserOrderService(); // could not resolve from binding due to app flow order
+		$service = app(UserOrderService::class);
 
 		$invalidProducts = $service->findInvalidProducts($request->input('products'));
 
@@ -29,9 +29,9 @@ class CheckProducts
 					'id' 			=> $product->id,
 					'title' 		=> $product->title,
 					'amount' 		=> $product->is_active ? $product->amount : 0,
-					'cart_amount'	=> $product->cartAmount,
+					'cart_amount'	=> $product->cart_amount,
 					'price'			=> $product->price,
-					'cart_price'	=> $product->cartPrice,
+					'cart_price'	=> $product->cart_price,
 					'producer'		=> $product->producer->team->display_name,
 					'producer_id'	=> $product->producer->id
 				])

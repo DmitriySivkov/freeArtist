@@ -216,10 +216,12 @@ class AuthService
 
 	private function onCredentialsAuthAction()
 	{
-		$orderUuid = json_decode(request()->cookie('orders'));
+		$uuid = json_decode(request()->cookie('orders'));
 
-		if ($orderUuid) {
-			Order::whereIn('transaction_uuid', $orderUuid)
+		if ($uuid) {
+			Order::whereHas('transaction', fn($query) =>
+				$query->where('uuid', $uuid)
+			)
 				->whereNull('user_id')
 				->update([
 					'user_id' => $this->user->id

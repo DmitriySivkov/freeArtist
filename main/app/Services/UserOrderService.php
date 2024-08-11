@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\Orders;
+namespace App\Services;
 
 
 use App\Contracts\OrderServiceContract;
@@ -9,7 +9,6 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Symfony\Component\Mime\Exception\LogicException;
 
 class UserOrderService implements OrderServiceContract
@@ -82,7 +81,7 @@ class UserOrderService implements OrderServiceContract
 	public function processOrder(Transaction $transaction)
 	{
 		$order = Order::create([
-			'transaction_uuid' => $transaction->uuid,
+			'transaction_id' => $transaction->id,
 			'user_id' => $this->user ? $this->user->id : null,
 			'producer_id' => $transaction->producer_id,
 			'status' => Order::ORDER_STATUS_NEW,
@@ -119,8 +118,8 @@ class UserOrderService implements OrderServiceContract
 				|| $product->price !== (float)$orderProducts[$product->id]['price'];
 			})
 			->map(function(Product $product) use ($orderProducts) {
-				$product->cartAmount = $orderProducts[$product->id]['amount'];
-				$product->cartPrice = $orderProducts[$product->id]['price'];
+				$product->cart_amount = $orderProducts[$product->id]['amount'];
+				$product->cart_price = $orderProducts[$product->id]['price'];
 
 				return $product;
 			});

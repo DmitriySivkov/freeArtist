@@ -13,7 +13,7 @@ class YookassaController extends Controller
 	{
 		$data = $request->input('object');
 
-		$transaction = Transaction::where('uuid', $data['metadata']['transaction_uuid'])
+		$transaction = Transaction::whereUuid($data['metadata']['transaction_uuid'])
 			->first();
 
 		if (!$transaction) {

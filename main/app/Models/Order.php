@@ -83,6 +83,6 @@ class Order extends Model
 	 */
 	public function transaction()
 	{
-		return $this->belongsTo(Transaction::class, 'transaction_uuid', 'uuid');
+		return $this->belongsTo(Transaction::class);
 	}
 }

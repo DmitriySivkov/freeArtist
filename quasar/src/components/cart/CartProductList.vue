@@ -165,7 +165,7 @@ const hasInvalidAmount = computed(() =>
 			}), {})
 )
 
-function addToCart({producerId, product}) {
+const addToCart = ({producerId, product}) => {
 	if (product.cart_amount >= products.value[product.data.id].amount) return
 
 	cartStore.increaseProductAmount({
@@ -174,7 +174,7 @@ function addToCart({producerId, product}) {
 	})
 }
 
-function removeFromCart({producerId, product}) {
+const removeFromCart = ({producerId, product}) => {
 	if (product.cart_amount === 0) return
 
 	cartStore.decreaseProductAmount({
@@ -183,7 +183,7 @@ function removeFromCart({producerId, product}) {
 	})
 }
 
-function setProductAmount({producerId, product, amount}) {
+const setProductAmount = ({producerId, product, amount}) => {
 	if (parseInt(amount) > products.value[product.data.id].amount) {
 		amount = products.value[product.data.id].amount
 	}
@@ -221,8 +221,25 @@ const showOrderCheckoutDialog = (producerId) => {
 			orderData: producerOrderObject,
 			paymentMethods: paymentMethods.value[producerId]
 		}
-	}).onOk((producerId) => {
-		cartStore.clearCartProducer(producerId)
+	}).onOk((response) => {
+		if (typeof response === "object" && response.error) {
+			if (response.error.exception === "App\\Exceptions\\OrderInvalidItemsException") {
+				Dialog.create({
+					component: OrderInvalidProductDialog,
+					componentProps: {
+						message: response.error.message,
+						invalidProducts: response.error.invalid_items
+					}
+				}).onDismiss(() => {
+					invalidProductsAction(response.error.invalid_items)
+				})
+
+				return
+			}
+
+			notifyError(response.error.message)
+		}
+		// cartStore.clearCartProducer(producerId) // todo
 	})
 }
 
@@ -297,7 +314,7 @@ const makeOrder = async (producerId) => {
 
 const isLoading = ref(false)
 
-function orderAction({ transactionUuid, orderMeta }) {
+const orderAction = ({ transactionUuid, orderMeta }) => {
 	isLoading.value = true
 
 	const promise = api.post("orders", {
@@ -326,7 +343,7 @@ onMounted(() => {
 	init()
 })
 
-function init() {
+const init = () => {
 	if (!cart.value.length) return
 
 	let cartProducers = cart.value.map((producerSet) =>
@@ -353,36 +370,15 @@ function init() {
 			typeof error.response.data === "object" &&
 			error.response.data.exception === "App\\Exceptions\\OrderInvalidItemsException"
 		) {
-			let invalidProducts = error.response.data.invalid_items.map(function(p) {
-				const cartProduct = cartProducts.find((cp) => cp.id === p.id)
-				p.cartAmount = cartProduct.amount
-				p.cartPrice = cartProduct.price
-				return p
-			})
-
 			Dialog.create({
 				component: OrderInvalidProductDialog,
 				componentProps: {
 					message: error.response.data.message,
-					invalidProducts
+					invalidProducts: error.response.data.invalid_items
 				}
 			}).onDismiss(() => {
-				// setting real amount and price
-				invalidProducts.forEach((ip) =>
-					cartStore.setCartProducerProductData({
-						producerId: ip.producer_id,
-						productId: ip.id,
-						data: {
-							price: ip.price,
-							amount: ip.amount
-						},
-						cartAmount: ip.amount < ip.cartAmount ? ip.amount : ip.cartAmount
-					})
-				)
+				invalidProductsAction(error.response.data.invalid_items)
 
-				LocalStorage.set("cart", cart.value)
-
-				isCartLoaded.value = false
 				init()
 			})
 
@@ -412,7 +408,7 @@ function init() {
 	})
 }
 
-function setOrderCookie(orderUuid) {
+const setOrderCookie = (orderUuid) => {
 	const cookieParams = {
 		domain: process.env.SESSION_DOMAIN,
 		sameSite: "lax",
@@ -435,5 +431,21 @@ function setOrderCookie(orderUuid) {
 			cookieParams
 		)
 	}
+}
+
+const invalidProductsAction = (invalidProducts) => {
+	invalidProducts.forEach((ip) =>
+		cartStore.setCartProducerProductData({
+			producerId: ip.producer_id,
+			productId: ip.id,
+			data: {
+				price: ip.price,
+				amount: ip.amount
+			},
+			cartAmount: ip.amount < ip.cart_amount ? ip.amount : ip.cart_amount
+		})
+	)
+
+	LocalStorage.set("cart", cart.value) // todo - cart.value не обновлено?
 }
 </script>

@@ -74,7 +74,8 @@ Route::group(['prefix' => 'cart'], function() {
 // do append a middleware since routes below apply both for auth & unauth users
 Route::group(['prefix' => 'orders', 'middleware' => [\App\Http\Middleware\AppendAuthHeader::class]], function () {
 	Route::get('', [OrderController::class, 'index']);
-	Route::post('', [OrderController::class, 'store'])->middleware([\App\Http\Middleware\CheckProducts::class]);
+	Route::post('', [OrderController::class, 'store']);
+	Route::post('transaction', [OrderController::class, 'transaction'])->middleware([\App\Http\Middleware\CheckProducts::class]);
 });
 
 Route::group(['prefix' => 'yookassa'], function() {

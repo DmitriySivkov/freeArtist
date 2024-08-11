@@ -6,7 +6,9 @@ import ShowPaymentPageDialog from "src/components/dialogs/ShowPaymentPageDialog.
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import { ORDER_TIME_PERIODS, ORDER_TIME_PERIOD_NAMES } from "src/const/orderTimePeriods"
 import OrderCompletedDialog from "src/components/dialogs/OrderCompletedDialog.vue"
-import {PAYMENT_METHODS} from "src/const/paymentMethods"
+import { PAYMENT_METHODS } from "src/const/paymentMethods"
+import { useUserStore } from "src/stores/user"
+import { useNotification } from "src/composables/notification"
 
 const props = defineProps({
 	totalPrice: String,
@@ -19,6 +21,12 @@ const emit = defineEmits([
 ])
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
+
+const { notifyError } = useNotification()
+
+const userStore = useUserStore()
+
+const isLoading = ref(false)
 
 const today = date.formatDate(new Date(), "YYYY-MM-DD")
 
@@ -40,11 +48,11 @@ const selectTimePeriod = (timePeriodId) => {
 	}
 }
 
-const makeOrder = async () => {
+const makeTransaction = async () => {
 	if (userStore.is_logged) {
 		isLoading.value = true
 
-		const promise = api.post("orders", {
+		const promise = api.post("orders/transaction", {
 			producer_id: props.orderData.producer_id,
 			price: props.totalPrice,
 			products: props.orderData.products.map((p) => ({
@@ -58,45 +66,32 @@ const makeOrder = async () => {
 
 		promise.then((response) => {
 			if (selectedPaymentMethod.value === PAYMENT_METHODS.CASH) {
-				cashAction()
+				cashAction(response.data.transaction_uuid)
 			}
 
 			if (selectedPaymentMethod.value === PAYMENT_METHODS.CARD) {
-				yookassaAction()
+				// todo - 'cardAction', а всякие токены прокидывать в 'data'. В 'data' может быть все что угодно. Потому что всем надо разное
+				yookassaAction({
+					confirmationToken: response.data.confirmation.confirmation_token,
+					transactionUuid: response.data.transaction_uuid
+				})
 			}
 
-			setOrderCookie(response.data.uuid)
+			setOrderCookie(response.data.transaction_uuid)
 
-			Dialog.create({
-				component: OrderCompletedDialog,
-			}).onDismiss(() => {
-				onDialogOK(props.orderData.producer_id)
-			})
+			// todo - move somewhere further
+			// Dialog.create({
+			// 	component: OrderCompletedDialog,
+			// }).onDismiss(() => {
+			// 	onDialogOK(props.orderData.producer_id)
+			// })
 		})
 
 		promise.catch((error) => {
-			if (
-				typeof error.response.data === "object" &&
-				error.response.data.exception === "App\\Exceptions\\OrderInvalidItemsException"
-			) {
-				Dialog.create({
-					component: OrderInvalidProductDialog,
-					componentProps: {
-						message: error.response.data.message,
-						invalidProducts: error.response.data.invalid_items
-					}
-				}).onDismiss(() => {
-					isCartLoaded.value = false
-					init()
-				})
-
-				return
-			}
-
-			notifyError(error.response.data.message)
+			onDialogOK({
+				error: error.response.data
+			})
 		})
-
-		promise.finally(() => isLoading.value = false)
 	} else {
 		// todo
 		// Dialog.create({
@@ -107,17 +102,17 @@ const makeOrder = async () => {
 	}
 }
 
-function yookassaAction() {
+function yookassaAction({ confirmationToken, transactionUuid }) {
 	Dialog.create({
 		component: ShowPaymentPageDialog,
 		componentProps: {
-			confirmationToken: response.data.confirmation.confirmation_token
+			confirmationToken: confirmationToken
 		}
 	})
 		.onOk(() => {
+			// к этому моменту уже была проведена оплата
 			orderAction({
-				transactionUuid: response.data.transaction_uuid,
-				orderMeta: null
+				transactionUuid: transactionUuid
 			})
 		})
 		.onCancel(() => {
@@ -125,8 +120,8 @@ function yookassaAction() {
 		})
 }
 
-function cashAction() {
-	console.log("cash action")
+function cashAction(transactionUuid) {
+	console.log("cash action: " + transactionUuid)
 }
 
 function orderAction({ transactionUuid, orderMeta }) {
@@ -138,11 +133,13 @@ function orderAction({ transactionUuid, orderMeta }) {
 	})
 
 	promise.then((response) => {
-
+		onDialogOK(response)
 	})
 
 	promise.catch((error) => {
-		notifyError(error.response.data.message)
+		onDialogOK({
+			error: error.response.data
+		})
 	})
 
 	promise.finally(() => isLoading.value = false)
@@ -262,7 +259,7 @@ function setOrderCookie(orderUuid) {
 					class="q-py-md full-width"
 					label="Продолжить"
 					color="primary"
-					@click="makeOrder"
+					@click="makeTransaction"
 				/>
 			</div>
 		</q-card>

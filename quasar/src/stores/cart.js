@@ -113,6 +113,7 @@ export const useCartStore = defineStore("cart", {
 
 			let product = producerSet.products.find((p) => p.data.id === productId)
 
+			// здесь мержим два объекта data (важно: не перезаписываем)
 			Object.assign(product.data, data)
 
 			if (cartAmount) {

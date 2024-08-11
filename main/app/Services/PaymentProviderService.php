@@ -12,9 +12,9 @@ abstract class PaymentProviderService implements PaymentProviderContract
 	protected array $requestProducts;
 	protected Transaction $transaction;
 
-	abstract public function makePayment();
+	abstract public function makeTransaction(): array;
 
-	public function getPaymentProvider(int $paymentMethod): PaymentProviderContract
+	public static function getPaymentProvider(int $paymentMethod): PaymentProviderContract
 	{
 		return app(PaymentProviderEnum::getPaymentProviderService($paymentMethod));
 	}
@@ -31,17 +31,5 @@ abstract class PaymentProviderService implements PaymentProviderContract
 		$this->requestProducts = $requestProducts;
 
 		return $this;
-	}
-
-	public function setTransaction(Transaction $transaction): PaymentProviderContract
-	{
-		$this->transaction = $transaction;
-
-		return $this;
-	}
-
-	public function getTransaction(): Transaction
-	{
-		return $this->transaction;
 	}
 }

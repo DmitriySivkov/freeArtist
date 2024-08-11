@@ -44,11 +44,11 @@ class Transaction extends Model
 	];
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
 	public function order()
 	{
-		return $this->belongsTo(Order::class, 'uuid', 'transaction_uuid');
+		return $this->hasOne(Order::class);
 	}
 
 	/**

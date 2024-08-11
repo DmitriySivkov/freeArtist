@@ -8,7 +8,7 @@ use App\Models\PaymentMethod;
 
 class CashPaymentProviderService extends PaymentProviderService
 {
-	public function makePayment()
+	public function makeTransaction(): array
 	{
 		/** @var TransactionService $transactionService */
 		$transactionService = app(TransactionService::class);
@@ -21,6 +21,8 @@ class CashPaymentProviderService extends PaymentProviderService
 			TransactionEnum::TRANSACTION_STATUS_PROCESS
 		);
 
-		$this->setTransaction($transaction);
+		return [
+			'transaction_uuid' => $transaction->uuid
+		];
 	}
 }
