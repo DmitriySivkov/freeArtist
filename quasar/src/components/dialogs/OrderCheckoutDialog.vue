@@ -116,7 +116,11 @@ function yookassaAction({ confirmationToken, transactionUuid }) {
 			})
 		})
 		.onCancel(() => {
-			notifyError("Не получилось оплатить заказ")
+			onDialogOK({
+				error: {
+					message: "Не получилось оплатить заказ"
+				}
+			})
 		})
 }
 
@@ -133,6 +137,9 @@ function orderAction({ transactionUuid, orderMeta }) {
 	})
 
 	promise.then((response) => {
+		// если оплата картой, то к этому моменту оплата уже произведена
+		// даже в случае ошибки показываем юзеру сообщение об успехе
+		// обрабатываем на бэке несозданный заказ отталкиваясь от транзакции
 		onDialogOK(response)
 	})
 
@@ -262,6 +269,12 @@ function setOrderCookie(orderUuid) {
 					@click="makeTransaction"
 				/>
 			</div>
+			<q-inner-loading :showing="isLoading">
+				<q-spinner-gears
+					size="lg"
+					color="primary"
+				/>
+			</q-inner-loading>
 		</q-card>
 	</q-dialog>
 </template>

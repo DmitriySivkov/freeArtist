@@ -222,6 +222,7 @@ const showOrderCheckoutDialog = (producerId) => {
 			paymentMethods: paymentMethods.value[producerId]
 		}
 	}).onOk((response) => {
+		// при ошибке на orderCheckoutDialog всегда возвращать обратно объект с ключом 'error'
 		if (typeof response === "object" && response.error) {
 			if (response.error.exception === "App\\Exceptions\\OrderInvalidItemsException") {
 				Dialog.create({
@@ -239,6 +240,8 @@ const showOrderCheckoutDialog = (producerId) => {
 
 			notifyError(response.error.message)
 		}
+
+		notifySuccess(response.data.message)
 		// cartStore.clearCartProducer(producerId) // todo
 	})
 }
@@ -446,6 +449,6 @@ const invalidProductsAction = (invalidProducts) => {
 		})
 	)
 
-	LocalStorage.set("cart", cart.value) // todo - cart.value не обновлено?
+	LocalStorage.set("cart", cart.value)
 }
 </script>

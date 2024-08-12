@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\TokenHelper;
 use App\Http\Requests\UserNewOrderRequest;
 use App\Models\Order;
+use App\Models\PaymentMethod;
 use App\Models\ProducerOrderPriority;
 use App\Models\Transaction;
 use App\Models\User;
@@ -34,10 +35,10 @@ class OrderController extends Controller
 		$meta = $request->input('meta');
 		$transactionUuid = $request->input('transaction_uuid');
 
-		try {
-			$transaction = Transaction::whereUuid($transactionUuid)
-				->firstOrFail();
+		$transaction = Transaction::whereUuid($transactionUuid)
+			->firstOrFail();
 
+		try {
 			\DB::beginTransaction();
 
 			$orderService->setUser($user);
@@ -65,26 +66,33 @@ class OrderController extends Controller
 		} catch (\Throwable $e) {
 			// todo - если способ платежа онлайн - то к этому моменту оплата уже произведена.
 			// todo - нужно как-то обрабатывать несозданные заказы по существующей транзакции
-			// todo -------------------------------------------------------------------------
-			// todo - проверить могут ли быть моменты когда к этому моменту будет не создана транзакция
 			\DB::rollBack();
 
 			\Log::error(
-				'Не удалось создать заказ, ID транзакции: ' .
-				$transaction ? $transaction->id : 'не удалось получить транзакцию' . PHP_EOL .
+				"Не удалось создать заказ, ID транзакции: {$transaction->id}" . PHP_EOL .
 				'текст ошибки: ' . PHP_EOL .
 				$e->getMessage()
 			);
 
+			// если оплата картой, то к этому моменту оплата уже произведена
+			// даже в случае ошибки показываем юзеру сообщение об успехе
+			// обрабатываем на бэке несозданный заказ отталкиваясь от транзакции
+			if ($transaction->payment_method === PaymentMethod::PAYMENT_METHOD_CARD_ID) {
+				return response([
+					'message' => 'Заказ принят',
+					'uuid' => $transaction->uuid
+				], 200);
+			}
+
 			return response([
-				'message' => 'Заказ принят',
-				'uuid' => $order->transaction_uuid
-			], 200);
+				'message' => 'Не удалось создать заказ',
+				'uuid' => $transaction->uuid
+			], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 
 		return response([
 			'message' => 'Заказ принят',
-			'uuid' => $order->transaction_uuid
+			'uuid' => $transaction->uuid
 		], 200);
 	}
 
@@ -117,7 +125,7 @@ class OrderController extends Controller
 			\Log::error('Не удалось создать транзакцию, текст ошибки: ' . $e->getMessage());
 
 			return response(
-				['message' => 'Что-то пошло не так'],
+				['message' => 'Не удалось создать заказ'],
 				Response::HTTP_UNPROCESSABLE_ENTITY
 			);
 		}
