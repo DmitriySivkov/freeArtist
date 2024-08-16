@@ -99,7 +99,6 @@
 										color="primary"
 										@click="showOrderCheckoutDialog(cartItem.producer_id)"
 										:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
-										:loading="isLoading"
 									/>
 								</div>
 							</div>
@@ -119,7 +118,6 @@
 								color="primary"
 								@click="showOrderCheckoutDialog(cartItem.producer_id)"
 								:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
-								:loading="isLoading"
 							/>
 						</div>
 					</div>
@@ -143,12 +141,9 @@ import EmptyCart from "src/components/cart/EmptyCart.vue"
 import { useNotification } from "src/composables/notification"
 import { useUserStore } from "src/stores/user"
 import { Dialog, LocalStorage } from "quasar"
-import { Cookies } from "quasar"
-import OrderMetaDialog from "src/components/dialogs/OrderMetaDialog.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
-import ShowPaymentPageDialog from "src/components/dialogs/ShowPaymentPageDialog.vue"
-import OrderCompletedDialog from "src/components/dialogs/OrderCompletedDialog.vue"
 import OrderCheckoutDialog from "src/components/dialogs/OrderCheckoutDialog.vue"
+import OrderCompletedDialog from "src/components/dialogs/OrderCompletedDialog.vue"
 
 const { notifySuccess, notifyError } = useNotification()
 
@@ -239,107 +234,16 @@ const showOrderCheckoutDialog = (producerId) => {
 			}
 
 			notifyError(response.error.message)
+
+			return
 		}
 
-		notifySuccess(response.data.message)
-		// cartStore.clearCartProducer(producerId) // todo
-	})
-}
-
-const makeOrder = async (producerId) => {
-	// todo - integrate with reworked 'init()' function
-	if (userStore.is_logged) {
-		isLoading.value = true
-
-		const producerOrderObject = cart.value.find((i) => i.producer_id === producerId)
-
-		const promise = api.post("yookassa/create", {
-			producer_id: producerId,
-			price: totalPrice.value[producerId],
-			products: producerOrderObject.products.map((p) => ({
-				id: p.data.id,
-				price: p.data.price,
-				amount: p.cart_amount
-			})),
-			payment_method: paymentMethods.value[producerId].selectedPaymentMethodId
-		})
-
-		promise.then((response) => {
-			Dialog.create({
-				component: ShowPaymentPageDialog,
-				componentProps: {
-					confirmationToken: response.data.confirmation.confirmation_token
-				}
-			})
-				.onOk(() => {
-					orderAction({
-						transactionUuid: response.data.transaction_uuid,
-						orderMeta: null
-					})
-				})
-				.onCancel(() => {
-					notifyError("Не получилось оплатить заказ")
-				})
-		})
-
-		promise.catch((error) => {
-			if (
-				typeof error.response.data === "object" &&
-				error.response.data.exception === "App\\Exceptions\\OrderInvalidItemsException"
-			) {
-				Dialog.create({
-					component: OrderInvalidProductDialog,
-					componentProps: {
-						message: error.response.data.message,
-						invalidProducts: error.response.data.invalid_items
-					}
-				}).onDismiss(() => {
-					isCartLoaded.value = false
-					init()
-				})
-
-				return
-			}
-
-			notifyError(error.response.data.message)
-		})
-
-		promise.finally(() => isLoading.value = false)
-	} else {
-		// todo
-		// Dialog.create({
-		// 	component: OrderMetaDialog,
-		// }).onOk((orderMeta) => {
-		// 	orderAction({ producerId, orderMeta })
-		// })
-	}
-}
-
-const isLoading = ref(false)
-
-const orderAction = ({ transactionUuid, orderMeta }) => {
-	isLoading.value = true
-
-	const promise = api.post("orders", {
-		transaction_uuid: transactionUuid,
-		meta: orderMeta
-	})
-
-	promise.then((response) => {
-		setOrderCookie(response.data.uuid)
-
-		cartStore.clearCartProducer(response.data.producer_id)
+		cartStore.clearCartProducer(producerId)
 
 		Dialog.create({
 			component: OrderCompletedDialog,
 		})
 	})
-
-	promise.catch((error) => {
-		notifyError(error.response.data.message)
-	})
-
-	promise.finally(() => isLoading.value = false)
 }
 
 onMounted(() => {
@@ -409,31 +313,6 @@ const init = () => {
 
 		isCartLoaded.value = true
 	})
-}
-
-const setOrderCookie = (orderUuid) => {
-	const cookieParams = {
-		domain: process.env.SESSION_DOMAIN,
-		sameSite: "lax",
-		path: "/",
-		expires: 365
-	}
-
-	if (Cookies.has("orders")) {
-		const cookieOrders = Cookies.get("orders")
-
-		Cookies.set(
-			"orders",
-			JSON.stringify([orderUuid, ...cookieOrders]),
-			cookieParams
-		)
-	} else {
-		Cookies.set(
-			"orders",
-			JSON.stringify([orderUuid]),
-			cookieParams
-		)
-	}
 }
 
 const invalidProductsAction = (invalidProducts) => {

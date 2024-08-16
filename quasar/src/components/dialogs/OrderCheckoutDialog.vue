@@ -3,9 +3,7 @@ import { ref } from "vue"
 import { api } from "src/boot/axios"
 import { Dialog, date, useDialogPluginComponent, Cookies } from "quasar"
 import ShowPaymentPageDialog from "src/components/dialogs/ShowPaymentPageDialog.vue"
-import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import { ORDER_TIME_PERIODS, ORDER_TIME_PERIOD_NAMES } from "src/const/orderTimePeriods"
-import OrderCompletedDialog from "src/components/dialogs/OrderCompletedDialog.vue"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { useUserStore } from "src/stores/user"
 import { useNotification } from "src/composables/notification"
@@ -78,13 +76,6 @@ const makeTransaction = async () => {
 			}
 
 			setOrderCookie(response.data.transaction_uuid)
-
-			// todo - move somewhere further
-			// Dialog.create({
-			// 	component: OrderCompletedDialog,
-			// }).onDismiss(() => {
-			// 	onDialogOK(props.orderData.producer_id)
-			// })
 		})
 
 		promise.catch((error) => {
