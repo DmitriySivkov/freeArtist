@@ -2,9 +2,10 @@
 import { ref } from "vue"
 import { api } from "src/boot/axios"
 import { Dialog, date, useDialogPluginComponent, Cookies } from "quasar"
-import ShowPaymentPageDialog from "src/components/dialogs/ShowPaymentPageDialog.vue"
+import ShowYookassaPaymentPageDialog from "src/components/dialogs/ShowYookassaPaymentPageDialog.vue"
 import { ORDER_TIME_PERIODS, ORDER_TIME_PERIOD_NAMES } from "src/const/orderTimePeriods"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
+import { PAYMENT_PROVIDERS } from "src/const/paymentProviders"
 import { useUserStore } from "src/stores/user"
 import { useNotification } from "src/composables/notification"
 
@@ -12,6 +13,10 @@ const props = defineProps({
 	totalPrice: String,
 	orderData: Object,
 	paymentMethods: Object,
+	paymentProviderId: {
+		type: Number,
+		required: false
+	}
 })
 
 const emit = defineEmits([
@@ -63,19 +68,17 @@ const makeTransaction = async () => {
 		})
 
 		promise.then((response) => {
+			const transactionData = response.data
+
 			if (selectedPaymentMethod.value === PAYMENT_METHODS.CASH) {
-				cashAction(response.data.transaction_uuid)
+				cashAction(transactionData)
 			}
 
 			if (selectedPaymentMethod.value === PAYMENT_METHODS.CARD) {
-				// todo - 'cardAction', а всякие токены прокидывать в 'data'. В 'data' может быть все что угодно. Потому что всем надо разное
-				yookassaAction({
-					confirmationToken: response.data.confirmation.confirmation_token,
-					transactionUuid: response.data.transaction_uuid
-				})
+				cardAction(transactionData)
 			}
 
-			setOrderCookie(response.data.transaction_uuid)
+			setOrderCookie(transactionData.transaction_uuid)
 		})
 
 		promise.catch((error) => {
@@ -93,33 +96,31 @@ const makeTransaction = async () => {
 	}
 }
 
-function yookassaAction({ confirmationToken, transactionUuid }) {
-	Dialog.create({
-		component: ShowPaymentPageDialog,
-		componentProps: {
-			confirmationToken: confirmationToken
-		}
-	})
-		.onOk(() => {
-			// к этому моменту уже была проведена оплата
-			orderAction({
-				transactionUuid: transactionUuid
-			})
+const cardAction = (transactionData) => {
+	if (props.paymentProviderId === PAYMENT_PROVIDERS.YOOKASSA) {
+		Dialog.create({
+			component: ShowYookassaPaymentPageDialog,
+			componentProps: {
+				confirmationToken: transactionData.confirmation.confirmation_token
+			}
 		})
-		.onCancel(() => {
-			onDialogOK({
-				error: {
-					message: "Не получилось оплатить заказ"
-				}
+			.onOk(() => {
+				// к этому моменту уже была проведена оплата
+				orderAction({
+					transactionUuid: transactionData.transaction_uuid
+				})
 			})
-		})
+			.onCancel(() => onDialogOK({
+				error: {message: "Не получилось оплатить заказ"}
+			}))
+	}
 }
 
-function cashAction(transactionUuid) {
-	console.log("cash action: " + transactionUuid)
+const cashAction = (transactionData) => {
+	console.log("cash action: " + transactionData)
 }
 
-function orderAction({ transactionUuid, orderMeta }) {
+const orderAction = ({ transactionUuid, orderMeta }) => {
 	isLoading.value = true
 
 	const promise = api.post("orders", {
@@ -143,7 +144,7 @@ function orderAction({ transactionUuid, orderMeta }) {
 	promise.finally(() => isLoading.value = false)
 }
 
-function setOrderCookie(orderUuid) {
+const setOrderCookie = (orderUuid) => {
 	const cookieParams = {
 		domain: process.env.SESSION_DOMAIN,
 		sameSite: "lax",

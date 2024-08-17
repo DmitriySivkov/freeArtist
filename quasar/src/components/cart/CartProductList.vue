@@ -192,6 +192,8 @@ const setProductAmount = ({producerId, product, amount}) => {
 
 const paymentMethods = ref({})
 
+const paymentProviders = ref({})
+
 const isCartLoaded = ref(false)
 const producers = ref({})
 const products = ref({})
@@ -214,7 +216,8 @@ const showOrderCheckoutDialog = (producerId) => {
 		componentProps: {
 			totalPrice: totalPrice.value[producerId],
 			orderData: producerOrderObject,
-			paymentMethods: paymentMethods.value[producerId]
+			paymentMethods: paymentMethods.value[producerId],
+			paymentProviderId: paymentProviders.value[producerId]
 		}
 	}).onOk((response) => {
 		// при ошибке на orderCheckoutDialog всегда возвращать обратно объект с ключом 'error'
@@ -308,6 +311,13 @@ const init = () => {
 			({
 				...carry,
 				[p.id]: p.payment_methods
+			}), {}
+		)
+
+		paymentProviders.value = response.data.producers.reduce((carry, p) =>
+			({
+				...carry,
+				[p.id]: p.payment_provider_id
 			}), {}
 		)
 

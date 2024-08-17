@@ -98,8 +98,8 @@ class YookassaPaymentProviderService extends PaymentProviderService
 		}
 
 		return [
-			'confirmation'			=> $response->getConfirmation(),
-			'transaction_uuid'		=> $transaction->uuid,
+			'confirmation'		=> $response->getConfirmation(),
+			'transaction_uuid'	=> $transaction->uuid,
 		];
 	}
 }
