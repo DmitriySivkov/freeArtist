@@ -42,18 +42,18 @@ const makeTransaction = async () => {
 			price: p.data.price,
 			amount: p.cart_amount
 		})),
-		payment_method: selectedPaymentMethod.value,
+		payment_method: formData.value.paymentMethod,
 		order_date: orderDate.value
 	})
 
 	promise.then((response) => {
 		const transactionData = response.data
 
-		if (selectedPaymentMethod.value === PAYMENT_METHODS.CASH) {
+		if (formData.value.paymentMethod === PAYMENT_METHODS.CASH) {
 			cashAction(transactionData)
 		}
 
-		if (selectedPaymentMethod.value === PAYMENT_METHODS.CARD) {
+		if (formData.value.paymentMethod === PAYMENT_METHODS.CARD) {
 			cardAction(transactionData)
 		}
 
@@ -151,8 +151,6 @@ const formData = ref({
 const today = date.formatDate(new Date(), "YYYY-MM-DD")
 
 const orderDate = ref(today)
-
-const selectedPaymentMethod = ref(null)
 
 const selectPaymentMethod = (paymentMethodId) => {
 	formData.value.paymentMethod = paymentMethodId
