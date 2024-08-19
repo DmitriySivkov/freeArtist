@@ -16,8 +16,9 @@ class AppendAuthHeader
      */
     public function handle(Request $request, Closure $next)
     {
-		if ($token = request()->cookie('token'))
-			$request->headers->set('Authorization','Bearer ' . $token);
+		if ($token = request()->cookie('token')) {
+			$request->headers->set('Authorization', 'Bearer ' . $token);
+		}
 
         return $next($request);
     }
