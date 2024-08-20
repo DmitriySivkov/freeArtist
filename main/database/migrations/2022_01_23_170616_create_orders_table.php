@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('producer_id');
             $table->json('order_products');
             $table->integer('status');
+			$table->date('prepare_by');
             $table->timestamps();
         });
     }

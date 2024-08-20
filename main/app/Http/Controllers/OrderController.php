@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Services\UserOrderService;
 use App\Services\PaymentProviderService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,8 +33,9 @@ class OrderController extends Controller
 
 		/** @var User|null $user */
 		$user = TokenHelper::getUserByToken($token);
-		$meta = $request->input('meta');
-		$transactionUuid = $request->input('transaction_uuid');
+
+		$transactionUuid	= $request->input('transaction_uuid');
+		$prepareBy			= Carbon::make($request->input('prepare_by'));
 
 		$transaction = Transaction::whereUuid($transactionUuid)
 			->firstOrFail();
@@ -42,7 +44,7 @@ class OrderController extends Controller
 			\DB::beginTransaction();
 
 			$orderService->setUser($user);
-			$orderService->setMeta($meta);
+			$orderService->setPreparationDate($prepareBy);
 
 			$order = $orderService->processOrder($transaction);
 
@@ -98,12 +100,14 @@ class OrderController extends Controller
 
 	public function transaction(Request $request)
 	{
+		$token = request()->cookie('token');
+
 		/** @var User|null $user */
-		$user = $request->user();
+		$user = TokenHelper::getUserByToken($token);
 
 		$paymentMethod	= $request->input('payment_method');
 		$producerId		= $request->input('producer_id');
-		$phone			= $request->input('phone', $user?->phone);
+		$phone			= $request->input('phone');
 
 		$requestProducts	= array_combine(
 			collect($request->input('products'))
@@ -111,6 +115,12 @@ class OrderController extends Controller
 				->toArray(),
 			$request->input('products')
 		);
+
+		if ($phone) {
+			$phone = "8{$phone}";
+		} else {
+			$phone = $user->phone;
+		}
 
 		try {
 			\DB::beginTransaction();

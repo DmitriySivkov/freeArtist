@@ -43,8 +43,7 @@ const makeTransaction = async () => {
 			amount: p.cart_amount
 		})),
 		payment_method: formData.value.paymentMethod,
-		order_date: orderDate.value,
-		phone: `8${formData.value.phone}`
+		phone: formData.value.phone
 	})
 
 	promise.then((response) => {
@@ -94,7 +93,8 @@ const orderAction = (transactionUuid) => {
 	isLoading.value = true
 
 	const promise = api.post("orders", {
-		transaction_uuid: transactionUuid
+		transaction_uuid: transactionUuid,
+		prepare_by: prepareByDate.value,
 	})
 
 	promise.then((response) => {
@@ -146,7 +146,7 @@ const formData = ref({
 
 const today = date.formatDate(new Date(), "YYYY-MM-DD")
 
-const orderDate = ref(today)
+const prepareByDate = ref(today)
 
 const selectPaymentMethod = (paymentMethodId) => {
 	formData.value.paymentMethod = paymentMethodId
@@ -156,7 +156,7 @@ const selectTimePeriod = (timePeriodId) => {
 	formData.value.timePeriod = timePeriodId
 
 	if (timePeriodId === ORDER_TIME_PERIODS.ASAP) {
-		orderDate.value = today
+		prepareByDate.value = today
 	}
 }
 
@@ -268,13 +268,13 @@ const validatePhone = (phone) => {
 					class="row q-mt-sm"
 				>
 					<q-date
-						v-model="orderDate"
+						v-model="prepareByDate"
 						class="full-width"
 						no-unset
 						first-day-of-week="1"
 						mask="YYYY-MM-DD"
 						title="Выберите день"
-						:subtitle="orderDate"
+						:subtitle="prepareByDate"
 					/>
 				</div>
 

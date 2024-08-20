@@ -9,12 +9,13 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\User;
+use Carbon\Carbon;
 use Symfony\Component\Mime\Exception\LogicException;
 
 class UserOrderService implements OrderServiceContract
 {
 	private ?User $user;
-	private ?array $meta;
+	private Carbon $prepareByDate;
 
 	/**
 	 * @param User|null $user
@@ -26,12 +27,12 @@ class UserOrderService implements OrderServiceContract
 	}
 
 	/**
-	 * @param array|null $meta
+	 * @param Carbon $date
 	 * @return void
 	 */
-	public function setMeta(?array $meta)
+	public function setPreparationDate(Carbon $date)
 	{
-		$this->meta = $meta;
+		$this->prepareByDate = $date;
 	}
 
 	/**
@@ -81,11 +82,12 @@ class UserOrderService implements OrderServiceContract
 	public function processOrder(Transaction $transaction)
 	{
 		$order = Order::create([
-			'transaction_id' => $transaction->id,
-			'user_id' => $this->user ? $this->user->id : null,
-			'producer_id' => $transaction->producer_id,
-			'status' => Order::ORDER_STATUS_NEW,
-			'order_products' => $transaction->order_data,
+			'transaction_id'	=> $transaction->id,
+			'user_id'			=> $this->user ? $this->user->id : null,
+			'producer_id'		=> $transaction->producer_id,
+			'order_products'	=> $transaction->order_data,
+			'status'			=> Order::ORDER_STATUS_NEW,
+			'prepare_by'		=> $this->prepareByDate
 		]);
 
 		$this->decreaseProducts($transaction->order_data);

@@ -32,6 +32,8 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  * @mixin \Eloquent
+ * @property string|null $prepare_by
+ * @method static \Illuminate\Database\Eloquent\Builder|Order wherePrepareBy($value)
  */
 class Order extends Model
 {
