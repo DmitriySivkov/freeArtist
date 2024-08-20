@@ -98,8 +98,12 @@ class OrderController extends Controller
 
 	public function transaction(Request $request)
 	{
-		$paymentMethod		= $request->input('payment_method');
-		$producerId			= $request->input('producer_id');
+		/** @var User|null $user */
+		$user = $request->user();
+
+		$paymentMethod	= $request->input('payment_method');
+		$producerId		= $request->input('producer_id');
+		$phone			= $request->input('phone', $user?->phone);
 
 		$requestProducts	= array_combine(
 			collect($request->input('products'))
@@ -114,6 +118,7 @@ class OrderController extends Controller
 			$transactionData = PaymentProviderService::getPaymentProvider($paymentMethod)
 				->setProducerId($producerId)
 				->setRequestProducts(array_values($requestProducts))
+				->setPhone($phone)
 				->makeTransaction();
 
 			\DB::commit();

@@ -20,8 +20,6 @@ class CreateOrdersTable extends Migration
 				->nullable();
             $table->unsignedInteger('producer_id');
             $table->json('order_products');
-			$table->json('order_meta')
-				->nullable();
             $table->integer('status');
             $table->timestamps();
         });

@@ -14,6 +14,10 @@ class YookassaPaymentProviderService extends PaymentProviderService
 {
 	public function makeTransaction(): array
 	{
+		if (!$this->phone) {
+			throw new \LogicException('Не указан телефон');
+		}
+
 		$productNames = Product::whereIn('id', collect($this->requestProducts)->pluck('id'))
 			->pluck('title', 'id');
 
@@ -37,6 +41,7 @@ class YookassaPaymentProviderService extends PaymentProviderService
 		$transaction = $transactionService->createTransaction(
 			$this->producerId,
 			$this->requestProducts,
+			$this->phone,
 			PaymentMethod::PAYMENT_METHOD_CARD_ID,
 			PaymentProviderEnum::YOOKASSA,
 			TransactionEnum::TRANSACTION_STATUS_PROCESS

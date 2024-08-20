@@ -13,9 +13,14 @@ class CashPaymentProviderService extends PaymentProviderService
 		/** @var TransactionService $transactionService */
 		$transactionService = app(TransactionService::class);
 
+		if (!$this->phone) {
+			throw new \LogicException('Не указан телефон');
+		}
+
 		$transaction = $transactionService->createTransaction(
 			$this->producerId,
 			$this->requestProducts,
+			$this->phone,
 			PaymentMethod::PAYMENT_METHOD_CASH_ID,
 			PaymentProviderEnum::CASH,
 			TransactionEnum::TRANSACTION_STATUS_PROCESS

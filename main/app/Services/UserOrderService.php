@@ -45,7 +45,7 @@ class UserOrderService implements OrderServiceContract
 			->when(
 				$this->user,
 				fn($query) => $query->where('user_id', $this->user->id),
-				fn($query) => $query->whereIn('uuid', $orderUuid ?? []),
+				fn($query) => $query->whereHas('transaction', fn($q) => $q->whereIn('uuid', $orderUuid ?? [])),
 			)
 			->orderBy('id', 'desc')
 			->withCasts([
@@ -86,7 +86,6 @@ class UserOrderService implements OrderServiceContract
 			'producer_id' => $transaction->producer_id,
 			'status' => Order::ORDER_STATUS_NEW,
 			'order_products' => $transaction->order_data,
-			'order_meta' => $this->meta
 		]);
 
 		$this->decreaseProducts($transaction->order_data);

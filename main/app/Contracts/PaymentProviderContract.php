@@ -2,8 +2,6 @@
 
 namespace App\Contracts;
 
-use App\Models\Transaction;
-
 interface PaymentProviderContract
 {
 	public function makeTransaction(): array;
@@ -11,4 +9,6 @@ interface PaymentProviderContract
 	public function setProducerId(int $producerId): PaymentProviderContract;
 
 	public function setRequestProducts(array $requestProducts): PaymentProviderContract;
+
+	public function setPhone(string $phone): PaymentProviderContract;
 }

@@ -43,7 +43,8 @@ const makeTransaction = async () => {
 			amount: p.cart_amount
 		})),
 		payment_method: formData.value.paymentMethod,
-		order_date: orderDate.value
+		order_date: orderDate.value,
+		phone: `8${formData.value.phone}`
 	})
 
 	promise.then((response) => {
@@ -77,9 +78,7 @@ const cardAction = (transactionData) => {
 		})
 			.onOk(() => {
 				// к этому моменту уже была проведена оплата
-				orderAction({
-					transactionUuid: transactionData.transaction_uuid
-				})
+				orderAction(transactionData.transaction_uuid)
 			})
 			.onCancel(() => onDialogOK({
 				error: {message: "Не получилось оплатить заказ"}
@@ -88,17 +87,14 @@ const cardAction = (transactionData) => {
 }
 
 const cashAction = (transactionData) => {
-	orderAction({
-		transactionUuid: transactionData.transaction_uuid
-	})
+	orderAction(transactionData.transaction_uuid)
 }
 
-const orderAction = ({ transactionUuid, orderMeta }) => {
+const orderAction = (transactionUuid) => {
 	isLoading.value = true
 
 	const promise = api.post("orders", {
-		transaction_uuid: transactionUuid,
-		meta: orderMeta
+		transaction_uuid: transactionUuid
 	})
 
 	promise.then((response) => {

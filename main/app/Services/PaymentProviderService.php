@@ -10,6 +10,7 @@ abstract class PaymentProviderService implements PaymentProviderContract
 {
 	protected int $producerId;
 	protected array $requestProducts;
+	protected string $phone;
 	protected Transaction $transaction;
 
 	abstract public function makeTransaction(): array;
@@ -29,6 +30,13 @@ abstract class PaymentProviderService implements PaymentProviderContract
 	public function setRequestProducts(array $requestProducts): PaymentProviderContract
 	{
 		$this->requestProducts = $requestProducts;
+
+		return $this;
+	}
+
+	public function setPhone(string $phone): PaymentProviderContract
+	{
+		$this->phone = $phone;
 
 		return $this;
 	}

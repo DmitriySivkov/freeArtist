@@ -18,6 +18,7 @@ return new class extends Migration
 			$table->uuid();
 			$table->unsignedInteger('producer_id');
 			$table->json('order_data');
+			$table->string('phone');
 			$table->unsignedInteger('payment_method');
 			$table->unsignedInteger('payment_provider_id')
 				->nullable();

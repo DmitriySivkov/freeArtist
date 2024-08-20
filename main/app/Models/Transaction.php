@@ -13,6 +13,7 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @property string $uuid
  * @property int $producer_id
  * @property array $order_data
+ * @property string|null $phone
  * @property int $payment_method
  * @property int|null $payment_provider_id
  * @property int $status
@@ -27,6 +28,7 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereOrderData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePaymentMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePaymentProviderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereProducerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUpdatedAt($value)

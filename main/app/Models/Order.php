@@ -10,11 +10,10 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * App\Models\Order
  *
  * @property int $id
- * @property string $transaction_uuid
+ * @property int $transaction_id
  * @property int|null $user_id
  * @property int $producer_id
  * @property array $order_products
- * @property array|null $order_meta
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -26,11 +25,10 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Order query()
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Order whereOrderMeta($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereOrderProducts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereProducerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Order whereTransactionUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  * @mixin \Eloquent
@@ -47,8 +45,7 @@ class Order extends Model
     protected $guarded = [];
 
     protected $casts = [
-    	'order_products' => 'json',
-		'order_meta' => 'json',
+    	'order_products' => 'json'
 	];
 
 	/**
