@@ -11,7 +11,7 @@
 				>
 					<q-item
 						class="q-pa-xl fit"
-						:to="item.link"
+						:to="{name: item.routeName}"
 					>
 						<q-item-section class="text-center text-h5">
 							{{ item.title }}
@@ -28,12 +28,12 @@ import { computed } from "vue"
 
 // todo - remove 'links' - add route names instead
 const items = [
-	{ title: "Профиль", link: "/personal/producer" },
-	{ title: "Заказы", link: "/personal/producer/orders" },
-	{ title: "Заявки", link: "/personal/team/requests" },
-	{ title: "Разрешения", link: "/personal/team/permissions" },
-	{ title: "Управлять продуктами", link: "/personal/producer/products" },
-	{ title: "Способы оплаты", link: "/personal/producer/payment-methods" }
+	{ title: "Профиль", routeName: "personal_producer" },
+	{ title: "Заказы", routeName: "personal_producer_orders" },
+	{ title: "Заявки", routeName: "personal_team_requests" },
+	{ title: "Разрешения", routeName: "personal_team_permissions" },
+	{ title: "Управлять продуктами", routeName: "personal_producer_products" },
+	{ title: "Способы оплаты", routeName: "personal_producer_payment_methods" }
 ]
 
 const menu = computed(() =>

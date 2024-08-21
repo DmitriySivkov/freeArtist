@@ -11,7 +11,7 @@
 				>
 					<q-item
 						class="q-pa-xl fit"
-						:to="item.link"
+						:to="{name: item.routeName}"
 					>
 						<q-item-section class="text-center text-h5">
 							{{ item.title }}
@@ -30,14 +30,14 @@ import { useUserTeam } from "src/composables/userTeam"
 const { userOwnTeam } = useUserTeam()
 
 const items = [
-	{ title: "Профиль", link: "/personal/user" },
-	{ title: "Заказы", link: "/orders" },
+	{ title: "Профиль", routeName: "personal_user" },
+	{ title: "Заказы", routeName: "user_orders" },
 	{
 		title: "Зарегистрировать изготовителя",
-		link: "/personal/register-producer",
+		routeName: "personal_register_producer",
 		conditional: !userOwnTeam.value
 	},
-	{ title: "Заявки", link: "/personal/user/requests" }
+	{ title: "Заявки", routeName: "personal_user_requests" }
 ]
 
 const menu = computed(() =>
