@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Producer;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Producer;
 use App\Models\ProducerOrderPriority;
-use App\Services\Orders\ProducerOrderService;
+use App\Services\ProducerOrderService;
 use Illuminate\Http\Request;
 
 class ProducerOrderController extends Controller

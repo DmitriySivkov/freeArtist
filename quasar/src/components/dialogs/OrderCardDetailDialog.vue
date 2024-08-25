@@ -4,20 +4,19 @@
 		@hide="onDialogHide"
 	>
 		<q-card
-			class="q-dialog-plugin"
-			:class="popupClass"
+			class="q-dialog-plugin text-body1"
+			:class="cardClass"
 		>
 			<q-card-section class="q-py-sm">
-				<div class="row">
-					<div class="col-shrink">
-						#{{ order.id }}
-					</div>
-					<div class="col text-right">
-						{{ order.created_at }}
-					</div>
+				<div class="row q-mb-sm">
+					<div class="col">#{{ order.id }}</div>
+					<div class="col text-right">{{ ORDER_STATUS_NAMES[order.status] }}</div>
+				</div>
+				<div>
+					Приготовить к: {{ order.prepare_by ?? order.created_date }}
 				</div>
 			</q-card-section>
-			<q-separator class="full-width" />
+			<q-separator />
 			<q-card-section>
 				<div class="text-right">
 					для {{ order.user }}
@@ -36,7 +35,7 @@
 								{{ order.order_products[product.id] }} шт
 							</div>
 						</div>
-						<q-separator class="full-width" />
+						<q-separator />
 					</div>
 				</div>
 			</q-card-section>
@@ -45,17 +44,19 @@
 </template>
 
 <script setup>
+import { computed } from "vue"
 import { useDialogPluginComponent } from "quasar"
+import { ORDER_STATUS_NAMES, ORDER_CARD_STATUS_TO_CLASS } from "src/const/orderStatuses"
 
 defineEmits([
 	...useDialogPluginComponent.emits,
 ])
 
 const props = defineProps({
-	producerId: String,
 	order: Object,
-	popupClass: String
 })
+
+const cardClass = computed(() => ORDER_CARD_STATUS_TO_CLASS[props.order.status])
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 </script>

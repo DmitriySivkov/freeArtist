@@ -24,13 +24,16 @@ class ProducerOrdersResource extends JsonResource
 			'order_products' => collect($this->order_products)->pluck('amount', 'id'),
 			'payment_method' => PaymentMethod::PAYMENT_METHODS[$this->transaction->payment_method],
 			'status' => $this->status,
-			'user' => $this->user->name ?? $this->user->phone,
+			'user' => $this->user ? ($this->user->name ?? $this->user->phone) : $this->transaction->phone,
 			'products' => collect($this->products)->map(
 				fn($product) => [
 					'id' => $product->id,
 					'title' => $product->title
 				]),
-			'created_at' => $this->created_at->format('d-m-Y H:i')
+			'prepare_by' => $this->prepare_by,
+			'created_at' => $this->created_at->format('d-m-Y H:i'),
+			'created_date' => $this->created_at->format('Y-m-d'),
+			'created_time' => $this->created_at->format('H:i')
 		];
     }
 }

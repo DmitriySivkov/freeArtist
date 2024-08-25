@@ -47,19 +47,7 @@ class ProducerOrderService implements OrderServiceContract
 
 			return ProducerOrdersResource::collection($orders)->collection;
 		} else {
-			$commonOrders = Order::where('producer_id', $this->producer->id)
-				->whereIn('status', [Order::ORDER_STATUS_NEW, Order::ORDER_STATUS_PROCESS])
-				->with([
-					'user',
-					'products',
-					'transaction',
-				])
-				->orderBy('created_at', 'desc')
-				->get();
-
-			$calendarOrders = Order::where('producer_id', $this->producer->id)
-				->whereBetween('created_at', [$dateFrom, $dateTo])
-				->whereIn('status', [Order::ORDER_STATUS_CANCEL, Order::ORDER_STATUS_DONE])
+			$orders = Order::where('producer_id', $this->producer->id)
 				->with([
 					'user',
 					'products',
@@ -71,21 +59,21 @@ class ProducerOrderService implements OrderServiceContract
 			$orderPriority = ProducerOrderPriority::where('producer_id', $this->producer->id)
 				->get();
 
-			$orders = ProducerOrdersResource::collection($commonOrders->merge($calendarOrders))->collection;
+			return ProducerOrdersResource::collection($orders)->collection;
 
-			return [
-				Order::ORDER_STATUS_NEW => $this->getSortedOrders($orders, Order::ORDER_STATUS_NEW, $orderPriority)
-					->values(),
-
-				Order::ORDER_STATUS_PROCESS => $this->getSortedOrders($orders, Order::ORDER_STATUS_PROCESS, $orderPriority)
-					->values(),
-
-				Order::ORDER_STATUS_CANCEL => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_CANCEL)
-					->values(),
-
-				Order::ORDER_STATUS_DONE => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_DONE)
-					->values(),
-			];
+//			return [
+//				Order::ORDER_STATUS_NEW => $this->getSortedOrders($orders, Order::ORDER_STATUS_NEW, $orderPriority)
+//					->values(),
+//
+//				Order::ORDER_STATUS_PROCESS => $this->getSortedOrders($orders, Order::ORDER_STATUS_PROCESS, $orderPriority)
+//					->values(),
+//
+//				Order::ORDER_STATUS_CANCEL => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_CANCEL)
+//					->values(),
+//
+//				Order::ORDER_STATUS_DONE => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_DONE)
+//					->values(),
+//			];
 		}
 	}
 
