@@ -4,24 +4,26 @@ import { useTeamStore } from "src/stores/team"
 import { useUserStore } from "src/stores/user"
 import { usePermissionStore } from "src/stores/permission"
 import { useRoleStore } from "src/stores/role"
+import { useProducerOrdersStore } from "src/stores/producerOrders"
+
 import { ROLES } from "src/const/roles"
 
 export const usePrivateChannels = () => {
-	// todo rm computed from composable
-	const { user_teams } = useUserTeam()
-
 	const userStore = useUserStore()
 	const teamStore = useTeamStore()
 	const permissionStore = usePermissionStore()
 	const roleStore = useRoleStore()
+	const producerOrderStore = useProducerOrdersStore()
+
+	const userTeams = teamStore.user_teams // todo - change 'user_teams' to 'data'
 
 	const connectTeams = () => {
 		// todo - same for 'teams' entity - add name change to producer profile
-		if (user_teams.value.length === 0)
+		if (userTeams.length === 0)
 			return
 
-		for (let i in user_teams.value) {
-			echo.private("teams." + user_teams.value[i].id)
+		for (let i in userTeams) {
+			echo.private("teams." + userTeams[i].id)
 				.listen(".teams.updated", (e) => {
 					teamStore.setTeamFields({
 						team_id: e.teamId,
@@ -34,11 +36,11 @@ export const usePrivateChannels = () => {
 	}
 
 	const connectPermissions = () => {
-		if (user_teams.value.length === 0)
+		if (userTeams.length === 0)
 			return
 
-		for (let i in user_teams.value) {
-			echo.private("permissions." + user_teams.value[i].id)
+		for (let i in userTeams) {
+			echo.private("permissions." + userTeams[i].id)
 				.listen(".permissions.synced", (e) => {
 					teamStore.commitTeamUserPermissions({
 						team_id: e.team.id,
@@ -69,9 +71,27 @@ export const usePrivateChannels = () => {
 			})
 	}
 
+	const connectProducerOrders = () => {
+		const userProducers = userTeams.filter((t) => t.detailed_type === "App\\Models\\Producer")
+
+		if (userProducers.length === 0)
+			return
+
+		for (let i in userProducers) {
+			echo.private(`producers.${userProducers[i].id}.orders`)
+				.listen(".order.updated", (e) => {
+					producerOrderStore.commitOrderFields({
+						orderId: e.model.id,
+						fields: e.model,
+					})
+				})
+		}
+	}
+
 	return {
 		connectTeams,
 		connectPermissions,
-		connectRelationRequests
+		connectRelationRequests,
+		connectProducerOrders
 	}
 }

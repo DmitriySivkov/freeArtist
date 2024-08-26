@@ -26,3 +26,9 @@ Broadcast::channel('permissions.{teamId}', function (\App\Models\User $user, $te
 Broadcast::channel('relation-requests.user.{requestUserId}', function (\App\Models\User $user, $requestUserId) {
 	return $user->id === (int)$requestUserId;
 });
+
+Broadcast::channel('producers.{producerId}.orders', function (\App\Models\User $user, $producerId) {
+	$producer = \App\Models\Producer::find($producerId);
+
+	return $producer->team->users->pluck('id')->contains($user->id);
+});

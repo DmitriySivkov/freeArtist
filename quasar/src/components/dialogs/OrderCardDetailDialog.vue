@@ -8,10 +8,29 @@
 			:class="cardClass"
 		>
 			<q-card-section class="q-py-sm">
-				<div class="row q-mb-sm">
-					<div class="col">#{{ order.id }}</div>
-					<div class="col text-right">{{ ORDER_STATUS_NAMES[order.status] }}</div>
-				</div>
+
+				<div class="q-mb-md">#{{ order.id }}</div>
+
+				<q-select
+					dense
+					filled
+					:model-value="order.status"
+					:display-value="ORDER_STATUS_NAMES[order.status]"
+					:options="statusOptions"
+					option-value="id"
+					option-label="label"
+					class="q-mb-md"
+					:loading="isLoading"
+					:disable="isLoading"
+					input-class="text-white"
+					@update:model-value="changeStatus"
+				>
+					<template #selected-item="{opt}">
+						<span :class="{'text-white': opt !== ORDER_STATUSES.NEW}">
+							{{ ORDER_STATUS_NAMES[opt] }}
+						</span>
+					</template>
+				</q-select>
 				<div>
 					Приготовить к: {{ order.prepare_by ?? order.created_date }}
 				</div>
@@ -44,9 +63,11 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { ref, computed } from "vue"
 import { useDialogPluginComponent } from "quasar"
-import { ORDER_STATUS_NAMES, ORDER_CARD_STATUS_TO_CLASS } from "src/const/orderStatuses"
+import { ORDER_STATUS_NAMES, ORDER_CARD_STATUS_TO_CLASS, ORDER_STATUSES } from "src/const/orderStatuses"
+import { useProducerOrdersStore } from "src/stores/producerOrders"
+import { api } from "src/boot/axios"
 
 defineEmits([
 	...useDialogPluginComponent.emits,
@@ -57,6 +78,40 @@ const props = defineProps({
 })
 
 const cardClass = computed(() => ORDER_CARD_STATUS_TO_CLASS[props.order.status])
+
+const statusOptions = computed(() =>
+	Object.values(ORDER_STATUSES).map((statusId) => ({
+		id: statusId,
+		label: ORDER_STATUS_NAMES[statusId]
+	}))
+)
+
+const producerOrderStore = useProducerOrdersStore()
+
+const isLoading = ref(false)
+
+const changeStatus = (status) => {
+	isLoading.value = true
+
+	const promise = api.post(`personal/producers/${props.order.producer_id}/orders/${props.order.id}`, {
+		status: status.id,
+		_method: "PUT"
+	})
+
+	promise.then((response) => {
+		producerOrderStore.commitOrderFields({
+			orderId: response.data.id,
+			fields: {
+				status: response.data.status
+			},
+		})
+	})
+
+	//todo
+	promise.catch()
+
+	promise.finally(() => isLoading.value = false)
+}
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 </script>

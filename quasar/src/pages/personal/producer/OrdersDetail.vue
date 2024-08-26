@@ -51,7 +51,7 @@ import "@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass"
 import "@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass"
 import "@quasar/quasar-ui-qcalendar/src/QCalendarTask.sass"
 
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Dialog } from "quasar"
@@ -60,7 +60,11 @@ import ProducerOrderCard from "src/components/orders/Producer/ProducerOrderCard.
 import OrderCardDetailDialog from "components/dialogs/OrderCardDetailDialog.vue"
 import { ORDER_CARD_STATUS_TO_CLASS } from "src/const/orderStatuses"
 
+import { useProducerOrdersStore } from "src/stores/producerOrders"
+
 const $router = useRouter()
+
+const producerOrdersStore = useProducerOrdersStore()
 
 const calendar = ref(null)
 
@@ -68,7 +72,7 @@ const selectedDate = ref(today())
 const startDate = ref(today())
 const endDate = ref(today())
 
-const orders = ref([])
+const orders = computed(() => producerOrdersStore.data)
 
 const isLoading = ref(true)
 
@@ -102,13 +106,17 @@ onMounted(() => {
 
 	// todo - catch
 	promise.then((response) => {
-		orders.value = response.data
+		producerOrdersStore.commitData(response.data)
 	})
 
 	promise.finally(() => {
 		isLoading.value = false
 	})
 
+})
+
+onBeforeUnmount(() => {
+	producerOrdersStore.emptyData()
 })
 </script>
 

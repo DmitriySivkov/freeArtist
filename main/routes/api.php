@@ -115,6 +115,7 @@ Route::group([
 
 		Route::group(['prefix' => '{producer}/orders'], function () {
 			Route::get('', [\App\Http\Controllers\ProducerOrderController::class, 'index']);
+			Route::put('{order}', [\App\Http\Controllers\ProducerOrderController::class, 'update']);
 			Route::post('move', [\App\Http\Controllers\ProducerOrderController::class, 'move']);
 		});
 

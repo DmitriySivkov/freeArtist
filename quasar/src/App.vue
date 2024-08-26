@@ -26,6 +26,7 @@ export default {
 				private_channels.connectTeams()
 				private_channels.connectPermissions()
 				private_channels.connectRelationRequests()
+				private_channels.connectProducerOrders() // todo - connect on orders calendar mount & disconnect on unmount
 			}
 		}
 
