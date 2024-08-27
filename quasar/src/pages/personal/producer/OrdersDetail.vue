@@ -1,14 +1,44 @@
 <template>
 	<div class="absolute column fit no-wrap">
 		<div class="col">
-
-			<!--					<ProducerOrderList />-->
-
-			<!--					<navigation-bar-->
-			<!--						@today="onToday"-->
-			<!--						@prev="onPrev"-->
-			<!--						@next="onNext"-->
-			<!--					/>-->
+			<div class="row justify-center q-col-gutter-xs q-my-md">
+				<div class="col-auto">
+					<q-btn
+						label="Сбросить"
+						:loading="isLoading"
+						:disable="isLoading"
+						@click="onToday()"
+					>
+						<template v-slot:loading>
+							<q-spinner-gears color="primary" />
+						</template>
+					</q-btn>
+				</div>
+				<div class="col-auto">
+					<q-btn
+						label="Назад"
+						:loading="isLoading"
+						:disable="isLoading"
+						@click="onPrev()"
+					>
+						<template v-slot:loading>
+							<q-spinner-gears color="primary" />
+						</template>
+					</q-btn>
+				</div>
+				<div class="col-auto">
+					<q-btn
+						label="Вперед"
+						:loading="isLoading"
+						:disable="isLoading"
+						@click="onNext()"
+					>
+						<template v-slot:loading>
+							<q-spinner-gears color="primary" />
+						</template>
+					</q-btn>
+				</div>
+			</div>
 
 			<div class="row justify-center">
 				<q-calendar-agenda
@@ -21,6 +51,7 @@
 					:weekdays="[1,2,3,4,5,6,0]"
 					:day-min-height="200"
 					animated
+					@change="calendarChanged"
 				>
 					<template #day="{ scope: { timestamp } }">
 						<ProducerOrderCard
@@ -39,13 +70,9 @@
 </template>
 
 <script setup>
-// import ProducerOrderList from "src/components/orders/Producer/ProducerOrderList.vue"
 import {
 	QCalendarAgenda,
-	today,
-	isBetweenDates,
-	parsed,
-	padNumber
+	today
 } from "@quasar/quasar-ui-qcalendar/src/index.js"
 import "@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass"
 import "@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass"
@@ -77,13 +104,27 @@ const orders = computed(() => producerOrdersStore.data)
 const isLoading = ref(true)
 
 const getOrders = (timestamp) => {
-	return orders.value.filter((t) => t.created_date === timestamp.date)
+	return orders.value.filter((t) =>
+		t.prepare_by ?
+			t.prepare_by === timestamp.date :
+			t.created_date === timestamp.date
+	)
+}
+
+const onToday = () => {
+	calendar.value.moveToToday()
+}
+const onPrev = () => {
+	calendar.value.prev()
+}
+const onNext = () => {
+	calendar.value.next()
 }
 
 const getWeekdaysClass = (data) => {
 	return {
-		"bg-primary text-white orders-active-weekday": data.scope.timestamp.currentWeekday,
-		"bg-grey-2 orders-inactive-weekday": !data.scope.timestamp.currentWeekday,
+		"bg-primary text-white orders-current-day": data.scope.timestamp.current,
+		"bg-grey-2 orders-not-current-day": !data.scope.timestamp.current,
 	}
 }
 
@@ -96,11 +137,18 @@ const showOrder = (order) => {
 	})
 }
 
-onMounted(() => {
+/** is triggered on component mount **/
+const calendarChanged = ({ start, end }) => {
+	producerOrdersStore.emptyData()
+	loadOrders({ start, end })
+}
+
+const loadOrders = (dateRange) => {
+	isLoading.value = true
+
 	const promise = api.get(`personal/producers/${$router.currentRoute.value.params.producer_id}/orders`,{
 		params: {
-			date: null,
-			status: null
+			dateRange,
 		}
 	})
 
@@ -112,8 +160,7 @@ onMounted(() => {
 	promise.finally(() => {
 		isLoading.value = false
 	})
-
-})
+}
 
 onBeforeUnmount(() => {
 	producerOrdersStore.emptyData()
@@ -121,24 +168,25 @@ onBeforeUnmount(() => {
 </script>
 
 <style>
-.orders-active-weekday {
+.orders-current-day {
 	font-weight: normal;
 }
 
-.orders-active-weekday .q-calendar__button {
+.orders-current-day .q-calendar__button {
 	color: #606c71 !important;
 	background-color: white !important;
 	border-color: #d74720 !important;
 	font-weight: bold;
 }
 
-.orders-inactive-weekday {
+.orders-not-current-day {
 	font-weight: normal;
 }
 
-.orders-inactive-weekday .q-calendar__button {
+.orders-not-current-day .q-calendar__button {
 	color: #606c71 !important;
 	border-color: #d74720 !important;
 	font-weight: bold;
+	background: none !important;
 }
 </style>

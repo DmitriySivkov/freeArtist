@@ -78,7 +78,12 @@ export const usePrivateChannels = () => {
 			return
 
 		for (let i in userProducers) {
-			echo.private(`producers.${userProducers[i].id}.orders`)
+			echo.private(`producers.${userProducers[i].detailed_id}.orders`)
+				.listen(".order.created", (e) => {
+					producerOrderStore.commitData([e.model])
+				})
+
+			echo.private(`producers.${userProducers[i].detailed_id}.orders`)
 				.listen(".order.updated", (e) => {
 					producerOrderStore.commitOrderFields({
 						orderId: e.model.id,

@@ -14,9 +14,11 @@ class ProducerOrderController extends Controller
 {
     public function index(Producer $producer, ProducerOrderService $orderService)
     {
+		$dateRange = json_decode(request()->input('dateRange'),true);
+
 		$orderService->setProducer($producer);
 
-        return $orderService->getOrderList();
+        return $orderService->getOrderList($dateRange);
     }
 
 	public function update(ProducerOrderRequest $request, Producer $producer, Order $order)

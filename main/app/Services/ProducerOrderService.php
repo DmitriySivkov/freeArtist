@@ -20,61 +20,21 @@ class ProducerOrderService implements OrderServiceContract
 		$this->producer = $producer;
 	}
 
-	public function getOrderList()
+	public function getOrderList($dateRange)
 	{
 		// todo - check access (middleware?)
-		$date = json_decode(request()->input('date'), true);
-		$status = request()->input('status');
 
-		if (is_array($date)) {
-			$dateFrom = Carbon::parse($date['from'])->startOfDay();
-			$dateTo = Carbon::parse($date['to'])->endOfDay();
-		} else {
-			$dateFrom = Carbon::parse(request()->input('date'))->startOfDay();
-			$dateTo = Carbon::parse(request()->input('date'))->endOfDay();
-		}
+		$orders = Order::where('producer_id', $this->producer->id)
+			->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
+			->with([
+				'user',
+				'products',
+				'transaction',
+			])
+			->orderBy('created_at', 'desc')
+			->get();
 
-		if ($status) {
-			$orders = Order::where('producer_id', $this->producer->id)
-				->where('status', $status)
-				->whereBetween('created_at', [$dateFrom, $dateTo])
-				->with([
-					'user',
-					'products'
-				])
-				->orderBy('created_at', 'desc')
-				->get();
-
-			return ProducerOrdersResource::collection($orders)->collection;
-		} else {
-			$orders = Order::where('producer_id', $this->producer->id)
-				->with([
-					'user',
-					'products',
-					'transaction',
-				])
-				->orderBy('created_at', 'desc')
-				->get();
-
-			$orderPriority = ProducerOrderPriority::where('producer_id', $this->producer->id)
-				->get();
-
-			return ProducerOrdersResource::collection($orders)->collection;
-
-//			return [
-//				Order::ORDER_STATUS_NEW => $this->getSortedOrders($orders, Order::ORDER_STATUS_NEW, $orderPriority)
-//					->values(),
-//
-//				Order::ORDER_STATUS_PROCESS => $this->getSortedOrders($orders, Order::ORDER_STATUS_PROCESS, $orderPriority)
-//					->values(),
-//
-//				Order::ORDER_STATUS_CANCEL => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_CANCEL)
-//					->values(),
-//
-//				Order::ORDER_STATUS_DONE => $orders->filter(fn($order) => $order->status === Order::ORDER_STATUS_DONE)
-//					->values(),
-//			];
-		}
+		return ProducerOrdersResource::collection($orders)->collection;
 	}
 
 	public function processOrder($orderData)

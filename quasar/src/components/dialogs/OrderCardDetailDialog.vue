@@ -32,7 +32,7 @@
 					</template>
 				</q-select>
 				<div>
-					Приготовить к: {{ order.prepare_by ?? order.created_date }}
+					Создан: {{ order.created_at }}
 				</div>
 			</q-card-section>
 			<q-separator />

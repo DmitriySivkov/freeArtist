@@ -34,7 +34,6 @@ class ProducerOrdersResource extends JsonResource
 			'prepare_by' => $this->prepare_by,
 			'created_at' => $this->created_at->format('d-m-Y H:i'),
 			'created_date' => $this->created_at->format('Y-m-d'),
-			'created_time' => $this->created_at->format('H:i')
 		];
     }
 }
