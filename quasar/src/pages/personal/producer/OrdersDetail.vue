@@ -88,7 +88,7 @@ import OrderCardDetailDialog from "components/dialogs/OrderCardDetailDialog.vue"
 import { ORDER_CARD_STATUS_TO_CLASS } from "src/const/orderStatuses"
 
 import { useProducerOrdersStore } from "src/stores/producerOrders"
-
+// todo - заказы можно распределять между участниками
 const $router = useRouter()
 
 const producerOrdersStore = useProducerOrdersStore()
