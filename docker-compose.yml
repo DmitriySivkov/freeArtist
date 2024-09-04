@@ -60,6 +60,20 @@ services:
       net:
         ipv4_address: 172.21.1.5
 
+  quasar:
+    build:
+      context: .
+      dockerfile: docker/quasar/quasar.dockerfile
+    container_name: quasar
+    volumes:
+      - ./quasar:/app
+    command: ["quasar", "dev"]
+    ports:
+      - 3000:3000
+    networks:
+      net:
+        ipv4_address: 172.21.1.6
+
 #  cron:
 #    build:
 #      context: .

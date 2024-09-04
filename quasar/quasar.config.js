@@ -1,7 +1,7 @@
-
 require("dotenv").config()
 const { configure } = require("quasar/wrappers")
 const { join } = require("path")
+// const { mergeConfig } = require("vite")
 
 module.exports = configure(function (ctx) {
 	return {
@@ -63,7 +63,7 @@ module.exports = configure(function (ctx) {
 			// polyfillModulePreload: true,
 			// distDir
 
-			// extendViteConf (viteConf) {},
+			// extendViteConf (viteConf, { isServer, isClient }) {}
 			// viteVuePluginOptions: {},
 
 
@@ -74,8 +74,11 @@ module.exports = configure(function (ctx) {
 
 		devServer: {
 			https: true,
-			port: ctx.mode.spa ? 8081
-				: (ctx.mode.pwa ? 9090 : 9000),
+			port: 3000,
+			hmr: {
+				clientPort: 443,
+				port: 3000,
+			},
 			open: false // open browser on load
 		},
 
