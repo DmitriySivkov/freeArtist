@@ -76,8 +76,7 @@
 
 <script setup>
 import { ref } from "vue"
-import { date, Dialog} from "quasar"
-import draggable from "vuedraggable"
+import { date, Dialog } from "quasar"
 import ProducerOrderListCalendarDialog from "src/components/dialogs/ProducerOrderListCalendarDialog.vue"
 // todo - gutter height is unequal when 2 rows of orders
 const emit = defineEmits([

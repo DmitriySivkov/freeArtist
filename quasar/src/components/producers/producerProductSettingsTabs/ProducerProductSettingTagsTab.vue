@@ -93,7 +93,6 @@
 import { onMounted, ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
-import draggable from "vuedraggable"
 
 const props = defineProps({
 	modelValue: {

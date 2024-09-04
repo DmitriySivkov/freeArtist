@@ -26,7 +26,6 @@
 <script setup>
 import { computed } from "vue"
 
-// todo - remove 'links' - add route names instead
 const items = [
 	{ title: "Профиль", routeName: "personal_producer" },
 	{ title: "Заказы", routeName: "personal_producer_orders" },
