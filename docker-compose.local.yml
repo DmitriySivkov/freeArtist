@@ -93,34 +93,13 @@ services:
     volumes:
       - ./docker/nginx-reverse-proxy/ssl:/etc/nginx/ssl
     ports:
+      - 80:80
       - 443:443
       - 6001:6001
     networks:
       net:
         ipv4_address: 172.21.1.251
 
-
-#todo - нужно доменное имя
-#  nginx-certbot:
-#    build:
-#      context: .
-#      dockerfile: docker/nginx-reverse-proxy/nginx.dockerfile
-#    container_name: nginx-certbot
-#    restart: unless-stopped
-#    environment:
-#      - CERTBOT_EMAIL
-#    env_file:
-#      - ./nginx-certbot.env
-#    ports:
-#      - 80:80
-#      - 443:443
-#      - 6001:6001
-#    volumes:
-#      - nginx_secrets:/etc/letsencrypt
-#      - ./docker/nginx-certbot/config/user_conf.d:/etc/nginx/user_conf.d
-#    networks:
-#      net:
-#        ipv4_address: 172.21.1.222
 
   mysql:
     build:

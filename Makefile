@@ -1,4 +1,6 @@
-.PHONY: pg dump import
+include ./main/.env
+
+.PHONY: pg dump import docker
 
 MYSQL_CONTAINER_NAME = app-mysql
 
@@ -64,3 +66,6 @@ wipe-public:
 
 log:
 	./log.sh
+
+docker:
+	./docker.sh $(APP_ENV)
