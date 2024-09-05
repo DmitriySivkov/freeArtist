@@ -86,3 +86,9 @@ make broadcast
 php artisan sxgeo:update & set 'LOCAL_IP' key in 'env'
 
 ### WRONG storage permissions cause CORS problem (and probably others)
+
+### certbot для ssl
+основной гайд: https://mindsers.blog/en/post/https-using-nginx-certbot-docker/
+
+перед запуском команд - вытащить все прокиды ssl ключей из nginx конфигов
+нужно сделать сайт доступным просто по http на 80 порту
