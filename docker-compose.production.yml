@@ -91,6 +91,7 @@ services:
     volumes:
       - ./docker/certbot/www/:/var/www/certbot/:rw
       - ./docker/certbot/conf/:/etc/letsencrypt/:rw
+      - ./docker/certbot/log/letsencrypt/:/var/log/letsencrypt/:ro
     networks:
       net:
         ipv4_address: 172.21.1.250
