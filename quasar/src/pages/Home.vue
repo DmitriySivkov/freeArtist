@@ -1,8 +1,9 @@
 <template>
 	<div
 		v-if="userLocation"
-		class="column no-wrap fit q-px-sm absolute"
+		class="column1234"
 	>
+		412312
 		<div class="col-auto">
 			<div class="row justify-center">
 				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
