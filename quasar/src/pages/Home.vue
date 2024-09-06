@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="userLocation"
-		class="column no-wrap fit q-px-sm absolute"
+		class="column"
 	>
 		<div class="col-auto">
 			<div class="row justify-center">

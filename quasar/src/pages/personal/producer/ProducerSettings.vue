@@ -143,24 +143,22 @@
 <script setup>
 import { computed, ref } from "vue"
 import { useNotification } from "src/composables/notification"
-import { useQuasar } from "quasar"
+import { useRouter } from "vue-router"
 import { usePermissionStore } from "src/stores/permission"
 import { useUserStore } from "src/stores/user"
 import { useTeamStore } from "src/stores/team"
 import { Cropper } from "vue-advanced-cropper"
 import { api } from "src/boot/axios"
 
-const props = defineProps({
-	team: {
-		type: Object,
-		default: () => ({})
-	}
-})
+const router = useRouter()
 
-const $q = useQuasar()
 const userStore = useUserStore()
 const teamStore = useTeamStore()
 const permissionStore = usePermissionStore()
+
+const team = computed(() => teamStore.user_teams.find(
+	(t) => t.detailed.id === parseInt(router.currentRoute.value.params.producer_id)
+))
 
 const backendServer = process.env.BACKEND_SERVER
 
@@ -174,11 +172,11 @@ const isDragging = ref(false)
 const isLoading = ref(false)
 
 const isTeamAdmin = computed(() =>
-	userStore.data.id === props.team.user_id
+	userStore.data.id === team.value.user_id
 )
 
 const canManageLogo = computed(() =>
-	permissionStore.user_permissions.filter((p) => p.team_id === parseInt(props.team.id))
+	permissionStore.user_permissions.filter((p) => p.team_id === parseInt(team.value.id))
 		.map((p) => p.name)
 		.includes("producer_logo")
 )
@@ -212,17 +210,17 @@ const loadImage = async() => {
 		formData.append("logo", logo)
 
 		const promise = api.post(
-			"/personal/producers/" + props.team.detailed.id + "/setLogo",
+			`/personal/producers/${team.value.detailed.id}/setLogo`,
 			formData,
 		)
 
 		promise.then((response) => {
 			teamStore.setTeamFields({
-				team_id: props.team.id,
+				team_id: team.value.id,
 				fields: {
 					logo: response.data
 				},
-				detailed_id: props.team.detailed.id
+				detailed_id: team.value.detailed.id
 			})
 		})
 
@@ -242,7 +240,7 @@ const showFilePrompt = () => {
 
 const teamPropChanged = (val, field) => {
 	const promise = teamStore.updateTeamFields({
-		team_id: props.team.id,
+		team_id: team.value.id,
 		fields: { [field]: val }
 	})
 

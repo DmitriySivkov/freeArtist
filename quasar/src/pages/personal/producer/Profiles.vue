@@ -1,6 +1,6 @@
 <template>
 	<TeamList
-		detail-route-name="personal_producer_profile_detail"
+		detail-route-name="personal_producer_settings"
 		:teams="teams"
 	/>
 </template>

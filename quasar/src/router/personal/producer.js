@@ -32,11 +32,11 @@ export default [
 		}
 	},
 	{
-		name: "personal_producer_profile_detail",
-		path: "personal/producer/:producer_id/profile",
-		component: () => import("pages/personal/producer/ProfileDetail.vue"),
+		name: "personal_producer_settings",
+		path: "personal/producer/:producer_id/settings",
+		component: () => import("pages/personal/producer/ProducerSettings.vue"),
 		meta: {
-			route_name: "Профиль"
+			route_name: "Настройки"
 		}
 	},
 	{

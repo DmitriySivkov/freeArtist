@@ -76,9 +76,11 @@ module.exports = configure(function (ctx) {
 		devServer: {
 			https: true,
 			port: 3000,
+			fs: {
+				cachedChecks: true
+			},
 			hmr: {
 				clientPort: 443,
-				port: 3000,
 			},
 			open: false // open browser on load
 		},
