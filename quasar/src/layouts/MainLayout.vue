@@ -12,17 +12,25 @@
 					class="col-12 col-md-grow"
 					:class="isBackgroundColorPrimary ? 'bg-primary' : 'bg-white'"
 				>
-					<router-view v-slot="{ Component }">
-						<!-- todo -->
-						<!--								<transition-->
-						<!--									enter-active-class="animated slideInRight"-->
-						<!--									leave-active-class="animated slideOutRight"-->
-						<!--									appear-->
-						<!--									:duration="300"-->
-						<!--								>-->
-						<component :is="Component" />
-						<!--								</transition>-->
-					</router-view>
+					<div class="column full-height">
+						<q-scroll-area
+							class="col scroll-area__main"
+							:thumb-style="{ opacity: 0 }"
+						>
+							<router-view v-slot="{ Component }">
+								<!-- todo -->
+								<!--								<transition-->
+								<!--									enter-active-class="animated slideInRight"-->
+								<!--									leave-active-class="animated slideOutRight"-->
+								<!--									appear-->
+								<!--									:duration="300"-->
+								<!--								>-->
+								<component :is="Component" />
+								<!--								</transition>-->
+							</router-view>
+						</q-scroll-area>
+					</div>
+
 					<MainFooter v-if="$q.screen.width < $q.screen.sizes.md" />
 
 				</div>
