@@ -18,15 +18,15 @@
 							:thumb-style="{ opacity: 0 }"
 						>
 							<router-view v-slot="{ Component }">
-								<!-- todo -->
-								<!--								<transition-->
-								<!--									enter-active-class="animated slideInRight"-->
-								<!--									leave-active-class="animated slideOutRight"-->
-								<!--									appear-->
-								<!--									:duration="300"-->
-								<!--								>-->
-								<component :is="Component" />
-								<!--								</transition>-->
+								<!-- todo - впринципе работает, но нужно починить некоторые переходы: пример - с главной на личный кабинет-->
+								<transition
+									enter-active-class="animated slideInRight"
+									leave-active-class="animated slideOutRight"
+									appear
+									:duration="300"
+								>
+									<component :is="Component" />
+								</transition>
 							</router-view>
 						</q-scroll-area>
 					</div>
