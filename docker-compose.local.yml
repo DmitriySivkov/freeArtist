@@ -67,6 +67,7 @@ services:
     container_name: quasar
     volumes:
       - ./quasar:/app
+      - /app/node_modules
     command: ["quasar", "dev"]
     ports:
       - 3000:3000

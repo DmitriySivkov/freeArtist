@@ -15,7 +15,7 @@ module.exports = configure(function (ctx) {
 
 		boot: [
 			"stores",
-			"components",
+			"globals",
 			"authViaToken",
 			"axios",
 			"setLocation",
