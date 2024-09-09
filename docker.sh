@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$1" == "local" ]
 then
-		echo -e '\033[0;31m ---------- LAUNCHING THE SPACE SHUTTLE UP ---------- \e[0m'
+		echo -e '\033[0;31m ---------- LAUNCHING THE SPACE SHUTTLE ---------- \e[0m'
 
 		# копируем node_modules из контейнера на хост (для дебага, например)
 		./copy-node-modules.sh &

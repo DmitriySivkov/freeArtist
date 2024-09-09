@@ -71,14 +71,10 @@
 
 <script setup>
 import {
-	QCalendarAgenda,
 	today
 } from "@quasar/quasar-ui-qcalendar/src/index.js"
-import "@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass"
-import "@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass"
-import "@quasar/quasar-ui-qcalendar/src/QCalendarTask.sass"
 
-import { ref, computed, onMounted, onBeforeUnmount } from "vue"
+import { ref, computed, onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Dialog } from "quasar"
