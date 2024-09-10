@@ -1,8 +1,11 @@
+import ProducerProducts from "src/pages/producer/ProducerProducts.vue"
+import ProducerProductsDetail from "src/pages/producer/ProducerProductsDetail.vue"
+
 export default [
 	{
 		name: "producer_products",
 		path: "/producers/:producer_id/products",
-		component: () => import("pages/producer/ProducerProducts.vue"),
+		component: ProducerProducts,
 		meta: {
 			route_name: "Витрина"
 		}
@@ -10,7 +13,7 @@ export default [
 	{
 		name: "producer_products_detail",
 		path: "/producers/:producer_id/products/:product_id",
-		component: () => import("pages/producer/ProducerProductsDetail.vue"),
+		component: ProducerProductsDetail,
 		meta: {
 			route_name: "Витрина"
 		}

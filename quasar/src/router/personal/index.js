@@ -2,6 +2,9 @@ import userRoutes from "src/router/personal/user"
 import producerRoutes from "src/router/personal/producer"
 import teamRoutes from "src/router/personal/team"
 
+import Personal from "src/pages/personal/Index.vue"
+import PersonalUser from "src/pages/personal/User.vue"
+
 export default [
 	...userRoutes,
 	...producerRoutes,
@@ -9,7 +12,7 @@ export default [
 	{
 		name: "personal",
 		path: "personal",
-		component: () => import("pages/personal/Index.vue"),
+		component: Personal,
 		meta: {
 			route_name: "Личный кабинет",
 		},
@@ -17,7 +20,7 @@ export default [
 	{
 		name: "personal_user",
 		path: "personal/user",
-		component: () => import("pages/personal/User.vue"),
+		component: PersonalUser,
 		meta: {
 			route_name: "Профиль"
 		}

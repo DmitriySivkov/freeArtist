@@ -1,3 +1,6 @@
+import Error404 from "src/pages/Error404.vue"
+import MainLayout from "src/layouts/MainLayout.vue"
+
 import common from "src/router/common"
 import personal from "src/router/personal"
 import auth from "src/router/auth"
@@ -8,7 +11,7 @@ import user from "src/router/user"
 const routes = [
 	{
 		path: "/",
-		component: () => import("layouts/MainLayout.vue"),
+		component: MainLayout,
 		children: [
 			...common,
 			...auth,
@@ -23,7 +26,7 @@ const routes = [
 	// but you can also remove it
 	{
 		path: "/:catchAll(.*)*",
-		component: () => import("pages/Error404.vue")
+		component: Error404
 	}
 ]
 

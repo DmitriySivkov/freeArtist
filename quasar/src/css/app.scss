@@ -21,6 +21,9 @@ input[type="number"] {
 }
 
 #q-app {
-	overflow: hidden;
 	background-color: #dce1e6;
+}
+
+::-webkit-scrollbar {
+	display: none;
 }

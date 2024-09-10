@@ -1,34 +1,36 @@
 <template>
-	<div
-		v-if="userLocation"
-		class="column no-wrap fit q-px-sm absolute"
-	>
-		<div class="col-auto">
-			<div class="row justify-center">
-				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<ProducerFilterHome />
+	<q-page>
+		<div
+			v-if="userLocation"
+			class="column no-wrap q-px-sm"
+		>
+			<div class="col-auto">
+				<div class="row justify-center">
+					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+						<ProducerFilterHome />
+					</div>
+				</div>
+			</div>
+			<div class="col-auto q-mb-sm">
+				<div class="row justify-center">
+					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+						<ProducerCategoriesHome
+							@change="setCategories"
+						/>
+					</div>
+				</div>
+			</div>
+			<div class="col-grow">
+				<div class="row justify-center">
+					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+						<ProducerListHome
+							:categories="selectedCategories"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-auto q-mb-sm">
-			<div class="row justify-center">
-				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<ProducerCategoriesHome
-						@change="setCategories"
-					/>
-				</div>
-			</div>
-		</div>
-		<div class="col-grow">
-			<div class="row justify-center">
-				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<ProducerListHome
-						:categories="selectedCategories"
-					/>
-				</div>
-			</div>
-		</div>
-	</div>
+	</q-page>
 </template>
 
 <script setup>

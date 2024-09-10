@@ -23,7 +23,8 @@ module.exports = configure(function (ctx) {
 			"setPersonalTabFromLocalStorage",
 			"browsePermissions",
 			"ws",
-			"routes" // keep at the end
+			"routes",
+			"loadingScreen" // keep at the end
 		],
 
 		css: [

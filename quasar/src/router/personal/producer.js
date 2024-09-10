@@ -1,8 +1,20 @@
+import Profiles from "src/pages/personal/producer/Profiles.vue"
+import Orders from "src/pages/personal/producer/Orders.vue"
+import OrdersDetail from "src/pages/personal/producer/OrdersDetail.vue"
+import RegisterProducer from "src/pages/personal/RegisterProducer.vue"
+import ProducerSettings from "src/pages/personal/producer/ProducerSettings.vue"
+import Products from "src/pages/personal/producer/Products.vue"
+import ProductsDetail from "src/pages/personal/producer/ProductsDetail.vue"
+import ProductShow from "src/pages/personal/producer/ProductShow.vue"
+import ProductCreate from "src/pages/personal/producer/ProductCreate.vue"
+import PaymentMethods from "src/pages/personal/producer/PaymentMethods.vue"
+import PaymentMethodsDetail from "src/pages/personal/producer/PaymentMethodsDetail.vue"
+
 export default [
 	{
 		name: "personal_producer",
 		path: "personal/producer",
-		component: () => import("pages/personal/producer/Profiles.vue"),
+		component: Profiles,
 		meta: {
 			route_name: "Список профилей"
 		}
@@ -10,7 +22,7 @@ export default [
 	{
 		name: "personal_producer_orders",
 		path: "personal/producer/orders",
-		component: () => import("pages/personal/producer/Orders.vue"),
+		component: Orders,
 		meta: {
 			route_name: "Список заказов"
 		}
@@ -18,7 +30,7 @@ export default [
 	{
 		name: "personal_producer_orders_detail",
 		path: "personal/producer/:producer_id/orders",
-		component: () => import("pages/personal/producer/OrdersDetail.vue"),
+		component: OrdersDetail,
 		meta: {
 			route_name: "Список заказов"
 		}
@@ -26,7 +38,7 @@ export default [
 	{
 		name: "personal_register_producer",
 		path: "personal/register-producer",
-		component: () => import("pages/personal/RegisterProducer.vue"),
+		component: RegisterProducer,
 		meta: {
 			route_name: "Зарегистрировать изготовителя"
 		}
@@ -34,7 +46,7 @@ export default [
 	{
 		name: "personal_producer_settings",
 		path: "personal/producer/:producer_id/settings",
-		component: () => import("pages/personal/producer/ProducerSettings.vue"),
+		component: ProducerSettings,
 		meta: {
 			route_name: "Настройки"
 		}
@@ -42,7 +54,7 @@ export default [
 	{
 		name: "personal_producer_products",
 		path: "personal/producer/products",
-		component: () => import("pages/personal/producer/Products.vue"),
+		component: Products,
 		meta: {
 			route_name: "Настройки продуктов"
 		}
@@ -50,7 +62,7 @@ export default [
 	{
 		name: "personal_producer_products_detail",
 		path: "personal/producer/:producer_id/products",
-		component: () => import("pages/personal/producer/ProductsDetail.vue"),
+		component: ProductsDetail,
 		meta: {
 			route_name: "Настройки продуктов"
 		}
@@ -58,7 +70,7 @@ export default [
 	{
 		name: "personal_producer_products_detail_show",
 		path: "personal/producer/:producer_id/products/:product_id",
-		component: () => import("pages/personal/producer/ProductShow.vue"),
+		component: ProductShow,
 		meta: {
 			route_name: "Настройки продуктов"
 		}
@@ -66,7 +78,7 @@ export default [
 	{
 		name: "personal_producer_products_detail_create",
 		path: "personal/producer/:producer_id/products/create",
-		component: () => import("pages/personal/producer/ProductCreate.vue"),
+		component: ProductCreate,
 		meta: {
 			route_name: "Настройки продуктов"
 		}
@@ -74,7 +86,7 @@ export default [
 	{
 		name: "personal_producer_payment_methods",
 		path: "personal/producer/payment-methods",
-		component: () => import("pages/personal/producer/PaymentMethods.vue"),
+		component: PaymentMethods,
 		meta: {
 			route_name: "Способы оплаты"
 		}
@@ -82,7 +94,7 @@ export default [
 	{
 		name: "personal_producer_payment_methods_detail",
 		path: "personal/producer/:producer_id/payment-methods",
-		component: () => import("pages/personal/producer/PaymentMethodsDetail.vue"),
+		component: PaymentMethodsDetail,
 		meta: {
 			route_name: "Способы оплаты"
 		}

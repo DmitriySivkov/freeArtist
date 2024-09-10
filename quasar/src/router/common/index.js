@@ -1,8 +1,10 @@
+import Home from "src/pages/Home.vue"
+
 export default [
 	{
 		name: "home",
 		path: "",
-		component: () => import("pages/Home.vue"),
+		component: Home,
 		meta: {
 			route_name: "Главная",
 		}

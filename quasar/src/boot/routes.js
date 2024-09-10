@@ -14,12 +14,4 @@ export default ({ store, router }) => {
 
 		next()
 	})
-
-	document.getElementById("blind").checked = true
-
-	setTimeout(
-		() => document.getElementById("loading-screen").remove(),
-		2000
-	)
-
 }

@@ -1,8 +1,11 @@
+import Register from "src/pages/Register.vue"
+import Auth from "src/pages/Auth.vue"
+
 export default [
 	{
 		name: "register",
 		path: "register",
-		component: () => import("pages/Register.vue"),
+		component: Register,
 		meta: {
 			route_name: "Регистрация"
 		},
@@ -10,7 +13,7 @@ export default [
 	{
 		name: "login",
 		path: "auth",
-		component: () => import("pages/Auth.vue"),
+		component: Auth,
 		meta: {
 			route_name: "Авторизация",
 		}
