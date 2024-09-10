@@ -1,3 +1,27 @@
+<script setup>
+import { computed } from "vue"
+import { useUserTeam } from "src/composables/userTeam"
+
+const { userOwnTeam } = useUserTeam()
+
+const items = [
+	{ title: "Профиль", routeName: "personal_user" },
+	{ title: "Заказы", routeName: "user_orders" },
+	{
+		title: "Зарегистрировать изготовителя",
+		routeName: "personal_register_producer",
+		conditional: !userOwnTeam.value
+	},
+	{ title: "Заявки", routeName: "personal_user_requests" }
+]
+
+const menu = computed(() =>
+	items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
+)
+
+
+</script>
+
 <template>
 	<div class="q-ma-sm">
 		<div class="row q-col-gutter-sm">
@@ -22,27 +46,3 @@
 		</div>
 	</div>
 </template>
-
-<script setup>
-import { computed } from "vue"
-import { useUserTeam } from "src/composables/userTeam"
-
-const { userOwnTeam } = useUserTeam()
-
-const items = [
-	{ title: "Профиль", routeName: "personal_user" },
-	{ title: "Заказы", routeName: "user_orders" },
-	{
-		title: "Зарегистрировать изготовителя",
-		routeName: "personal_register_producer",
-		conditional: !userOwnTeam.value
-	},
-	{ title: "Заявки", routeName: "personal_user_requests" }
-]
-
-const menu = computed(() =>
-	items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
-)
-
-
-</script>

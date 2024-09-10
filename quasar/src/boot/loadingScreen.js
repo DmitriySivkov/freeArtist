@@ -3,12 +3,7 @@ document.getElementById("blind").checked = true
 setTimeout(
 	() => {
 		document.getElementById("loading-screen").remove()
-
-		Object.assign(
-			document.getElementsByTagName("body")[0].style,{
-				"overflow-x": "hidden",
-				"overflow-y": "scroll"
-			})
+		document.body.style.overflow = "hidden scroll"
 	},
 	2000
 )

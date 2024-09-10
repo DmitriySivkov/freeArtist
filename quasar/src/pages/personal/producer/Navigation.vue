@@ -1,3 +1,20 @@
+<script setup>
+import { computed } from "vue"
+
+const items = [
+	{ title: "Настройки", routeName: "personal_producer" },
+	{ title: "Заказы", routeName: "personal_producer_orders" },
+	{ title: "Заявки", routeName: "personal_team_requests" },
+	{ title: "Разрешения", routeName: "personal_team_permissions" },
+	{ title: "Управлять продуктами", routeName: "personal_producer_products" },
+	{ title: "Способы оплаты", routeName: "personal_producer_payment_methods" }
+]
+
+const menu = computed(() =>
+	items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
+)
+</script>
+
 <template>
 	<div class="q-ma-sm">
 		<div class="row q-col-gutter-sm">
@@ -22,20 +39,3 @@
 		</div>
 	</div>
 </template>
-
-<script setup>
-import { computed } from "vue"
-
-const items = [
-	{ title: "Настройки", routeName: "personal_producer" },
-	{ title: "Заказы", routeName: "personal_producer_orders" },
-	{ title: "Заявки", routeName: "personal_team_requests" },
-	{ title: "Разрешения", routeName: "personal_team_permissions" },
-	{ title: "Управлять продуктами", routeName: "personal_producer_products" },
-	{ title: "Способы оплаты", routeName: "personal_producer_payment_methods" }
-]
-
-const menu = computed(() =>
-	items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
-)
-</script>
