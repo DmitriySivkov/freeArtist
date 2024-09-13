@@ -1,32 +1,34 @@
 <template>
-	<q-page>
+	<q-page
+		ref="homePage"
+		class="column no-wrap q-px-sm bg-primary"
+	>
+		<div class="col-auto">
+			<div class="row justify-center">
+				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+					<ProducerFilterHome ref="homeHeader"/>
+				</div>
+			</div>
+		</div>
+		<div class="col-auto q-mb-sm">
+			<div class="row justify-center">
+				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+					<ProducerCategoriesHome
+						ref="homeCategories"
+						@change="setCategories"
+					/>
+				</div>
+			</div>
+		</div>
 		<div
-			v-if="userLocation"
-			class="column no-wrap q-px-sm"
+			class="col-grow scroll"
+			:style="{'max-height': `${producerListMaxHeight}px`}"
 		>
-			<div class="col-auto">
-				<div class="row justify-center">
-					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-						<ProducerFilterHome />
-					</div>
-				</div>
-			</div>
-			<div class="col-auto q-mb-sm">
-				<div class="row justify-center">
-					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-						<ProducerCategoriesHome
-							@change="setCategories"
-						/>
-					</div>
-				</div>
-			</div>
-			<div class="col-grow">
-				<div class="row justify-center">
-					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-						<ProducerListHome
-							:categories="selectedCategories"
-						/>
-					</div>
+			<div class="row justify-center">
+				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+					<ProducerListHome
+						:categories="selectedCategories"
+					/>
 				</div>
 			</div>
 		</div>
@@ -52,6 +54,15 @@ const selectedCategories = ref([])
 const setCategories = (categoryIds) => {
 	selectedCategories.value = categoryIds
 }
+
+const homePage = ref(null)
+const homeHeader = ref(null)
+const homeCategories = ref(null)
+
+//todo - посчитать нормально, сейчас есть отклонение в несколько пикселей (хардкод "-4" в подсчете)
+const producerListMaxHeight = computed(() =>
+	homePage.value?.$el.clientHeight - homeHeader.value?.$el?.offsetHeight - homeCategories.value?.$el?.offsetHeight - 4
+)
 
 onMounted(() => {
 	if (!userLocation.value) {
