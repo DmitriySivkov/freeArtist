@@ -26,7 +26,7 @@
 		>
 			<div class="row justify-center">
 				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<ProducerListHome
+					<ProducerShowcaseHome
 						:categories="selectedCategories"
 					/>
 				</div>
@@ -38,7 +38,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { Dialog } from "quasar"
-import ProducerListHome from "src/components/producers/ProducerListHome.vue"
+import ProducerShowcaseHome from "src/components/producers/ProducerShowcaseHome.vue"
 import ProducerFilterHome from "src/components/producers/ProducerFilterHome.vue"
 import ProducerCategoriesHome from "src/components/producers/ProducerCategoriesHome.vue"
 import SelectLocationDialog from "components/dialogs/SelectLocationDialog.vue"
