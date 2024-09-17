@@ -34,7 +34,7 @@ onBeforeUnmount(() => {
 			@click="$router.push({
 				name: 'producer_products_detail',
 				params: {
-					producer_id: $router.currentRoute.value.params.producer_id,
+					producer_id: $router.currentRoute.value.query.pid,
 					product_id: product.id
 				}
 			})"
