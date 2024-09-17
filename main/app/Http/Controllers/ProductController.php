@@ -16,10 +16,9 @@ class ProductController extends Controller
 	 */
 	public function index(Request $request, Producer $producer)
 	{
-		$categories = $request->input('categories');
-		$tags = $request->input('tags');
 		$offset = $request->input('offset');
 		$limit = 5;
+		$categories = $request->input('categories');
 
 		return $producer->products()
 			->with([
@@ -28,12 +27,7 @@ class ProductController extends Controller
 			])
 			->when($categories, function($query) use ($categories) {
 				$query->whereHas('tags.categories',
-					fn($query) => $query->whereIn('id', $categories)
-				);
-			})
-			->when($tags, function($query) use ($tags) {
-				$query->whereHas('tags',
-					fn($query) => $query->whereIn('id', $tags)
+					fn($query) => $query->whereIn('categories.id', $categories)
 				);
 			})
 			->orderBy('title', 'desc')

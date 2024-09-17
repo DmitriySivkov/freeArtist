@@ -55,7 +55,8 @@ const fetchProducts = async() => {
 	const limit = 5
 
 	let params = {
-		offset: producerProducts.value.length
+		offset: producerProducts.value.length,
+		categories: props.categories
 	}
 
 	const response = await api.get(
@@ -85,6 +86,12 @@ const showProducerProducts = ({ producerId, scrollPosition }) => {
 	producerProducts.value = []
 
 	reinit()
+}
+
+const checkProducerList = () => {
+	if (!producers.value.length && !isInitializing.value) {
+		reinit()
+	}
 }
 
 const load = async (index, done) => {
@@ -137,13 +144,15 @@ watch([
 		<template v-if="producerProducts.length && !isInitializing && producerId">
 			<ProducerPublicProductListHome
 				:products="producerProducts"
+				@unmount="checkProducerList"
 			/>
 		</template>
 		<template v-slot:loading>
 			<div class="row justify-center q-my-md">
-				<q-spinner-dots
-					size="md"
-					color="white"
+				<q-linear-progress
+					indeterminate
+					rounded
+					color="grey-4"
 				/>
 			</div>
 		</template>

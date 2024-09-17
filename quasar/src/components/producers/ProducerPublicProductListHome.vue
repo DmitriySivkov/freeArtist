@@ -1,4 +1,5 @@
 <script setup>
+import { onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 
 const props = defineProps({
@@ -8,9 +9,17 @@ const props = defineProps({
 	}
 })
 
+const emit = defineEmits([
+	"unmount"
+])
+
 const $router = useRouter()
 
 const backendServer = process.env.BACKEND_SERVER
+
+onBeforeUnmount(() => {
+	emit("unmount")
+})
 </script>
 
 <template>
