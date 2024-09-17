@@ -104,70 +104,71 @@ onMounted(() => {
 						/>
 					</q-carousel>
 				</q-responsive>
-				<q-card>
-					<div class="row">
-						<q-card class="col-12 full-height">
-							<q-card-section>
-								<span class="text-h5">{{ product.title }}</span>
+				<div class="row">
+					<q-card
+						bordered
+						class="col-12"
+					>
+						<q-card-section>
+							<span class="text-h5">{{ product.title }}</span>
+						</q-card-section>
+
+						<q-card-section class="row justify-between q-py-xs q-mb-md">
+							<div class="col-4">
+								<span class="text-h6 text-primary">{{ product.price }} ₽</span>
+							</div>
+							<div class="col-xs col-sm-5 col-lg-4">
+								<q-input
+									dense
+									filled
+									:model-value="cartProductAmount"
+									@update:model-value="setProductAmount"
+									type="number"
+									input-class="text-center"
+								>
+									<template v-slot:before>
+										<q-btn
+											icon="remove"
+											size="md"
+											color="primary"
+											@click="removeFromCart"
+											class="full-height"
+										/>
+									</template>
+									<template v-slot:after>
+										<q-btn
+											icon="add"
+											size="md"
+											color="primary"
+											@click="addToCart"
+											class="full-height"
+										/>
+									</template>
+								</q-input>
+							</div>
+						</q-card-section>
+
+						<q-card-section
+							v-for="(ingr, index) in product.composition"
+							:key="index"
+							class="q-px-sm q-py-sm q-hoverable"
+						>
+							<span class="q-focus-helper"></span>
+							<q-card-section class="q-py-none">
+								<span class="text-h6">{{ ingr.name }}</span>
 							</q-card-section>
 
-							<q-card-section class="row justify-between q-py-xs q-mb-md">
-								<div class="col-4">
-									<span class="text-h6 text-primary">{{ product.price }} ₽</span>
-								</div>
-								<div class="col-xs col-sm-5 col-lg-4">
-									<q-input
-										dense
-										filled
-										:model-value="cartProductAmount"
-										@update:model-value="setProductAmount"
-										type="number"
-										input-class="text-center"
-									>
-										<template v-slot:before>
-											<q-btn
-												icon="remove"
-												size="md"
-												color="primary"
-												@click="removeFromCart"
-												class="full-height"
-											/>
-										</template>
-										<template v-slot:after>
-											<q-btn
-												icon="add"
-												size="md"
-												color="primary"
-												@click="addToCart"
-												class="full-height"
-											/>
-										</template>
-									</q-input>
-								</div>
+							<q-separator
+								v-if="ingr.description"
+								inset
+							/>
+
+							<q-card-section class="q-py-xs">
+								{{ ingr.description }}
 							</q-card-section>
-
-							<q-card-section
-								v-for="(ingr, index) in product.composition"
-								:key="index"
-								class="q-px-sm q-py-sm q-hoverable"
-							>
-								<span class="q-focus-helper"></span>
-								<q-card-section class="q-py-none">
-									<span class="text-h6">{{ ingr.name }}</span>
-								</q-card-section>
-
-								<q-separator
-									v-if="ingr.description"
-									inset
-								/>
-
-								<q-card-section class="q-py-xs">
-									{{ ingr.description }}
-								</q-card-section>
-							</q-card-section>
-						</q-card>
-					</div>
-				</q-card>
+						</q-card-section>
+					</q-card>
+				</div>
 			</q-card>
 		</div>
 		<div
