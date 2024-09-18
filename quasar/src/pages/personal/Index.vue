@@ -1,6 +1,6 @@
 <script setup>
-import NavigationUser from "src/pages/personal/user/Navigation.vue"
-import NavigationProducer from "src/pages/personal/producer/Navigation.vue"
+import NavigationUser from "src/components/users/UserNavigation.vue"
+import NavigationProducer from "src/components/producers/ProducerNavigation.vue"
 import { computed } from "vue"
 import { useUserStore } from "src/stores/user"
 import { useRoleStore } from "src/stores/role"

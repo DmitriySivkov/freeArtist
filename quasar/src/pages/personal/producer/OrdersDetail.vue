@@ -1,74 +1,3 @@
-<template>
-	<div class="absolute column fit no-wrap">
-		<div class="col">
-			<div class="row justify-center q-col-gutter-xs q-my-md">
-				<div class="col-auto">
-					<q-btn
-						label="Сбросить"
-						:loading="isLoading"
-						:disable="isLoading"
-						@click="onToday()"
-					>
-						<template v-slot:loading>
-							<q-spinner-gears color="primary" />
-						</template>
-					</q-btn>
-				</div>
-				<div class="col-auto">
-					<q-btn
-						label="Назад"
-						:loading="isLoading"
-						:disable="isLoading"
-						@click="onPrev()"
-					>
-						<template v-slot:loading>
-							<q-spinner-gears color="primary" />
-						</template>
-					</q-btn>
-				</div>
-				<div class="col-auto">
-					<q-btn
-						label="Вперед"
-						:loading="isLoading"
-						:disable="isLoading"
-						@click="onNext()"
-					>
-						<template v-slot:loading>
-							<q-spinner-gears color="primary" />
-						</template>
-					</q-btn>
-				</div>
-			</div>
-
-			<div class="row justify-center">
-				<q-calendar-agenda
-					ref="calendar"
-					v-model="selectedDate"
-					:weekday-class="getWeekdaysClass"
-					date-type="rounded"
-					view="week"
-					locale="ru-RU"
-					:weekdays="[1,2,3,4,5,6,0]"
-					:day-min-height="200"
-					animated
-					@change="calendarChanged"
-				>
-					<template #day="{ scope: { timestamp } }">
-						<ProducerOrderCard
-							v-for="order in getOrders(timestamp)"
-							:key="order.id"
-							:order="order"
-							:card-class="ORDER_CARD_STATUS_TO_CLASS[order.status]"
-							@show="showOrder"
-						/>
-					</template>
-				</q-calendar-agenda>
-			</div>
-
-		</div>
-	</div>
-</template>
-
 <script setup>
 import {
 	today
@@ -162,6 +91,80 @@ onBeforeUnmount(() => {
 	producerOrdersStore.emptyData()
 })
 </script>
+
+<template>
+	<q-page>
+		<div class="row justify-center">
+			<div class="col-xs-12 col-sm-8 col-md-5 col-lg-4 q-pa-sm">
+				<div class="row justify-between">
+					<div class="col-auto">
+						<q-btn
+							label="Назад"
+							color="primary"
+							:loading="isLoading"
+							:disable="isLoading"
+							@click="onPrev()"
+						>
+							<template v-slot:loading>
+								<q-spinner-gears color="white" />
+							</template>
+						</q-btn>
+					</div>
+					<div class="col-auto">
+						<q-btn
+							label="Сбросить"
+							color="primary"
+							:loading="isLoading"
+							:disable="isLoading"
+							@click="onToday()"
+						>
+							<template v-slot:loading>
+								<q-spinner-gears color="white" />
+							</template>
+						</q-btn>
+					</div>
+					<div class="col-auto">
+						<q-btn
+							label="Вперед"
+							color="primary"
+							:loading="isLoading"
+							:disable="isLoading"
+							@click="onNext()"
+						>
+							<template v-slot:loading>
+								<q-spinner-gears color="white" />
+							</template>
+						</q-btn>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row justify-center">
+			<q-calendar-agenda
+				ref="calendar"
+				v-model="selectedDate"
+				:weekday-class="getWeekdaysClass"
+				date-type="rounded"
+				view="week"
+				locale="ru-RU"
+				:weekdays="[1,2,3,4,5,6,0]"
+				:day-min-height="200"
+				animated
+				@change="calendarChanged"
+			>
+				<template #day="{ scope: { timestamp } }">
+					<ProducerOrderCard
+						v-for="order in getOrders(timestamp)"
+						:key="order.id"
+						:order="order"
+						:card-class="ORDER_CARD_STATUS_TO_CLASS[order.status]"
+						@show="showOrder"
+					/>
+				</template>
+			</q-calendar-agenda>
+		</div>
+	</q-page>
+</template>
 
 <style>
 .orders-current-day {

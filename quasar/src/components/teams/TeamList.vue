@@ -1,21 +1,20 @@
 <template>
-	<div class="q-pa-md">
-		<q-list
-			bordered
-			separator
+	<q-list
+		bordered
+		separator
+	>
+		<q-item
+			v-for="(team, index) in teamsFiltered"
+			:key="index"
+			clickable
+			class="bg-grey-4 text-h6"
+			@click="goToDetail(team)"
 		>
-			<q-item
-				v-for="(team, index) in teamsFiltered"
-				:key="index"
-				clickable
-				@click="goToDetail(team)"
-			>
-				<q-item-section>
-					{{ team.display_name }}
-				</q-item-section>
-			</q-item>
-		</q-list>
-	</div>
+			<q-item-section>
+				{{ team.display_name }}
+			</q-item-section>
+		</q-item>
+	</q-list>
 </template>
 
 <script setup>
@@ -45,8 +44,9 @@ const teamsFiltered = computed(() =>
 const goToDetail = (team) => {
 	let detailedRouteParam = { team_id: team.id }
 
-	if (props.detailRouteName.includes("_producer_"))
-		detailedRouteParam = { producer_id: team.detailed.id}
+	if (props.detailRouteName.includes("_producer_")) {
+		detailedRouteParam = { producer_id: team.detailed.id }
+	}
 
 	$router.push({
 		name: props.detailRouteName,
