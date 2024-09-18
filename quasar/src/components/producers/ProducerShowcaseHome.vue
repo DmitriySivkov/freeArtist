@@ -89,7 +89,7 @@ const showProducerProducts = ({ producerId, scrollPosition }) => {
 }
 
 const checkProducerList = () => {
-	if (!producers.value.length && !isInitializing.value) {
+	if (!producers.value.length && scrollComponent.value) {
 		reinit()
 	}
 }

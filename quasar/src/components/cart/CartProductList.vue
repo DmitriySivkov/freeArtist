@@ -1,8 +1,5 @@
 <template>
-	<div
-		v-if="cart.length"
-		class="fit"
-	>
+	<div v-if="cart.length">
 		<div
 			v-for="(cartItem, cartItemIndex) in cart"
 			:key="cartItem.producer_id"

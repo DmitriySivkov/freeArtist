@@ -1,11 +1,9 @@
 <template>
-	<div class="column absolute fit">
-		<div class="row justify-center fit">
-			<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6 bg-white">
-				<CartProductList />
-			</div>
+	<q-page class="row justify-center bg-primary">
+		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6 bg-white">
+			<CartProductList />
 		</div>
-	</div>
+	</q-page>
 </template>
 
 <script setup>

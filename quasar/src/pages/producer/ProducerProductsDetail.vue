@@ -72,8 +72,6 @@ onMounted(() => {
 			product.value.images[0].id
 	})
 })
-
-// todo - Cannot read properties of null (reading 'stop') - при навигации из продукта в список продуктов и обратно
 </script>
 
 <template>
