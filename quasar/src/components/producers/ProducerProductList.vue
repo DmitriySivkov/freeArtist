@@ -8,7 +8,7 @@
 				<q-btn
 					no-caps
 					class="col-12 flex flex-center q-px-md q-py-lg bg-green-4 cursor-pointer"
-					:to="{name:'personal_producer_products_detail_create'}"
+					@click="create"
 				>
 					<span class="text-body1 text-white">Создать продукт</span>
 				</q-btn>
@@ -95,6 +95,7 @@ import { api } from "src/boot/axios"
 import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
 
 const props = defineProps({
+	producerId: Number,
 	isAbleToManageProduct: Boolean
 })
 
@@ -104,10 +105,20 @@ const { notifySuccess, notifyError } = useNotification()
 const products = ref([])
 const isMounting = ref(true)
 
+const create = () => {
+	$router.push({
+		name:"personal_producer_products_create",
+		params: {
+			producer_id: props.producerId,
+		}
+	})
+}
+
 const show = (product) => {
 	$router.push({
-		name:"personal_producer_products_detail_show",
+		name:"personal_producer_products_show",
 		params: {
+			producer_id: props.producerId,
 			product_id: product.id
 		}
 	})
@@ -146,7 +157,7 @@ const deleteProduct = (product_id) => {
 }
 
 onMounted(() => {
-	const promise = api.get("personal/producers/" + $router.currentRoute.value.params.producer_id + "/products")
+	const promise = api.get(`personal/producers/${props.producerId}/products`)
 
 	promise.then((response) => {
 		products.value = response.data

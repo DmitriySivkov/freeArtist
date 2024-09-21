@@ -1,11 +1,12 @@
 include ./main/.env
 
-.PHONY: pg dump import docker
+.PHONY: pg dump import docker quasar
 
 MYSQL_CONTAINER_NAME = app-mysql
 
 APP_PHP_CONTAINER_NAME = app-php
 APP_NGINX_CONTAINER_NAME = app-nginx
+APP_QUASAR_CONTAINER_NAME = quasar
 
 QUEUE_WORKER_PHP_CONTAINER_NAME = qw-php
 WEBSOCKETS_PHP_CONTAINER_NAME = ws-php
@@ -15,9 +16,9 @@ MYSQL_USER = root
 MYSQL_PASS = root
 
 EXEC_MYSQL = docker exec -it $(MYSQL_CONTAINER_NAME) bash
-
 EXEC_APP_PHP = docker exec -it $(APP_PHP_CONTAINER_NAME) bash
 EXEC_APP_NGINX = docker exec -it $(APP_NGINX_CONTAINER_NAME) bash
+EXEC_APP_QUASAR = docker exec -it $(APP_QUASAR_CONTAINER_NAME) bash
 
 EXEC_QUEUE_WORKER_PHP = docker exec -it $(QUEUE_WORKER_PHP_CONTAINER_NAME) bash
 EXEC_WS_PHP = docker exec -it $(WEBSOCKETS_PHP_CONTAINER_NAME) bash
@@ -37,10 +38,13 @@ app-php_container:
 app-nginx_container:
 	$(EXEC_APP_NGINX)
 
-qw-php_container:
+quasar:
+	$(EXEC_APP_QUASAR)
+
+qw-container:
 	$(EXEC_QUEUE_WORKER_PHP)
 
-ws-php_container:
+ws-container:
 	$(EXEC_WS_PHP)
 
 ws:
@@ -57,9 +61,6 @@ broadcast:
 
 cache:
 	./cache.sh
-
-front:
-	./quasar.sh
 
 wipe-public:
 	./wipe-public.sh

@@ -1,8 +1,5 @@
 <template>
 	<q-list>
-		<q-item-label header>
-			Выберите пользователя
-		</q-item-label>
 		<q-item
 			tag="label"
 			v-for="(user, index) in users"

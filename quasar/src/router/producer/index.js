@@ -5,8 +5,5 @@ export default [
 		name: "producer_products_detail",
 		path: "/producers/:producer_id/products/:product_id",
 		component: ProducerProductsDetail,
-		meta: {
-			route_name: "Витрина"
-		}
 	}
 ]

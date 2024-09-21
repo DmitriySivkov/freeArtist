@@ -10,6 +10,11 @@ export const useUserStore = defineStore("user", {
 		data: {}
 	}),
 
+	persist: {
+		pick: ["personal_tab"],
+		storage: sessionStorage,
+	},
+
 	actions: {
 		switchPersonal(personal_tab) {
 			this.personal_tab = personal_tab

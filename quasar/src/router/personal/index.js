@@ -13,16 +13,10 @@ export default [
 		name: "personal",
 		path: "personal",
 		component: Personal,
-		meta: {
-			route_name: "Личный кабинет",
-		},
 	},
 	{
 		name: "personal_user",
 		path: "personal/user",
 		component: PersonalUser,
-		meta: {
-			route_name: "Профиль"
-		}
 	}
 ]

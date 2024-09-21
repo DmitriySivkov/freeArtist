@@ -2,12 +2,12 @@
 import { computed } from "vue"
 
 const items = [
-	{ title: "Настройки", routeName: "personal_producer" },
-	{ title: "Заказы", routeName: "personal_producer_orders" },
-	{ title: "Заявки", routeName: "personal_team_requests" },
-	{ title: "Разрешения", routeName: "personal_team_permissions" },
-	{ title: "Управлять продуктами", routeName: "personal_producer_products" },
-	{ title: "Способы оплаты", routeName: "personal_producer_payment_methods" }
+	{ title: "Настройки", navigationRouteName: "personal_producer_settings" },
+	{ title: "Заказы", navigationRouteName: "personal_producer_orders" },
+	{ title: "Заявки", navigationRouteName: "personal_team_requests" },
+	{ title: "Разрешения", navigationRouteName: "personal_team_permissions" },
+	{ title: "Управлять продуктами", navigationRouteName: "personal_producer_products" },
+	{ title: "Способы оплаты", navigationRouteName: "personal_producer_payment_methods" }
 ]
 
 const menu = computed(() =>
@@ -28,7 +28,10 @@ const menu = computed(() =>
 				>
 					<q-item
 						class="q-pa-xl fit"
-						:to="{name: item.routeName}"
+						:to="{
+							name: 'personal_teams',
+							params: { navigationRouteName: item.navigationRouteName }
+						}"
 					>
 						<q-item-section class="text-center text-h5">
 							{{ item.title }}

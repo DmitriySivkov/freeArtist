@@ -44,14 +44,8 @@ export const useTeamStore = defineStore("team", {
 			this.user_teams = []
 		},
 
-		setTeamUsers({team_id, users}) {
-			this.user_teams.find((team) => team.id === team_id).users = users
-		},
-
-		async getUserList(team_id) {
-			const response = await api.get("personal/teams/" + team_id + "/users")
-
-			this.setTeamUsers({ team_id, users: response.data})
+		setTeamUsers({ teamId, users }) {
+			this.user_teams.find((team) => team.id === teamId).users = users
 		},
 
 		commitTeamUserPermissions({ team_id, user_id, permissions }) {

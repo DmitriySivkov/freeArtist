@@ -150,15 +150,17 @@ import { useTeamStore } from "src/stores/team"
 import { Cropper } from "vue-advanced-cropper"
 import { api } from "src/boot/axios"
 
-const router = useRouter()
+const $router = useRouter()
 
 const userStore = useUserStore()
 const teamStore = useTeamStore()
 const permissionStore = usePermissionStore()
 
-const team = computed(() => teamStore.user_teams.find(
-	(t) => t.detailed.id === parseInt(router.currentRoute.value.params.producer_id)
-))
+const team = computed(() =>
+	teamStore.user_teams.find((t) =>
+		t.id === parseInt($router.currentRoute.value.params.team_id)
+	)
+)
 
 const backendServer = process.env.BACKEND_SERVER
 

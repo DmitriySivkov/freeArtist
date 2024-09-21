@@ -5,8 +5,5 @@ export default [
 		name: "cart",
 		path: "cart",
 		component: Cart,
-		meta: {
-			route_name: "Корзина",
-		},
 	},
 ]
