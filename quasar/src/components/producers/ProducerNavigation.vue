@@ -2,7 +2,7 @@
 import { computed } from "vue"
 
 const items = [
-	{ title: "Настройки", navigationRouteName: "personal_producer_settings" },
+	{ title: "Профиль", navigationRouteName: "personal_producer_profile" },
 	{ title: "Заказы", navigationRouteName: "personal_producer_orders" },
 	{ title: "Заявки", navigationRouteName: "personal_team_requests" },
 	{ title: "Разрешения", navigationRouteName: "personal_team_permissions" },

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Personal;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Producer;
 use Illuminate\Http\Request;
 
-class PersonalPaymentMethodController extends Controller
+class ProducerPaymentMethodController extends Controller
 {
 	/**
 	 * @param Producer $producer

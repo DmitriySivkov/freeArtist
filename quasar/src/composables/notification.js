@@ -1,10 +1,9 @@
-import { Notify, useQuasar } from "quasar"
+import { Notify } from "quasar"
 
 export const useNotification = () => {
-	const $q = useQuasar()
-
 	const notifySuccess = (message) => {
 		return Notify.create({
+			timeout: 1500,
 			color: "green-4",
 			textColor: "white",
 			multiLine: true,
@@ -16,6 +15,7 @@ export const useNotification = () => {
 
 	const notifyError = (message) => {
 		return Notify.create({
+			timeout: 1500,
 			color: "red-5",
 			textColor: "white",
 			multiline: true,

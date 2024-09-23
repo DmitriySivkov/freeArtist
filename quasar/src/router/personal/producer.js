@@ -1,6 +1,6 @@
 import Orders from "src/pages/personal/producer/Orders.vue"
 import RegisterProducer from "src/pages/personal/RegisterProducer.vue"
-import ProducerSettings from "src/pages/personal/producer/ProducerSettings.vue"
+import ProducerProfile from "src/pages/personal/producer/ProducerProfile.vue"
 import Products from "src/pages/personal/producer/Products.vue"
 import ProductShow from "src/pages/personal/producer/ProductShow.vue"
 import ProductCreate from "src/pages/personal/producer/ProductCreate.vue"
@@ -18,9 +18,9 @@ export default [
 		component: RegisterProducer,
 	},
 	{
-		name: "personal_producer_settings",
-		path: "personal/producer/:team_id/settings",
-		component: ProducerSettings,
+		name: "personal_producer_profile",
+		path: "personal/producer/:team_id/profile",
+		component: ProducerProfile,
 	},
 	{
 		name: "personal_producer_products",
@@ -39,7 +39,7 @@ export default [
 	},
 	{
 		name: "personal_producer_payment_methods",
-		path: "personal/producer/payment-methods",
+		path: "personal/producer/:team_id/payment-methods",
 		component: PaymentMethods,
 	}
 ]

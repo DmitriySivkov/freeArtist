@@ -1,7 +1,12 @@
 <template>
-	<ProducerPaymentMethodList
-		:is-able-to-manage-payment-methods="isAbleToManagePaymentMethods"
-	/>
+	<q-page class="row">
+		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-5">
+			<ProducerPaymentMethodList
+				:producer-id="team.detailed_id"
+				:is-able-to-manage-payment-methods="isAbleToManagePaymentMethods"
+			/>
+		</div>
+	</q-page>
 </template>
 
 <script setup>
@@ -19,7 +24,9 @@ const $router = useRouter()
 const { hasPermission } = useUserPermission()
 
 const team = computed(() =>
-	teamStore.user_teams.find((t) => t.detailed.id === parseInt($router.currentRoute.value.params.producer_id))
+	teamStore.user_teams.find((t) =>
+		t.id === parseInt($router.currentRoute.value.params.team_id)
+	)
 )
 
 const isAbleToManagePaymentMethods = computed(() =>

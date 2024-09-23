@@ -21,21 +21,29 @@ class PaymentProviderEnum
 		self::ROBOKASSA => 'secret_key'
 	];
 
-	public static function getPaymentProviderSecretKey($provider): bool|string
+	/**
+	 * @param int $providerId
+	 * @return bool|string
+	 */
+	public static function getPaymentProviderSecretKey(int $providerId): bool|string
 	{
-		if (!\Arr::has(self::SECRETS, $provider)) {
+		if (!\Arr::has(self::SECRETS, $providerId)) {
 			return false;
 		}
 
-		return self::SECRETS[$provider];
+		return self::SECRETS[$providerId];
 	}
 
-	public static function getPaymentProviderService($provider): bool|string
+	/**
+	 * @param int $providerId
+	 * @return bool|string
+	 */
+	public static function getPaymentProviderService(int $providerId): bool|string
 	{
-		if (!\Arr::has(self::PAYMENT_PROVIDER_SERVICE, $provider)) {
+		if (!\Arr::has(self::PAYMENT_PROVIDER_SERVICE, $providerId)) {
 			return false;
 		}
 
-		return self::PAYMENT_PROVIDER_SERVICE[$provider];
+		return self::PAYMENT_PROVIDER_SERVICE[$providerId];
 	}
 }

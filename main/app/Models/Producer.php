@@ -25,7 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $outgoing_relation_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PaymentMethod[] $paymentMethods
  * @property-read int|null $payment_methods_count
- * @property-read \App\Models\ProducerPaymentProvider|null $paymentProvider
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerPaymentProvider[] $paymentProviders
+ * @property-read int|null $payment_providers_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
  * @property-read int|null $products_count
  * @property-read \App\Models\Team|null $team
@@ -38,6 +39,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereLogoId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\ProducerPaymentProvider|null $activePaymentProvider
  */
 class Producer extends Model
 {
@@ -76,11 +78,20 @@ class Producer extends Model
 	}
 
 	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function paymentProviders()
+	{
+		return $this->hasMany(ProducerPaymentProvider::class);
+	}
+
+	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
-	public function paymentProvider()
+	public function activePaymentProvider()
 	{
-		return $this->hasOne(ProducerPaymentProvider::class);
+		return $this->hasOne(ProducerPaymentProvider::class)
+			->where('is_active', 1);
 	}
 
 	/**

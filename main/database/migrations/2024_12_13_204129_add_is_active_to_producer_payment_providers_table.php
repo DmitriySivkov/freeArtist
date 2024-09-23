@@ -14,12 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('producer_payment_providers', function (Blueprint $table) {
-            $table->id();
-			$table->unsignedInteger('producer_id');
-			$table->unsignedInteger('payment_provider_id');
-			$table->json('payment_provider_data');
-			$table->unsignedTinyInteger('is_active');
-            $table->timestamps();
+			$table->unsignedTinyInteger('is_active')->after('payment_provider_data');
         });
     }
 

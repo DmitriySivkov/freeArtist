@@ -25,4 +25,6 @@ const team = computed(() =>
 		team.id === parseInt($router.currentRoute.value.params.team_id)
 	)
 )
+
+// todo - payment methods
 </script>

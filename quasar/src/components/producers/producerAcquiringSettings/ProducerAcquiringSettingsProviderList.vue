@@ -5,12 +5,21 @@ const props = defineProps({
 	modelValue: {
 		type: Number,
 		required: false
+	},
+	producerPaymentProviders: {
+		type: Array,
+		default: () => []
 	}
 })
 
 const emit = defineEmits([
 	"update:modelValue"
 ])
+
+const getActiveProvider = (paymentProviderId) => {
+	return props.producerPaymentProviders.find((pp) =>
+		pp.payment_provider_id === paymentProviderId)?.is_active
+}
 </script>
 
 <template>
@@ -24,6 +33,16 @@ const emit = defineEmits([
 		>
 			<q-item-section class="text-body1">
 				{{ name }}
+			</q-item-section>
+			<q-item-section
+				side
+				v-if="getActiveProvider(Number(providerId))"
+			>
+				<q-icon
+					color="white"
+					name="done"
+					size="sm"
+				/>
 			</q-item-section>
 		</q-item>
 	</q-list>
