@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('producer_payment_providers', function (Blueprint $table) {
+        Schema::table('producer_payment_providers', function (Blueprint $table) {
 			$table->unsignedTinyInteger('is_active')->after('payment_provider_data');
         });
     }
