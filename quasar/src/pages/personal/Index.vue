@@ -38,7 +38,7 @@ const tabOffsetPixels = 64
 		active-bg-color="primary"
 		indicator-color="transparent"
 		align="justify"
-		class="text-white bg-indigo-10"
+		class="text-white bg-indigo-8"
 		:style="{height: `${tabOffsetPixels}px`}"
 		@update:model-value="switchPersonal"
 	>
@@ -53,22 +53,25 @@ const tabOffsetPixels = 64
 	</q-tabs>
 
 	<q-page
-		class="row"
+		class="row justify-center"
 		:style-fn="() => tabPanelStyleFn(tabOffsetPixels)"
 	>
-		<q-tab-panels
-			:model-value="selectedTab"
-			animated
-			class="full-width"
-		>
-			<q-tab-panel
-				v-for="(tab, index) in tabs"
-				:key="index"
-				:name="tab.name"
+		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6 bg-white">
+			<q-tab-panels
+				:model-value="selectedTab"
+				animated
+				class="full-width"
 			>
-				<NavigationUser v-if="selectedTab === 'user'" />
-				<NavigationProducer v-if="selectedTab === 'producer'" />
-			</q-tab-panel>
-		</q-tab-panels>
+				<q-tab-panel
+					v-for="(tab, index) in tabs"
+					:key="index"
+					:name="tab.name"
+					class="q-pa-xs"
+				>
+					<NavigationUser v-if="selectedTab === 'user'" />
+					<NavigationProducer v-if="selectedTab === 'producer'" />
+				</q-tab-panel>
+			</q-tab-panels>
+		</div>
 	</q-page>
 </template>

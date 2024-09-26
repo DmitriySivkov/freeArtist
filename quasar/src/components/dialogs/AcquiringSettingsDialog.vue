@@ -64,7 +64,6 @@
 
 <script setup>
 // todo - fix jumping on transition
-// todo - добавить в ProducerAcquiringSettingsProviderSetup чекбокс "активный провайдер"
 import { useDialogPluginComponent } from "quasar"
 import { ref, computed, onMounted } from "vue"
 import { useQuasar } from "quasar"

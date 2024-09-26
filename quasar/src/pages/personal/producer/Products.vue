@@ -1,16 +1,3 @@
-<template>
-	<div class="column absolute full-width no-wrap bg-primary">
-		<div class="row full-height justify-center">
-			<div class="col-xs-12 col-md-8 bg-white">
-				<ProducerProductList
-					:producer-id="team.detailed_id"
-					:is-able-to-manage-product="isAbleToManageProduct"
-				/>
-			</div>
-		</div>
-	</div>
-</template>
-
 <script setup>
 import ProducerProductList from "src/components/producers/ProducerProductList.vue"
 import { useRouter } from "vue-router"
@@ -27,13 +14,41 @@ const { hasPermission } = useUserPermission()
 
 const team = computed(() =>
 	teamStore.user_teams.find((t) =>
-		t.id === parseInt($router.currentRoute.value.params.team_id)
+		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
 
 const isAbleToManageProduct = computed(() =>
 	hasPermission(team.value.id,"producer_product") ||
-			team.value.user_id === userStore.data.id
+	team.value.user_id === userStore.data.id
 )
 
+const create = () => {
+	$router.push({
+		name:"personal_producer_products_create",
+		params: {
+			producer_id: team.value.detailed_id,
+		}
+	})
+}
 </script>
+
+<template>
+	<q-page class="row justify-center">
+		<div class="col-xs-12 col-md-8 bg-white">
+			<div class="q-px-xs q-pt-xs">
+				<q-btn
+					no-caps
+					class="full-width q-px-md q-py-lg bg-secondary"
+					@click="create"
+				>
+					<span class="text-h6 text-white">Создать продукт</span>
+				</q-btn>
+			</div>
+
+			<ProducerProductList
+				:is-able-to-manage-product="isAbleToManageProduct"
+			/>
+		</div>
+	</q-page>
+</template>

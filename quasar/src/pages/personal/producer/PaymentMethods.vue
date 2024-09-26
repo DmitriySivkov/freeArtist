@@ -25,7 +25,7 @@ const { hasPermission } = useUserPermission()
 
 const team = computed(() =>
 	teamStore.user_teams.find((t) =>
-		t.id === parseInt($router.currentRoute.value.params.team_id)
+		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
 

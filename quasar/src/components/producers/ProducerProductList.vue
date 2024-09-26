@@ -1,91 +1,3 @@
-<template>
-	<div
-		class="column no-wrap"
-		style="min-height:100vh"
-	>
-		<div class="col-auto sticky__common_top">
-			<div class="row full-height">
-				<q-btn
-					no-caps
-					class="col-12 flex flex-center q-px-md q-py-lg bg-green-4 cursor-pointer"
-					@click="create"
-				>
-					<span class="text-body1 text-white">Создать продукт</span>
-				</q-btn>
-			</div>
-		</div>
-
-		<q-linear-progress
-			v-if="isMounting"
-			indeterminate
-			color="primary"
-		/>
-
-		<div class="col q-pa-xs">
-			<div class="column">
-				<div
-					v-for="(product, index) in products"
-					:key="index"
-					class="col-xs-2 col-sm-1 q-mb-xs"
-				>
-					<q-card class="bg-primary full-height">
-						<div class="row text-body1">
-							<div
-								class="col-xs-9 col-md-10 cursor-pointer q-hoverable"
-								@click="show(product)"
-							>
-								<span class="q-focus-helper"></span>
-								<div class="row full-height items-center">
-									<div class="col-xs-3 col-sm-2 col-md-1 text-center">
-										<q-icon
-											size="sm"
-											color="white"
-											name="edit"
-										/>
-									</div>
-									<div class="col text-white">
-										{{ product.title }}
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<q-btn
-									flat
-									square
-									icon="more_vert"
-									text-color="white"
-									class="full-width q-py-lg"
-								>
-									<q-menu fit>
-										<q-list>
-											<q-item
-												clickable
-												v-close-popup
-												:disable="!isAbleToManageProduct"
-												@click="showDeleteDialog(product)"
-											>
-												<q-item-section class="text-center">
-													Удалить
-												</q-item-section>
-											</q-item>
-										</q-list>
-									</q-menu>
-								</q-btn>
-							</div>
-							<q-inner-loading :showing="product.is_loading">
-								<q-spinner-gears
-									size="42px"
-									color="primary"
-								/>
-							</q-inner-loading>
-						</div>
-					</q-card>
-				</div>
-			</div>
-		</div>
-	</div>
-</template>
-
 <script setup>
 import { ref, onMounted } from "vue"
 import { Dialog } from "quasar"
@@ -95,7 +7,6 @@ import { api } from "src/boot/axios"
 import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
 
 const props = defineProps({
-	producerId: Number,
 	isAbleToManageProduct: Boolean
 })
 
@@ -105,20 +16,11 @@ const { notifySuccess, notifyError } = useNotification()
 const products = ref([])
 const isMounting = ref(true)
 
-const create = () => {
-	$router.push({
-		name:"personal_producer_products_create",
-		params: {
-			producer_id: props.producerId,
-		}
-	})
-}
-
 const show = (product) => {
 	$router.push({
 		name:"personal_producer_products_show",
 		params: {
-			producer_id: props.producerId,
+			producer_id: $router.currentRoute.value.params.producer_id,
 			product_id: product.id
 		}
 	})
@@ -157,7 +59,7 @@ const deleteProduct = (product_id) => {
 }
 
 onMounted(() => {
-	const promise = api.get(`personal/producers/${props.producerId}/products`)
+	const promise = api.get(`personal/producers/${$router.currentRoute.value.params.producer_id}/products`)
 
 	promise.then((response) => {
 		products.value = response.data
@@ -171,3 +73,53 @@ onMounted(() => {
 })
 
 </script>
+
+<template>
+	<q-linear-progress
+		v-if="isMounting"
+		indeterminate
+		color="primary"
+	/>
+
+	<q-list class="q-pa-xs">
+		<q-item
+			v-for="(product, index) in products"
+			:key="index"
+			class="bg-primary text-white q-mb-xs rounded-borders"
+			clickable
+		>
+			<q-item-section
+				avatar
+				@click="show(product)"
+			>
+				<q-icon
+					size="sm"
+					color="white"
+					name="edit"
+				/>
+			</q-item-section>
+			<q-item-section
+				class="text-body1"
+				@click="show(product)"
+			>
+				{{ product.title }}
+			</q-item-section>
+			<q-item-section side>
+				<q-btn
+					v-if="isAbleToManageProduct"
+					flat
+					icon="cancel"
+					text-color="white"
+					class="full-width q-py-lg"
+					@click="showDeleteDialog(product)"
+				/>
+			</q-item-section>
+			<q-inner-loading :showing="product.is_loading">
+				<q-spinner-gears
+					size="42px"
+					color="primary"
+				/>
+			</q-inner-loading>
+		</q-item>
+	</q-list>
+</template>

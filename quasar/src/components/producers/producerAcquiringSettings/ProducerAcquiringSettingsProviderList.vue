@@ -29,6 +29,7 @@ const getActiveProvider = (paymentProviderId) => {
 			:key="providerId"
 			clickable
 			class="bg-primary text-white rounded-borders q-mb-xs"
+			:class="getActiveProvider(Number(providerId)) ? 'bg-primary' : 'bg-secondary'"
 			@click="emit('update:modelValue', Number(providerId))"
 		>
 			<q-item-section class="text-body1">

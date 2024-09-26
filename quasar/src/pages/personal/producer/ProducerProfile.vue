@@ -1,143 +1,140 @@
 <template>
-	<div class="column absolute fit">
-		<div class="col row justify-center">
-			<div class="col-xs-12 col-sm-7 col-lg-6 col-xl-5">
-				<div class="row">
-					<div class="col-12">
-						<q-responsive
-							:ratio="16/9"
-							class="bg-green-4 rounded-borders"
-							:class="{'bg-green-6 text-white': isDragging}"
-						>
-							<div>
-								<q-img
-									v-if="team.detailed.logo && !tmpImage"
-									:src="backendServer + '/storage/' + team.detailed.logo.path"
-									class="absolute rounded-borders"
-								/>
+	<q-page class="row justify-center q-pa-xs">
+		<div class="col-xs-12 col-sm-7 col-lg-6 col-xl-5">
+			<div class="row">
+				<div class="col-12">
+					<q-responsive
+						:ratio="16/9"
+						class="bg-green-4 rounded-borders"
+						:class="{'bg-green-6 text-white': isDragging}"
+					>
+						<div>
+							<q-img
+								v-if="team.detailed.logo && !tmpImage"
+								:src="backendServer + '/storage/' + team.detailed.logo.path"
+								class="absolute rounded-borders"
+							/>
 
-								<Cropper
-									v-else-if="tmpImage"
-									ref="cropper"
-									class="absolute fit"
-									:src="tmpImage"
-									:stencil-props="{aspectRatio: 16/9}"
-								/>
+							<Cropper
+								v-else-if="tmpImage"
+								ref="cropper"
+								class="absolute fit"
+								:src="tmpImage"
+								:stencil-props="{aspectRatio: 16/9}"
+							/>
 
-								<div
-									v-else
-									class="absolute fit flex flex-center text-center"
-								>
-									Выберите изображение <br /> или переместите в эту область
-								</div>
-
-								<div
-									v-if="canManageLogo || isTeamAdmin"
-									class="absolute fit cursor-pointer"
-									@dragenter.prevent="isDragging = true"
-									@dragleave.prevent="isDragging = false"
-									@dragover.prevent
-									@drop.prevent="drop"
-									@click="showFilePrompt"
-								></div>
-
-								<q-inner-loading :showing="isLoading">
-									<q-spinner-gears
-										size="md"
-										color="primary"
-									/>
-								</q-inner-loading>
+							<div
+								v-else
+								class="absolute fit flex flex-center text-center"
+							>
+								Выберите изображение <br /> или переместите в эту область
 							</div>
-						</q-responsive>
-					</div>
-				</div>
-				<div
-					v-if="tmpImage"
-					class="row q-gutter-xs q-mt-xs"
-				>
-					<q-btn
-						color="primary"
-						icon="done"
-						class="col q-pa-lg"
-						@click="loadImage"
-					/>
-					<q-btn
-						color="red"
-						icon="clear"
-						class="col q-pa-lg"
-						@click="cancelImage"
-					/>
-				</div>
-				<div class="row q-mt-xs">
-					<div class="col-12">
-						<q-card>
-							<q-list class="bg-primary text-white">
-								<q-item clickable>
-									<q-item-section avatar>
-										<q-icon
-											color="white"
-											name="edit"
-										/>
-									</q-item-section>
-									<q-item-section class="text-center">
-										{{ team.display_name }}
-									</q-item-section>
-									<q-popup-edit
-										:model-value="team.display_name"
-										@update:model-value="teamPropChanged($event, 'display_name')"
-										auto-save
-										v-slot="scope"
-									>
-										<q-input
-											:model-value="scope.value"
-											@update:model-value="scope.value = $event"
-											dense
-											autofocus
-											@keyup.enter="scope.set"
-										/>
-									</q-popup-edit>
-								</q-item>
 
-								<q-item clickable>
-									<q-item-section avatar>
-										<q-icon
-											color="white"
-											name="edit"
-										/>
-									</q-item-section>
-									<q-item-section class="text-center">
-										{{ team.description }}
-									</q-item-section>
-									<q-popup-edit
-										:model-value="team.description"
-										@update:model-value="teamPropChanged($event, 'description')"
-										auto-save
-										v-slot="scope"
-									>
-										<q-input
-											:model-value="scope.value"
-											@update:model-value="scope.value = $event"
-											dense
-											autofocus
-											@keyup.enter="scope.set"
-										/>
-									</q-popup-edit>
-								</q-item>
-							</q-list>
-						</q-card>
-					</div>
+							<div
+								v-if="canManageLogo || isTeamAdmin"
+								class="absolute fit cursor-pointer"
+								@dragenter.prevent="isDragging = true"
+								@dragleave.prevent="isDragging = false"
+								@dragover.prevent
+								@drop.prevent="drop"
+								@click="showFilePrompt"
+							></div>
+
+							<q-inner-loading :showing="isLoading">
+								<q-spinner-gears
+									size="md"
+									color="primary"
+								/>
+							</q-inner-loading>
+						</div>
+					</q-responsive>
+				</div>
+			</div>
+			<div
+				v-if="tmpImage"
+				class="row q-gutter-xs q-mt-xs"
+			>
+				<q-btn
+					color="primary"
+					icon="done"
+					class="col q-pa-lg"
+					@click="loadImage"
+				/>
+				<q-btn
+					color="red"
+					icon="clear"
+					class="col q-pa-lg"
+					@click="cancelImage"
+				/>
+			</div>
+			<div class="row q-mt-xs">
+				<div class="col-12">
+					<q-card>
+						<q-list class="bg-primary text-white">
+							<q-item clickable>
+								<q-item-section avatar>
+									<q-icon
+										color="white"
+										name="edit"
+									/>
+								</q-item-section>
+								<q-item-section class="text-center">
+									{{ team.display_name }}
+								</q-item-section>
+								<q-popup-edit
+									:model-value="team.display_name"
+									@update:model-value="teamPropChanged($event, 'display_name')"
+									auto-save
+									v-slot="scope"
+								>
+									<q-input
+										:model-value="scope.value"
+										@update:model-value="scope.value = $event"
+										dense
+										autofocus
+										@keyup.enter="scope.set"
+									/>
+								</q-popup-edit>
+							</q-item>
+
+							<q-item clickable>
+								<q-item-section avatar>
+									<q-icon
+										color="white"
+										name="edit"
+									/>
+								</q-item-section>
+								<q-item-section class="text-center">
+									{{ team.description }}
+								</q-item-section>
+								<q-popup-edit
+									:model-value="team.description"
+									@update:model-value="teamPropChanged($event, 'description')"
+									auto-save
+									v-slot="scope"
+								>
+									<q-input
+										:model-value="scope.value"
+										@update:model-value="scope.value = $event"
+										dense
+										autofocus
+										@keyup.enter="scope.set"
+									/>
+								</q-popup-edit>
+							</q-item>
+						</q-list>
+					</q-card>
 				</div>
 			</div>
 		</div>
-	</div>
-
-	<q-file
-		v-model="image"
-		ref="filePicker"
-		accept=".jpg, image/*"
-		style="display:none"
-		@update:model-value="addImage"
-	/>
+		<q-file
+			v-model="image"
+			ref="filePicker"
+			accept=".jpg, image/*"
+			style="display:none"
+			@update:model-value="addImage"
+		/>
+	</q-page>
 </template>
 
 <script setup>
@@ -158,7 +155,7 @@ const permissionStore = usePermissionStore()
 
 const team = computed(() =>
 	teamStore.user_teams.find((t) =>
-		t.id === parseInt($router.currentRoute.value.params.team_id)
+		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
 

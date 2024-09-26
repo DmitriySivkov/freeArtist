@@ -1,15 +1,15 @@
 import Orders from "src/pages/personal/producer/Orders.vue"
 import RegisterProducer from "src/pages/personal/RegisterProducer.vue"
 import ProducerProfile from "src/pages/personal/producer/ProducerProfile.vue"
-import Products from "src/pages/personal/producer/Products.vue"
-import ProductShow from "src/pages/personal/producer/ProductShow.vue"
-import ProductCreate from "src/pages/personal/producer/ProductCreate.vue"
 import PaymentMethods from "src/pages/personal/producer/PaymentMethods.vue"
+import ProducerPermissions from "src/pages/personal/producer/ProducerPermissions.vue"
+import ProducerRequests from "src/pages/personal/producer/ProducerRequests.vue"
+import Products from "src/pages/personal/producer/Products.vue"
 
 export default [
 	{
 		name: "personal_producer_orders",
-		path: "personal/producer/:team_id/orders",
+		path: "personal/producer/:producer_id/orders",
 		component: Orders,
 	},
 	{
@@ -19,27 +19,27 @@ export default [
 	},
 	{
 		name: "personal_producer_profile",
-		path: "personal/producer/:team_id/profile",
+		path: "personal/producer/:producer_id/profile",
 		component: ProducerProfile,
 	},
 	{
+		name: "personal_producer_payment_methods",
+		path: "personal/producer/:producer_id/payment-methods",
+		component: PaymentMethods,
+	},
+	{
+		name: "personal_producer_permissions",
+		path: "personal/producer/:producer_id/permissions",
+		component: ProducerPermissions,
+	},
+	{
+		name: "personal_producer_requests",
+		path: "personal/producer/:producer_id/requests",
+		component: ProducerRequests,
+	},
+	{
 		name: "personal_producer_products",
-		path: "personal/producer/:team_id/products",
+		path: "/personal/producer/:producer_id/products",
 		component: Products,
 	},
-	{
-		name: "personal_producer_products_show",
-		path: "personal/producer/:producer_id/products/:product_id",
-		component: ProductShow,
-	},
-	{
-		name: "personal_producer_products_create",
-		path: "personal/producer/:producer_id/products/create",
-		component: ProductCreate,
-	},
-	{
-		name: "personal_producer_payment_methods",
-		path: "personal/producer/:team_id/payment-methods",
-		component: PaymentMethods,
-	}
 ]

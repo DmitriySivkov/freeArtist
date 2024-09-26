@@ -29,7 +29,7 @@
 				<template #item="{ element }">
 					<q-item
 						clickable
-						class="col-xs-6 col-md-4 flex-center text-center bg-green-5"
+						class="col-xs-4 col-md-3 flex-center text-center bg-primary"
 						:class="$style.tag"
 					>
 						<q-item-section class="text-body1">
@@ -77,7 +77,7 @@
 					<template #item="{ element }">
 						<q-item
 							clickable
-							class="col-xs-4 col-md-3 flex-center text-center text-body1"
+							class="col-xs-4 col-md-3 flex-center text-center text-body1 bg-secondary"
 							:class="$style.tag"
 						>
 							{{ element.name }}

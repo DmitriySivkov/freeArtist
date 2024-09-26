@@ -23,7 +23,7 @@ class CartController extends Controller
 			->with([
 				'team',
 				'paymentMethods',
-				'paymentProvider'
+				'activePaymentProvider'
 			])
 			->get();
 

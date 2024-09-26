@@ -23,7 +23,7 @@ const producerOrdersStore = useProducerOrdersStore()
 
 const team = computed(() =>
 	teamStore.user_teams.find((t) =>
-		t.id === parseInt($router.currentRoute.value.params.team_id)
+		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
 
@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
 					<div class="col-auto">
 						<q-btn
 							label="Назад"
-							color="primary"
+							color="secondary"
 							:loading="isLoading"
 							:disable="isLoading"
 							@click="onPrev()"
@@ -122,7 +122,7 @@ onBeforeUnmount(() => {
 					<div class="col-auto">
 						<q-btn
 							label="Сбросить"
-							color="primary"
+							color="secondary"
 							:loading="isLoading"
 							:disable="isLoading"
 							@click="onToday()"
@@ -135,7 +135,7 @@ onBeforeUnmount(() => {
 					<div class="col-auto">
 						<q-btn
 							label="Вперед"
-							color="primary"
+							color="secondary"
 							:loading="isLoading"
 							:disable="isLoading"
 							@click="onNext()"

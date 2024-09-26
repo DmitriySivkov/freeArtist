@@ -1,67 +1,3 @@
-<template>
-	<div class="row q-mb-sm">
-		<div class="col-xs-12 col-sm-auto">
-			<q-btn
-				label="Добавить ингредиент"
-				color="green-5"
-				class="q-pa-md text-body2 full-width"
-				@click="addIngredient"
-			/>
-		</div>
-	</div>
-	<q-form ref="form">
-		<q-card
-			v-for="(ingredient, index) in modelValue.composition"
-			:key="index"
-			class="composition__card border-primary q-mb-sm"
-			bordered
-		>
-			<q-input
-				:disable="ingredient.to_delete"
-				borderless
-				label="Название ингредиента"
-				v-model="ingredient.name"
-				:rules="[ val => !!val ]"
-				lazy-rules="ondemand"
-				class="q-pb-none q-pl-sm bg-grey-2"
-			>
-				<template v-slot:after>
-					<q-btn
-						v-if="ingredient.to_delete"
-						flat
-						square
-						icon="restore"
-						class="bg-green-5 text-white full-height"
-						@click="restoreIngredient(index)"
-						style="border-top-right-radius: 4px"
-					/>
-					<q-btn
-						v-else
-						flat
-						square
-						icon="clear"
-						class="bg-red text-white full-height"
-						@click="removeIngredient(index)"
-						style="border-top-right-radius: 4px"
-					/>
-
-				</template>
-			</q-input>
-
-			<q-separator color="primary" />
-
-			<q-input
-				:disable="ingredient.to_delete"
-				class="q-px-sm bg-grey-4"
-				borderless
-				type="textarea"
-				label="Описание ингредиента (необязательно)"
-				v-model="ingredient.description"
-			/>
-		</q-card>
-	</q-form>
-</template>
-
 <script setup>
 import { ref } from "vue"
 import { clone } from "lodash"
@@ -129,3 +65,69 @@ const restoreIngredient = (item_index) => {
 	emit("update:modelValue", {...props.modelValue, composition })
 }
 </script>
+
+<template>
+	<!-- todo - sticky button -->
+	<div class="row q-mb-sm">
+		<div class="col-xs-12 col-sm-auto">
+			<q-btn
+				label="Добавить ингредиент"
+				color="indigo-6"
+				class="q-pa-md text-body2 full-width"
+				@click="addIngredient"
+			/>
+		</div>
+	</div>
+
+	<q-form ref="form">
+		<q-card
+			v-for="(ingredient, index) in modelValue.composition"
+			:key="index"
+			class="composition__card border-primary q-mb-sm"
+			bordered
+		>
+			<q-input
+				:disable="ingredient.to_delete"
+				borderless
+				label="Название ингредиента"
+				v-model="ingredient.name"
+				:rules="[ val => !!val ]"
+				lazy-rules="ondemand"
+				class="q-pb-none q-pl-sm bg-grey-2"
+			>
+				<template v-slot:after>
+					<q-btn
+						v-if="ingredient.to_delete"
+						flat
+						square
+						icon="restore"
+						class="bg-green-5 text-white full-height"
+						@click="restoreIngredient(index)"
+						style="border-top-right-radius: 4px"
+					/>
+					<q-btn
+						v-else
+						flat
+						square
+						icon="clear"
+						class="bg-secondary text-white full-height"
+						@click="removeIngredient(index)"
+						style="border-top-right-radius: 4px"
+					/>
+
+				</template>
+			</q-input>
+
+			<q-separator color="primary" />
+
+			<q-input
+				:disable="ingredient.to_delete"
+				class="q-px-sm bg-grey-4"
+				borderless
+				type="textarea"
+				label="Описание ингредиента (необязательно)"
+				v-model="ingredient.description"
+			/>
+		</q-card>
+	</q-form>
+</template>

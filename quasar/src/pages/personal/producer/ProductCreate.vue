@@ -1,99 +1,10 @@
-<template>
-	<q-tabs
-		:model-value="tab"
-		@update:model-value="tab = $event"
-		active-color="white"
-		active-bg-color="primary"
-		indicator-color="transparent"
-		align="justify"
-		class="text-white bg-indigo-10"
-	>
-		<q-tab
-			name="common"
-			label="Общие"
-			class="q-pa-md"
-		/>
-		<q-tab
-			name="composition"
-			label="Состав"
-			class="q-pa-md"
-		/>
-		<q-tab
-			name="images"
-			label="Изображения"
-			class="q-pa-md"
-		/>
-		<q-tab
-			name="tags"
-			label="Теги"
-			class="q-pa-md"
-		/>
-	</q-tabs>
-
-	<div
-		class="absolute column full-width no-wrap"
-		style="min-height:100vh"
-	>
-		<div class="col">
-			<q-tab-panels
-				:model-value="tab"
-				animated
-				keep-alive
-			>
-				<q-tab-panel name="common">
-					<ProducerProductSettingCommonTab
-						ref="commonTab"
-						:model-value="product"
-						@update:model-value="product = $event"
-					/>
-				</q-tab-panel>
-
-				<q-tab-panel name="composition">
-					<ProducerProductSettingCompositionTab
-						ref="compositionTab"
-						:model-value="product"
-						@update:model-value="product = $event"
-					/>
-				</q-tab-panel>
-
-				<q-tab-panel name="images">
-					<ProducerProductSettingImagesTab
-						:model-value="product"
-						@update:model-value="product = $event"
-					/>
-				</q-tab-panel>
-
-				<q-tab-panel name="tags">
-					<ProducerProductSettingTagsTab
-						ref="tagsTab"
-						:model-value="product"
-						@update:model-value="product = $event"
-					/>
-				</q-tab-panel>
-			</q-tab-panels>
-		</div>
-		<div class="col-auto sticky__common_bottom bg-white">
-			<div class="row q-pa-sm">
-				<q-btn
-					round
-					class="q-pa-md"
-					:class="{'composition__button_done_active': isProductChanged}"
-					icon="done"
-					:loading="isLoading"
-					color="primary"
-					@click="storeProduct"
-				/>
-			</div>
-		</div>
-	</div>
-</template>
-
 <script setup>
 import { useRouter } from "vue-router"
 import { computed, ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { isEqual } from "lodash"
 import { api } from "src/boot/axios"
+import PersonalProducerProductFooter from "src/layouts/PersonalProducerProductFooter.vue"
 import ProducerProductSettingCommonTab
 	from "src/components/producers/producerProductSettingsTabs/ProducerProductSettingCommonTab.vue"
 import ProducerProductSettingCompositionTab
@@ -125,6 +36,12 @@ const commonTab = ref(null)
 const compositionTab = ref(null)
 const tagsTab = ref(null)
 
+const tabOffsetPixels = 64
+
+const tabPanelStyleFn = (offset) => {
+	return { minHeight: `calc(100vh - ${offset}px)` }
+}
+
 const isProductChanged = computed(() =>
 	!isEqual(product.value, defaultProduct)
 )
@@ -144,8 +61,8 @@ const storeProduct = () => {
 
 		promise.then(() => {
 			$router.push({
-				name: "personal_producer_products_detail",
-				params: { producer_id: $router.currentRoute.value.params.producer_id },
+				name: "personal_producer_products",
+				params: { team_id: $router.currentRoute.value.params.team_id },// todo - решить что прокидывать producer_id или team_id
 			})
 
 			notifySuccess(`Продукт «${product.value.title}» успешно создан`)
@@ -184,3 +101,87 @@ const validate = () => {
 	return Promise.all(validations)
 }
 </script>
+
+<template>
+	<q-header>
+		<q-tabs
+			:model-value="tab"
+			@update:model-value="tab = $event"
+			active-color="white"
+			active-bg-color="primary"
+			indicator-color="transparent"
+			align="justify"
+			class="text-white bg-indigo-8"
+			:style="{height: `${tabOffsetPixels}px`}"
+		>
+			<q-tab
+				name="common"
+				label="Общие"
+				class="q-pa-md"
+			/>
+			<q-tab
+				name="composition"
+				label="Состав"
+				class="q-pa-md"
+			/>
+			<q-tab
+				name="images"
+				label="Изображения"
+				class="q-pa-md"
+			/>
+			<q-tab
+				name="tags"
+				label="Теги"
+				class="q-pa-md"
+			/>
+		</q-tabs>
+	</q-header>
+
+	<q-page class="row justify-center">
+		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6 bg-white">
+			<q-tab-panels
+				:model-value="tab"
+				animated
+				keep-alive
+				class="full-width"
+			>
+				<q-tab-panel name="common">
+					<ProducerProductSettingCommonTab
+						ref="commonTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
+
+				<q-tab-panel name="composition">
+					<ProducerProductSettingCompositionTab
+						ref="compositionTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
+
+				<q-tab-panel name="images">
+					<ProducerProductSettingImagesTab
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
+
+				<q-tab-panel name="tags">
+					<ProducerProductSettingTagsTab
+						ref="tagsTab"
+						:model-value="product"
+						@update:model-value="product = $event"
+					/>
+				</q-tab-panel>
+			</q-tab-panels>
+		</div>
+	</q-page>
+
+	<PersonalProducerProductFooter
+		:is-loading="isLoading"
+		:is-product-changed="isProductChanged"
+		@confirm="storeProduct"
+	/>
+</template>

@@ -1,4 +1,9 @@
 <template>
+	<q-linear-progress
+		v-if="isMounting"
+		indeterminate
+		color="grey-4"
+	/>
 	<q-card
 		v-for="order in orders"
 		:key="order.id"
@@ -21,31 +26,29 @@
 				<span class="text-h5">{{ product.title }} ({{ order.order_products[product.id].amount }} шт)</span>
 			</div>
 		</q-img>
-		<div class="q-pa-md text-center bg-grey-4">
-			<div class="q-pt-lg">
-				<div class="text-h6 text-uppercase">Номер заказа</div>
-				<div class="text-h6">{{ order.id }}</div>
+		<div class="q-pa-md text-center bg-secondary text-white">
+			<div class="text-body1 text-uppercase">Номер заказа</div>
+			<div class="text-body1">{{ order.id }}</div>
 
-				<q-separator class="full-width q-my-sm" />
+			<q-separator class="full-width q-my-sm" />
 
-				<div class="text-h6 text-uppercase">Изготовитель</div>
-				<div class="text-h6">{{ order.producer.team.display_name }}</div>
+			<div class="text-body1 text-uppercase">Изготовитель</div>
+			<div class="text-body1">{{ order.producer.team.display_name }}</div>
 
-				<q-separator class="full-width q-my-sm" />
+			<q-separator class="full-width q-my-sm" />
 
-				<div class="text-h6 text-uppercase">Создан</div>
-				<div class="text-h6">{{ order.created_at }}</div>
+			<div class="text-body1 text-uppercase">Создан</div>
+			<div class="text-body1">{{ order.created_at }}</div>
 
-				<q-separator class="full-width q-my-sm" />
+			<q-separator class="full-width q-my-sm" />
 
-				<div class="text-h6 text-uppercase">Статус заказа</div>
-				<div class="text-h6">{{ ORDER_STATUS_NAMES[order.status] }}</div>
+			<div class="text-body1 text-uppercase">Статус заказа</div>
+			<div class="text-body1">{{ ORDER_STATUS_NAMES[order.status] }}</div>
 
-				<q-separator class="full-width q-my-sm" />
+			<q-separator class="full-width q-my-sm" />
 
-				<div class="text-h6 text-uppercase">Статус платежа</div>
-				<div class="text-h6">{{ TRANSACTION_STATUS_NAMES[order.transaction.status] }}</div>
-			</div>
+			<div class="text-body1 text-uppercase">Статус платежа</div>
+			<div class="text-body1">{{ TRANSACTION_STATUS_NAMES[order.transaction.status] }}</div>
 		</div>
 	</q-card>
 </template>

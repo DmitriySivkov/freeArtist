@@ -3,7 +3,7 @@
 		<div class="col-xs-12 col-md-6 col-lg-3">
 			<q-markup-table
 				dark
-				class="bg-indigo-8 q-mb-sm"
+				class="bg-secondary q-mb-sm"
 			>
 				<tbody>
 					<tr
@@ -19,7 +19,7 @@
 			<q-markup-table
 				v-if="hasUserRole('producer')"
 				dark
-				class="bg-indigo-8"
+				class="bg-secondary"
 				separator="vertical"
 			>
 				<th>Изготовитель</th>

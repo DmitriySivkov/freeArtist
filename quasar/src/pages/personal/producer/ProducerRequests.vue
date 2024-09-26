@@ -22,9 +22,7 @@ const teamStore = useTeamStore()
 
 const team = computed(() =>
 	teamStore.user_teams.find((team) =>
-		team.id === parseInt($router.currentRoute.value.params.team_id)
+		team.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
-
-// todo - payment methods
 </script>

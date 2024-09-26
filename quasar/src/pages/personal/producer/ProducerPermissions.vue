@@ -23,7 +23,7 @@ const isLoading = ref(true)
 
 const team = computed(() =>
 	teamStore.user_teams.find((team) =>
-		team.id === parseInt($router.currentRoute.value.params.team_id)
+		team.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
 
@@ -55,11 +55,11 @@ const setUserPermissions = ({ teamId, userId }) => {
 }
 
 onMounted(() => {
-	const promise = api.get(`personal/teams/${$router.currentRoute.value.params.team_id}/users`)
+	const promise = api.get(`personal/teams/${team.value.id}/users`)
 
 	promise.then((response) => {
 		teamStore.setTeamUsers({
-			teamId: parseInt($router.currentRoute.value.params.team_id),
+			teamId: team.value.id,
 			users: response.data
 		})
 	})

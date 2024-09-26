@@ -22,7 +22,7 @@ class CartCheckProducersResource extends JsonResource
 			'id' => $this->id,
 			'display_name' => $this->team->display_name,
 			'payment_methods' => $this->paymentMethods->makeHidden(['created_at', 'updated_at']),
-			'payment_provider_id' => $this->paymentProvider?->payment_provider_id
+			'payment_provider_id' => $this->activePaymentProvider?->payment_provider_id
 		];
     }
 }

@@ -1,5 +1,5 @@
 <template>
-	<q-footer class="footer">
+	<q-footer class="footer bg-indigo-8">
 		<q-toolbar class="q-pa-sm">
 			<div class="col-xs-12 col-lg-8">
 				<div class="row q-gutter-sm">
@@ -10,7 +10,7 @@
 						<q-btn
 							class="q-pa-md"
 							icon="login"
-							:color="['login', 'register'].includes(route.name) ? 'secondary': 'primary'"
+							:color="['login', 'register'].includes(route.name) ? 'primary': 'secondary'"
 							to="/auth"
 						/>
 					</div>
@@ -18,7 +18,7 @@
 						<q-btn
 							class="q-pa-md"
 							icon="home"
-							:color="route.name === 'home' ? 'secondary': 'primary'"
+							:color="route.name === 'home' ? 'primary': 'secondary'"
 							to="/"
 						/>
 					</div>
@@ -29,7 +29,7 @@
 						<q-btn
 							class="q-pa-md"
 							icon="account_circle"
-							:color="route.name.includes('personal') ? 'secondary': 'primary'"
+							:color="route.name.includes('personal') ? 'primary': 'secondary'"
 							to="/personal"
 						/>
 					</div>
@@ -38,7 +38,7 @@
 							class="q-pa-md"
 							:label="cartCounter"
 							icon-right="shopping_cart"
-							:color="route.name === 'cart' ? 'secondary': 'primary'"
+							:color="route.name === 'cart' ? 'primary': 'secondary'"
 							to="/cart"
 						/>
 					</div>
@@ -49,7 +49,7 @@
 						<q-btn
 							class="q-pa-md"
 							icon="shopping_cart_checkout"
-							:color="route.name === 'user_orders' ? 'secondary': 'primary'"
+							:color="route.name === 'user_orders' ? 'primary': 'secondary'"
 							to="/orders"
 						/>
 					</div>
@@ -60,6 +60,7 @@
 						<q-btn
 							class="q-pa-md"
 							icon="logout"
+							color="secondary"
 							@click="logout"
 						/>
 					</div>
