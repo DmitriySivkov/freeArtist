@@ -23,7 +23,7 @@ const switchPersonal = (personalTab) => {
 </script>
 
 <template>
-	<q-header class="row justify-center bg-transparent">
+	<div class="row justify-center bg-transparent">
 		<div class="col-xs-12 col-md-8 col-lg-7 bg-white">
 			<q-tabs
 				v-if="userRoles.length > 0"
@@ -47,7 +47,7 @@ const switchPersonal = (personalTab) => {
 				/>
 			</q-tabs>
 		</div>
-	</q-header>
+	</div>
 
 	<q-page class="row justify-center">
 		<div class="col-xs-12 col-md-8 col-lg-7 bg-white">
