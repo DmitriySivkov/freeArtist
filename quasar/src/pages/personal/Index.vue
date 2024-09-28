@@ -20,43 +20,37 @@ const tabs = [
 const switchPersonal = (personalTab) => {
 	userStore.switchPersonal(personalTab)
 }
-
-const tabPanelStyleFn = (offset) => {
-	return { minHeight: `calc(100vh - ${offset}px)` }
-}
-
-const tabOffsetPixels = 64
 </script>
 
 <template>
-	<q-tabs
-		v-if="userRoles.length > 0"
-		:model-value="selectedTab"
-		dense
-		inline-label
-		active-color="white"
-		active-bg-color="primary"
-		indicator-color="transparent"
-		align="justify"
-		class="text-white bg-indigo-8"
-		:style="{height: `${tabOffsetPixels}px`}"
-		@update:model-value="switchPersonal"
-	>
-		<q-tab
-			v-for="(tab, index) in tabs"
-			:key="index"
-			:name="tab.name"
-			:icon="tab.icon"
-			:label="tab.label"
-			class="q-pa-md"
-		/>
-	</q-tabs>
+	<q-header class="row justify-center bg-transparent">
+		<div class="col-xs-12 col-md-8 col-lg-7 bg-white">
+			<q-tabs
+				v-if="userRoles.length > 0"
+				:model-value="selectedTab"
+				dense
+				inline-label
+				active-color="white"
+				active-bg-color="primary"
+				indicator-color="transparent"
+				align="justify"
+				class="text-white bg-indigo-8"
+				@update:model-value="switchPersonal"
+			>
+				<q-tab
+					v-for="(tab, index) in tabs"
+					:key="index"
+					:name="tab.name"
+					:icon="tab.icon"
+					:label="tab.label"
+					class="q-pa-md"
+				/>
+			</q-tabs>
+		</div>
+	</q-header>
 
-	<q-page
-		class="row justify-center"
-		:style-fn="() => tabPanelStyleFn(tabOffsetPixels)"
-	>
-		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6 bg-white">
+	<q-page class="row justify-center">
+		<div class="col-xs-12 col-md-8 col-lg-7 bg-white">
 			<q-tab-panels
 				:model-value="selectedTab"
 				animated

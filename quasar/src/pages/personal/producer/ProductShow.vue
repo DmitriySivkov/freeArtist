@@ -138,7 +138,7 @@ onMounted(() => {
 	</q-header>
 
 	<q-page class="row justify-center">
-		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6 bg-white">
+		<div class="col-xs-12 col-md-8 col-lg-7 bg-white">
 			<template v-if="!product">
 				<q-linear-progress
 					indeterminate

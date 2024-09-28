@@ -23,15 +23,15 @@ const menu = computed(() =>
 </script>
 
 <template>
-	<div class="row q-col-gutter-sm q-pa-xs">
+	<div class="row q-col-gutter-xs">
 		<div
 			v-for="(item, index) in menu"
 			:key="index"
-			class="col-xs-12 col-md-6 col-lg-3"
+			class="col-xs-12 col-md-6 col-lg-4"
 		>
-			<q-card class="bg-secondary text-white">
+			<q-card class="bg-secondary text-white full-height">
 				<q-item
-					class="q-pa-xl fit"
+					class="q-pa-xl full-height"
 					:to="{name: item.routeName}"
 				>
 					<q-item-section class="text-center text-h5">

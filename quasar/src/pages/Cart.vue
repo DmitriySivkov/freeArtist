@@ -1,6 +1,6 @@
 <template>
 	<q-page class="row justify-center bg-primary">
-		<div class="col-xs-12 col-md-8 col-lg-7 col-xl-6 bg-white">
+		<div class="col-xs-12 col-md-8 col-lg-7 bg-white">
 			<CartProductList />
 		</div>
 	</q-page>

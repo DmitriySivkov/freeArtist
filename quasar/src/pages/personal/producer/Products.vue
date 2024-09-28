@@ -34,7 +34,7 @@ const create = () => {
 </script>
 
 <template>
-	<q-page class="row justify-center">
+	<q-header class="row justify-center bg-transparent">
 		<div class="col-xs-12 col-md-8 bg-white">
 			<div class="q-px-xs q-pt-xs">
 				<q-btn
@@ -45,7 +45,11 @@ const create = () => {
 					<span class="text-h6 text-white">Создать продукт</span>
 				</q-btn>
 			</div>
+		</div>
+	</q-header>
 
+	<q-page class="row justify-center">
+		<div class="col-xs-12 col-md-8 bg-white">
 			<ProducerProductList
 				:is-able-to-manage-product="isAbleToManageProduct"
 			/>

@@ -98,7 +98,7 @@ watch(
 					<q-carousel
 						:ref="el => carousel.push(el)"
 						v-model="slide[producer.id]"
-						class="col-12 bg-secondary product__card-carousel q-px-xs"
+						class="col-12 bg-grey-4 product__card-carousel q-px-xs"
 						transition-prev="slide-right"
 						transition-next="slide-left"
 						swipeable
