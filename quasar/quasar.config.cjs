@@ -20,7 +20,6 @@ module.exports = configure(function (ctx) {
 			"axios",
 			"setLocation",
 			"setCartFromLocalStorage",
-			"setPersonalTabFromLocalStorage",
 			"browsePermissions",
 			"ws",
 			"routes",

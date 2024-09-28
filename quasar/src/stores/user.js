@@ -18,7 +18,6 @@ export const useUserStore = defineStore("user", {
 	actions: {
 		switchPersonal(personal_tab) {
 			this.personal_tab = personal_tab
-			LocalStorage.set("personal_tab", personal_tab)
 		},
 
 		setLocation(location) {
