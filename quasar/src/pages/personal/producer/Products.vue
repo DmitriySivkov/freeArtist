@@ -34,22 +34,16 @@ const create = () => {
 </script>
 
 <template>
-	<q-header class="row justify-center bg-transparent">
-		<div class="col-xs-12 col-md-8 bg-white">
-			<div class="q-px-xs q-pt-xs">
-				<q-btn
-					no-caps
-					class="full-width q-px-md q-py-lg bg-secondary"
-					@click="create"
-				>
-					<span class="text-h6 text-white">Создать продукт</span>
-				</q-btn>
-			</div>
-		</div>
-	</q-header>
-
 	<q-page class="row justify-center">
 		<div class="col-xs-12 col-md-8 bg-white">
+			<q-btn
+				no-caps
+				class="full-width q-px-md q-py-lg bg-secondary"
+				@click="create"
+			>
+				<span class="text-h6 text-white">Создать продукт</span>
+			</q-btn>
+
 			<ProducerProductList
 				:is-able-to-manage-product="isAbleToManageProduct"
 			/>
