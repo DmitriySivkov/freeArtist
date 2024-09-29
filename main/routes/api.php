@@ -10,9 +10,7 @@ use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeamController;
-use App\Http\Controllers\TeamRelationRequestController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserRelationRequestController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -58,7 +56,7 @@ Route::group(['prefix' => 'cities'], function() {
 	Route::get('', [CityController::class, 'index']);
 });
 
-Route::group(['prefix' => 'user'], function() {
+Route::group(['prefix' => 'users'], function() {
 	Route::get('location', [UserController::class, 'getLocation']);
 });
 
@@ -93,6 +91,8 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
 
 	Route::group(['prefix' => 'teams'], function() {
+		Route::get("", [TeamController::class, 'index']);
+
 		Route::group(['prefix' => '{team}'], function() {
 			Route::put('', [TeamController::class, 'update']);
 
@@ -128,6 +128,12 @@ Route::group([
 			Route::get('', [ProducerPaymentMethodController::class, 'getPaymentMethods']);
 			Route::post('', [ProducerPaymentMethodController::class, 'setPaymentMethods']);
 		});
+
+		Route::group(['prefix' => '{producer}/relation-requests'], function() {
+			Route::get('', [\App\Http\Controllers\ProducerRelationRequestController::class, 'index']);
+			Route::post('{relationRequest}/accept', [\App\Http\Controllers\ProducerRelationRequestController::class, 'accept']);
+			Route::post('{relationRequest}/reject', [\App\Http\Controllers\ProducerRelationRequestController::class, 'reject']);
+		});
 	});
 
 	Route::group(['prefix' => 'products'], function() {
@@ -136,26 +142,15 @@ Route::group([
 		Route::delete('{product}', [ProductController::class, 'delete']);
 	});
 
-	Route::group(['prefix' => 'users'], function() {
-		Route::get('nonRelatedTeams', [UserController::class, 'getNonRelatedTeams']);
-	});
-
 	Route::group(['prefix' => 'tags'], function() {
 		Route::get('', [PersonalTagController::class, 'index']);
 	});
 
-	Route::group(['prefix' => 'relationRequests'], function() {
-		Route::group(['prefix' => 'users'], function() {
-			Route::get('', [UserRelationRequestController::class, 'index']);
-			Route::post('', [UserRelationRequestController::class, 'store']);
-			Route::put('{relationRequest}', [UserRelationRequestController::class, 'update']);
-			Route::delete('{relationRequest}', [UserRelationRequestController::class, 'delete']);
-		});
-
-		Route::group(['prefix' => 'teams'], function() {
-			Route::get('{team}', [TeamRelationRequestController::class, 'index']);
-			Route::post('{team}/accept/{relationRequest}', [TeamRelationRequestController::class, 'accept']);
-			Route::post('{team}/reject/{relationRequest}', [TeamRelationRequestController::class, 'reject']);
+	Route::group(['prefix' => 'users'], function() {
+		Route::group(['prefix' => 'relation-requests'], function() {
+			Route::get('', [UserController::class, 'getRelationRequests']);
+			Route::post('', [UserController::class, 'storeRelationRequest']);
+			Route::put('{relationRequest}', [UserController::class, 'updateRelationRequest']);
 		});
 	});
 });

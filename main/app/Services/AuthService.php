@@ -110,8 +110,6 @@ class AuthService
 				$this->user->roles()->get()
 			),
 			'user_teams' => $this->getUserTeams(),
-			'user_requests' => $this->getUserRequests(),
-			'user_teams_requests' => $this->getTeamRequests()
 		] + $additional);
 	}
 
@@ -134,46 +132,6 @@ class AuthService
 			]);
 			return $team;
 		});
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Collection
-	 */
-	private function getUserRequests()
-	{
-		/** @var UserService $userService */
-		$userService = app(UserServiceContract::class);
-		$userService->setUser($this->user);
-
-		$incomingRequests = $userService->getUserIncomingRequests()
-			->get()
-			->loadMorph('from', [
-				Producer::class => ['team']
-			]);
-
-		$outgoingRequests = $userService->getUserOutgoingRequests()
-			->get()
-			->loadMorph('to', [
-				Producer::class => ['team']
-			]);
-
-		return $incomingRequests->merge($outgoingRequests);
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Collection
-	 */
-	private function getTeamRequests()
-	{
-		/** @var TeamService $teamService */
-		$teamService = app(TeamServiceContract::class);
-
-		return $this->userTeams->reduce(function(Collection $carry, Team $team) use ($teamService) {
-			$teamService->setTeam($team);
-			$carry = $carry->merge($teamService->getTeamIncomingRequests());
-			$carry = $carry->merge($teamService->getTeamOutgoingRequests());
-			return $carry;
-		}, collect([]));
 	}
 
 	/**

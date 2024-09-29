@@ -2,14 +2,9 @@
 
 namespace App\Services;
 
-use App\Contracts\ProducerServiceContract;
 use App\Contracts\TeamServiceContract;
-use App\Events\TeamAcceptUserRequest;
 use App\Events\UserPermissionsSynchronized;
 use App\Models\Permission;
-use App\Models\Producer;
-use App\Models\RelationRequest;
-use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
 
@@ -24,23 +19,6 @@ class TeamService implements TeamServiceContract
 	public function setTeam(Team $team)
 	{
 		$this->team = $team;
-	}
-
-	public function onAuth()
-	{
-		if ($this->team->detailed_type === Producer::class) {
-			/** @var ProducerService $service */
-			$service = app(ProducerServiceContract::class);
-			$service->setProducer($this->team->detailed);
-		}
-
-		$data = $service->onAuth();
-
-		foreach ($data as $prop => $value) {
-			$this->team->setAttribute($prop, $value);
-		}
-
-		return $this->team;
 	}
 
 	/**
@@ -87,104 +65,5 @@ class TeamService implements TeamServiceContract
 		);
 
 		return $permissions;
-	}
-
-	public function getTeamIncomingRequests()
-	{
-		if ($this->team->detailed_type === Producer::class) {
-			/** @var ProducerService $producerService */
-			$producerService = app(ProducerServiceContract::class);
-			$producerService->setProducer($this->team->detailed);
-
-			return $producerService->getIncomingRequests();
-		}
-
-		return [];
-	}
-
-	public function getTeamOutgoingRequests()
-	{
-		if ($this->team->detailed_type === Producer::class) {
-			/** @var ProducerService $producerService */
-			$producerService = app(ProducerServiceContract::class);
-			$producerService->setProducer($this->team->detailed);
-			return $producerService->getOutgoingRequests();
-		}
-		return [];
-	}
-
-	public function acceptRequest(RelationRequest $relationRequest)
-	{
-		/** @var User $user */
-		$user = auth()->user();
-
-		if (
-			!$user->owns($this->team) &&
-			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_REQUESTS['name'],
-				$this->team->name
-			)
-		) {
-			throw new \LogicException('Доступ закрыт');
-		}
-
-		if ($relationRequest->status !== RelationRequest::STATUS_PENDING) {
-			throw new \LogicException('Заявка уже обработана');
-		}
-
-		if ($this->team->detailed_type === Producer::class) {
-			/** @var User $userToAttach */
-			$userToAttach = $relationRequest->from;
-
-			if (!$userToAttach) {
-				throw new \LogicException('Пользователь заблокирован или удалён');
-			}
-
-			try {
-				\DB::beginTransaction();
-
-				$userToAttach->attachRole(Role::ROLES[Role::PRODUCER], $this->team);
-
-				$relationRequest->update([
-					'status' => RelationRequest::STATUS_ACCEPTED
-				]);
-
-				TeamAcceptUserRequest::dispatch($relationRequest, $userToAttach);
-
-				\DB::commit();
-			} catch (\Throwable $e) {
-				\DB::rollBack();
-				throw new \LogicException('Ошибка сервера заявок');
-			}
-		}
-
-		// todo - check if refresh() is needed
-		return $relationRequest->refresh();
-	}
-
-	public function rejectRequest(RelationRequest $relationRequest)
-	{
-		/** @var User $user */
-		$user = auth()->user();
-
-		if (
-			!$user->owns($this->team) &&
-			!$user->hasPermission(
-				Permission::PERMISSION_PRODUCER_REQUESTS['name'],
-				$this->team->name
-			)
-		) {
-			throw new \LogicException('Доступ закрыт');
-		}
-
-		if ($relationRequest->status !== RelationRequest::STATUS_PENDING)
-			throw new \LogicException('Заявка уже обработана');
-
-		$relationRequest->update([
-			'status' => RelationRequest::STATUS_REJECTED_BY_RECIPIENT
-		]);
-
-		// todo - check if refresh() is needed
-		return $relationRequest->refresh();
 	}
 }

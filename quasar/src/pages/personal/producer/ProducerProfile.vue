@@ -1,3 +1,120 @@
+<script setup>
+import { computed, ref } from "vue"
+import { useNotification } from "src/composables/notification"
+import { useRouter } from "vue-router"
+import { usePermissionStore } from "src/stores/permission"
+import { useUserStore } from "src/stores/user"
+import { useTeamStore } from "src/stores/team"
+import { Cropper } from "vue-advanced-cropper"
+import { api } from "src/boot/axios"
+
+const $router = useRouter()
+
+const userStore = useUserStore()
+const teamStore = useTeamStore()
+const permissionStore = usePermissionStore()
+
+const team = computed(() =>
+	teamStore.user_teams.find((t) =>
+		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
+	)
+)
+
+const backendServer = process.env.BACKEND_SERVER
+
+const image = ref(null)
+const tmpImage = ref(null)
+
+const cropper = ref(null)
+const filePicker = ref(null)
+
+const isDragging = ref(false)
+const isLoading = ref(false)
+
+const isTeamAdmin = computed(() =>
+	userStore.data.id === team.value.user_id
+)
+
+const canManageLogo = computed(() =>
+	permissionStore.user_permissions.filter((p) => p.team_id === parseInt(team.value.id))
+		.map((p) => p.name)
+		.includes("producer_logo")
+)
+
+const { notifySuccess, notifyError } = useNotification()
+
+const drop = (e) => {
+	isDragging.value = false
+	filePicker.value.addFiles([e.dataTransfer.files[0]])
+}
+
+const addImage = () => {
+	tmpImage.value = URL.createObjectURL(image.value)
+}
+
+const cancelImage = () => {
+	tmpImage.value = null
+	image.value = null
+}
+
+const loadImage = async() => {
+	isLoading.value = true
+
+	const { canvas } = cropper.value.getResult()
+
+	const blobPromise = new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg"))
+
+	blobPromise.then((logo) => {
+		let formData = new FormData()
+
+		formData.append("logo", logo)
+
+		const promise = api.post(
+			`/personal/producers/${team.value.detailed.id}/setLogo`,
+			formData,
+		)
+
+		promise.then((response) => {
+			teamStore.setTeamFields({
+				team_id: team.value.id,
+				fields: {
+					logo: response.data
+				},
+				detailed_id: team.value.detailed.id
+			})
+		})
+
+		promise.catch((error) => {
+			notifyError(error.response.data)
+		})
+
+		promise.finally(() => isLoading.value = false)
+
+		cancelImage()
+	})
+}
+
+const showFilePrompt = () => {
+	filePicker.value.pickFiles()
+}
+
+const teamPropChanged = (val, field) => {
+	const promise = teamStore.updateTeamFields({
+		team_id: team.value.id,
+		fields: { [field]: val }
+	})
+
+	promise.catch((error) => {
+		notifyError(error.response.data.message)
+
+		teamStore.setTeamFields({
+			team_id: error.response.data.team.id,
+			fields: error.response.data.team
+		})
+	})
+}
+</script>
+
 <template>
 	<q-page class="row justify-center q-pa-xs">
 		<div class="col-xs-12 col-sm-7 col-lg-6 col-xl-5">
@@ -136,120 +253,3 @@
 		/>
 	</q-page>
 </template>
-
-<script setup>
-import { computed, ref } from "vue"
-import { useNotification } from "src/composables/notification"
-import { useRouter } from "vue-router"
-import { usePermissionStore } from "src/stores/permission"
-import { useUserStore } from "src/stores/user"
-import { useTeamStore } from "src/stores/team"
-import { Cropper } from "vue-advanced-cropper"
-import { api } from "src/boot/axios"
-
-const $router = useRouter()
-
-const userStore = useUserStore()
-const teamStore = useTeamStore()
-const permissionStore = usePermissionStore()
-
-const team = computed(() =>
-	teamStore.user_teams.find((t) =>
-		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
-	)
-)
-
-const backendServer = process.env.BACKEND_SERVER
-
-const image = ref(null)
-const tmpImage = ref(null)
-
-const cropper = ref(null)
-const filePicker = ref(null)
-
-const isDragging = ref(false)
-const isLoading = ref(false)
-
-const isTeamAdmin = computed(() =>
-	userStore.data.id === team.value.user_id
-)
-
-const canManageLogo = computed(() =>
-	permissionStore.user_permissions.filter((p) => p.team_id === parseInt(team.value.id))
-		.map((p) => p.name)
-		.includes("producer_logo")
-)
-
-const { notifySuccess, notifyError } = useNotification()
-
-const drop = (e) => {
-	isDragging.value = false
-	filePicker.value.addFiles([e.dataTransfer.files[0]])
-}
-
-const addImage = () => {
-	tmpImage.value = URL.createObjectURL(image.value)
-}
-
-const cancelImage = () => {
-	tmpImage.value = null
-	image.value = null
-}
-
-const loadImage = async() => {
-	isLoading.value = true
-
-	const { canvas } = cropper.value.getResult()
-
-	const blobPromise = new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg"))
-
-	blobPromise.then((logo) => {
-		let formData = new FormData()
-
-		formData.append("logo", logo)
-
-		const promise = api.post(
-			`/personal/producers/${team.value.detailed.id}/setLogo`,
-			formData,
-		)
-
-		promise.then((response) => {
-			teamStore.setTeamFields({
-				team_id: team.value.id,
-				fields: {
-					logo: response.data
-				},
-				detailed_id: team.value.detailed.id
-			})
-		})
-
-		promise.catch((error) => {
-			notifyError(error.response.data)
-		})
-
-		promise.finally(() => isLoading.value = false)
-
-		cancelImage()
-	})
-}
-
-const showFilePrompt = () => {
-	filePicker.value.pickFiles()
-}
-
-const teamPropChanged = (val, field) => {
-	const promise = teamStore.updateTeamFields({
-		team_id: team.value.id,
-		fields: { [field]: val }
-	})
-
-	promise.catch((error) => {
-		notifyError(error.response.data.message)
-
-		teamStore.setTeamFields({
-			team_id: error.response.data.team.id,
-			fields: error.response.data.team
-		})
-	})
-}
-</script>

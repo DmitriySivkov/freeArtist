@@ -133,7 +133,7 @@ const loadLocation = async (query, update) => {
 }
 
 onMounted(() => {
-	const promise = api.get("user/location")
+	const promise = api.get("users/location")
 
 	promise.then((response) => {
 		locationList.value = response.data

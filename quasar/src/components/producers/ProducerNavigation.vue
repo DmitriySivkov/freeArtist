@@ -21,7 +21,7 @@ const menu = computed(() =>
 		<div
 			v-for="(item, index) in menu"
 			:key="index"
-			class="col-xs-12 col-md-6 col-lg-4"
+			class="col-xs-12 col-md-6"
 		>
 			<q-card class="bg-secondary text-white full-height">
 				<q-item

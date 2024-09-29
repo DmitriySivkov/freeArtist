@@ -9,6 +9,25 @@ use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
+	public function index(Request $request)
+	{
+		/** @var User $user */
+		$user = auth()->user();
+
+		$text = $request->input('q');
+		$excludePersonalTeams = $request->input('exclude_personal', false);
+
+		return Team::orderBy('display_name')
+			->when($text, fn($query) =>
+				$query->where('display_name', 'like', $text . '%')
+			)
+			->when($excludePersonalTeams, fn($query) =>
+				$query->whereNotIn('id', $user->rolesTeams->pluck('id'))
+			)
+			->limit(25)
+			->get();
+	}
+
 	/**
 	 * @param Team $team
 	 * @param Request $request

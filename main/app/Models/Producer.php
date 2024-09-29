@@ -21,8 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $order_priorities_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
  * @property-read int|null $orders_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $outgoingRelationRequests
- * @property-read int|null $outgoing_relation_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PaymentMethod[] $paymentMethods
  * @property-read int|null $payment_methods_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerPaymentProvider[] $paymentProviders
@@ -103,14 +101,6 @@ class Producer extends Model
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-	 */
-	public function outgoingRelationRequests()
-	{
-		return $this->morphMany(RelationRequest::class, 'from');
-	}
-
-	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function city()
@@ -126,6 +116,7 @@ class Producer extends Model
 		return $this->belongsToMany(PaymentMethod::class);
 	}
 
+	// todo - delete order priority table ?
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */

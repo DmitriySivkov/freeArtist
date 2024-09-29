@@ -26,6 +26,7 @@
 					filled
 					v-model="location"
 					use-input
+					clearable
 					input-debounce="300"
 					label="Начните вводить название города"
 					:options="locationOptions"
@@ -119,14 +120,17 @@ const register = () => {
 	promise.finally(() => isLoading.value = false)
 }
 
-const loadLocation = async (query, update) => {
-	if (query.length < 1) return
+const loadLocation = async (query, doneFn, abortFn) => {
+	if (query.length < 1) {
+		abortFn()
+		return
+	}
 
 	const response = await api.get("cities",{
 		params: { query }
 	})
 
-	update(() => {
+	doneFn(() => {
 		locationOptions.value = response.data.map((location) => {
 			return {
 				label: location.city + " (" + location.address + ")",

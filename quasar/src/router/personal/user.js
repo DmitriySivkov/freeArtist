@@ -1,5 +1,5 @@
 import RegisterProducer from "src/pages/personal/RegisterProducer.vue"
-import UserRequests from "src/pages/personal/user/Requests.vue"
+import UserRequests from "src/pages/personal/user/UserRequests.vue"
 
 export default [
 	{
