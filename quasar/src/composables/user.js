@@ -1,14 +1,8 @@
 import { useUserStore } from "src/stores/user"
-import { useTeamStore } from "stores/team"
-import { usePermissionStore } from "stores/permission"
-import { useRoleStore } from "stores/role"
 import { api } from "src/boot/axios"
 
 export const useUser = () => {
 	const userStore = useUserStore()
-	const teamStore = useTeamStore()
-	const permissionStore = usePermissionStore()
-	const roleStore = useRoleStore()
 
 	const afterLogin = (response) => {
 		if (response.data.token) {
@@ -17,24 +11,35 @@ export const useUser = () => {
 
 		userStore.setData(response.data.user)
 		userStore.setIsLogged(true)
-
-		roleStore.setUserRoles(response.data.user_roles)
-		permissionStore.setUserPermissions(response.data.user_permissions)
-
-		teamStore.setUserTeams(response.data.user_teams)
+		userStore.setTeams(response.data.user_teams)
 	}
 
 	const afterLogout = () => {
 		userStore.switchPersonal("user")
-
 		userStore.setData({})
-		teamStore.emptyUserTeams()
-
+		userStore.emptyTeams()
 		userStore.setIsLogged(false)
+	}
+
+	const hasPermission = (teamId, permissionName) => {
+		return userStore.teams.find((t) => t.id === teamId)
+			?.permissions
+			.find((p) => p.name === permissionName)
+	}
+
+	const hasRole = (roleId) => {
+		return userStore.teams.some((t) => t.role_id === roleId)
+	}
+
+	const syncTeamUserPermissions = (teamId, userId, permissions) => {
+		userStore.syncTeamUserPermissions({ teamId, userId, permissions })
 	}
 
 	return {
 		afterLogin,
-		afterLogout
+		afterLogout,
+		hasPermission,
+		hasRole,
+		syncTeamUserPermissions,
 	}
 }

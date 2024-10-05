@@ -1,3 +1,38 @@
+<script setup>
+import { computed } from "vue"
+import { useRouter } from "vue-router"
+import { useCartStore } from "src/stores/cart"
+import { useUserStore } from "src/stores/user"
+import { useNotification } from "src/composables/notification"
+import { api } from "src/boot/axios"
+import { useUser } from "src/composables/user"
+
+const $router = useRouter()
+const cartStore = useCartStore()
+const userStore = useUserStore()
+
+const { notifySuccess } = useNotification()
+
+const route = $router.currentRoute
+
+const isUserLogged = computed(() => userStore.is_logged)
+
+const { afterLogout } = useUser()
+
+const logout = () => {
+	api.post("personal/logout")
+
+	afterLogout()
+
+	$router.push({name: "home"})
+}
+
+const cartCounter = computed(() =>
+	cartStore.data?.reduce((carry, item) =>
+		carry + item.products.length, 0)
+)
+</script>
+
 <template>
 	<q-drawer
 		show-if-above
@@ -92,40 +127,3 @@
 		</q-scroll-area>
 	</q-drawer>
 </template>
-
-<script setup>
-import { computed } from "vue"
-import { useRouter } from "vue-router"
-import { useCartStore } from "src/stores/cart"
-import { useUserStore } from "src/stores/user"
-import { useNotification } from "src/composables/notification"
-import { useTeamStore } from "stores/team"
-import { api } from "src/boot/axios"
-import { useUser } from "src/composables/user"
-
-const $router = useRouter()
-const cartStore = useCartStore()
-const userStore = useUserStore()
-const teamStore = useTeamStore()
-
-const { notifySuccess } = useNotification()
-
-const route = $router.currentRoute
-
-const isUserLogged = computed(() => userStore.is_logged)
-
-const { afterLogout } = useUser()
-
-const logout = () => {
-	api.post("personal/logout")
-
-	afterLogout()
-
-	$router.push({name: "home"})
-}
-
-const cartCounter = computed(() =>
-	cartStore.data?.reduce((carry, item) =>
-		carry + item.products.length, 0)
-)
-</script>

@@ -20,7 +20,6 @@ module.exports = configure(function (ctx) {
 			"axios",
 			"setLocation",
 			"setCartFromLocalStorage",
-			"browsePermissions",
 			"ws",
 			"routes",
 			"loadingScreen" // keep at the end

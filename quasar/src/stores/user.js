@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import { LocalStorage } from "quasar"
+import {api} from "boot/axios"
 
 export const useUserStore = defineStore("user", {
 	state: () => ({
@@ -7,7 +8,8 @@ export const useUserStore = defineStore("user", {
 		personal_tab: "user", // todo - make const file for personal tab names
 		location: null,
 		location_range: null,
-		data: {}
+		data: {},
+		teams: []
 	}),
 
 	persist: {
@@ -36,6 +38,66 @@ export const useUserStore = defineStore("user", {
 
 		setData(data) {
 			this.data = data
-		}
+		},
+
+		setTeams(teams) {
+			if (!Array.isArray(teams)) {
+				teams = [teams]
+			}
+
+			this.teams = [...teams, ...this.teams]
+		},
+
+		// todo - move request from store
+		async syncTeamUserPermissions({ teamId, userId, permissions }) {
+			const response = await api.post(
+				`personal/teams/${teamId}/users/${userId}/permissions/sync`,
+				permissions
+			)
+
+			this.commitTeamUserPermissions({
+				teamId,
+				userId,
+				permissions: response.data
+			})
+		},
+
+		commitTeamUserPermissions({ teamId, userId, permissions }) {
+			const team = this.teams.find((team) => team.id === teamId)
+
+			team.permissions = permissions
+		},
+
+		emptyTeams() {
+			this.teams = []
+		},
+
+		setTeamFields({ teamId, fields, detailedId }) {
+			let team = this.teams.find((t) => t.id === teamId)
+
+			if (!team) return
+
+			// if 'detailedId' is not set then we update 'teams' entity
+			// otherwise we update an entity morphed to teams
+
+			if (!detailedId) {
+				Object.assign(team, fields)
+			} else {
+				team.detailed = { ...team.detailed, ...fields }
+			}
+		},
+
+		// todo - move request from store
+		updateTeamFields({ teamId, fields }) {
+			this.setTeamFields({
+				teamId,
+				fields
+			})
+
+			return api.put(
+				"personal/teams/" + teamId,
+				fields
+			)
+		},
 	}
 })

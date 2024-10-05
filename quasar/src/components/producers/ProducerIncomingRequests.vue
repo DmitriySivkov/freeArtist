@@ -56,7 +56,8 @@ const props = defineProps({
 	requests: {
 		type: Array,
 		default: () => []
-	}
+	},
+	producerId: Number
 })
 
 const emit = defineEmits([
@@ -70,6 +71,7 @@ const isLoading = ref(false)
 
 const requestLoading = ref(null)
 
+// todo - проверить все весокеты начиная с релейшн-реквестов
 const acceptRequest = (request) => {
 	Dialog.create({
 		component: CommonConfirmationDialog,
@@ -80,7 +82,7 @@ const acceptRequest = (request) => {
 		.onOk(() => {
 			requestLoading.value = request.id
 
-			const promise = api.post(`personal/producers/relation-requests/${request.id}/accept`)
+			const promise = api.post(`personal/producers/${props.producerId}/relation-requests/${request.id}/accept`)
 
 			promise.then((response) => {
 				emit("requestAccepted", {
@@ -107,7 +109,7 @@ const rejectRequest = (request) => {
 		.onOk(() => {
 			requestLoading.value = request.id
 
-			const promise = api.post(`personal/producers/relation-requests/${request.id}/reject`)
+			const promise = api.post(`personal/producers/${props.producerId}/relation-requests/${request.id}/reject`)
 
 			promise.then((response) => {
 				emit("requestRejected", {

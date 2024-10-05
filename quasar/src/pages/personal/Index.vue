@@ -3,12 +3,10 @@ import NavigationUser from "src/components/users/UserNavigation.vue"
 import NavigationProducer from "src/components/producers/ProducerNavigation.vue"
 import { computed } from "vue"
 import { useUserStore } from "src/stores/user"
-import { useRoleStore } from "src/stores/role"
 
 const userStore = useUserStore()
-const roleStore = useRoleStore()
 
-const userRoles = computed(() => roleStore.user_roles)
+const userRoles = computed(() => userStore.roles)
 
 const selectedTab = computed(() => userStore.personal_tab)
 

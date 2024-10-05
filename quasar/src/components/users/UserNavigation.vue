@@ -1,8 +1,12 @@
 <script setup>
 import { computed } from "vue"
-import { useUserTeam } from "src/composables/userTeam"
+import { useUserStore } from "src/stores/user"
 
-const { userOwnTeam } = useUserTeam()
+const userStore = useUserStore()
+
+const userOwnTeam = computed(() =>
+	userStore.teams.find((t) => t.user_id === userStore.data.id)
+)
 
 const items = [
 	{ title: "Профиль", routeName: "personal_user" },
@@ -18,8 +22,6 @@ const items = [
 const menu = computed(() =>
 	items.filter((item) => !item.hasOwnProperty("conditional") || item.conditional === true)
 )
-
-
 </script>
 
 <template>

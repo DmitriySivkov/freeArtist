@@ -1,3 +1,35 @@
+<script setup>
+import { computed } from "vue"
+import { useRouter } from "vue-router"
+import { useCartStore } from "src/stores/cart"
+import { useUserStore } from "src/stores/user"
+import { api } from "src/boot/axios"
+import { useUser } from "src/composables/user"
+
+const $router = useRouter()
+const cartStore = useCartStore()
+const userStore = useUserStore()
+
+const route = $router.currentRoute
+
+const isUserLogged = computed(() => userStore.is_logged)
+
+const cartCounter = computed(() =>
+	cartStore.data?.reduce((carry, item) =>
+		carry + item.products.length, 0)
+)
+
+const { afterLogout } = useUser()
+
+const logout = () => {
+	api.post("personal/logout")
+
+	afterLogout()
+
+	$router.push({name: "home"})
+}
+</script>
+
 <template>
 	<q-footer class="footer bg-indigo-8">
 		<q-toolbar class="q-pa-sm">
@@ -69,37 +101,3 @@
 		</q-toolbar>
 	</q-footer>
 </template>
-
-<script setup>
-import { computed } from "vue"
-import { useRouter } from "vue-router"
-import { useCartStore } from "src/stores/cart"
-import { useUserStore } from "src/stores/user"
-import { api } from "src/boot/axios"
-import { useTeamStore } from "src/stores/team"
-import { useUser } from "src/composables/user"
-
-const $router = useRouter()
-const cartStore = useCartStore()
-const userStore = useUserStore()
-const teamStore = useTeamStore()
-
-const route = $router.currentRoute
-
-const isUserLogged = computed(() => userStore.is_logged)
-
-const cartCounter = computed(() =>
-	cartStore.data?.reduce((carry, item) =>
-		carry + item.products.length, 0)
-)
-
-const { afterLogout } = useUser()
-
-const logout = () => {
-	api.post("personal/logout")
-
-	afterLogout()
-
-	$router.push({name: "home"})
-}
-</script>

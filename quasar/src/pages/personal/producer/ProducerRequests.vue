@@ -1,16 +1,16 @@
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { api } from "src/boot/axios"
-import { useTeamStore } from "src/stores/team"
+import { useUserStore } from "src/stores/user"
 import { useRouter } from "vue-router"
 import ProducerIncomingRequests from "src/components/producers/ProducerIncomingRequests.vue"
 
 const $router = useRouter()
-const teamStore = useTeamStore()
+const userStore = useUserStore()
 
 const team = computed(() =>
-	teamStore.user_teams.find((team) =>
-		team.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
+	userStore.teams.find((t) =>
+		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
 
@@ -46,6 +46,7 @@ onMounted(() => {
 			<ProducerIncomingRequests
 				v-if="!isMounting"
 				:requests="requests"
+				:producer-id="Number($router.currentRoute.value.params.producer_id)"
 				@request-accepted="changeRequestStatus"
 				@request-rejected="changeRequestStatus"
 			/>

@@ -1,8 +1,5 @@
 <template>
-	<q-form
-		@submit="onSubmit"
-		class="q-gutter-md"
-	>
+	<q-form @submit="onSubmit">
 		<q-input
 			filled
 			type="tel"

@@ -39,22 +39,6 @@ class Team extends LaratrustTeam
 
 	protected $with = ['detailed'];
 
-	const TEAMS = [
-		self::TEAM_PRODUCER_OWNERS,
-		self::TEAM_PRODUCER_COWORKERS
-	];
-
-	const TEAM_PRODUCER_OWNERS = [
-		'name' => 'producer_owners',
-		'display_name' => 'Владелец изготовителя',
-		'description' => 'Полномочия владельца изготовителя'
-	];
-	const TEAM_PRODUCER_COWORKERS = [
-		'name' => 'producer_coworkers',
-		'display_name' => 'Сотрудник изготовителя',
-		'description' => 'Полномочия сотрудника изготовителя'
-	];
-
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\MorphTo
 	 */
@@ -68,12 +52,7 @@ class Team extends LaratrustTeam
 	 */
 	public function users()
 	{
-		return $this->belongsToMany(
-			User::class,
-			'role_user',
-			'team_id',
-			'user_id'
-		);
+		return $this->belongsToMany(User::class, 'role_user');
 	}
 
 }

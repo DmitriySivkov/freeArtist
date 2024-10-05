@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from "vue"
 import { orderBy, capitalize } from "lodash"
-import { useTeamStore } from "src/stores/team"
 import { useRouter } from "vue-router"
 import { useUserStore } from "src/stores/user"
 import { TEAM_ENTITIES } from "src/const/teamEntities"
@@ -14,10 +13,9 @@ const props = defineProps({
 const $router = useRouter()
 
 const userStore = useUserStore()
-const teamStore = useTeamStore()
 
 const teams = computed(() => orderBy(
-	teamStore.user_teams.filter((t) =>
+	userStore.teams.filter((t) =>
 		t.detailed_type === `App\\Models\\${capitalize(props.entity)}`
 	),
 	team => team.display_name,

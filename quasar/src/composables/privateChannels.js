@@ -1,34 +1,24 @@
-import { echo } from "boot/ws"
-import { useUserTeam } from "src/composables/userTeam"
-import { useTeamStore } from "src/stores/team"
+import { echo } from "src/boot/ws"
 import { useUserStore } from "src/stores/user"
-import { usePermissionStore } from "src/stores/permission"
-import { useRoleStore } from "src/stores/role"
 import { useProducerOrdersStore } from "src/stores/producerOrders"
-
-import { ROLES } from "src/const/roles"
 
 export const usePrivateChannels = () => {
 	const userStore = useUserStore()
-	const teamStore = useTeamStore()
-	const permissionStore = usePermissionStore()
-	const roleStore = useRoleStore()
 	const producerOrderStore = useProducerOrdersStore()
 
-	const userTeams = teamStore.user_teams // todo - change 'user_teams' to 'data'
+	const userTeams = userStore.teams
 
 	const connectTeams = () => {
-		// todo - same for 'teams' entity - add name change to producer profile
-		if (userTeams.length === 0)
+		if (userStore.teams.length === 0)
 			return
 
 		for (let i in userTeams) {
 			echo.private("teams." + userTeams[i].id)
 				.listen(".teams.updated", (e) => {
-					teamStore.setTeamFields({
-						team_id: e.teamId,
+					userStore.setTeamFields({
+						teamId: e.teamId,
 						fields: e.fields,
-						detailed_id: e.detailedId
+						detailedId: e.detailedId
 					})
 				})
 		}
@@ -39,22 +29,14 @@ export const usePrivateChannels = () => {
 		if (userTeams.length === 0)
 			return
 
+		// todo - only listen to auth user permissions: check on backend
 		for (let i in userTeams) {
 			echo.private("permissions." + userTeams[i].id)
 				.listen(".permissions.synced", (e) => {
-					teamStore.commitTeamUserPermissions({
-						team_id: e.team.id,
-						user_id: e.user.id,
+					userStore.syncUserTeamPermissions({
+						teamId: e.team.id,
 						permissions: e.permissions
 					})
-
-					if (e.user.id === userStore.data.id) {
-						permissionStore.syncUserTeamPermissions({
-							team_id: e.team.id,
-							permissions: e.permissions
-						})
-					}
-
 				})
 		}
 	}
@@ -62,12 +44,7 @@ export const usePrivateChannels = () => {
 	const connectRelationRequests = () => {
 		echo.private(`relation-requests.user.${userStore.data.id}`)
 			.listen(".user-team.relation-request.accepted", (e) => {
-				roleStore.setUserRole({
-					id: ROLES.PRODUCER,
-					team_id: e.team.id
-				})
-
-				teamStore.setUserTeams(e.team)
+				userStore.setTeams(e.team)
 			})
 	}
 

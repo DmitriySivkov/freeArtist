@@ -3,15 +3,12 @@
 
 namespace App\Services;
 
-
-use App\Contracts\TeamServiceContract;
-use App\Contracts\UserServiceContract;
-use App\Http\Resources\PermissionResource;
-use App\Http\Resources\RoleResource;
+use App\Http\Resources\UserTeamResource;
 use App\Models\Order;
 use App\Models\Producer;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -100,38 +97,29 @@ class AuthService
 	 */
 	private function makeResponse(array $additional = [])
 	{
+		$userPermissionsByTeam = $this->user->permissions()
+			->select(['id', 'name'])
+			->get()
+			->groupBy('pivot.team_id')
+			->toArray();
+
 		// todo - resource
 		return response()->json([
 			'user' => $this->user,
-			'user_permissions' => PermissionResource::collection(
-				$this->user->permissions()->get()
+			'user_teams' => UserTeamResource::collection(
+				$this->user->teams()
+					->withPivot('role_id')
+					->with(['detailed'])
+					->get()
+					->map(function(Team $team) use ($userPermissionsByTeam) {
+						$team->permissions = \Arr::exists($userPermissionsByTeam, $team->id) ?
+							$userPermissionsByTeam[$team->id] :
+							[];
+
+						return $team;
+					})
 			),
-			'user_roles' => RoleResource::collection(
-				$this->user->roles()->get()
-			),
-			'user_teams' => $this->getUserTeams(),
 		] + $additional);
-	}
-
-	/**
-	 * @return array|Collection
-	 */
-	private function getUserTeams()
-	{
-		$this->userTeams = $this->user->rolesTeams()->get();
-
-		if ($this->userTeams->isEmpty())
-			return [];
-
-		return $this->userTeams->map(function(Team $team) {
-			$team->loadMorph('detailed', [
-				Producer::class => [
-					'city',
-					'logo'
-				]
-			]);
-			return $team;
-		});
 	}
 
 	/**

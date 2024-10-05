@@ -2,20 +2,20 @@
 import { computed, ref } from "vue"
 import { useNotification } from "src/composables/notification"
 import { useRouter } from "vue-router"
-import { usePermissionStore } from "src/stores/permission"
+import { useUser } from "src/composables/user"
 import { useUserStore } from "src/stores/user"
-import { useTeamStore } from "src/stores/team"
 import { Cropper } from "vue-advanced-cropper"
 import { api } from "src/boot/axios"
+import { PRODUCER_PERMISSION_NAMES } from "src/const/permissions"
 
 const $router = useRouter()
 
 const userStore = useUserStore()
-const teamStore = useTeamStore()
-const permissionStore = usePermissionStore()
+
+const { hasPermission } = useUser()
 
 const team = computed(() =>
-	teamStore.user_teams.find((t) =>
+	userStore.teams.find((t) =>
 		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
@@ -36,9 +36,7 @@ const isTeamAdmin = computed(() =>
 )
 
 const canManageLogo = computed(() =>
-	permissionStore.user_permissions.filter((p) => p.team_id === parseInt(team.value.id))
-		.map((p) => p.name)
-		.includes("producer_logo")
+	hasPermission(parseInt(team.value.id), PRODUCER_PERMISSION_NAMES.LOGO)
 )
 
 const { notifySuccess, notifyError } = useNotification()
@@ -75,12 +73,12 @@ const loadImage = async() => {
 		)
 
 		promise.then((response) => {
-			teamStore.setTeamFields({
-				team_id: team.value.id,
+			userStore.setTeamFields({
+				teamId: team.value.id,
 				fields: {
 					logo: response.data
 				},
-				detailed_id: team.value.detailed.id
+				detailedId: team.value.detailed.id
 			})
 		})
 
@@ -99,16 +97,16 @@ const showFilePrompt = () => {
 }
 
 const teamPropChanged = (val, field) => {
-	const promise = teamStore.updateTeamFields({
-		team_id: team.value.id,
+	const promise = userStore.updateTeamFields({
+		teamId: team.value.id,
 		fields: { [field]: val }
 	})
 
 	promise.catch((error) => {
 		notifyError(error.response.data.message)
 
-		teamStore.setTeamFields({
-			team_id: error.response.data.team.id,
+		userStore.setTeamFields({
+			teamId: error.response.data.team.id,
 			fields: error.response.data.team
 		})
 	})

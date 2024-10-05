@@ -1,29 +1,26 @@
 <script setup>
-import TeamUserList from "src/components/teams/TeamUserList.vue"
-import TeamPermissionList from "src/components/teams/TeamPermissionList.vue"
 import { useRouter } from "vue-router"
-import { useUserTeam } from "src/composables/userTeam"
 import { computed, ref, onMounted } from "vue"
-import { useUserPermission } from "src/composables/userPermission"
+import { useUser } from "src/composables/user"
 import { useNotification } from "src/composables/notification"
 import { useUserStore } from "src/stores/user"
-import { useTeamStore } from "src/stores/team"
 import { api } from "src/boot/axios"
+import { PRODUCER_PERMISSION_NAMES } from "src/const/permissions"
+import TeamUserList from "src/components/teams/TeamUserList.vue"
+import TeamPermissionList from "src/components/teams/TeamPermissionList.vue"
 
 const $router = useRouter()
 
-const { syncTeamUserPermissions } = useUserTeam()
-const { hasPermission } = useUserPermission()
+const { hasPermission, syncTeamUserPermissions } = useUser()
 const { notifySuccess, notifyError } = useNotification()
 
 const userStore = useUserStore()
-const teamStore = useTeamStore()
 
 const isLoading = ref(true)
 
 const team = computed(() =>
-	teamStore.user_teams.find((team) =>
-		team.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
+	userStore.teams.find((t) =>
+		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
 
@@ -31,7 +28,7 @@ const selectedUserId = ref(userStore.data.id)
 
 const isAbleToEditUserPermissions = computed(() =>
 	(
-		hasPermission(team.value.id,"producer_permissions") ||
+		hasPermission(team.value.id,PRODUCER_PERMISSION_NAMES.PERMISSIONS) ||
 				team.value.user_id === userStore.data.id
 	) &&
 	selectedUserId.value !== userStore.data.id &&
@@ -42,7 +39,7 @@ const setUserPermissions = ({ teamId, userId }) => {
 	let user = team.value.users.find((u) => u.id === selectedUserId.value)
 	let permissions = user.permissions.map((p) => p.id)
 
-	syncTeamUserPermissions(teamId, userId, permissions)
+	userStore.syncTeamUserPermissions(teamId, userId, permissions)
 		.then(() => {
 			notifySuccess(
 				"Права пользователя: '" +
@@ -58,10 +55,11 @@ onMounted(() => {
 	const promise = api.get(`personal/teams/${team.value.id}/users`)
 
 	promise.then((response) => {
-		teamStore.setTeamUsers({
-			teamId: team.value.id,
-			users: response.data
-		})
+		// teamStore.setTeamUsers({
+		// 	teamId: team.value.id,
+		// 	users: response.data
+		// })
+		// todo - collect users in some ref
 	})
 
 	promise.finally(() => isLoading.value = false)

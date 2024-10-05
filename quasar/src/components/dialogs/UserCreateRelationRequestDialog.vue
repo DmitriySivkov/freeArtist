@@ -21,6 +21,7 @@ const teamList = ref([])
 const isLoading = ref(false)
 
 const loadTeamList = async (query, doneFn, abortFn) => {
+	// todo - на мобилах подгружает результаты только после пробела либо нажатия кнопки "поиск"
 	if (query.length < 1) {
 		abortFn()
 		return

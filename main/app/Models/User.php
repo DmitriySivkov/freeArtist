@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Notifications\EmailVerificationNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -64,8 +63,7 @@ use Laratrust\Traits\LaratrustUserTrait;
  */
 class User extends Authenticatable
 {
-    use LaratrustUserTrait;
-    use HasFactory, Notifiable, HasApiTokens;
+    use LaratrustUserTrait, HasFactory, Notifiable, HasApiTokens;
 
     protected $guarded = [];
 
@@ -116,5 +114,13 @@ class User extends Authenticatable
 			'id',
 			$this->rolesTeams->pluck('id')
 		);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function teams()
+	{
+		return $this->belongsToMany(Team::class,'role_user');
 	}
 }

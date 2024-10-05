@@ -1,25 +1,24 @@
 <script setup>
-import ProducerPaymentMethodList from "src/components/producers/ProducerPaymentMethodList.vue"
 import { useRouter } from "vue-router"
 import { computed } from "vue"
-import { useUserPermission } from "src/composables/userPermission"
+import { useUser } from "src/composables/user"
 import { useUserStore } from "src/stores/user"
-import { useTeamStore } from "src/stores/team"
+import { PRODUCER_PERMISSION_NAMES } from "src/const/permissions"
+import ProducerPaymentMethodList from "src/components/producers/ProducerPaymentMethodList.vue"
 
 const userStore = useUserStore()
-const teamStore = useTeamStore()
 const $router = useRouter()
 
-const { hasPermission } = useUserPermission()
+const { hasPermission } = useUser()
 
 const team = computed(() =>
-	teamStore.user_teams.find((t) =>
+	userStore.teams.find((t) =>
 		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
 
 const isAbleToManagePaymentMethods = computed(() =>
-	hasPermission(team.value.id,"producer_payment_methods") ||
+	hasPermission(team.value.id, PRODUCER_PERMISSION_NAMES.PAYMENT_METHODS) ||
 	team.value.user_id === userStore.data.id
 )
 

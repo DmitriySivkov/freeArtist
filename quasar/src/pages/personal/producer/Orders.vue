@@ -13,16 +13,16 @@ import OrderCardDetailDialog from "components/dialogs/OrderCardDetailDialog.vue"
 import { ORDER_CARD_STATUS_TO_CLASS } from "src/const/orderStatuses"
 
 import { useProducerOrdersStore } from "src/stores/producerOrders"
-import { useTeamStore } from "src/stores/team"
+import { useUserStore } from "src/stores/user"
 
 // todo - заказы можно распределять между участниками
 const $router = useRouter()
 
-const teamStore = useTeamStore()
+const userStore = useUserStore()
 const producerOrdersStore = useProducerOrdersStore()
 
 const team = computed(() =>
-	teamStore.user_teams.find((t) =>
+	userStore.teams.find((t) =>
 		t.detailed_id === parseInt($router.currentRoute.value.params.producer_id)
 	)
 )
