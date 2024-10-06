@@ -4,24 +4,17 @@ defineProps({
 		type: Boolean,
 		default: false,
 	},
-	isProductChanged: {
-		type: Boolean,
-		default: false,
-	},
 })
 
 defineEmits([
 	"confirm"
 ])
-
-
 </script>
 
 <template>
 	<q-footer class="footer q-pa-sm bg-indigo-8">
 		<q-btn
 			class="q-py-sm"
-			:class="{'composition__button_done_active': isProductChanged}"
 			:loading="isLoading"
 			color="primary"
 			@click="$emit('confirm')"

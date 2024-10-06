@@ -1,6 +1,6 @@
 import Error404 from "src/pages/Error404.vue"
 import MainLayout from "src/layouts/MainLayout.vue"
-import PersonalProducerProductLayout from "src/layouts/PersonalProducerProductLayout.vue"
+import PersonalEditableLayout from "src/layouts/PersonalEditableLayout.vue"
 
 import common from "src/router/common"
 import personal from "src/router/personal"
@@ -11,6 +11,7 @@ import user from "src/router/user"
 
 import ProductShow from "src/pages/personal/producer/ProductShow.vue"
 import ProductCreate from "src/pages/personal/producer/ProductCreate.vue"
+import ProducerPermissions from "pages/personal/producer/ProducerPermissions.vue"
 
 const routes = [
 	{
@@ -27,7 +28,7 @@ const routes = [
 	},
 	{
 		path: "/personal/producer/:producer_id/products",
-		component: PersonalProducerProductLayout,
+		component: PersonalEditableLayout,
 		children: [
 			{
 				name: "personal_producer_products_show",
@@ -38,6 +39,17 @@ const routes = [
 				name: "personal_producer_products_create",
 				path: "create",
 				component: ProductCreate,
+			},
+		]
+	},
+	{
+		path: "/personal/producer/:producer_id/permissions",
+		component: PersonalEditableLayout,
+		children: [
+			{
+				name: "personal_producer_permissions",
+				path: "",
+				component: ProducerPermissions,
 			},
 		]
 	},

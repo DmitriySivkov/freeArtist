@@ -2,7 +2,6 @@ import Orders from "src/pages/personal/producer/Orders.vue"
 import RegisterProducer from "src/pages/personal/RegisterProducer.vue"
 import ProducerProfile from "src/pages/personal/producer/ProducerProfile.vue"
 import PaymentMethods from "src/pages/personal/producer/PaymentMethods.vue"
-import ProducerPermissions from "src/pages/personal/producer/ProducerPermissions.vue"
 import ProducerRequests from "src/pages/personal/producer/ProducerRequests.vue"
 import Products from "src/pages/personal/producer/Products.vue"
 
@@ -26,11 +25,6 @@ export default [
 		name: "personal_producer_payment_methods",
 		path: "personal/producer/:producer_id/payment-methods",
 		component: PaymentMethods,
-	},
-	{
-		name: "personal_producer_permissions",
-		path: "personal/producer/:producer_id/permissions",
-		component: ProducerPermissions,
 	},
 	{
 		name: "personal_producer_requests",

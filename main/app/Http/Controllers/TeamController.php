@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TeamUsersPermissionsResource;
 use App\Models\Team;
 use App\Models\User;
 use App\Services\TeamService;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class TeamController extends Controller
 {
@@ -48,23 +50,21 @@ class TeamController extends Controller
 
 	/**
 	 * @param Team $team
-	 * @return \App\Models\User[]|\Illuminate\Database\Eloquent\Collection
+	 * @return \Illuminate\Support\Collection
 	 */
-	public function getUsers(Team $team)
+	public function getUsersPermissions(Team $team)
 	{
-		return $team->users->load([
+		return TeamUsersPermissionsResource::collection(
+			$team->users->load([
 				'permissions' => function($query) use ($team) {
-						$query->select([
-							'permissions.id',
-							'permissions.name',
-							'permissions.display_name',
-							'permissions.description',
-							'teams.id as team_id'
-						])
+					$query->select([
+						'permissions.name',
+					])
 						->where('permission_user.team_id', $team->id)
 						->leftJoin('teams', 'permission_user.team_id', '=', 'teams.id');
 				}
-			]);
+			])
+		)->collection;
 	}
 
 	/**
@@ -72,15 +72,23 @@ class TeamController extends Controller
 	 * @param Team $team
 	 * @param User $user
 	 * @param TeamService $teamService
-	 * @return \Illuminate\Http\JsonResponse|\Illuminate\Support\Collection
+	 * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|void
 	 */
-	public function syncUserPermissions(Request $request, Team $team, User $user, TeamService $teamService)
+	public function updateUserPermissions(Request $request, Team $team, User $user, TeamService $teamService)
 	{
+		$permissions = $request->input('permissions', []);
+
+		// todo - validation
 		try {
-			return $teamService->syncUserPermissions($request->all(), $team, $user);
+			$teamService->syncUserPermissions($permissions, $team, $user);
 		} catch (\Throwable $e) {
-			return response()->json($e->getMessage())
-				->setStatusCode(422);
+			\Log::error(
+				"Не удалось обновить права пользователя, team_id:{$team->id}, user_id:{$user->id}" . PHP_EOL .
+				'текст ошибки: ' . PHP_EOL .
+				$e->getMessage()
+			);
+
+			return response(null, Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 	}
 }

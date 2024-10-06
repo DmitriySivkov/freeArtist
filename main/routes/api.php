@@ -97,8 +97,8 @@ Route::group([
 			Route::put('', [TeamController::class, 'update']);
 
 			Route::group(['prefix' => 'users'], function() {
-				Route::get('', [TeamController::class, 'getUsers']);
-				Route::post('{user}/permissions/sync', [TeamController::class, 'syncUserPermissions']);
+				Route::get('permissions', [TeamController::class, 'getUsersPermissions']);
+				Route::post('{user}/permissions', [TeamController::class, 'updateUserPermissions']);
 			});
 		});
 	});

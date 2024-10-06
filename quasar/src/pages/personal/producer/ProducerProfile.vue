@@ -96,10 +96,17 @@ const showFilePrompt = () => {
 	filePicker.value.pickFiles()
 }
 
+// todo - check if working
 const teamPropChanged = (val, field) => {
-	const promise = userStore.updateTeamFields({
-		teamId: team.value.id,
-		fields: { [field]: val }
+	const promise = api.put(`personal/teams/${team.value.id}`, {
+		fields: {[field]: val}
+	})
+
+	promise.then(() => {
+		userStore.setTeamFields({
+			teamId: team.value.id,
+			fields: {[field]: val}
+		})
 	})
 
 	promise.catch((error) => {

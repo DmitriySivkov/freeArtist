@@ -22,12 +22,11 @@ class TeamService implements TeamServiceContract
 	}
 
 	/**
-	 * @param array $permissionIds
+	 * @param array $permissions
 	 * @param Team $team
 	 * @param User $user
-	 * @return \Illuminate\Support\Collection
 	 */
-	public function syncUserPermissions(array $permissionIds, Team $team, User $user)
+	public function syncUserPermissions(array $permissions, Team $team, User $user)
 	{
 		/** @var User $authUser */
 		$authUser = auth()->user();
@@ -43,8 +42,6 @@ class TeamService implements TeamServiceContract
 
 		if ($user->owns($team))
 			throw new \LogicException("Нельзя изменять права владельца");
-
-		$permissions = Permission::whereIn('id', $permissionIds)->get();
 
 		$user->syncPermissions($permissions, $team);
 
@@ -63,7 +60,5 @@ class TeamService implements TeamServiceContract
 				->leftJoin('teams', 'permission_user.team_id', '=', 'teams.id')
 				->get()
 		);
-
-		return $permissions;
 	}
 }

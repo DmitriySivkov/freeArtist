@@ -25,8 +25,8 @@ const isAbleToManagePaymentMethods = computed(() =>
 </script>
 
 <template>
-	<q-page class="row">
-		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-5">
+	<q-page class="row justify-center">
+		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-5 bg-white">
 			<ProducerPaymentMethodList
 				:producer-id="team.detailed_id"
 				:is-able-to-manage-payment-methods="isAbleToManagePaymentMethods"

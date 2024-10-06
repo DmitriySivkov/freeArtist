@@ -6,7 +6,7 @@ import { useUserStore } from "src/stores/user"
 
 const userStore = useUserStore()
 
-const userRoles = computed(() => userStore.roles)
+const hasAnyRoles = computed(() => userStore.teams.length)
 
 const selectedTab = computed(() => userStore.personal_tab)
 
@@ -24,7 +24,7 @@ const switchPersonal = (personalTab) => {
 	<q-page class="row justify-center">
 		<div class="col-xs-12 col-md-8 col-lg-7 bg-white">
 			<q-tabs
-				v-if="userRoles.length > 0"
+				v-if="hasAnyRoles"
 				:model-value="selectedTab"
 				dense
 				inline-label

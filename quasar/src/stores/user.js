@@ -48,25 +48,7 @@ export const useUserStore = defineStore("user", {
 			this.teams = [...teams, ...this.teams]
 		},
 
-		// todo - move request from store
-		async syncTeamUserPermissions({ teamId, userId, permissions }) {
-			const response = await api.post(
-				`personal/teams/${teamId}/users/${userId}/permissions/sync`,
-				permissions
-			)
-
-			this.commitTeamUserPermissions({
-				teamId,
-				userId,
-				permissions: response.data
-			})
-		},
-
-		commitTeamUserPermissions({ teamId, userId, permissions }) {
-			const team = this.teams.find((team) => team.id === teamId)
-
-			team.permissions = permissions
-		},
+		// todo - move request from store & rework permissions page & rework websocket methods
 
 		emptyTeams() {
 			this.teams = []
@@ -85,19 +67,6 @@ export const useUserStore = defineStore("user", {
 			} else {
 				team.detailed = { ...team.detailed, ...fields }
 			}
-		},
-
-		// todo - move request from store
-		updateTeamFields({ teamId, fields }) {
-			this.setTeamFields({
-				teamId,
-				fields
-			})
-
-			return api.put(
-				"personal/teams/" + teamId,
-				fields
-			)
 		},
 	}
 })

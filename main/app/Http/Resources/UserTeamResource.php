@@ -20,6 +20,7 @@ class UserTeamResource extends JsonResource
     {
         return [
 			'id' 			=> $this->id,
+			'display_name'	=> $this->display_name,
 			'user_id' 		=> $this->user_id,
 			'detailed_id' 	=> $this->detailed_id,
 			'detailed_type' => $this->detailed_type,
