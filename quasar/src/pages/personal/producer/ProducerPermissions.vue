@@ -116,6 +116,7 @@ onMounted(() => {
 	</q-page>
 
 	<PersonalProducerPermissionsFooter
+		:is-able-to-edit-user-permissions="isAbleToEditUserPermissions"
 		:is-loading="isLoading || isMounting"
 		@confirm="syncUserPermissions"
 	/>

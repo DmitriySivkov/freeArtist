@@ -2,7 +2,9 @@
 
 namespace App\Events;
 
+use App\Http\Resources\UserTeamResource;
 use App\Models\RelationRequest;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -53,7 +55,18 @@ class TeamAcceptUserRequest implements ShouldBroadcast
 	public function broadcastWith()
 	{
 		return [
-			'team' => $this->relationRequest->to->team
+			'team' => UserTeamResource::collection(
+				$this->relationRequest->from->teams()
+					->where('teams.id', $this->relationRequest->to->team->id)
+					->withPivot('role_id')
+					->with(['detailed'])
+					->get()
+					->map(function(Team $team) {
+						$team->permissions = [];
+
+						return $team;
+					})
+			)
 		];
 	}
 }

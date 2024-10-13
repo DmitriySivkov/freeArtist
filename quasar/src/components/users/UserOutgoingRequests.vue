@@ -1,6 +1,6 @@
 <template>
 	<div class="row justify-end q-mb-lg">
-		<div class="col-xs-12 col-md-5">
+		<div class="col-xs-12 col-md-5 q-pa-md">
 			<q-btn
 				label="Создать заявку"
 				class="bg-primary text-white q-pa-md full-width"

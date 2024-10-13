@@ -2,53 +2,51 @@
 	<router-view />
 </template>
 
-<script>
+<script setup>
 import { watch } from "vue"
 import { echo } from "src/boot/ws"
 import { useUserStore } from "src/stores/user"
 import { usePrivateChannels } from "src/composables/privateChannels"
 import { Plugins } from "@capacitor/core"
 import { Platform } from "quasar"
-export default {
-	setup() {
-		const userStore = useUserStore()
 
-		const { StatusBar } = Plugins
 
-		const private_channels = usePrivateChannels()
+const userStore = useUserStore()
 
-		const connectPrivateChannels = () => {
-			if (!window.Pusher.isConnected) {
-				echo.connect()
-			}
+const { StatusBar } = Plugins
 
-			if (userStore.data.id) {
-				private_channels.connectTeams()
-				private_channels.connectPermissions()
-				private_channels.connectRelationRequests()
-				private_channels.connectProducerOrders() // todo - connect on orders calendar mount & disconnect on unmount
-			}
-		}
+const privateChannels = usePrivateChannels()
 
-		const setStatusBar = () => {
-			StatusBar.setBackgroundColor({
-				color: "#fe724c"
-			})
-		}
+const connectPrivateChannels = () => {
+	if (!window.Pusher.isConnected) {
+		echo.connect()
+	}
 
-		if (Platform.is.capacitor) {
-			setStatusBar()
-		}
-
-		connectPrivateChannels()
-
-		watch(() => userStore.data.id, (userId) => {
-			if (userId) {
-				connectPrivateChannels()
-			} else {
-				echo.disconnect()
-			}
-		})
+	if (userStore.data.id) {
+		privateChannels.connectTeams()
+		privateChannels.connectPermissions()
+		privateChannels.connectRelationRequests()
+		privateChannels.connectProducerOrders() // todo - connect on orders calendar mount & disconnect on unmount
 	}
 }
+
+const setStatusBar = () => {
+	StatusBar.setBackgroundColor({
+		color: "#fe724c"
+	})
+}
+
+if (Platform.is.capacitor) {
+	setStatusBar()
+}
+
+connectPrivateChannels()
+
+watch(() => userStore.data.id, (userId) => {
+	if (userId) {
+		connectPrivateChannels()
+	} else {
+		echo.disconnect()
+	}
+})
 </script>

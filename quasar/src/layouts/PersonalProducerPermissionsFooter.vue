@@ -4,6 +4,10 @@ defineProps({
 		type: Boolean,
 		default: false,
 	},
+	isAbleToEditUserPermissions: {
+		type: Boolean,
+		default: false
+	}
 })
 
 defineEmits([
@@ -17,6 +21,7 @@ defineEmits([
 			class="q-py-sm"
 			:loading="isLoading"
 			color="primary"
+			:disable="!isAbleToEditUserPermissions"
 			@click="$emit('confirm')"
 		>
 			<q-icon

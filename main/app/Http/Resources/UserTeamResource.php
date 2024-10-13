@@ -28,8 +28,8 @@ class UserTeamResource extends JsonResource
 			'role_id' 		=> $this->pivot->role_id,
 			'permissions' 	=> collect($this->permissions)->map(fn($permission) =>
 				[
-					'id' => $permission->id,
-					'name' => $permission->name
+					'id' => $permission['id'],
+					'name' => $permission['name']
 				])
 		];
     }

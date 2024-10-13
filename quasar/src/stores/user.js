@@ -48,8 +48,6 @@ export const useUserStore = defineStore("user", {
 			this.teams = [...teams, ...this.teams]
 		},
 
-		// todo - move request from store & rework permissions page & rework websocket methods
-
 		emptyTeams() {
 			this.teams = []
 		},
