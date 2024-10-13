@@ -6,14 +6,12 @@ export const usePrivateChannels = () => {
 	const userStore = useUserStore()
 	const producerOrderStore = useProducerOrdersStore()
 
-	const userTeams = userStore.teams
-
 	const connectTeams = () => {
 		if (userStore.teams.length === 0)
 			return
 
-		for (let i in userTeams) {
-			echo.private("teams." + userTeams[i].id)
+		for (let i in userStore.teams) {
+			echo.private("teams." + userStore.teams[i].id)
 				.listen(".teams.updated", (e) => {
 					userStore.setTeamFields({
 						teamId: e.teamId,
@@ -26,12 +24,12 @@ export const usePrivateChannels = () => {
 	}
 
 	const connectPermissions = () => {
-		if (userTeams.length === 0)
+		if (userStore.teams.length === 0)
 			return
 
 		// todo - only listen to auth user permissions: check on backend
-		for (let i in userTeams) {
-			echo.private("permissions." + userTeams[i].id)
+		for (let i in userStore.teams) {
+			echo.private("permissions." + userStore.teams[i].id)
 				.listen(".permissions.synced", (e) => {
 					userStore.setTeamFields({
 						teamId: e.team.id,
@@ -51,7 +49,7 @@ export const usePrivateChannels = () => {
 	}
 
 	const connectProducerOrders = () => {
-		const userProducers = userTeams.filter((t) => t.detailed_type === "App\\Models\\Producer")
+		const userProducers = userStore.teams.filter((t) => t.detailed_type === "App\\Models\\Producer")
 
 		if (userProducers.length === 0)
 			return

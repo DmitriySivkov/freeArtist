@@ -10,7 +10,6 @@ import { usePrivateChannels } from "src/composables/privateChannels"
 import { Plugins } from "@capacitor/core"
 import { Platform } from "quasar"
 
-
 const userStore = useUserStore()
 
 const { StatusBar } = Plugins
@@ -48,5 +47,11 @@ watch(() => userStore.data.id, (userId) => {
 	} else {
 		echo.disconnect()
 	}
+})
+
+watch(() => userStore.teams.length, () => {
+	echo.disconnect()
+
+	connectPrivateChannels()
 })
 </script>
