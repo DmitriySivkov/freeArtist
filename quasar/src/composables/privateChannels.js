@@ -33,9 +33,11 @@ export const usePrivateChannels = () => {
 		for (let i in userTeams) {
 			echo.private("permissions." + userTeams[i].id)
 				.listen(".permissions.synced", (e) => {
-					userStore.syncUserTeamPermissions({
+					userStore.setTeamFields({
 						teamId: e.team.id,
-						permissions: e.permissions
+						fields: {
+							permissions: e.permissions
+						},
 					})
 				})
 		}

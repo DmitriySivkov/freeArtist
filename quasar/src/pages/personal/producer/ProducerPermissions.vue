@@ -12,7 +12,7 @@ import PersonalProducerPermissionsFooter from "layouts/PersonalProducerPermissio
 
 const $router = useRouter()
 
-const { hasPermission, syncTeamUserPermissions } = useUser()
+const { hasPermission } = useUser()
 const { notifySuccess, notifyError } = useNotification()
 
 const userStore = useUserStore()

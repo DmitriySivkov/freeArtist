@@ -1,6 +1,5 @@
 import { defineStore } from "pinia"
 import { LocalStorage } from "quasar"
-import {api} from "boot/axios"
 
 export const useUserStore = defineStore("user", {
 	state: () => ({

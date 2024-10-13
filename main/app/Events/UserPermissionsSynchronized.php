@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Permission;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -19,7 +20,7 @@ class UserPermissionsSynchronized implements ShouldBroadcast
 
 	public User $user;
 	public Team $team;
-	public Collection | array $permissions;
+	public Collection $permissions;
 
     /**
      * Create a new event instance.
@@ -32,7 +33,7 @@ class UserPermissionsSynchronized implements ShouldBroadcast
 
 		$this->user = $user;
 		$this->team = $team;
-		$this->permissions = $permissions->toArray();
+		$this->permissions = $permissions;
     }
 
     /**
@@ -51,5 +52,16 @@ class UserPermissionsSynchronized implements ShouldBroadcast
 	public function broadcastAs()
 	{
 		return 'permissions.synced';
+	}
+
+	public function broadcastWith()
+	{
+		return [
+			'team' => $this->team,
+			'permissions' => $this->permissions->map(fn(Permission $permission) => [
+				'id' => $permission->id,
+				'name' => $permission->name
+			])
+		];
 	}
 }

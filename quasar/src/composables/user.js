@@ -22,7 +22,7 @@ export const useUser = () => {
 	}
 
 	const hasPermission = (teamId, permissionName) => {
-		return userStore.teams.find((t) => t.id === teamId)
+		return !!userStore.teams.find((t) => t.id === teamId)
 			?.permissions
 			.find((p) => p.name === permissionName)
 	}
@@ -31,15 +31,10 @@ export const useUser = () => {
 		return userStore.teams.some((t) => t.role_id === roleId)
 	}
 
-	const syncTeamUserPermissions = (teamId, userId, permissions) => {
-		userStore.syncTeamUserPermissions({ teamId, userId, permissions })
-	}
-
 	return {
 		afterLogin,
 		afterLogout,
 		hasPermission,
 		hasRole,
-		syncTeamUserPermissions,
 	}
 }
