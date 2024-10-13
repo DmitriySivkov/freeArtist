@@ -59,8 +59,6 @@ export const usePrivateChannels = () => {
 				.listen(".order.created", (e) => {
 					producerOrderStore.commitData([e.model])
 				})
-
-			echo.private(`producers.${userProducers[i].detailed_id}.orders`)
 				.listen(".order.updated", (e) => {
 					producerOrderStore.commitOrderFields({
 						orderId: e.model.id,
@@ -70,10 +68,22 @@ export const usePrivateChannels = () => {
 		}
 	}
 
+	const disconnectProducerOrders = () => {
+		const userProducers = userStore.teams.filter((t) => t.detailed_type === "App\\Models\\Producer")
+
+		if (userProducers.length === 0)
+			return
+
+		for (let i in userProducers) {
+			echo.leave(`producers.${userProducers[i].detailed_id}.orders`)
+		}
+	}
+
 	return {
 		connectTeams,
 		connectPermissions,
 		connectRelationRequests,
-		connectProducerOrders
+		connectProducerOrders,
+		disconnectProducerOrders
 	}
 }

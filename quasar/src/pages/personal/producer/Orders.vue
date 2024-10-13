@@ -7,10 +7,12 @@ import { ref, computed, onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Dialog } from "quasar"
+import { echo } from "src/boot/ws"
 
 import ProducerOrderCard from "src/components/orders/Producer/ProducerOrderCard.vue"
 import OrderCardDetailDialog from "components/dialogs/OrderCardDetailDialog.vue"
 import { ORDER_CARD_STATUS_TO_CLASS } from "src/const/orderStatuses"
+import { usePrivateChannels } from "src/composables/privateChannels"
 
 import { useProducerOrdersStore } from "src/stores/producerOrders"
 import { useUserStore } from "src/stores/user"
@@ -96,8 +98,17 @@ const loadOrders = (dateRange) => {
 	})
 }
 
+const {
+	connectProducerOrders,
+	disconnectProducerOrders
+} = usePrivateChannels()
+
+connectProducerOrders()
+
 onBeforeUnmount(() => {
 	producerOrdersStore.emptyData()
+
+	disconnectProducerOrders()
 })
 </script>
 

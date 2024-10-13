@@ -25,7 +25,6 @@ const connectPrivateChannels = () => {
 		privateChannels.connectTeams()
 		privateChannels.connectPermissions()
 		privateChannels.connectRelationRequests()
-		privateChannels.connectProducerOrders() // todo - connect on orders calendar mount & disconnect on unmount
 	}
 }
 
