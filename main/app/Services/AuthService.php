@@ -5,8 +5,10 @@ namespace App\Services;
 
 use App\Http\Resources\UserTeamResource;
 use App\Models\Order;
+use App\Models\Producer;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -107,7 +109,12 @@ class AuthService
 			'user_teams' => UserTeamResource::collection(
 				$this->user->teams()
 					->withPivot('role_id')
-					->with(['detailed'])
+					->with([
+						'detailed' => fn(MorphTo $morphTo) =>
+							$morphTo->morphWith([
+								Producer::class => ['logo:id,path']
+							])
+					])
 					->get()
 					->map(function(Team $team) use ($userPermissionsByTeam) {
 						$team->permissions = \Arr::exists($userPermissionsByTeam, $team->id) ?

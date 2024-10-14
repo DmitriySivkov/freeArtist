@@ -3,12 +3,14 @@
 namespace App\Events;
 
 use App\Http\Resources\UserTeamResource;
+use App\Models\Producer;
 use App\Models\RelationRequest;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -59,7 +61,12 @@ class TeamAcceptUserRequest implements ShouldBroadcast
 				$this->relationRequest->from->teams()
 					->where('teams.id', $this->relationRequest->to->team->id)
 					->withPivot('role_id')
-					->with(['detailed'])
+					->with([
+						'detailed' => fn(MorphTo $morphTo) =>
+							$morphTo->morphWith([
+								Producer::class => ['logo:id,path']
+							])
+					])
 					->get()
 					->map(function(Team $team) {
 						$team->permissions = [];

@@ -97,7 +97,7 @@ class ProducerController extends Controller
 	/**
 	 * @param Producer $producer
 	 * @param ProducerService $producerService
-	 * @return \App\Models\Image|\Illuminate\Database\Eloquent\Model|JsonResponse
+	 * @return array|JsonResponse
 	 */
 	public function setProducerLogo(Producer $producer, ProducerService $producerService)
 	{

@@ -28,7 +28,7 @@ class ProducerService implements ProducerServiceContract
 
 	/**
 	 * @param Producer $producer
-	 * @return Image|\Illuminate\Database\Eloquent\Model
+	 * @return array
 	 * @throws \Exception
 	 */
 	public function setLogo(Producer $producer)
@@ -74,7 +74,7 @@ class ProducerService implements ProducerServiceContract
 			throw new \Exception($e->getMessage());
 		}
 
-		return $image;
+		return $image->only(['id', 'path']);
 	}
 
 	/**
