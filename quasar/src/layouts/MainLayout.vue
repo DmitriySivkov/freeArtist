@@ -11,10 +11,10 @@ import MainFooter from "src/layouts/MainFooter.vue"
 		<q-page-container>
 			<router-view v-slot="{ Component }">
 				<transition
-					enter-active-class="animated fadeInRight fast"
-					leave-active-class="animated fadeOutLeft fast"
+					enter-active-class="animated fadeInRight"
+					leave-active-class="animated fadeOutLeft"
 					appear
-					:duration="120"
+					:duration="200"
 					mode="out-in"
 				>
 					<component :is="Component" />
