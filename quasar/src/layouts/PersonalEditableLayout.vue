@@ -7,10 +7,11 @@ import MainDrawer from "src/layouts/MainDrawer.vue"
 		<MainDrawer v-if="$q.screen.width >= $q.screen.sizes.md"/>
 
 		<transition
-			enter-active-class="animated slideInRight"
-			leave-active-class="animated slideOutRight"
+			enter-active-class="animated fadeInRight"
+			leave-active-class="animated fadeOutLeft"
 			appear
-			:duration="300"
+			:duration="200"
+			mode="out-in"
 		>
 			<q-page-container>
 				<router-view v-slot="{ Component }">

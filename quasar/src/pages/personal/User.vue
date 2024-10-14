@@ -1,3 +1,4 @@
+
 <script setup>
 import { computed } from "vue"
 import { useUser } from "src/composables/user"
@@ -20,8 +21,8 @@ const userOwnTeam = computed(() =>
 </script>
 
 <template>
-	<div class="q-pa-md row">
-		<div class="col-xs-12 col-md-6 col-lg-3">
+	<q-page class="row justify-center">
+		<div class="col-xs-12 col-md-8 col-lg-7 bg-white q-pa-sm">
 			<q-markup-table
 				dark
 				class="bg-secondary q-mb-sm"
@@ -44,22 +45,19 @@ const userOwnTeam = computed(() =>
 				separator="vertical"
 			>
 				<th>Изготовитель</th>
-				<th>Привилегии</th>
+				<th>Роль</th>
 				<tbody>
 					<tr
 						v-for="(team, index) in userTeams"
 						:key="index"
 					>
 						<td class="text-left">{{ team.display_name }}</td>
-						<td
-							v-if="userOwnTeam"
-							class="text-left"
-						>
-							{{ userOwnTeam.display_name }}
+						<td class="text-left">
+							{{ userOwnTeam ? "Владелец" : "Участник" }}
 						</td>
 					</tr>
 				</tbody>
 			</q-markup-table>
 		</div>
-	</div>
+	</q-page>
 </template>

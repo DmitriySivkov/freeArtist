@@ -10,12 +10,12 @@ import MainFooter from "src/layouts/MainFooter.vue"
 
 		<q-page-container>
 			<router-view v-slot="{ Component }">
-				<!-- todo - впринципе работает, но нужно починить некоторые переходы: пример - с главной на личный кабинет-->
 				<transition
-					enter-active-class="animated slideInRight"
-					leave-active-class="animated slideOutRight"
+					enter-active-class="animated fadeInRight fast"
+					leave-active-class="animated fadeOutLeft fast"
 					appear
-					:duration="300"
+					:duration="120"
+					mode="out-in"
 				>
 					<component :is="Component" />
 				</transition>
