@@ -12,7 +12,7 @@ import MainFooter from "src/layouts/MainFooter.vue"
 			<router-view v-slot="{ Component }">
 				<transition
 					enter-active-class="animated fadeInRight"
-					leave-active-class="animated fadeOutLeft"
+					leave-active-class="animated fadeOutRight"
 					appear
 					:duration="200"
 					mode="out-in"

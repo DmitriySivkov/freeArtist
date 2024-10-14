@@ -8,7 +8,7 @@ import MainDrawer from "src/layouts/MainDrawer.vue"
 
 		<transition
 			enter-active-class="animated fadeInRight"
-			leave-active-class="animated fadeOutLeft"
+			leave-active-class="animated fadeOutRight"
 			appear
 			:duration="200"
 			mode="out-in"
