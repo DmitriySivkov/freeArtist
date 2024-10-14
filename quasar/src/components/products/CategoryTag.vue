@@ -58,6 +58,7 @@ const toggleCategory = () => {
 	&__tag {
 		background-color: rgba(black, 0.4);
 		color:white;
+		min-height: 85px;
 
 		&_active {
 			background-color: rgba(black, 0.6);
