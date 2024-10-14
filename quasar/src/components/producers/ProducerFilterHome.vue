@@ -52,7 +52,7 @@ const toggleSearchVisibility = (isVisible) => {
 		>
 			<q-icon
 				name="search"
-				size="1.5em"
+				size="2em"
 				class="cursor-pointer"
 				color="white"
 				@click="toggleSearchVisibility(true)"
@@ -85,19 +85,19 @@ const toggleSearchVisibility = (isVisible) => {
 				:model-value="range"
 				:true-value="LOCATION_RANGE.nearby"
 				:false-value="LOCATION_RANGE.all"
-				size="1.5em"
+				size="2em"
 				color="indigo-8"
 				left-label
 				class="text-white text-h6 range-toggle"
 				@update:model-value="setLocationRange"
 			>
-				<span class="text-body1">Рядом с Вами</span>
+				<span>Рядом с Вами</span>
 			</q-toggle>
 		</div>
 		<div class="col-shrink">
 			<q-icon
 				name="settings"
-				size="1.5em"
+				size="2em"
 				class="cursor-pointer"
 				color="white"
 				@click="showSettings"

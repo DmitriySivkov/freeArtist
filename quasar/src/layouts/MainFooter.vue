@@ -74,10 +74,7 @@ const logout = () => {
 							to="/cart"
 						/>
 					</div>
-					<div
-						v-if="!isUserLogged"
-						class="col-shrink"
-					>
+					<div class="col-shrink">
 						<q-btn
 							class="q-pa-md"
 							icon="shopping_cart_checkout"

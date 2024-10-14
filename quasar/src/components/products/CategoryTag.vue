@@ -48,7 +48,7 @@ const toggleCategory = () => {
 			</div>
 
 			<div class="col flex items-center text-center">
-				<span class="text-tiny">{{ category.name }}</span>
+				<span class="text-body1">{{ category.name }}</span>
 			</div>
 		</div>
 	</q-card>

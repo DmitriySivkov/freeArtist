@@ -3,7 +3,7 @@
 		ref="homePage"
 		class="column no-wrap q-px-sm bg-primary"
 	>
-		<div class="col-auto">
+		<div class="col-auto q-mb-xs">
 			<div class="row justify-center">
 				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
 					<ProducerFilterHome ref="homeHeader"/>
