@@ -27,7 +27,7 @@ const toggleCategory = () => {
 	<q-card
 		bordered
 		clickable
-		class="cursor-pointer q-hoverable full-height"
+		class="cursor-pointer q-hoverable full-height q-px-sm"
 		:class="[
 			$style.category__tag,
 			{[$style.category__tag_active]: isSelected},
