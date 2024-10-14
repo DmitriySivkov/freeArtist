@@ -10,7 +10,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-auto q-mb-sm">
+		<div class="col-auto q-mb-xs">
 			<div class="row justify-center">
 				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
 					<ProducerCategoriesHome
