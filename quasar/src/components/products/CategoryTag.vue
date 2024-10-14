@@ -27,7 +27,7 @@ const toggleCategory = () => {
 	<q-card
 		bordered
 		clickable
-		class="col cursor-pointer q-hoverable"
+		class="cursor-pointer q-hoverable full-height"
 		:class="[
 			$style.category__tag,
 			{[$style.category__tag_active]: isSelected},
@@ -36,17 +36,13 @@ const toggleCategory = () => {
 	>
 		<span class="q-focus-helper"></span>
 		<div class="column items-center full-height">
-
-			<div
+			<q-img
+				:src="category.picture"
+				class="col-auto"
 				:class="$style.category__icon"
-				style="height:35px;"
-			>
-				<img
-					:src="category.picture"
-					class="fit"
-				/>
-			</div>
-
+				height="35px"
+				fit="contain"
+			/>
 			<div class="col flex items-center text-center">
 				<span class="text-body1">{{ category.name }}</span>
 			</div>

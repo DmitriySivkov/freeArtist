@@ -27,7 +27,7 @@ const removeSelectedCategory = (categoryId) => {
 		<div
 			v-for="category in PRODUCT_CATEGORY_LIST"
 			:key="category.id"
-			class="col-xs-4 col-sm-3 col-md-2 column"
+			class="col-xs-4 col-sm-3 col-md-2"
 		>
 			<CategoryTag
 				:category="category"
