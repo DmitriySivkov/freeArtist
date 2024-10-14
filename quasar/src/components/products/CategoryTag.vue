@@ -54,7 +54,6 @@ const toggleCategory = () => {
 .category {
 	&__icon {
 		border-radius: 50%;
-		padding: 0px;
 	}
 	&__tag {
 		background-color: rgba(black, 0.4);
