@@ -10,6 +10,7 @@ class PaymentProviderEnum
 	const YOOKASSA = 1;
 	const ROBOKASSA = 2;
 	const CASH = 3;
+	const TBANK = 4;
 
 	const PAYMENT_PROVIDER_SERVICE = [
 		self::YOOKASSA	=> YookassaPaymentProviderService::class,

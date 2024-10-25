@@ -1,8 +1,9 @@
 <script setup>
-import { ref, computed } from "vue"
+import { ref } from "vue"
 import { api } from "src/boot/axios"
 import { Dialog, date, useDialogPluginComponent, Cookies } from "quasar"
-import ShowYookassaPaymentPageDialog from "src/components/dialogs/ShowYookassaPaymentPageDialog.vue"
+import YookassaPaymentPageDialog from "src/components/dialogs/YookassaPaymentPageDialog.vue"
+import TbankPaymentPageDialog from "src/components/dialogs/TbankPaymentPageDialog.vue"
 import { ORDER_TIME_PERIODS, ORDER_TIME_PERIOD_NAMES } from "src/const/orderTimePeriods"
 import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { PAYMENT_PROVIDERS } from "src/const/paymentProviders"
@@ -70,7 +71,7 @@ const makeTransaction = async () => {
 const cardAction = (transactionData) => {
 	if (props.paymentProviderId === PAYMENT_PROVIDERS.YOOKASSA) {
 		Dialog.create({
-			component: ShowYookassaPaymentPageDialog,
+			component: YookassaPaymentPageDialog,
 			componentProps: {
 				confirmationToken: transactionData.confirmation.confirmation_token
 			}
@@ -79,9 +80,28 @@ const cardAction = (transactionData) => {
 				// к этому моменту уже была проведена оплата
 				orderAction(transactionData.transaction_uuid)
 			})
-			.onCancel(() => onDialogOK({
-				error: {message: "Не получилось оплатить заказ"}
-			}))
+			.onCancel(() =>
+				onDialogOK({
+					error: { message: "Не получилось оплатить заказ" }
+				})
+			)
+	}
+
+	if (props.paymentProviderId === PAYMENT_PROVIDERS.TBANK) {
+		Dialog.create({
+			component: TbankPaymentPageDialog,
+			// componentProps: {
+			// 	confirmationToken: transactionData.confirmation.confirmation_token
+			// }
+		})
+			.onOk(() => {
+				console.log("TBank onOk") // todo
+			})
+			.onCancel(() =>
+				onDialogOK({
+					error: { message: "Не получилось оплатить заказ" }
+				})
+			)
 	}
 }
 
