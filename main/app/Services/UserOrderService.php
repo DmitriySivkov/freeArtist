@@ -91,7 +91,8 @@ class UserOrderService implements OrderServiceContract
 			'producer_id'		=> $transaction->producer_id,
 			'order_products'	=> $transaction->order_data,
 			'status'			=> Order::ORDER_STATUS_NEW,
-			'prepare_by'		=> $this->prepareByDate
+			'prepare_by'		=> $this->prepareByDate,
+			'assignee_id'		=> $transaction->producer->team->user_id // owner
 		]);
 
 		$this->decreaseProducts($transaction->order_data);

@@ -3,7 +3,7 @@ import {
 	today
 } from "@quasar/quasar-ui-qcalendar/src/index.js"
 
-import { ref, computed, onBeforeUnmount } from "vue"
+import { ref, computed, onMounted, onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Dialog } from "quasar"
@@ -36,6 +36,8 @@ const endDate = ref(today())
 
 const orders = computed(() => producerOrdersStore.data)
 
+const assignees = ref([])
+
 const isLoading = ref(true)
 
 const getOrders = (timestamp) => {
@@ -67,7 +69,8 @@ const showOrder = (order) => {
 	Dialog.create({
 		component: OrderCardDetailDialog,
 		componentProps: {
-			order
+			order,
+			assignees: assignees.value
 		}
 	})
 }
@@ -96,6 +99,14 @@ const loadOrders = (dateRange) => {
 		isLoading.value = false
 	})
 }
+
+onMounted(() => {
+	const promise = api.get(`personal/producers/${team.value.detailed_id}/users`)
+
+	promise.then((response) => {
+		assignees.value = response.data
+	})
+})
 
 const {
 	connectProducerOrders,

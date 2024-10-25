@@ -16,7 +16,8 @@ class ProducerOrderController extends Controller
 
 		$orderService->setProducer($producer);
 
-        return $orderService->getOrderList($dateRange);
+        return ProducerOrdersResource::collection($orderService->getOrderList($dateRange))
+			->collection;
     }
 
 	public function update(ProducerOrderRequest $request, Producer $producer, Order $order)

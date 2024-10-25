@@ -13,27 +13,30 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @property int $transaction_id
  * @property int|null $user_id
  * @property int $producer_id
+ * @property int|null $assignee_id
  * @property array $order_products
  * @property int $status
+ * @property string|null $prepare_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $assignee
  * @property-read \App\Models\Producer|null $producer
  * @property-read \App\Models\Transaction|null $transaction
  * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereAssigneeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereOrderProducts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order wherePrepareBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereProducerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  * @mixin \Eloquent
- * @property string|null $prepare_by
- * @method static \Illuminate\Database\Eloquent\Builder|Order wherePrepareBy($value)
  */
 class Order extends Model
 {
@@ -83,5 +86,13 @@ class Order extends Model
 	public function transaction()
 	{
 		return $this->belongsTo(Transaction::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function assignee()
+	{
+		return $this->belongsTo(User::class, 'assignee_id');
 	}
 }

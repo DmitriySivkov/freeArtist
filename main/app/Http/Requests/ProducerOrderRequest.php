@@ -14,7 +14,8 @@ class ProducerOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => ['integer']
+            'status' => ['integer'],
+			'assignee_id' => ['integer']
         ];
     }
 }

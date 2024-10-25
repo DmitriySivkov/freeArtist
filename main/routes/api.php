@@ -133,6 +133,10 @@ Route::group([
 			Route::post('{relationRequest}/accept', [\App\Http\Controllers\ProducerRelationRequestController::class, 'accept']);
 			Route::post('{relationRequest}/reject', [\App\Http\Controllers\ProducerRelationRequestController::class, 'reject']);
 		});
+
+		Route::group(['prefix' => '{producer}/users'], function() {
+			Route::get('', [\App\Http\Controllers\ProducerController::class, 'getUsers']);
+		});
 	});
 
 	Route::group(['prefix' => 'products'], function() {

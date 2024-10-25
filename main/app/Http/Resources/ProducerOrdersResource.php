@@ -22,6 +22,7 @@ class ProducerOrdersResource extends JsonResource
         return [
 			'id' => $this->id,
 			'producer_id' => $this->producer_id,
+			'assignee' => $this->assignee?->only(['id', 'name', 'phone']),
 			'order_products' => collect($this->order_products)->pluck('amount', 'id'),
 			'payment_method' => PaymentMethod::PAYMENT_METHODS[$this->transaction->payment_method],
 			'status' => $this->status,

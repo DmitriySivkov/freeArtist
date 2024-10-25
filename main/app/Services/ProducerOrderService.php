@@ -21,17 +21,16 @@ class ProducerOrderService implements OrderServiceContract
 	{
 		// todo - check access (middleware?)
 
-		$orders = Order::where('producer_id', $this->producer->id)
+		return Order::where('producer_id', $this->producer->id)
 			->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
 			->with([
 				'user',
+				'assignee',
 				'products',
 				'transaction',
 			])
 			->orderBy('created_at', 'desc')
 			->get();
-
-		return ProducerOrdersResource::collection($orders)->collection;
 	}
 
 	public function processOrder($orderData)

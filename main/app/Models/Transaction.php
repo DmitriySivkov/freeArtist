@@ -20,6 +20,7 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Order|null $order
+ * @property-read \App\Models\Producer|null $producer
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction query()
@@ -59,5 +60,13 @@ class Transaction extends Model
 	public function products()
 	{
 		return $this->belongsToJson(Product::class, 'order_data[]->id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function producer()
+	{
+		return $this->belongsTo(Producer::class);
 	}
 }

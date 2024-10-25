@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProducerRegisterRequest;
+use App\Http\Resources\ProducerUserResource;
 use App\Models\Producer;
 use App\Models\Product;
 use App\Models\User;
@@ -143,5 +144,15 @@ class ProducerController extends Controller
 			return response()->json($e->getMessage())
 				->setStatusCode(422);
 		}
+	}
+
+	/**
+	 * @param Producer $producer
+	 * @return \Illuminate\Support\Collection
+	 */
+	public function getUsers(Producer $producer)
+	{
+		return ProducerUserResource::collection($producer->team->users)
+			->collection;
 	}
 }
