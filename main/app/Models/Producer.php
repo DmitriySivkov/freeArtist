@@ -13,12 +13,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $city_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ProducerPaymentProvider|null $activePaymentProvider
  * @property-read \App\Models\City|null $city
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RelationRequest[] $incomingRelationRequests
  * @property-read int|null $incoming_relation_requests_count
  * @property-read \App\Models\Image|null $logo
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProducerOrderPriority[] $orderPriorities
- * @property-read int|null $order_priorities_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
  * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PaymentMethod[] $paymentMethods
@@ -37,7 +36,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereLogoId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Producer whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \App\Models\ProducerPaymentProvider|null $activePaymentProvider
  */
 class Producer extends Model
 {
@@ -114,14 +112,5 @@ class Producer extends Model
 	public function paymentMethods()
 	{
 		return $this->belongsToMany(PaymentMethod::class);
-	}
-
-	// todo - delete order priority table ?
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function orderPriorities()
-	{
-		return $this->hasMany(ProducerOrderPriority::class);
 	}
 }

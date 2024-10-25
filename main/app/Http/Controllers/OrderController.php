@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\TokenHelper;
-use App\Http\Requests\UserNewOrderRequest;
-use App\Models\Order;
 use App\Models\PaymentMethod;
-use App\Models\ProducerOrderPriority;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\UserOrderService;
@@ -43,26 +40,10 @@ class OrderController extends Controller
 		try {
 			\DB::beginTransaction();
 
-			$orderService->setUser($user);
-			$orderService->setPreparationDate($prepareBy);
-
-			$order = $orderService->processOrder($transaction);
-
-			// todo - move to service
-			$orderPriority = ProducerOrderPriority::where('producer_id', $order->producer_id)
-				->where('status', Order::ORDER_STATUS_NEW)
-				->first();
-
-			if ($orderPriority) {
-				$orderPriority->order_priority = [$order->id, ...$orderPriority->order_priority];
-				$orderPriority->save();
-			} else {
-				ProducerOrderPriority::create([
-					'producer_id' => $order->producer_id,
-					'status' => Order::ORDER_STATUS_NEW,
-					'order_priority' => [$order->id]
-				]);
-			}
+			$orderService
+				->setUser($user)
+				->setPreparationDate($prepareBy)
+				->processOrder($transaction);
 
 			\DB::commit();
 		} catch (\Throwable $e) {

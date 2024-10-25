@@ -19,20 +19,24 @@ class UserOrderService implements OrderServiceContract
 
 	/**
 	 * @param User|null $user
-	 * @return void
+	 * @return UserOrderService
 	 */
 	public function setUser(?User $user)
 	{
 		$this->user = $user;
+
+		return $this;
 	}
 
 	/**
 	 * @param Carbon $date
-	 * @return void
+	 * @return UserOrderService
 	 */
 	public function setPreparationDate(Carbon $date)
 	{
 		$this->prepareByDate = $date;
+
+		return $this;
 	}
 
 	/**

@@ -1,3 +1,15 @@
+<script setup>
+const props = defineProps({
+	order: Object,
+	cardClass: String,
+})
+
+const emit = defineEmits([
+	"show"
+])
+
+</script>
+
 <template>
 	<q-card
 		square
@@ -11,15 +23,3 @@
 	</q-card>
 	<q-separator />
 </template>
-
-<script setup>
-const props = defineProps({
-	order: Object,
-	cardClass: String,
-})
-
-const emit = defineEmits([
-	"show"
-])
-
-</script>

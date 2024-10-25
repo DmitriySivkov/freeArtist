@@ -7,7 +7,6 @@ import { ref, computed, onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Dialog } from "quasar"
-import { echo } from "src/boot/ws"
 
 import ProducerOrderCard from "src/components/orders/Producer/ProducerOrderCard.vue"
 import OrderCardDetailDialog from "components/dialogs/OrderCardDetailDialog.vue"
