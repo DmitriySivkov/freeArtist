@@ -19,6 +19,8 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('user_id')
 				->nullable();
             $table->unsignedInteger('producer_id');
+			$table->unsignedInteger('assignee_id')
+				->nullable();
             $table->json('order_products');
             $table->integer('status');
 			$table->date('prepare_by');
