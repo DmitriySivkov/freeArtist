@@ -43,15 +43,15 @@ export const useCartStore = defineStore("cart", {
 
 			let productSet = producerSet.products.find((p) => p.data.id === productId)
 
-			if (productSet.cart_amount === 1) {
-				producerSet.products = producerSet.products.filter((p) => p.data.id !== productId)
-
-				if (!producerSet.products.length) {
-					this.data = this.data.filter((item) => item.producer_id !== producerId)
-				}
-			} else {
-				productSet.cart_amount--
-			}
+			// if (productSet.cart_amount === 1) {
+			// 	producerSet.products = producerSet.products.filter((p) => p.data.id !== productId)
+			//
+			// 	if (!producerSet.products.length) {
+			// 		this.data = this.data.filter((item) => item.producer_id !== producerId)
+			// 	}
+			// } else {
+			productSet.cart_amount--
+			// }
 
 			LocalStorage.set("cart", this.data)
 		},
@@ -116,7 +116,7 @@ export const useCartStore = defineStore("cart", {
 			// здесь мержим два объекта data (важно: не перезаписываем)
 			Object.assign(product.data, data)
 
-			if (cartAmount) {
+			if (typeof cartAmount === "number") {
 				product.cart_amount = cartAmount
 			}
 		},

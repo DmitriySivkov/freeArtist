@@ -1,3 +1,19 @@
+<script setup>
+import { useDialogPluginComponent } from "quasar"
+
+const props = defineProps({
+	message: String,
+	invalidProducts: Array,
+	producerId: Number
+})
+
+defineEmits([
+	...useDialogPluginComponent.emits,
+])
+
+const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
+</script>
+
 <template>
 	<q-dialog
 		ref="dialogRef"
@@ -60,7 +76,7 @@
 					<q-btn
 						label="Пересчитать"
 						color="primary"
-						class="q-pa-lg full-width"
+						class="q-pa-md full-width"
 						@click="onDialogOK"
 					/>
 				</div>
@@ -68,19 +84,3 @@
 		</q-card>
 	</q-dialog>
 </template>
-
-<script setup>
-import { useDialogPluginComponent } from "quasar"
-
-const props = defineProps({
-	message: String,
-	invalidProducts: Array,
-	producerId: Number
-})
-
-defineEmits([
-	...useDialogPluginComponent.emits,
-])
-
-const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
-</script>

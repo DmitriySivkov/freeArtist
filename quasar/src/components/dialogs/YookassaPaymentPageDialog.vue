@@ -1,18 +1,7 @@
-<template>
-	<q-dialog
-		ref="dialogRef"
-		@hide="onDialogHide"
-		:maximized="isMobileWidthThreshold"
-	>
-		<q-card class="q-dialog-plugin q-pa-md">
-			<div id="payment-form"></div>
-		</q-card>
-	</q-dialog>
-</template>
-
 <script setup>
-import { useDialogPluginComponent, useQuasar } from "quasar"
-import { computed, onMounted } from "vue"
+import { useDialogPluginComponent } from "quasar"
+import { onMounted } from "vue"
+import { useScreen } from "src/composables/screen"
 
 onMounted(() => {
 	let script = document.createElement("script")
@@ -35,8 +24,7 @@ const props = defineProps({
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
-const $q = useQuasar()
-const isMobileWidthThreshold = computed(() => $q.screen.width < $q.screen.sizes.md)
+const { isSmallScreen } = useScreen()
 
 function renderForm() {
 	const checkout = new window.YooMoneyCheckoutWidget({
@@ -75,3 +63,15 @@ function renderForm() {
 	checkout.render("payment-form")
 }
 </script>
+
+<template>
+	<q-dialog
+		ref="dialogRef"
+		@hide="onDialogHide"
+		:maximized="isSmallScreen"
+	>
+		<q-card class="q-dialog-plugin q-pa-md">
+			<div id="payment-form"></div>
+		</q-card>
+	</q-dialog>
+</template>

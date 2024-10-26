@@ -1,8 +1,8 @@
 <script setup>
 import { useDialogPluginComponent } from "quasar"
-import { computed, ref } from "vue"
+import { ref } from "vue"
 import { api } from "src/boot/axios"
-import { useQuasar } from "quasar"
+import { useScreen } from "src/composables/screen"
 
 defineEmits([
 	...useDialogPluginComponent.emits,
@@ -10,8 +10,7 @@ defineEmits([
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
-const $q = useQuasar()
-const isMobileWidthThreshold = computed(() => $q.screen.width < $q.screen.sizes.md)
+const { isSmallScreen } = useScreen()
 
 const team = ref(null)
 const message = ref("")
@@ -70,13 +69,13 @@ const submitRelationRequest = () => {
 	<q-dialog
 		ref="dialogRef"
 		@hide="onDialogHide"
-		:maximized="isMobileWidthThreshold"
+		:maximized="isSmallScreen"
 		transition-show="slide-up"
 		transition-hide="slide-down"
 	>
 		<q-card class="q-dialog-plugin column q-pa-md">
 			<div
-				v-if="isMobileWidthThreshold"
+				v-if="isSmallScreen"
 				class="col-auto q-mb-lg text-right"
 			>
 				<q-icon
@@ -91,7 +90,7 @@ const submitRelationRequest = () => {
 				Вы по-прежнему сможете зарегистрировать собственную.
 			</div>
 			<q-form
-				class="col column"
+				class="col column no-wrap"
 				@submit="submitRelationRequest"
 			>
 				<div class="col-auto q-mb-md">

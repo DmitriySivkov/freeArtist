@@ -9,6 +9,7 @@ import { PAYMENT_METHODS } from "src/const/paymentMethods"
 import { PAYMENT_PROVIDERS } from "src/const/paymentProviders"
 import { useUserStore } from "src/stores/user"
 import { useNotification } from "src/composables/notification"
+import { useScreen } from "src/composables/screen"
 
 const props = defineProps({
 	totalPrice: String,
@@ -27,6 +28,8 @@ const emit = defineEmits([
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
 const { notifyError } = useNotification()
+
+const { isSmallScreen } = useScreen()
 
 const userStore = useUserStore()
 
@@ -197,13 +200,29 @@ const validatePhone = (phone) => {
 	<q-dialog
 		ref="dialogRef"
 		@hide="onDialogHide"
+		:maximized="isSmallScreen"
+		transition-show="slide-up"
+		transition-hide="slide-down"
 	>
-		<q-card class="q-dialog-plugin q-pa-sm">
+		<q-card class="q-dialog-plugin column no-wrap q-pa-md">
+			<div class="col-auto text-right q-mb-lg">
+				<q-icon
+					v-close-popup
+					name="close"
+					size="md"
+					class="cursor-pointer"
+				/>
+			</div>
+
 			<q-form
 				greedy
+				class="col column no-wrap"
 				@submit="makeTransaction"
 			>
-				<template v-if="!userStore.is_logged">
+				<div
+					v-if="!userStore.is_logged"
+					class="col-auto"
+				>
 					<div class="text-h6">Ваш номер телефона</div>
 					<q-input
 						filled
@@ -215,154 +234,165 @@ const validatePhone = (phone) => {
 						unmasked-value
 						:rules="[validatePhone]"
 					/>
-				</template>
-
-				<q-item
-					dense
-					class="q-pa-none"
-				>
-					<q-item-section class="text-h6">Когда должно быть готово ?</q-item-section>
-					<q-item-section
-						v-if="timePeriod?.hasError"
-						avatar
-					>
-						<q-icon
-							color="red-9"
-							name="error"
-						/>
-					</q-item-section>
-				</q-item>
-				<q-separator
-					:class="{'invisible': !timePeriod?.hasError}"
-					color="red-10"
-					size="2px"
-				/>
-
-				<q-field
-					ref="timePeriod"
-					:model-value="formData.timePeriod"
-					lazy-rules
-					:rules="[
-						(val) => !!val,
-					]"
-					borderless
-					no-error-icon
-					class="q-pb-none"
-				>
-					<template #control>
-						<div class="row q-col-gutter-xs">
-							<div
-								v-for="period in ORDER_TIME_PERIODS"
-								:key="period"
-								class="col-6"
-							>
-								<q-card
-									class="q-py-md full-width text-body1 text-center q-hoverable cursor-pointer"
-									:class="[
-										{'bg-primary text-white': period === formData.timePeriod},
-									]"
-									@click="selectTimePeriod(period)"
-								>
-									<span class="q-focus-helper"></span>
-									<div class="row">
-										<q-card-section class="col-3">
-											<q-radio
-												:model-value="formData.timePeriod"
-												checked-icon="radio_button_checked"
-												unchecked-icon="radio_button_unchecked"
-												:color="formData.timePeriod === period ? 'white' : 'black'"
-												:val="period"
-											/>
-										</q-card-section>
-										<q-card-section class="col-9 self-center">
-											<span class="text-body1">{{ ORDER_TIME_PERIOD_NAMES[period] }}</span>
-										</q-card-section>
-									</div>
-								</q-card>
-							</div>
-						</div>
-					</template>
-				</q-field>
-				<div
-					v-if="formData.timePeriod === ORDER_TIME_PERIODS.SPECIFIC_DATE"
-					class="row q-mt-sm"
-				>
-					<q-date
-						v-model="prepareByDate"
-						class="full-width"
-						no-unset
-						first-day-of-week="1"
-						mask="YYYY-MM-DD"
-						title="Выберите день"
-						:subtitle="prepareByDate"
-					/>
 				</div>
 
-				<q-item
-					dense
-					class="q-pa-none q-mt-sm"
-				>
-					<q-item-section class="text-h6">Способ оплаты</q-item-section>
-					<q-item-section
-						v-if="paymentMethod?.hasError"
-						avatar
+				<div class="col-auto">
+					<q-item
+						dense
+						class="q-pa-none"
 					>
-						<q-icon
-							color="red-9"
-							name="error"
-						/>
-					</q-item-section>
-				</q-item>
-				<q-separator
-					:class="{'invisible': !paymentMethod?.hasError}"
-					color="red-10"
-					size="2px"
-				/>
-				<q-field
-					ref="paymentMethod"
-					:model-value="formData.paymentMethod"
-					lazy-rules
-					:rules="[
-						(val) => !!val,
-					]"
-					borderless
-					no-error-icon
-					class="q-pb-none"
-				>
-					<template #control>
-						<div class="row q-col-gutter-xs">
-							<div
-								v-for="method in paymentMethods"
-								:key="method.id"
-								class="col-6"
-							>
-								<q-card
-									class="q-py-md full-width text-body1 text-center q-hoverable cursor-pointer"
-									:class="{'bg-primary text-white': method.id === formData.paymentMethod}"
-									@click="selectPaymentMethod(method.id)"
-								>
-									<span class="q-focus-helper"></span>
-									<div class="row">
-										<q-card-section class="col-3">
-											<q-radio
-												:model-value="formData.paymentMethod"
-												checked-icon="radio_button_checked"
-												unchecked-icon="radio_button_unchecked"
-												:color="formData.paymentMethod === method.id ? 'white' : 'black'"
-												:val="method.id"
-											/>
-										</q-card-section>
-										<q-card-section class="col-9 self-center">
-											<span class="text-body1">{{ method.name }}</span>
-										</q-card-section>
-									</div>
-								</q-card>
-							</div>
-						</div>
-					</template>
-				</q-field>
+						<q-item-section class="text-h6">Когда должно быть готово ?</q-item-section>
+						<q-item-section
+							v-if="timePeriod?.hasError"
+							avatar
+						>
+							<q-icon
+								color="red-9"
+								name="error"
+							/>
+						</q-item-section>
+					</q-item>
+					<q-separator
+						:class="{'invisible': !timePeriod?.hasError}"
+						color="red-10"
+						size="2px"
+					/>
 
-				<div class="row q-mt-md">
+					<q-field
+						ref="timePeriod"
+						:model-value="formData.timePeriod"
+						lazy-rules
+						:rules="[
+							(val) => !!val,
+						]"
+						borderless
+						no-error-icon
+						class="q-pb-none"
+					>
+						<template #control>
+							<div class="col-12">
+								<div class="row q-col-gutter-xs">
+									<div
+										v-for="period in ORDER_TIME_PERIODS"
+										:key="period"
+										class="col-6"
+									>
+										<q-card
+											class="q-py-lg text-body1 text-center q-hoverable cursor-pointer"
+											:class="[
+												{'bg-primary text-white': period === formData.timePeriod},
+											]"
+											style="min-height:100px"
+											@click="selectTimePeriod(period)"
+										>
+											<span class="q-focus-helper"></span>
+											<div class="row items-center">
+												<div class="col-3">
+													<q-radio
+														:model-value="formData.timePeriod"
+														checked-icon="radio_button_checked"
+														unchecked-icon="radio_button_unchecked"
+														:color="formData.timePeriod === period ? 'white' : 'black'"
+														:val="period"
+													/>
+												</div>
+												<div class="col q-px-md">
+													<span class="text-body1">{{ ORDER_TIME_PERIOD_NAMES[period] }}</span>
+												</div>
+											</div>
+										</q-card>
+									</div>
+								</div>
+
+								<div
+									v-if="formData.timePeriod === ORDER_TIME_PERIODS.SPECIFIC_DATE"
+									class="row q-mt-sm"
+								>
+									<q-date
+										v-model="prepareByDate"
+										class="full-width"
+										no-unset
+										first-day-of-week="1"
+										mask="YYYY-MM-DD"
+										title="Выберите день"
+										:subtitle="prepareByDate"
+									/>
+								</div>
+							</div>
+						</template>
+					</q-field>
+				</div>
+
+				<div class="col-auto">
+					<q-item
+						dense
+						class="q-pa-none q-mt-sm"
+					>
+						<q-item-section class="text-h6">Способ оплаты</q-item-section>
+						<q-item-section
+							v-if="paymentMethod?.hasError"
+							avatar
+						>
+							<q-icon
+								color="red-9"
+								name="error"
+							/>
+						</q-item-section>
+					</q-item>
+					<q-separator
+						:class="{'invisible': !paymentMethod?.hasError}"
+						color="red-10"
+						size="2px"
+					/>
+					<q-field
+						ref="paymentMethod"
+						:model-value="formData.paymentMethod"
+						lazy-rules
+						:rules="[
+							(val) => !!val,
+						]"
+						borderless
+						no-error-icon
+						class="q-pb-none"
+					>
+						<template #control>
+							<div class="col-12">
+								<div class="row q-col-gutter-xs">
+									<div
+										v-for="method in paymentMethods"
+										:key="method.id"
+										class="col-6"
+									>
+										<q-card
+											class="q-py-lg text-body1 text-center q-hoverable cursor-pointer"
+											:class="{'bg-primary text-white': method.id === formData.paymentMethod}"
+											style="min-height:100px"
+											@click="selectPaymentMethod(method.id)"
+										>
+											<span class="q-focus-helper"></span>
+											<div class="row items-center">
+												<div class="col-3">
+													<q-radio
+														:model-value="formData.paymentMethod"
+														checked-icon="radio_button_checked"
+														unchecked-icon="radio_button_unchecked"
+														:color="formData.paymentMethod === method.id ? 'white' : 'black'"
+														:val="method.id"
+													/>
+												</div>
+												<div class="col q-px-md">
+													<span class="text-body1">{{ method.name }}</span>
+												</div>
+											</div>
+										</q-card>
+									</div>
+								</div>
+							</div>
+						</template>
+					</q-field>
+				</div>
+
+				<div class="col content-end q-mt-md">
 					<q-btn
 						class="q-py-md full-width"
 						label="Продолжить"
@@ -371,6 +401,8 @@ const validatePhone = (phone) => {
 					/>
 				</div>
 			</q-form>
+
+
 			<q-inner-loading :showing="isLoading">
 				<q-spinner-gears
 					size="lg"

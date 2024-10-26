@@ -1,135 +1,3 @@
-<template>
-	<div v-if="cart.length">
-		<div
-			v-for="(cartItem, cartItemIndex) in cart"
-			:key="cartItem.producer_id"
-			class="row justify-center q-mb-xs"
-		>
-			<q-card class="col">
-				<q-card-section>
-					<span
-						v-if="isCartLoaded"
-						class="text-h6"
-					>
-						{{ producers[cartItem.producer_id].display_name }}
-					</span>
-					<q-spinner
-						v-else
-						color="primary"
-						size="md"
-					/>
-				</q-card-section>
-				<q-separator />
-				<q-card-section
-					v-for="(product, productIndex) in cartItem.products"
-					:key="productIndex"
-					class="row q-pa-lg q-hoverable"
-				>
-					<span class="q-focus-helper"></span>
-					<div class="col-xs-12 col-sm-6 self-center">
-						<span class="text-body1">{{ product.data.title }}</span>
-					</div>
-					<div class="col-xs-12 col-sm offset-sm-1">
-						<q-input
-							dense
-							filled
-							:disable="!isCartLoaded"
-							:model-value="cart[cartItemIndex].products[productIndex].cart_amount"
-							@update:model-value="setProductAmount({
-								producerId: cart[cartItemIndex].producer_id,
-								product: cart[cartItemIndex].products[productIndex],
-								amount: $event
-							})"
-							type="number"
-							:bg-color="
-								isCartLoaded && cart[cartItemIndex].products[productIndex].cart_amount > products[product.data.id].amount ? 'negative': ''
-							"
-							:input-class="[
-								{'text-center': true},
-								{'text-white': isCartLoaded && cart[cartItemIndex].products[productIndex].cart_amount > products[product.data.id].amount}
-							]"
-						>
-							<template v-slot:before>
-								<q-btn
-									icon="remove"
-									size="md"
-									color="primary"
-									:disable="!isCartLoaded"
-									@click="removeFromCart({
-										producerId: cart[cartItemIndex].producer_id,
-										product: cart[cartItemIndex].products[productIndex]
-									})"
-									class="full-height"
-								/>
-							</template>
-							<template v-slot:after>
-								<q-btn
-									icon="add"
-									size="md"
-									color="primary"
-									:disable="!isCartLoaded"
-									@click="addToCart({
-										producerId: cart[cartItemIndex].producer_id,
-										product: cart[cartItemIndex].products[productIndex]
-									})"
-									class="full-height"
-								/>
-							</template>
-						</q-input>
-					</div>
-				</q-card-section>
-				<q-separator />
-				<q-card-section class="q-pa-lg">
-					<div
-						v-if="$q.screen.width >= $q.screen.sizes.sm"
-						class="row q-col-gutter-sm"
-					>
-						<div class="col-xs-12 col-sm">
-							<div class="column full-height">
-								<div class="col text-right text-h6">
-									{{ totalPrice[cartItem.producer_id] }} ₽
-								</div>
-								<div class="col-shrink">
-									<q-btn
-										class="q-py-md full-width"
-										label="Оформить заказ"
-										color="primary"
-										@click="showOrderCheckoutDialog(cartItem.producer_id)"
-										:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
-									/>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						v-else
-						class="row"
-					>
-						<div class="col-12 text-right q-pb-sm text-h6">
-							{{ totalPrice[cartItem.producer_id] }} ₽
-						</div>
-						<div class="col-12">
-							<q-btn
-								class="q-py-lg full-width"
-								label="Оформить заказ"
-								color="primary"
-								@click="showOrderCheckoutDialog(cartItem.producer_id)"
-								:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
-							/>
-						</div>
-					</div>
-				</q-card-section>
-			</q-card>
-		</div>
-	</div>
-	<div
-		v-else
-		class="fit"
-	>
-		<EmptyCart />
-	</div>
-</template>
-
 <script setup>
 import { computed, ref, onMounted } from "vue"
 import { useCartStore } from "src/stores/cart"
@@ -338,3 +206,147 @@ const invalidProductsAction = (invalidProducts) => {
 	LocalStorage.set("cart", cart.value)
 }
 </script>
+
+<template>
+	<div v-if="cart.length">
+		<div
+			v-for="(cartItem, cartItemIndex) in cart"
+			:key="cartItem.producer_id"
+			class="row justify-center q-mb-xs"
+		>
+			<q-card class="col">
+				<q-card-section>
+					<span
+						v-if="isCartLoaded"
+						class="text-h6"
+					>
+						{{ producers[cartItem.producer_id].display_name }}
+					</span>
+					<q-spinner
+						v-else
+						color="primary"
+						size="md"
+					/>
+				</q-card-section>
+				<q-separator />
+				<q-card-section
+					v-for="(product, productIndex) in cartItem.products"
+					:key="productIndex"
+					class="row q-pa-lg q-hoverable"
+				>
+					<span class="q-focus-helper"></span>
+					<div class="col-xs-12 col-sm-6 self-center">
+						<q-item>
+							<q-item-section>
+								<q-item-label class="text-body1">
+									{{ product.data.title }}
+								</q-item-label>
+								<q-item-label
+									v-if="isCartLoaded && !products[product.data.id].amount"
+									class="text-subtitle2 text-grey"
+								>
+									Закончился
+								</q-item-label>
+							</q-item-section>
+						</q-item>
+					</div>
+					<div class="col-xs-12 col-sm offset-sm-1">
+						<q-input
+							dense
+							filled
+							:disable="!isCartLoaded || (isCartLoaded && !products[product.data.id].amount)"
+							:model-value="cart[cartItemIndex].products[productIndex].cart_amount"
+							@update:model-value="setProductAmount({
+								producerId: cart[cartItemIndex].producer_id,
+								product: cart[cartItemIndex].products[productIndex],
+								amount: $event
+							})"
+							type="number"
+							:bg-color="
+								isCartLoaded && cart[cartItemIndex].products[productIndex].cart_amount > products[product.data.id].amount ? 'negative': ''
+							"
+							:input-class="[
+								{'text-center': true},
+								{'text-white': isCartLoaded && cart[cartItemIndex].products[productIndex].cart_amount > products[product.data.id].amount}
+							]"
+						>
+							<template v-slot:before>
+								<q-btn
+									icon="remove"
+									size="md"
+									color="primary"
+									:disable="!isCartLoaded || (isCartLoaded && !products[product.data.id].amount)"
+									@click="removeFromCart({
+										producerId: cart[cartItemIndex].producer_id,
+										product: cart[cartItemIndex].products[productIndex]
+									})"
+									class="full-height"
+								/>
+							</template>
+							<template v-slot:after>
+								<q-btn
+									icon="add"
+									size="md"
+									color="primary"
+									:disable="!isCartLoaded || (isCartLoaded && !products[product.data.id].amount)"
+									@click="addToCart({
+										producerId: cart[cartItemIndex].producer_id,
+										product: cart[cartItemIndex].products[productIndex]
+									})"
+									class="full-height"
+								/>
+							</template>
+						</q-input>
+					</div>
+				</q-card-section>
+				<q-separator />
+				<q-card-section class="q-pa-lg">
+					<div
+						v-if="$q.screen.width >= $q.screen.sizes.sm"
+						class="row q-col-gutter-sm"
+					>
+						<div class="col-xs-12 col-sm">
+							<div class="column full-height">
+								<div class="col text-right text-h6">
+									{{ totalPrice[cartItem.producer_id] }} ₽
+								</div>
+								<div class="col-shrink">
+									<q-btn
+										class="q-py-md full-width"
+										label="Оформить заказ"
+										color="primary"
+										@click="showOrderCheckoutDialog(cartItem.producer_id)"
+										:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						v-else
+						class="row"
+					>
+						<div class="col-12 text-right q-pb-sm text-h6">
+							{{ totalPrice[cartItem.producer_id] }} ₽
+						</div>
+						<div class="col-12">
+							<q-btn
+								class="q-py-lg full-width"
+								label="Оформить заказ"
+								color="primary"
+								@click="showOrderCheckoutDialog(cartItem.producer_id)"
+								:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
+							/>
+						</div>
+					</div>
+				</q-card-section>
+			</q-card>
+		</div>
+	</div>
+	<div
+		v-else
+		class="fit"
+	>
+		<EmptyCart />
+	</div>
+</template>

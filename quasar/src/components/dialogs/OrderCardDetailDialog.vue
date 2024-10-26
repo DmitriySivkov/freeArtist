@@ -1,9 +1,10 @@
 <script setup>
 import { ref, computed } from "vue"
-import { useDialogPluginComponent, useQuasar } from "quasar"
+import { useDialogPluginComponent } from "quasar"
 import { ORDER_STATUS_NAMES, ORDER_CARD_STATUS_TO_CLASS, ORDER_STATUSES } from "src/const/orderStatuses"
 import { useProducerOrdersStore } from "src/stores/producerOrders"
 import { api } from "src/boot/axios"
+import { useScreen } from "src/composables/screen"
 
 defineEmits([
 	...useDialogPluginComponent.emits,
@@ -16,8 +17,7 @@ const props = defineProps({
 	assignees: Array
 })
 
-const $q = useQuasar()
-const isMobileWidthThreshold = computed(() => $q.screen.width < $q.screen.sizes.md)
+const { isSmallScreen } = useScreen()
 
 const cardClass = computed(() => ORDER_CARD_STATUS_TO_CLASS[props.order.status])
 
@@ -67,7 +67,7 @@ const update = ({ field, value }) => {
 	<q-dialog
 		ref="dialogRef"
 		@hide="onDialogHide"
-		:maximized="isMobileWidthThreshold"
+		:maximized="isSmallScreen"
 		transition-show="slide-up"
 		transition-hide="slide-down"
 	>

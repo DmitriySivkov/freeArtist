@@ -1,8 +1,31 @@
+<script setup>
+import { useDialogPluginComponent } from "quasar"
+import { onMounted } from "vue"
+import { useScreen } from "src/composables/screen"
+
+onMounted(() => {
+	let script = document.createElement("script")
+
+	script.src = "https://securepay.tinkoff.ru/html/payForm/js/tinkoff_v2.js"
+	document.head.append(script)
+})
+
+defineEmits([
+	...useDialogPluginComponent.emits,
+])
+
+const props = defineProps({})
+
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
+
+const { isSmallScreen } = useScreen()
+</script>
+
 <template>
 	<q-dialog
 		ref="dialogRef"
 		@hide="onDialogHide"
-		:maximized="isMobileWidthThreshold"
+		:maximized="isSmallScreen"
 	>
 		<q-card class="q-dialog-plugin q-pa-md">
 			<form
@@ -74,29 +97,6 @@
 		</q-card>
 	</q-dialog>
 </template>
-
-<script setup>
-import { useDialogPluginComponent, useQuasar } from "quasar"
-import { computed, onMounted } from "vue"
-
-onMounted(() => {
-	let script = document.createElement("script")
-
-	script.src = "https://securepay.tinkoff.ru/html/payForm/js/tinkoff_v2.js"
-	document.head.append(script)
-})
-
-defineEmits([
-	...useDialogPluginComponent.emits,
-])
-
-const props = defineProps({})
-
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
-
-const $q = useQuasar()
-const isMobileWidthThreshold = computed(() => $q.screen.width < $q.screen.sizes.md)
-</script>
 
 <style>
 .payform-tbank {

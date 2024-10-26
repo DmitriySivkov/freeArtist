@@ -88,7 +88,7 @@ const setPaymentProvider = () => {
 	</div>
 
 	<q-form
-		class="col column"
+		class="col column no-wrap"
 		@submit="setPaymentProvider"
 	>
 		<q-input
