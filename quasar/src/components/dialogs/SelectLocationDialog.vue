@@ -1,3 +1,59 @@
+<script setup>
+import { onMounted, ref } from "vue"
+import { useDialogPluginComponent } from "quasar"
+import { api } from "src/boot/axios"
+
+defineEmits([
+	...useDialogPluginComponent.emits,
+])
+
+const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
+
+const location = ref(null)
+const locationOptions = ref([])
+
+const locationList = ref(null)
+const isSearchingLocation = ref(true)
+const isAnotherLocation = ref(false)
+
+const setLocation = (location) => {
+	onDialogOK(location)
+}
+
+const loadLocation = async (query, update) => {
+	if (query.length < 1) return
+
+	const response = await api.get("cities",{
+		params: { query }
+	})
+
+	update(() => {
+		locationOptions.value = response.data.map((location) =>
+			({
+				id: location.id,
+				address: location.address
+			})
+		)
+	})
+}
+
+onMounted(() => {
+	const promise = api.get("users/location")
+
+	promise.then((response) => {
+		locationList.value = response.data
+	})
+
+	promise.catch(() => {
+		// todo
+	})
+
+	promise.finally(() =>
+		isSearchingLocation.value = false
+	)
+})
+</script>
+
 <template>
 	<q-dialog
 		ref="dialogRef"
@@ -92,59 +148,3 @@
 		</q-card>
 	</q-dialog>
 </template>
-
-<script setup>
-import { onMounted, ref } from "vue"
-import { useDialogPluginComponent } from "quasar"
-import { api } from "src/boot/axios"
-
-defineEmits([
-	...useDialogPluginComponent.emits,
-])
-
-const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
-
-const location = ref(null)
-const locationOptions = ref([])
-
-const locationList = ref(null)
-const isSearchingLocation = ref(true)
-const isAnotherLocation = ref(false)
-
-const setLocation = (location) => {
-	onDialogOK(location)
-}
-
-const loadLocation = async (query, update) => {
-	if (query.length < 1) return
-
-	const response = await api.get("cities",{
-		params: { query }
-	})
-
-	update(() => {
-		locationOptions.value = response.data.map((location) =>
-			({
-				id: location.id,
-				address: location.address
-			})
-		)
-	})
-}
-
-onMounted(() => {
-	const promise = api.get("users/location")
-
-	promise.then((response) => {
-		locationList.value = response.data
-	})
-
-	promise.catch(() => {
-		// todo
-	})
-
-	promise.finally(() =>
-		isSearchingLocation.value = false
-	)
-})
-</script>

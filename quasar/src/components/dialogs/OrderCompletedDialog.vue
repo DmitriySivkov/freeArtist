@@ -1,3 +1,13 @@
+<script setup>
+import { useDialogPluginComponent } from "quasar"
+
+const emit = defineEmits([
+	...useDialogPluginComponent.emits,
+])
+
+const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
+</script>
+
 <template>
 	<q-dialog
 		ref="dialogRef"
@@ -26,13 +36,3 @@
 		</q-card>
 	</q-dialog>
 </template>
-
-<script setup>
-import { useDialogPluginComponent } from "quasar"
-
-const emit = defineEmits([
-	...useDialogPluginComponent.emits,
-])
-
-const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
-</script>

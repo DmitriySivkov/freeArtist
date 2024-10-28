@@ -62,51 +62,55 @@ onMounted(() => {
 		transition-hide="slide-down"
 	>
 		<q-card
-			class="q-dialog-plugin column q-pa-md bg-grey-4"
+			class="q-dialog-plugin"
 			:class="{[$style['half-height']]: !isSmallScreen }"
-			style="overflow-x:hidden"
 		>
 			<div
-				v-if="isSmallScreen && !selectedPaymentProvider"
-				class="col-auto q-pa-none q-mb-lg text-right"
-			>
-				<q-icon
-					v-close-popup
-					name="close"
-					size="md"
-					class="cursor-pointer"
-				/>
-			</div>
-			<transition
-				mode="out-in"
-				enter-active-class="animated fadeInLeft"
+				class="column q-pa-md"
+				style="min-height:100%"
 			>
 				<div
 					v-if="!selectedPaymentProvider"
-					class="col"
+					class="col-auto q-pa-none q-mb-lg text-right"
 				>
-					<ProducerAcquiringSettingsProviderList
-						v-model="selectedPaymentProvider"
-						:producer-payment-providers="producerPaymentProviders"
+					<q-icon
+						v-close-popup
+						name="close"
+						size="md"
+						class="cursor-pointer"
 					/>
 				</div>
-			</transition>
-			<transition
-				mode="out-in"
-				enter-active-class="animated fadeInRight"
-			>
-				<div
-					v-if="selectedPaymentProvider"
-					class="col column no-wrap"
+				<transition
+					mode="out-in"
+					enter-active-class="animated fadeInLeft"
 				>
-					<ProducerAcquiringSettingsProviderSetup
-						v-model="selectedPaymentProvider"
-						:producer-id="props.producerId"
-						:producer-payment-providers="producerPaymentProviders"
-						@success="onSetupSuccess"
-					/>
-				</div>
-			</transition>
+					<div
+						v-if="!selectedPaymentProvider"
+						class="col"
+					>
+						<ProducerAcquiringSettingsProviderList
+							v-model="selectedPaymentProvider"
+							:producer-payment-providers="producerPaymentProviders"
+						/>
+					</div>
+				</transition>
+				<transition
+					mode="out-in"
+					enter-active-class="animated fadeInRight"
+				>
+					<div
+						v-if="selectedPaymentProvider"
+						class="col column no-wrap"
+					>
+						<ProducerAcquiringSettingsProviderSetup
+							v-model="selectedPaymentProvider"
+							:producer-id="props.producerId"
+							:producer-payment-providers="producerPaymentProviders"
+							@success="onSetupSuccess"
+						/>
+					</div>
+				</transition>
+			</div>
 			<q-inner-loading :showing="isMounting">
 				<q-spinner-gears
 					size="lg"

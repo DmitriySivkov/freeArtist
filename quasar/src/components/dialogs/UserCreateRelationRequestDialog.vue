@@ -73,72 +73,77 @@ const submitRelationRequest = () => {
 		transition-show="slide-up"
 		transition-hide="slide-down"
 	>
-		<q-card class="q-dialog-plugin column q-pa-md">
+		<q-card class="q-dialog-plugin">
 			<div
-				v-if="isSmallScreen"
-				class="col-auto q-mb-lg text-right"
+				class="column q-pa-md"
+				style="min-height:100%"
 			>
-				<q-icon
-					v-close-popup
-					name="close"
-					size="md"
-					class="cursor-pointer"
-				/>
-			</div>
-			<div class="col-auto q-pa-md q-mb-md text-center bg-primary text-white text-body1">
-				Присоединиться к существующей команде.<br/>
-				Вы по-прежнему сможете зарегистрировать собственную.
-			</div>
-			<q-form
-				class="col column no-wrap"
-				@submit="submitRelationRequest"
-			>
-				<div class="col-auto q-mb-md">
-					<q-select
-						filled
-						v-model="team"
-						use-input
-						clearable
-						input-debounce="300"
-						label="Начните вводить название компании *"
-						:options="teamList"
-						option-value="id"
-						option-label="label"
-						:disable="isLoading"
-						@filter="loadTeamList"
-						lazy-rules
-						:rules="[
-							val => !!val,
-						]"
-					>
-						<template v-slot:no-option>
-							<q-item>
-								<q-item-section class="text-grey">
-									Компания не найдена
-								</q-item-section>
-							</q-item>
-						</template>
-					</q-select>
+				<div
+					v-if="isSmallScreen"
+					class="col-auto q-mb-lg text-right"
+				>
+					<q-icon
+						v-close-popup
+						name="close"
+						size="md"
+						class="cursor-pointer"
+					/>
+				</div>
+				<div class="col-auto q-pa-md q-mb-md text-center bg-primary text-white text-body1">
+					Присоединиться к существующей команде.<br/>
+					Вы по-прежнему сможете зарегистрировать собственную.
+				</div>
+				<q-form
+					class="col column"
+					@submit="submitRelationRequest"
+				>
+					<div class="col-auto q-mb-md">
+						<q-select
+							filled
+							v-model="team"
+							use-input
+							clearable
+							input-debounce="300"
+							label="Начните вводить название компании *"
+							:options="teamList"
+							option-value="id"
+							option-label="label"
+							:disable="isLoading"
+							@filter="loadTeamList"
+							lazy-rules
+							:rules="[
+								val => !!val,
+							]"
+						>
+							<template v-slot:no-option>
+								<q-item>
+									<q-item-section class="text-grey">
+										Компания не найдена
+									</q-item-section>
+								</q-item>
+							</template>
+						</q-select>
 
-					<!-- todo - maxlength -->
-					<q-input
-						v-model="message"
-						filled
-						type="textarea"
-						label="Добавьте текст заявки (необязательно)"
-						:disable="isLoading"
-					/>
-				</div>
-				<div class="col content-end">
-					<q-btn
-						label="Подтвердить"
-						color="primary"
-						class="q-pa-md full-width"
-						type="submit"
-						:loading="isLoading"
-					/>
-				</div>
-			</q-form>
+						<!-- todo - maxlength -->
+						<q-input
+							v-model="message"
+							filled
+							type="textarea"
+							label="Добавьте текст заявки (необязательно)"
+							:disable="isLoading"
+						/>
+					</div>
+					<div class="col content-end">
+						<q-btn
+							label="Подтвердить"
+							color="primary"
+							class="q-pa-md full-width"
+							type="submit"
+							:loading="isLoading"
+						/>
+					</div>
+				</q-form>
+			</div>
 		</q-card>
 	</q-dialog>
 </template>
