@@ -7,6 +7,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Dialog } from "quasar"
+import { useScreen } from "src/composables/screen"
 
 import ProducerOrderCard from "src/components/orders/Producer/ProducerOrderCard.vue"
 import OrderCardDetailDialog from "components/dialogs/OrderCardDetailDialog.vue"
@@ -18,6 +19,8 @@ import { useUserStore } from "src/stores/user"
 
 // todo - заказы можно распределять между участниками
 const $router = useRouter()
+
+const { isSmallScreen } = useScreen()
 
 const userStore = useUserStore()
 const producerOrdersStore = useProducerOrdersStore()
@@ -123,62 +126,63 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<q-page>
-		<div class="row justify-center">
-			<div class="col-xs-12 col-sm-8 col-md-5 col-lg-4 q-pa-sm">
-				<div class="row justify-between">
-					<div class="col-auto">
-						<q-btn
-							label="Назад"
-							color="secondary"
-							:loading="isLoading"
-							:disable="isLoading"
-							@click="onPrev()"
-						>
-							<template v-slot:loading>
-								<q-spinner-gears color="white" />
-							</template>
-						</q-btn>
-					</div>
-					<div class="col-auto">
-						<q-btn
-							label="Сбросить"
-							color="secondary"
-							:loading="isLoading"
-							:disable="isLoading"
-							@click="onToday()"
-						>
-							<template v-slot:loading>
-								<q-spinner-gears color="white" />
-							</template>
-						</q-btn>
-					</div>
-					<div class="col-auto">
-						<q-btn
-							label="Вперед"
-							color="secondary"
-							:loading="isLoading"
-							:disable="isLoading"
-							@click="onNext()"
-						>
-							<template v-slot:loading>
-								<q-spinner-gears color="white" />
-							</template>
-						</q-btn>
+	<q-page class="column no-wrap">
+		<div class="col-auto">
+			<div class="row justify-center">
+				<div class="col-xs-12 col-sm-8 col-md-5 col-lg-4 q-pa-sm">
+					<div class="row justify-between">
+						<div class="col-auto">
+							<q-btn
+								label="Назад"
+								color="secondary"
+								:loading="isLoading"
+								:disable="isLoading"
+								@click="onPrev()"
+							>
+								<template v-slot:loading>
+									<q-spinner-gears color="white" />
+								</template>
+							</q-btn>
+						</div>
+						<div class="col-auto">
+							<q-btn
+								label="Сбросить"
+								color="secondary"
+								:loading="isLoading"
+								:disable="isLoading"
+								@click="onToday()"
+							>
+								<template v-slot:loading>
+									<q-spinner-gears color="white" />
+								</template>
+							</q-btn>
+						</div>
+						<div class="col-auto">
+							<q-btn
+								label="Вперед"
+								color="secondary"
+								:loading="isLoading"
+								:disable="isLoading"
+								@click="onNext()"
+							>
+								<template v-slot:loading>
+									<q-spinner-gears color="white" />
+								</template>
+							</q-btn>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="row justify-center">
+		<div class="col row justify-center">
 			<q-calendar-agenda
 				ref="calendar"
 				v-model="selectedDate"
 				:weekday-class="getWeekdaysClass"
 				date-type="rounded"
-				view="week"
+				:max-days="isSmallScreen ? 3 : 7"
 				locale="ru-RU"
 				:weekdays="[1,2,3,4,5,6,0]"
-				:day-min-height="200"
 				animated
 				@change="calendarChanged"
 			>
@@ -192,6 +196,7 @@ onBeforeUnmount(() => {
 					/>
 				</template>
 			</q-calendar-agenda>
+
 		</div>
 	</q-page>
 </template>
@@ -217,5 +222,9 @@ onBeforeUnmount(() => {
 	border-color: #d74720 !important;
 	font-weight: bold;
 	background: none !important;
+}
+
+.q-calendar-agenda__pane {
+	height: 100%
 }
 </style>
