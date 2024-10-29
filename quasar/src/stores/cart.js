@@ -43,15 +43,22 @@ export const useCartStore = defineStore("cart", {
 
 			let productSet = producerSet.products.find((p) => p.data.id === productId)
 
-			// if (productSet.cart_amount === 1) {
-			// 	producerSet.products = producerSet.products.filter((p) => p.data.id !== productId)
-			//
-			// 	if (!producerSet.products.length) {
-			// 		this.data = this.data.filter((item) => item.producer_id !== producerId)
-			// 	}
-			// } else {
 			productSet.cart_amount--
-			// }
+
+			LocalStorage.set("cart", this.data)
+		},
+
+		removeProduct({ producerId, productId }) {
+			producerId = parseInt(producerId)
+			productId = parseInt(productId)
+
+			let producerSet = this.data.find((item) => item.producer_id === producerId)
+
+			producerSet.products = producerSet.products.filter((p) => p.data.id !== productId)
+
+			if (!producerSet.products.length) {
+				this.data = this.data.filter((item) => item.producer_id !== producerId)
+			}
 
 			LocalStorage.set("cart", this.data)
 		},

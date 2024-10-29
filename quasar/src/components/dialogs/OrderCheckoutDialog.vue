@@ -185,7 +185,6 @@ const selectTimePeriod = (timePeriodId) => {
 
 const timePeriod = ref(null)
 const paymentMethod = ref(null)
-// todo - проблема с column и no-wrap для 'maximized' окон в мобильном разрешении - верстка ломается, кнопка нормально не встает
 // todo - обработка продюсеров в корзине если один из итемов закончился / все итемы закончились
 
 const validatePhone = (phone) => {

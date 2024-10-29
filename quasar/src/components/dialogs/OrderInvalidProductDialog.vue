@@ -40,7 +40,9 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 										{{ invalidProduct.title }}
 									</div>
 									<div
-										v-if="invalidProduct.cart_amount > invalidProduct.amount"
+										v-if="
+											invalidProduct.cart_amount > invalidProduct.amount
+												|| (invalidProduct.cart_amount === 0 && invalidProduct.amount === 0)"
 										class="col-12 text-h6 text-grey-7"
 									>
 										<div class="row justify-between">

@@ -2,30 +2,32 @@
 import { computed, ref, onMounted } from "vue"
 import { useCartStore } from "src/stores/cart"
 import { api } from "src/boot/axios"
-import EmptyCart from "src/components/cart/EmptyCart.vue"
 import { useNotification } from "src/composables/notification"
 import { useUserStore } from "src/stores/user"
 import { Dialog, LocalStorage } from "quasar"
+import EmptyCart from "src/components/cart/EmptyCart.vue"
 import OrderInvalidProductDialog from "src/components/dialogs/OrderInvalidProductDialog.vue"
 import OrderCheckoutDialog from "src/components/dialogs/OrderCheckoutDialog.vue"
 import OrderCompletedDialog from "src/components/dialogs/OrderCompletedDialog.vue"
+import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
 
 const { notifySuccess, notifyError } = useNotification()
 
 const cartStore = useCartStore()
 const cart = computed(() => cartStore.data)
 
-const hasInvalidAmount = computed(() =>
+const hasOnlyAbsentProducts = computed(() =>
 	!isCartLoaded.value ? {} :
 		cart.value.reduce((carry, producerSet) =>
 			({
 				...carry,
-				[producerSet.producer_id]:
-				producerSet.products.filter((productSet) => productSet.cart_amount > products.value[productSet.data.id].amount).length
+				[producerSet.producer_id]: !producerSet.products.some((productSet) =>
+					productSet.cart_amount > 0
+				)
 			}), {})
 )
 
-const addToCart = ({producerId, product}) => {
+const addAmount = ({ producerId, product }) => {
 	if (product.cart_amount >= products.value[product.data.id].amount) return
 
 	cartStore.increaseProductAmount({
@@ -34,12 +36,27 @@ const addToCart = ({producerId, product}) => {
 	})
 }
 
-const removeFromCart = ({producerId, product}) => {
+const decreaseAmount = ({ producerId, product }) => {
 	if (product.cart_amount === 0) return
 
 	cartStore.decreaseProductAmount({
 		producerId,
 		productId: product.data.id
+	})
+}
+
+const removeProduct = ({ producer, product }) => {
+	Dialog.create({
+		component: CommonConfirmationDialog,
+		componentProps: {
+			text: `Убрать из корзины: &laquo;${product.data.title}&raquo; ?`,
+			headline: producer.display_name
+		}
+	}).onOk(() => {
+		cartStore.removeProduct({
+			producerId: producer.id,
+			productId: product.data.id
+		})
 	})
 }
 
@@ -250,7 +267,7 @@ const invalidProductsAction = (invalidProducts) => {
 							</q-item-section>
 						</q-item>
 					</div>
-					<div class="col-xs-12 col-sm offset-sm-1">
+					<div class="col-xs-10 col-sm self-center">
 						<q-input
 							dense
 							filled
@@ -276,7 +293,7 @@ const invalidProductsAction = (invalidProducts) => {
 									size="md"
 									color="primary"
 									:disable="!isCartLoaded || (isCartLoaded && !products[product.data.id].amount)"
-									@click="removeFromCart({
+									@click="decreaseAmount({
 										producerId: cart[cartItemIndex].producer_id,
 										product: cart[cartItemIndex].products[productIndex]
 									})"
@@ -289,7 +306,7 @@ const invalidProductsAction = (invalidProducts) => {
 									size="md"
 									color="primary"
 									:disable="!isCartLoaded || (isCartLoaded && !products[product.data.id].amount)"
-									@click="addToCart({
+									@click="addAmount({
 										producerId: cart[cartItemIndex].producer_id,
 										product: cart[cartItemIndex].products[productIndex]
 									})"
@@ -298,34 +315,22 @@ const invalidProductsAction = (invalidProducts) => {
 							</template>
 						</q-input>
 					</div>
+					<div class="col-xs-2 col-sm-auto self-center text-right q-pl-lg">
+						<q-icon
+							name="close"
+							size="md"
+							class="cursor-pointer"
+							color="grey-8"
+							@click="removeProduct({
+								producer: producers[cartItem.producer_id],
+								product: cart[cartItemIndex].products[productIndex]
+							})"
+						/>
+					</div>
 				</q-card-section>
 				<q-separator />
 				<q-card-section class="q-pa-lg">
-					<div
-						v-if="$q.screen.width >= $q.screen.sizes.sm"
-						class="row q-col-gutter-sm"
-					>
-						<div class="col-xs-12 col-sm">
-							<div class="column full-height">
-								<div class="col text-right text-h6">
-									{{ totalPrice[cartItem.producer_id] }} ₽
-								</div>
-								<div class="col-shrink">
-									<q-btn
-										class="q-py-md full-width"
-										label="Оформить заказ"
-										color="primary"
-										@click="showOrderCheckoutDialog(cartItem.producer_id)"
-										:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
-									/>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div
-						v-else
-						class="row"
-					>
+					<div class="row">
 						<div class="col-12 text-right q-pb-sm text-h6">
 							{{ totalPrice[cartItem.producer_id] }} ₽
 						</div>
@@ -335,7 +340,7 @@ const invalidProductsAction = (invalidProducts) => {
 								label="Оформить заказ"
 								color="primary"
 								@click="showOrderCheckoutDialog(cartItem.producer_id)"
-								:disable="!isCartLoaded || !!hasInvalidAmount[cartItem.producer_id]"
+								:disable="!isCartLoaded || hasOnlyAbsentProducts[cartItem.producer_id]"
 							/>
 						</div>
 					</div>

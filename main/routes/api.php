@@ -73,7 +73,11 @@ Route::group(['prefix' => 'cart'], function() {
 Route::group(['prefix' => 'orders', 'middleware' => [\App\Http\Middleware\AppendAuthHeader::class]], function () {
 	Route::get('', [OrderController::class, 'index']);
 	Route::post('', [OrderController::class, 'store']);
-	Route::post('transaction', [OrderController::class, 'transaction'])->middleware([\App\Http\Middleware\CheckProducts::class]);
+	Route::post('transaction', [OrderController::class, 'transaction'])
+		->middleware([
+			\App\Http\Middleware\FilterEmptyCartProducts::class,
+			\App\Http\Middleware\CheckProducts::class
+		]);
 });
 
 Route::group(['prefix' => 'yookassa'], function() {
