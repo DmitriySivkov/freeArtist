@@ -47,6 +47,8 @@ class ProducerOrderCreated implements ShouldBroadcast
 
 	public function broadcastWith()
 	{
+		$this->order->producer_order_id = Order::where('producer_id', $this->order->producer_id)->count();
+
 		return [
 			'model' => new ProducerOrdersResource($this->order)
 		];

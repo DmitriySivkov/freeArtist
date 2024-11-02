@@ -7,6 +7,7 @@ use App\Contracts\OrderServiceContract;
 use App\Http\Resources\ProducerOrdersResource;
 use App\Models\Order;
 use App\Models\Producer;
+use Illuminate\Database\Query\JoinClause;
 
 class ProducerOrderService implements OrderServiceContract
 {
@@ -21,7 +22,22 @@ class ProducerOrderService implements OrderServiceContract
 	{
 		// todo - check access (middleware?)
 
-		return Order::where('producer_id', $this->producer->id)
+		return Order::select([
+				'orders.*',
+				'producer_order_ids.producer_order_id as producer_order_id'
+			])
+			->leftJoinSub(
+				\DB::table('orders')
+					->select([
+						'id',
+						\DB::raw('row_number() over (partition by producer_id order by id asc) as producer_order_id')
+					])
+					->where('producer_id', $this->producer->id),
+				'producer_order_ids',
+				fn(JoinClause $join) =>
+					$join->on('orders.id', '=', 'producer_order_ids.id')
+			)
+			->where('producer_id', $this->producer->id)
 			->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
 			->with([
 				'user',

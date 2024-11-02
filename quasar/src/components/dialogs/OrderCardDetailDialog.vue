@@ -85,8 +85,6 @@ const update = ({ field, value }) => {
 					/>
 				</div>
 
-				<div class="q-mb-md">#{{ order.id }}</div>
-
 				<span> Исполнитель </span>
 				<q-select
 					dense
@@ -135,41 +133,61 @@ const update = ({ field, value }) => {
 					</template>
 				</q-select>
 
-				<span>Создан</span>
+				<div class="row justify-between q-col-gutter-xs">
+					<div class="col">
+						<span>Создан</span>
 
-				<q-field
-					dense
-					filled
-					readonly
-				>
-					<div class="self-center">
-						<span :class="order.status !== ORDER_STATUSES.NEW ? 'text-white' : 'text-black'">
-							{{ order.created_at }}
-						</span>
+						<q-field
+							dense
+							filled
+							readonly
+							class="q-mb-md"
+						>
+							<div class="self-center">
+								<span :class="order.status !== ORDER_STATUSES.NEW ? 'text-white' : 'text-black'">
+									{{ order.created_at }}
+								</span>
+							</div>
+						</q-field>
 					</div>
-				</q-field>
+					<div class="col">
+						<span>Приготовить к</span>
+
+						<q-field
+							dense
+							filled
+							readonly
+						>
+							<div class="self-center">
+								<span :class="order.status !== ORDER_STATUSES.NEW ? 'text-white' : 'text-black'">
+									{{ order.prepare_by }}
+								</span>
+							</div>
+						</q-field>
+					</div>
+				</div>
 			</q-card-section>
 			<q-separator />
 			<q-card-section>
-				<div class="text-right">
-					для {{ order.user }}
+				<div class="row justify-between q-mb-md">
+					<div class="col">#{{ order.producer_order_id }}</div>
+
+					<div class="col text-right">
+						для {{ order.user }}
+					</div>
 				</div>
 				<div
 					v-for="product in order.products"
 					:key="product.product_id"
 					class="row q-py-md justify-center"
 				>
-					<div class="col-xs-12 col-sm-11">
-						<div class="row">
-							<div class="col">
-								{{ product.title }}
-							</div>
-							<div class="col-shrink text-right">
-								{{ order.order_products[product.id] }} шт
-							</div>
-						</div>
-						<q-separator />
+					<div class="col">
+						{{ product.title }}
 					</div>
+					<div class="col-auto text-right">
+						{{ order.order_products[product.id] }} шт
+					</div>
+					<q-separator class="full-width" />
 				</div>
 			</q-card-section>
 		</q-card>

@@ -21,6 +21,7 @@ class ProducerOrdersResource extends JsonResource
     {
         return [
 			'id' => $this->id,
+			'producer_order_id' => $this->producer_order_id, // order id in specific producer group
 			'producer_id' => $this->producer_id,
 			'assignee' => $this->assignee?->only(['id', 'name', 'phone']),
 			'order_products' => collect($this->order_products)->pluck('amount', 'id'),

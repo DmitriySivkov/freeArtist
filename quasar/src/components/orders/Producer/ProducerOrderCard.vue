@@ -19,7 +19,7 @@ const emit = defineEmits([
 		@click="emit('show', order)"
 	>
 		<span class="q-focus-helper"></span>
-		<div class="text-body2 flex flex-center">#{{ order.id }}</div>
+		<div class="text-body2 flex flex-center">#{{ order.producer_order_id }}</div>
 	</q-card>
 	<q-separator />
 </template>

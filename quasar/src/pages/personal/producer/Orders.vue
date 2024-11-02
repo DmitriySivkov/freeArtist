@@ -146,7 +146,7 @@ onBeforeUnmount(() => {
 						</div>
 						<div class="col-auto">
 							<q-btn
-								label="Сбросить"
+								label="Сегодня"
 								color="secondary"
 								:loading="isLoading"
 								:disable="isLoading"
@@ -189,14 +189,13 @@ onBeforeUnmount(() => {
 				<template #day="{ scope: { timestamp } }">
 					<ProducerOrderCard
 						v-for="order in getOrders(timestamp)"
-						:key="order.id"
+						:key="order.producer_order_id"
 						:order="order"
 						:card-class="ORDER_CARD_STATUS_TO_CLASS[order.status]"
 						@show="showOrder"
 					/>
 				</template>
 			</q-calendar-agenda>
-
 		</div>
 	</q-page>
 </template>
