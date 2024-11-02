@@ -43,7 +43,7 @@
 				width: 270px;
 				height: 320px;
 				overflow: hidden;
-				border:10px solid #fff;
+				border:5px solid #fff;
 
 				display: flex;
 				justify-content: center;
@@ -71,28 +71,6 @@
 			#blind:checked + .content > .content__cover {
 				background: rgba(0, 0, 0, 0.2);
 				transition: background-color 0.3s linear;
-			}
-
-			.roll {
-				position: absolute;
-				z-index:10;
-				background-color: #333;
-				width: 120%;
-				height: 15px;
-				border-radius:20px 20px 0 0;
-				margin: 0 -10%;
-				top:-10px;
-			}
-
-			.roll:before {
-				position: absolute;
-				width:100%;
-				content:"";
-				background-color: #fff;
-				height:15px;
-				left:0;
-				top:330px;
-				box-shadow: 0 10px 10px rgba(0,0,0,0.15);
 			}
 
 			.bulb-container{
@@ -165,10 +143,6 @@
 					width: 370px;
 					height: 420px;
 				}
-
-				.roll:before {
-					top:430px;
-				}
 			}
 
 			@media (min-width: 1024px) {
@@ -176,20 +150,12 @@
 					width: 420px;
 					height: 480px;
 				}
-
-				.roll:before {
-					top:490px;
-				}
 			}
 
 			@media (min-width: 1440px) {
 				.content {
 					width: 480px;
 					height: 530px;
-				}
-
-				.roll:before {
-					top:540px;
 				}
 			}
 		</style>
@@ -1418,7 +1384,6 @@
 						</div>
 					</div>
 				</div>
-				<div class="roll"></div>
 			</div>
 		</div>
     <!-- quasar:entry-point -->
