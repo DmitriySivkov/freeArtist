@@ -85,10 +85,14 @@ class UserOrderService implements OrderServiceContract
 	 */
 	public function processOrder(Transaction $transaction)
 	{
+		$producerOrderCount = Order::where('producer_id', $transaction->producer_id)
+			->count();
+
 		$order = Order::create([
 			'transaction_id'	=> $transaction->id,
 			'user_id'			=> $this->user ? $this->user->id : null,
 			'producer_id'		=> $transaction->producer_id,
+			'producer_order_id'	=> $producerOrderCount ? $producerOrderCount + 1 : 1, // if there were no orders yet - assign 1
 			'order_products'	=> $transaction->order_data,
 			'status'			=> Order::ORDER_STATUS_NEW,
 			'prepare_by'		=> $this->prepareByDate,

@@ -21,24 +21,8 @@ class ProducerOrderService implements OrderServiceContract
 	public function getOrderList($dateRange)
 	{
 		// todo - check access (middleware?)
-
-		return Order::select([
-				'orders.*',
-				'producer_order_ids.producer_order_id as producer_order_id'
-			])
-			->leftJoinSub(
-				\DB::table('orders')
-					->select([
-						'id',
-						\DB::raw('row_number() over (partition by producer_id order by id asc) as producer_order_id')
-					])
-					->where('producer_id', $this->producer->id),
-				'producer_order_ids',
-				fn(JoinClause $join) =>
-					$join->on('orders.id', '=', 'producer_order_ids.id')
-			)
-			->where('producer_id', $this->producer->id)
-			->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
+		return Order::where('producer_id', $this->producer->id)
+			->whereBetween('prepare_by', [$dateRange['start'], $dateRange['end']])
 			->with([
 				'user',
 				'assignee',

@@ -45,9 +45,7 @@ const isLoading = ref(true)
 
 const getOrders = (timestamp) => {
 	return orders.value.filter((t) =>
-		t.prepare_by ?
-			t.prepare_by === timestamp.date :
-			t.created_date === timestamp.date
+		t.prepare_by === timestamp.date
 	)
 }
 
@@ -191,6 +189,7 @@ onBeforeUnmount(() => {
 						v-for="order in getOrders(timestamp)"
 						:key="order.producer_order_id"
 						:order="order"
+						:hasMultipleAssignees="assignees.length > 1"
 						:card-class="ORDER_CARD_STATUS_TO_CLASS[order.status]"
 						@show="showOrder"
 					/>

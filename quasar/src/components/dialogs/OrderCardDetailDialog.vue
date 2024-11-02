@@ -85,30 +85,31 @@ const update = ({ field, value }) => {
 					/>
 				</div>
 
-				<span> Исполнитель </span>
-				<q-select
-					dense
-					filled
-					:model-value="order.assignee?.id"
-					:options="assigneeOptions"
-					option-value="id"
-					option-label="label"
-					class="q-mb-md"
-					:loading="loadingField === 'assignee_id'"
-					:disable="loadingField === 'assignee_id' || !assignees.length"
-					input-class="text-white"
-					@update:model-value="update({
-						field: 'assignee_id',
-						value: $event.id
-					})"
-				>
-					<template #selected-item>
-						<span :class="{'text-white': order.status !== ORDER_STATUSES.NEW}">
-							{{ order.assignee?.name ?? order.assignee?.phone }}
-						</span>
-					</template>
-				</q-select>
-
+				<template v-if="assignees.length !== 1">
+					<span> Исполнитель </span>
+					<q-select
+						dense
+						filled
+						:model-value="order.assignee.id"
+						:options="assigneeOptions"
+						option-value="id"
+						option-label="label"
+						class="q-mb-md"
+						:loading="loadingField === 'assignee_id'"
+						:disable="loadingField === 'assignee_id'"
+						input-class="text-white"
+						@update:model-value="update({
+							field: 'assignee_id',
+							value: $event.id
+						})"
+					>
+						<template #selected-item>
+							<span :class="{'text-white': order.status !== ORDER_STATUSES.NEW}">
+								{{ order.assignee.name ?? order.assignee.phone }}
+							</span>
+						</template>
+					</q-select>
+				</template>
 				<span> Статус </span>
 				<q-select
 					dense
@@ -133,48 +134,25 @@ const update = ({ field, value }) => {
 					</template>
 				</q-select>
 
-				<div class="row justify-between q-col-gutter-xs">
-					<div class="col">
-						<span>Создан</span>
-
-						<q-field
-							dense
-							filled
-							readonly
-							class="q-mb-md"
-						>
-							<div class="self-center">
-								<span :class="order.status !== ORDER_STATUSES.NEW ? 'text-white' : 'text-black'">
-									{{ order.created_at }}
-								</span>
-							</div>
-						</q-field>
+				<span>Создан</span>
+				<q-field
+					dense
+					filled
+					readonly
+					class="q-mb-md"
+				>
+					<div class="self-center">
+						<span :class="order.status !== ORDER_STATUSES.NEW ? 'text-white' : 'text-black'">
+							{{ order.created_at }}
+						</span>
 					</div>
-					<div class="col">
-						<span>Приготовить к</span>
-
-						<q-field
-							dense
-							filled
-							readonly
-						>
-							<div class="self-center">
-								<span :class="order.status !== ORDER_STATUSES.NEW ? 'text-white' : 'text-black'">
-									{{ order.prepare_by }}
-								</span>
-							</div>
-						</q-field>
-					</div>
-				</div>
+				</q-field>
 			</q-card-section>
 			<q-separator />
 			<q-card-section>
 				<div class="row justify-between q-mb-md">
 					<div class="col">#{{ order.producer_order_id }}</div>
-
-					<div class="col text-right">
-						для {{ order.user }}
-					</div>
+					<div class="col text-right">для {{ order.user }}</div>
 				</div>
 				<div
 					v-for="product in order.products"

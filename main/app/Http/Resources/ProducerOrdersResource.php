@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /** @mixin Order */
 class ProducerOrdersResource extends JsonResource
@@ -21,7 +22,7 @@ class ProducerOrdersResource extends JsonResource
     {
         return [
 			'id' => $this->id,
-			'producer_order_id' => $this->producer_order_id, // order id in specific producer group
+			'producer_order_id' => $this->producer_order_id,
 			'producer_id' => $this->producer_id,
 			'assignee' => $this->assignee?->only(['id', 'name', 'phone']),
 			'order_products' => collect($this->order_products)->pluck('amount', 'id'),
@@ -34,8 +35,7 @@ class ProducerOrdersResource extends JsonResource
 					'title' => $product->title
 				]),
 			'prepare_by' => $this->prepare_by,
-			'created_at' => $this->created_at->format('d-m-Y H:i'),
-			'created_date' => $this->created_at->format('Y-m-d'),
+			'created_at' => $this->created_at->format('d.m.Y H:i'),
 		];
     }
 }

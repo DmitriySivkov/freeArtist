@@ -402,11 +402,13 @@ const validatePhone = (phone) => {
 							label="Продолжить"
 							color="primary"
 							type="submit"
+							:loading="isLoading"
 						/>
 					</div>
 				</q-form>
 			</div>
 
+			<!-- todo - если размер окна больше размера экрана, то q-inner-loading не расстягивается на всю длину блока, а только на величину экрана -->
 			<q-inner-loading :showing="isLoading">
 				<q-spinner-gears
 					size="lg"
