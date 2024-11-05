@@ -2,7 +2,7 @@
 const props = defineProps({
 	order: Object,
 	hasMultipleAssignees: Boolean,
-	cardClass: String,
+	cardClass: String
 })
 
 const emit = defineEmits([

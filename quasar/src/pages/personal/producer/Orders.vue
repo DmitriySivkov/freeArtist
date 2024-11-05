@@ -3,21 +3,22 @@ import {
 	today
 } from "@quasar/quasar-ui-qcalendar/src/index.js"
 
-import { ref, computed, onMounted, onBeforeUnmount } from "vue"
+import { ref, computed, onBeforeUnmount } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
 import { Dialog } from "quasar"
 import { useScreen } from "src/composables/screen"
 
 import ProducerOrderCard from "src/components/orders/Producer/ProducerOrderCard.vue"
+import ProducerNewOrderCard from "src/components/orders/Producer/ProducerNewOrderCard.vue"
 import OrderCardDetailDialog from "components/dialogs/OrderCardDetailDialog.vue"
-import { ORDER_CARD_STATUS_TO_CLASS } from "src/const/orderStatuses"
+import NewOrderCardDetailDialog from "components/dialogs/NewOrderCardDetailDialog.vue"
+import { ORDER_CARD_STATUS_TO_CLASS, ORDER_STATUSES } from "src/const/orderStatuses"
 import { usePrivateChannels } from "src/composables/privateChannels"
 
 import { useProducerOrdersStore } from "src/stores/producerOrders"
 import { useUserStore } from "src/stores/user"
 
-// todo - заказы можно распределять между участниками
 const $router = useRouter()
 
 const { isSmallScreen } = useScreen()
@@ -37,6 +38,7 @@ const selectedDate = ref(today())
 const startDate = ref(today())
 const endDate = ref(today())
 
+const newOrders = ref([])
 const orders = computed(() => producerOrdersStore.data)
 
 const assignees = ref([])
@@ -44,10 +46,20 @@ const assignees = ref([])
 const isLoading = ref(true)
 
 const getOrders = (timestamp) => {
-	return orders.value.filter((t) =>
-		t.prepare_by === timestamp.date
+	return orders.value.filter((o) =>
+		o.prepare_by === timestamp.date
 	)
 }
+
+const newOrdersColumn = ref([
+	{
+		id: "new",
+		label: "Новые"
+	}
+])
+
+// todo - собственный футер с кнопками: список новых заказов и возможность принять/отклонить
+// todo - календарь заказов на месяц с отметками если есть заказ. При нажатии на день с заказом открывать снова <q-calendar-agenda>
 
 const onToday = () => {
 	calendar.value.moveToToday()
@@ -71,8 +83,19 @@ const showOrder = (order) => {
 		component: OrderCardDetailDialog,
 		componentProps: {
 			order,
-			assignees: assignees.value
+			assignees: assignees.value,
 		}
+	})
+}
+
+const showNewOrder = (order) => {
+	Dialog.create({
+		component: NewOrderCardDetailDialog,
+		componentProps: {
+			order,
+		}
+	}).onOk(() => {
+		newOrders.value = newOrders.value.filter((o) => o.id !== order.id)
 	})
 }
 
@@ -82,32 +105,37 @@ const calendarChanged = ({ start, end }) => {
 	loadOrders({ start, end })
 }
 
+const isInitializing = ref(true)
+
 const loadOrders = (dateRange) => {
 	isLoading.value = true
 
 	const promise = api.get(`personal/producers/${team.value.detailed_id}/orders`,{
 		params: {
 			dateRange,
+			isInitializing: isInitializing.value ? 1 : 0
 		}
 	})
 
 	// todo - catch
 	promise.then((response) => {
-		producerOrdersStore.commitData(response.data)
+		if (!isInitializing.value) {
+			producerOrdersStore.commitData(response.data)
+		} else {
+			producerOrdersStore.commitData(response.data.orders)
+			assignees.value = response.data.assignees
+			newOrders.value = response.data.new_orders
+		}
 	})
 
 	promise.finally(() => {
 		isLoading.value = false
+
+		if (isInitializing.value) {
+			isInitializing.value = false
+		}
 	})
 }
-
-onMounted(() => {
-	const promise = api.get(`personal/producers/${team.value.detailed_id}/users`)
-
-	promise.then((response) => {
-		assignees.value = response.data
-	})
-})
 
 const {
 	connectProducerOrders,
@@ -181,9 +209,22 @@ onBeforeUnmount(() => {
 				:max-days="isSmallScreen ? 3 : 7"
 				locale="ru-RU"
 				:weekdays="[1,2,3,4,5,6,0]"
+				:left-column-options="newOrdersColumn"
 				animated
 				@change="calendarChanged"
 			>
+				<template #column="{ scope: { column } }">
+					<template v-if="column.id === 'new'">
+						<ProducerNewOrderCard
+							v-for="order in newOrders"
+							:key="order.producer_order_id"
+							:order="order"
+							:card-class="ORDER_CARD_STATUS_TO_CLASS[ORDER_STATUSES.NEW]"
+							@show="showNewOrder"
+						/>
+					</template>
+				</template>
+
 				<template #day="{ scope: { timestamp } }">
 					<ProducerOrderCard
 						v-for="order in getOrders(timestamp)"

@@ -14,20 +14,15 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
 const props = defineProps({
 	order: Object,
-	assignees: Array,
 })
 
 const { isSmallScreen } = useScreen()
 
-const cardClass = computed(() => ORDER_CARD_STATUS_TO_CLASS[props.order.status])
-
 const statusOptions = computed(() =>
-	Object.values(ORDER_STATUSES)
-		.filter((s) => s !== ORDER_STATUSES.NEW)
-		.map((statusId) => ({
-			id: statusId,
-			label: ORDER_STATUS_NAMES[statusId]
-		}))
+	Object.values(ORDER_STATUSES).map((statusId) => ({
+		id: statusId,
+		label: ORDER_STATUS_NAMES[statusId]
+	}))
 )
 
 const assigneeOptions = computed(() =>
@@ -39,29 +34,28 @@ const assigneeOptions = computed(() =>
 
 const producerOrderStore = useProducerOrdersStore()
 
-const loadingField = ref(null)
+const isLoading = ref(false)
 
-const update = ({ field, value }) => {
-	loadingField.value = field
+const changeStatus = (status) => {
+	isLoading.value = true
 
 	const promise = api.post(`personal/producers/${props.order.producer_id}/orders/${props.order.id}`, {
-		[field]: value,
+		status: status.id,
 		_method: "PUT"
 	})
 
-	promise.then((response) => {
-		producerOrderStore.commitOrderFields({
-			orderId: response.data.id,
-			fields: {
-				...response.data
-			},
-		})
+	promise.then(() => {
+		let order = {...props.order, status}
+
+		producerOrderStore.commitData([order])
+
+		onDialogOK()
 	})
 
 	//todo
 	promise.catch()
 
-	promise.finally(() => loadingField.value = null)
+	promise.finally(() => isLoading.value = false)
 }
 </script>
 
@@ -75,7 +69,7 @@ const update = ({ field, value }) => {
 	>
 		<q-card
 			class="q-dialog-plugin text-body1"
-			:class="cardClass"
+			:class="ORDER_CARD_STATUS_TO_CLASS[ORDER_STATUSES.NEW]"
 		>
 			<q-card-section class="q-py-sm">
 				<div class="text-right">
@@ -87,31 +81,6 @@ const update = ({ field, value }) => {
 					/>
 				</div>
 
-				<template v-if="assignees.length !== 1">
-					<span> Исполнитель </span>
-					<q-select
-						dense
-						filled
-						:model-value="order.assignee.id"
-						:options="assigneeOptions"
-						option-value="id"
-						option-label="label"
-						class="q-mb-md"
-						:loading="loadingField === 'assignee_id'"
-						:disable="loadingField === 'assignee_id'"
-						input-class="text-white"
-						@update:model-value="update({
-							field: 'assignee_id',
-							value: $event.id
-						})"
-					>
-						<template #selected-item>
-							<span class="text-white">
-								{{ order.assignee.name ?? order.assignee.phone }}
-							</span>
-						</template>
-					</q-select>
-				</template>
 				<span> Статус </span>
 				<q-select
 					dense
@@ -121,18 +90,11 @@ const update = ({ field, value }) => {
 					option-value="id"
 					option-label="label"
 					class="q-mb-md"
-					:loading="loadingField === 'status'"
-					:disable="loadingField === 'status'"
 					input-class="text-white"
-					@update:model-value="update({
-						field: 'status',
-						value: $event.id
-					})"
+					@update:model-value="changeStatus"
 				>
 					<template #selected-item>
-						<span class="text-white">
-							{{ ORDER_STATUS_NAMES[order.status] }}
-						</span>
+						<span>{{ ORDER_STATUS_NAMES[order.status] }}</span>
 					</template>
 				</q-select>
 
@@ -144,9 +106,19 @@ const update = ({ field, value }) => {
 					class="q-mb-md"
 				>
 					<div class="self-center">
-						<span class="text-white">
-							{{ order.created_at }}
-						</span>
+						<span class="text-black">{{ order.created_at }}</span>
+					</div>
+				</q-field>
+
+				<span>Когда приготовить</span>
+				<q-field
+					dense
+					filled
+					readonly
+					class="q-mb-md"
+				>
+					<div class="self-center">
+						<span class="text-black">{{ order.prepare_by_formatted }}</span>
 					</div>
 				</q-field>
 			</q-card-section>
@@ -170,6 +142,14 @@ const update = ({ field, value }) => {
 					<q-separator class="full-width" />
 				</div>
 			</q-card-section>
+
+			<!-- todo - если размер окна больше размера экрана, то q-inner-loading не расстягивается на всю длину блока, а только на величину экрана -->
+			<q-inner-loading :showing="isLoading">
+				<q-spinner-gears
+					size="lg"
+					color="primary"
+				/>
+			</q-inner-loading>
 		</q-card>
 	</q-dialog>
 </template>

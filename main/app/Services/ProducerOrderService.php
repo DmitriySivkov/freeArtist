@@ -18,11 +18,16 @@ class ProducerOrderService implements OrderServiceContract
 		$this->producer = $producer;
 	}
 
-	public function getOrderList($dateRange)
+	public function getOrderList($dateRange = null, $statuses = null)
 	{
 		// todo - check access (middleware?)
 		return Order::where('producer_id', $this->producer->id)
-			->whereBetween('prepare_by', [$dateRange['start'], $dateRange['end']])
+			->when($dateRange, fn($query) =>
+				$query->whereBetween('prepare_by', [$dateRange['start'], $dateRange['end']])
+			)
+			->when($statuses, fn($query) =>
+				$query->whereIn('status', $statuses)
+			)
 			->with([
 				'user',
 				'assignee',

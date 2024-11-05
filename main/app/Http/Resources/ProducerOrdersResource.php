@@ -21,21 +21,21 @@ class ProducerOrdersResource extends JsonResource
     public function toArray($request)
     {
         return [
-			'id' => $this->id,
-			'producer_order_id' => $this->producer_order_id,
-			'producer_id' => $this->producer_id,
-			'assignee' => $this->assignee?->only(['id', 'name', 'phone']),
-			'order_products' => collect($this->order_products)->pluck('amount', 'id'),
-			'payment_method' => PaymentMethod::PAYMENT_METHODS[$this->transaction->payment_method],
-			'status' => $this->status,
-			'user' => $this->user ? ($this->user->name ?? $this->user->phone) : $this->transaction->phone,
-			'products' => collect($this->products)->map(
-				fn($product) => [
-					'id' => $product->id,
-					'title' => $product->title
-				]),
-			'prepare_by' => $this->prepare_by,
-			'created_at' => $this->created_at->format('d.m.Y H:i'),
+			'id' 					=> $this->id,
+			'producer_order_id' 	=> $this->producer_order_id,
+			'producer_id' 			=> $this->producer_id,
+			'assignee' 				=> $this->assignee?->only(['id', 'name', 'phone']),
+			'order_products' 		=> collect($this->order_products)->pluck('amount', 'id'),
+			'payment_method' 		=> PaymentMethod::PAYMENT_METHODS[$this->transaction->payment_method],
+			'status' 				=> $this->status,
+			'user' 					=> $this->user ? ($this->user->name ?? $this->user->phone) : $this->transaction->phone,
+			'products' 				=> collect($this->products)->map(fn($product) => [
+				'id' => $product->id,
+				'title' => $product->title
+			]),
+			'prepare_by' 			=> $this->prepare_by,
+			'prepare_by_formatted' 	=> Carbon::createFromFormat('Y-m-d', $this->prepare_by)->format('d.m.Y'),
+			'created_at' 			=> $this->created_at->format('d.m.Y H:i'),
 		];
     }
 }
