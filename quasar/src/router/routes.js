@@ -12,6 +12,7 @@ import user from "src/router/user"
 import ProductShow from "src/pages/personal/producer/ProductShow.vue"
 import ProductCreate from "src/pages/personal/producer/ProductCreate.vue"
 import ProducerPermissions from "pages/personal/producer/ProducerPermissions.vue"
+import ProducerOrders from "pages/personal/producer/Orders.vue"
 
 const routes = [
 	{
@@ -50,6 +51,17 @@ const routes = [
 				name: "personal_producer_permissions",
 				path: "",
 				component: ProducerPermissions,
+			},
+		]
+	},
+	{
+		path: "/personal/producer/:producer_id/orders",
+		component: PersonalEditableLayout,
+		children: [
+			{
+				name: "personal_producer_orders",
+				path: "",
+				component: ProducerOrders,
 			},
 		]
 	},

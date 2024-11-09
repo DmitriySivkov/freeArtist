@@ -20,8 +20,11 @@ class ProducerOrderController extends Controller
 		$orderService->setProducer($producer);
 
 		if (!$isInitializing) {
-			return ProducerOrdersResource::collection($orderService->getOrderList($dateRange))
-				->collection;
+			return ProducerOrdersResource::collection(
+				$orderService->getOrderList(
+					$dateRange, [Order::ORDER_STATUS_PROCESS, Order::ORDER_STATUS_CANCEL, Order::ORDER_STATUS_DONE]
+				)
+			)->collection;
 		}
 
         return [
