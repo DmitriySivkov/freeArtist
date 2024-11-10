@@ -2,9 +2,10 @@
 import { useProducerOrdersStore } from "src/stores/producerOrders"
 import { computed, ref } from "vue"
 import { today } from "@quasar/quasar-ui-qcalendar/src/index.js"
-import { api } from "src/boot/axios"
+import { ORDER_BADGE_STATUS_TO_CLASS } from "src/const/orderStatuses"
 
 const props = defineProps({
+	isLoading: Boolean,
 })
 
 const emit = defineEmits([
@@ -17,14 +18,11 @@ const calendar = ref(null)
 
 const selectedDate = ref(today())
 
-const newOrders = ref([])
 const orders = computed(() => producerOrdersStore.data)
-
-const isLoading = ref(false)
 
 const getOrders = (timestamp) => {
 	return orders.value.filter((o) =>
-		o.prepare_by === timestamp.date
+		o[0].prepare_by === timestamp.date
 	)
 }
 
@@ -50,29 +48,6 @@ const getWeekdaysClass = (data) => {
 		"bg-primary text-white orders-current-day": data.scope.timestamp.current,
 		"bg-grey-2 orders-not-current-day": !data.scope.timestamp.current,
 	}
-}
-
-/** is triggered on component mount **/
-const calendarChanged = ({ start, end }) => {
-	producerOrdersStore.emptyData()
-	loadOrders({ start, end })
-}
-
-const loadOrders = (dateRange) => {
-	isLoading.value = true
-
-	const promise = api.get(`personal/producers/${props.producerId}/orders`,{
-		params: {
-			dateRange,
-		}
-	})
-
-	// todo - catch
-	promise.then((response) => {
-		producerOrdersStore.commitData(response.data)
-	})
-
-	promise.finally(() => isLoading.value = false)
 }
 </script>
 
@@ -130,11 +105,28 @@ const loadOrders = (dateRange) => {
 			v-model="selectedDate"
 			locale="ru-RU"
 			date-type="round"
+			no-active-date
 			:weekday-class="getWeekdaysClass"
 			:weekdays="[1,2,3,4,5,6,0]"
-			:day-min-height="80"
+			:day-min-height="120"
 			animated
 			@change="$emit('change', $event)"
-		/>
+		>
+			<template #day="{ scope: { timestamp } }">
+				<template
+					v-for="(orderList, index) in getOrders(timestamp)"
+					:key="index"
+				>
+					<q-badge
+						v-for="order in orderList"
+						:key="order.prepare_by"
+						class="q-pa-sm full-width justify-center"
+						:color="ORDER_BADGE_STATUS_TO_CLASS[order.status].color"
+						:text-color="ORDER_BADGE_STATUS_TO_CLASS[order.status].textColor"
+						:label="order.order_count"
+					/>
+				</template>
+			</template>
+		</q-calendar-month>
 	</div>
 </template>

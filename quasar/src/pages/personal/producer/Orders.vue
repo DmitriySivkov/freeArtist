@@ -8,6 +8,7 @@ import { useUserStore } from "src/stores/user"
 import { useProducerOrdersStore } from "src/stores/producerOrders"
 import { useRouter } from "vue-router"
 import { api } from "src/boot/axios"
+import { ORDER_VIEWS } from "src/const/orderViews"
 
 const $router = useRouter()
 
@@ -34,6 +35,7 @@ const loadOrders = (dateRange) => {
 
 	const promise = api.get(`personal/producers/${team.value.detailed_id}/orders`,{
 		params: {
+			view: isWeeklyView.value ? ORDER_VIEWS.WEEKLY : ORDER_VIEWS.MONTHLY,
 			dateRange,
 			isInitializing: isInitializing.value ? 1 : 0
 		}
@@ -97,6 +99,7 @@ onBeforeUnmount(() => {
 		/>
 		<ProducerOrdersMonthly
 			v-else
+			:is-loading="isLoading"
 			@change="calendarChanged"
 		/>
 	</q-page>
@@ -104,8 +107,6 @@ onBeforeUnmount(() => {
 	<PersonalProducerOrdersFooter
 		v-model="isWeeklyView"
 		:is-loading="isInitializing"
-		@showMonthlyView="() => false"
-		@showWeeklyView="() => false"
 	/>
 </template>
 
@@ -137,5 +138,16 @@ onBeforeUnmount(() => {
 	background-color: $secondary;
 	color: white;
 	align-content: center;
+}
+
+// for month:
+.q-calendar-month__day.q-current-day .q-calendar__button {
+	color: #606c71 !important;
+	background-color: white !important;
+	border: 1px solid $primary !important;
+}
+
+.q-calendar-month__day--content {
+	align-content: flex-end;
 }
 </style>

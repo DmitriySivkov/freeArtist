@@ -38,6 +38,25 @@ class ProducerOrderService implements OrderServiceContract
 			->get();
 	}
 
+	public function getOrderListMonthly($dateRange = null, $statuses = null)
+	{
+		// todo - check access (middleware?)
+		return Order::select([
+			'orders.prepare_by',
+			'orders.status',
+			\DB::raw('count(*) as order_count')
+		])
+			->where('producer_id', $this->producer->id)
+			->when($dateRange, fn($query) =>
+				$query->whereBetween('prepare_by', [$dateRange['start'], $dateRange['end']])
+			)
+			->when($statuses, fn($query) =>
+				$query->whereIn('status', $statuses)
+			)
+			->groupBy(['prepare_by', 'status'])
+			->get();
+	}
+
 	public function processOrder($orderData)
 	{
 		// todo ...

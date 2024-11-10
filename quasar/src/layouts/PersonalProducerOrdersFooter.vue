@@ -6,8 +6,6 @@ const props = defineProps({
 
 const emit = defineEmits([
 	"update:modelValue",
-	"showMonthlyView",
-	"showWeeklyView",
 ])
 
 const toggleView = () => {

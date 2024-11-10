@@ -18,3 +18,9 @@ export const ORDER_CARD_STATUS_TO_CLASS = {
 	[ORDER_STATUSES.CANCEL]: "text-white bg-grey-8",
 	[ORDER_STATUSES.DONE]: "text-white bg-blue-8",
 }
+
+export const ORDER_BADGE_STATUS_TO_CLASS = {
+	[ORDER_STATUSES.PROCESS]: { color: "green-8", textColor: "white"},
+	[ORDER_STATUSES.CANCEL]: { color: "grey-8", textColor: "white"},
+	[ORDER_STATUSES.DONE]: { color: "blue-8", textColor: "white"},
+}
