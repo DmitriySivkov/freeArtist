@@ -34,18 +34,32 @@ Go to api domen via browser and proceed with unsafe connection
 ### errors format when returning from backend:
 ["errors" => <br/> ["<error_bag_name>" => [*array_of_errors*]] <br/>]
 
-### Cordova build:
+### capacitor build:
 chrome dev:
 chrome://inspect/#devices
 
 if containers break:
 https://github.com/docker/for-win/issues/9272#issuecomment-776225866
 
-cordova build problem:
-https://stackoverflow.com/questions/47239251/install-failed-user-restricted-android-studio-using-redmi-4-device
+capacitor build - tools.jar not found: https://stackoverflow.com/questions/47291056/could-not-find-tools-jar-please-check-that-c-program-files-java-jre1-8-0-151-c
+build with debug mode works
 
-windows blocks connection to itself. Need to turn off some param on windows defender. Brutally - turn off public network defender
+? leave empty in env when developing mobile: 'SESSION_DOMAIN', 'SANCTUM_STATEFUL_DOMAINS'
 
+чтобы добавить новый плагин в капаситор нужно добавить его и в /quasar/package.json и /quasar/src-capacitor/package.json
+после этого нужно открыть android studio чтобы он проиндексировал изменения, иначе билд будет падать в ошибку
+
+подписать выполняем zipalign:
+сначала cd "<android dir>\Android\Sdk\build-tools\35.0.0", затем
+.\zipalign -v 4 "<path_to_apk>\<unsigned-apk-file.apk>" <some_name.apk>
+
+в папке тулзов появится апк - забираем его на подпись
+
+затем подписываем:
+сначала cd "<android dir>\Android\Sdk\build-tools\35.0.0", затем
+.\apksigner sign --ks "<path_to_generated_key>\<my-release-key.keystore>" --ks-key-alias alias_name "<path_to_apk>\<some_name.apk>"
+
+гайд по генерации ключа и подписи: https://quasar.dev/quasar-cli-vite/developing-capacitor-apps/publishing-to-store
 ### q-card
 q-card inside v-for with columns works this way:
 dont add gutters to row.
