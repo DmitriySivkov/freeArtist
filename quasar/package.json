@@ -1,46 +1,51 @@
 {
-  "name": "quasar-project",
-  "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
-  "author": "Dmitrii Sivkov <sivkovdw@yandex.ru>",
-  "private": true,
-  "scripts": {
-    "dev": "quasar dev",
-    "build": "quasar build",
-    "serve": "quasar serve",
-    "lint": "eslint --ext .js,.vue ./",
-    "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
-    "test": "echo \"No test specified\" && exit 0"
-  },
-  "dependencies": {
-    "@capacitor/cli": "^2.0.0",
-    "@capacitor/core": "^2.0.0",
-    "@quasar/extras": "^1.16.11",
-    "@quasar/quasar-ui-qcalendar": "^4.0.0-beta.19",
-    "axios": "^0.21.1",
-    "capacitor-secure-storage-plugin": "^0.5.1",
-    "core-js": "^3.6.5",
-    "dotenv": "^16.3.1",
-    "laravel-echo": "^1.14.0",
-    "lodash": "^4.17.21",
-    "pinia": "^2.0.11",
-    "pinia-plugin-persistedstate": "^4.0.2",
-    "pusher-js": "^7.4.0",
-    "quasar": "^2.16.11",
-    "vue": "^3.5.3",
-    "vue-advanced-cropper": "^2.8.8",
-    "vue-currency-input": "^3.0.3",
-    "vue-router": "^4.0.0",
-    "vuedraggable": "^4.1.0"
-  },
-  "devDependencies": {
-    "@quasar/app-vite": "^2.0.0-beta.1",
-    "autoprefixer": "^10.4.2",
-    "eslint": "^8.10.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-vue": "^9.0.0",
-    "postcss": "^8.4.14",
-    "prettier": "^2.5.1"
-  }
+	"name": "quasar-project",
+	"version": "0.0.1",
+	"description": "A Quasar Project",
+	"productName": "Quasar App",
+	"author": "Dmitrii Sivkov <sivkovdw@yandex.ru>",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "quasar dev",
+		"build": "quasar build",
+		"serve": "quasar serve",
+		"lint": "eslint --ext .js,.vue ./",
+		"format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
+		"test": "echo \"No test specified\" && exit 0"
+	},
+	"dependencies": {
+		"@capacitor/cli": "^6.0",
+		"@capacitor/core": "^6.0",
+		"@capacitor/status-bar": "^6.0.1",
+		"@quasar/extras": "^1.16.13",
+		"@quasar/quasar-ui-qcalendar": "^4.0.0-beta.19",
+		"axios": "^0.21.1",
+		"capacitor-secure-storage-plugin": "^0.10.0",
+		"core-js": "^3.6.5",
+		"dotenv": "^16.3.1",
+		"laravel-echo": "^1.14.0",
+		"lodash": "^4.17.21",
+		"pinia": "^2.0.11",
+		"pinia-plugin-persistedstate": "^4.0.2",
+		"pusher-js": "^7.4.0",
+		"quasar": "^2.17.2",
+		"vue": "^3.5.3",
+		"vue-advanced-cropper": "^2.8.8",
+		"vue-currency-input": "^3.0.3",
+		"vue-router": "^4.0.0",
+		"vuedraggable": "^4.1.0"
+	},
+	"devDependencies": {
+		"@quasar/app-vite": "^2.0.0-beta.1",
+		"autoprefixer": "^10.4.2",
+		"eslint": "^8.10.0",
+		"eslint-config-prettier": "^8.1.0",
+		"eslint-plugin-vue": "^9.0.0",
+		"postcss": "^8.4.48",
+		"prettier": "^2.5.1"
+	},
+	"optionalDependencies": {
+		"@rollup/rollup-win32-x64-msvc": "^4.25.0"
+	}
 }

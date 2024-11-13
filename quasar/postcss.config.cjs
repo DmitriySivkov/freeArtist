@@ -1,6 +1,6 @@
 /* eslint-disable */
 // https://github.com/michael-ciniawsky/postcss-load-config
-
+// todo - refactor as module type
 module.exports = {
   plugins: [
     // https://github.com/postcss/autoprefixer

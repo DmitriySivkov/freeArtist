@@ -1,5 +1,5 @@
 import { Platform } from "quasar"
-import { Plugins } from "@capacitor/core"
+import { SecureStoragePlugin } from "capacitor-secure-storage-plugin"
 import { api } from "src/boot/axios"
 import { useUser } from "src/composables/user"
 import { useUserStore } from "src/stores/user"
@@ -9,12 +9,14 @@ export default async () => {
 
 	const { afterLogin } = useUser()
 
-	const { Storage } = Plugins
-
 	let token = null
 
 	if (Platform.is.capacitor) {
-		token = await Storage.get({key: "token"})
+		try {
+			token = await SecureStoragePlugin.get({key: "token"})
+		} catch (error) {
+			// if token is not found - throws error
+		}
 	}
 
 	if (token && token.value) {

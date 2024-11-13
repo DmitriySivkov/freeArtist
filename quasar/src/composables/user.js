@@ -1,4 +1,6 @@
 import { useUserStore } from "src/stores/user"
+import { SecureStoragePlugin } from "capacitor-secure-storage-plugin"
+import { Platform } from "quasar"
 import { api } from "src/boot/axios"
 
 export const useUser = () => {
@@ -7,6 +9,13 @@ export const useUser = () => {
 	const afterLogin = (response) => {
 		if (response.data.token) {
 			api.defaults.headers.common["Authorization"] = "Bearer " + response.data.token
+
+			if (Platform.is.capacitor) {
+				SecureStoragePlugin.set({
+					key: "token",
+					value: response.data.token
+				})
+			}
 		}
 
 		userStore.setData(response.data.user)

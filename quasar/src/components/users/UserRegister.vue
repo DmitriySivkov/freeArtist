@@ -76,7 +76,6 @@ import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { useNotification } from "src/composables/notification"
 import { useQuasar } from "quasar"
-import { Plugins } from "@capacitor/core"
 import { useUser } from "src/composables/user"
 import { api } from "src/boot/axios"
 
@@ -84,7 +83,6 @@ const $q = useQuasar()
 const { afterLogin } = useUser()
 const $router = useRouter()
 const { notifySuccess, notifyError } = useNotification()
-const { Storage } = Plugins
 
 const phone = ref(null)
 const accept = ref(false)

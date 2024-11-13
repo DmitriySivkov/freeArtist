@@ -7,12 +7,10 @@ import { watch } from "vue"
 import { echo } from "src/boot/ws"
 import { useUserStore } from "src/stores/user"
 import { usePrivateChannels } from "src/composables/privateChannels"
-import { Plugins } from "@capacitor/core"
+import { StatusBar } from "@capacitor/status-bar"
 import { Platform } from "quasar"
 
 const userStore = useUserStore()
-
-const { StatusBar } = Plugins
 
 const privateChannels = usePrivateChannels()
 
@@ -28,14 +26,10 @@ const connectPrivateChannels = () => {
 	}
 }
 
-const setStatusBar = () => {
+if (Platform.is.capacitor) {
 	StatusBar.setBackgroundColor({
 		color: "#fe724c"
 	})
-}
-
-if (Platform.is.capacitor) {
-	setStatusBar()
 }
 
 connectPrivateChannels()
