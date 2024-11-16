@@ -88,7 +88,8 @@ watch(
 			<div class="column no-wrap full-width">
 				<div
 					v-if="producer.logo"
-					class="row items-center"
+					class="row items-center cursor-pointer"
+					@click="showProducts(producer.id)"
 				>
 					<div class="col text-center q-mx-xs q-px-xs full-height content-center product__card_title-container">
 						<div
@@ -109,7 +110,8 @@ watch(
 				</div>
 				<div
 					v-else
-					class="row items-center"
+					class="row items-center cursor-pointer"
+					@click="showProducts(producer.id)"
 				>
 					<div class="col fit">
 						<div class="row fit relative-position">
@@ -129,18 +131,11 @@ watch(
 						</div>
 					</div>
 				</div>
+				<q-separator
+					dark
+					color="grey-5"
+				/>
 				<div class="row">
-					<!--					<div-->
-					<!--						class="col-12 cursor-pointer"-->
-					<!--						@click="showProducts(producer.id)"-->
-					<!--					>-->
-					<!--						<q-img-->
-					<!--							no-spinner-->
-					<!--							class="product__card-image fit"-->
-					<!--							:src="producer.logo ? `${backendServer}/storage/${producer.logo.path}` : '/no-image.png'"-->
-					<!--							:ratio="16/9"-->
-					<!--						/>-->
-					<!--					</div>-->
 					<q-carousel
 						:ref="el => carousel.push(el)"
 						v-model="slide[producer.id]"
@@ -171,7 +166,7 @@ watch(
 							>
 								<div class="col-10">
 									<div
-										class="row q-gutter-xs q-py-xs no-wrap"
+										class="row q-gutter-xs no-wrap"
 										:class="
 											producer.products.length > 2 ?
 												(
@@ -187,8 +182,16 @@ watch(
 											class="col-6 full-height"
 										>
 											<q-img
+												class="cursor-pointer"
 												no-spinner
 												:src="backendServer + '/storage/' + product.thumbnail.path"
+												@click="$router.push({
+													name: 'producer_products_detail',
+													params: {
+														producer_id: producer.id,
+														product_id: product.id
+													}
+												})"
 											/>
 										</q-card>
 										<div
