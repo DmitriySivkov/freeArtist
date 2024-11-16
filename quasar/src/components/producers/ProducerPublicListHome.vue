@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router"
 import { ref, watch, onMounted } from "vue"
 import { scroll } from "quasar"
+import { useScreen } from "src/composables/screen.js"
 
 const props = defineProps({
 	producers: {
@@ -20,6 +21,8 @@ const emit = defineEmits(["show"])
 const $router = useRouter()
 
 const backendServer = process.env.BACKEND_SERVER
+
+const { isSmallScreen } = useScreen()
 
 const carousel = ref([])
 const slide = ref(
@@ -83,22 +86,65 @@ watch(
 			:id="`pid-${producer.id}`"
 		>
 			<div class="column no-wrap full-width">
-				<div class="col row">
-					<div
-						class="col-12 cursor-pointer"
-						@click="showProducts(producer.id)"
-					>
+				<div
+					v-if="producer.logo"
+					class="row items-center"
+				>
+					<div class="col text-center q-mx-xs q-px-xs full-height content-center product__card_title-container">
+						<div
+							class="text-white product__card_title text-h6"
+							:class="{'text-body1': isSmallScreen}"
+						>
+							{{ producer.display_name }}
+						</div>
+					</div>
+					<div class="col-5">
 						<q-img
 							no-spinner
-							class="product__card-image fit"
-							:src="producer.logo ? `${backendServer}/storage/${producer.logo.path}` : '/no-image.png'"
-							:ratio="16/9"
+							class="rounded-borders"
+							:src="`${backendServer}/storage/${producer.logo.path}`"
+							fit="contain"
 						/>
 					</div>
+				</div>
+				<div
+					v-else
+					class="row items-center"
+				>
+					<div class="col fit">
+						<div class="row fit relative-position">
+							<div class="text-center full-height content-center product__card_title-container absolute">
+								<div
+									class="text-white product__card_title text-h6"
+									:class="{'text-body1': isSmallScreen}"
+								>
+									{{ producer.display_name }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-5">
+						<div class="holder">
+							<div class="inner-holder"></div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<!--					<div-->
+					<!--						class="col-12 cursor-pointer"-->
+					<!--						@click="showProducts(producer.id)"-->
+					<!--					>-->
+					<!--						<q-img-->
+					<!--							no-spinner-->
+					<!--							class="product__card-image fit"-->
+					<!--							:src="producer.logo ? `${backendServer}/storage/${producer.logo.path}` : '/no-image.png'"-->
+					<!--							:ratio="16/9"-->
+					<!--						/>-->
+					<!--					</div>-->
 					<q-carousel
 						:ref="el => carousel.push(el)"
 						v-model="slide[producer.id]"
-						class="col-12 bg-grey-4 product__card-carousel q-px-xs"
+						class="col-12 bg-grey-4 product__card-carousel"
 						transition-prev="slide-right"
 						transition-next="slide-left"
 						swipeable
@@ -195,11 +241,21 @@ watch(
 						</template>
 					</q-carousel>
 				</div>
-				<q-separator />
-				<div class="col-grow row">
-					<span class="text-h6 q-pa-md">{{ producer.display_name }}</span>
-				</div>
 			</div>
 		</q-card>
 	</transition-group>
 </template>
+
+<style>
+.holder {
+	padding-bottom:56.25%;
+	height:0;
+	position:relative;
+}
+.inner-holder {
+	width:100%;
+	height:100%;
+	display:block;
+	position:absolute;
+}
+</style>

@@ -26,6 +26,18 @@
 			}
 		}
 
+		&_title-container {
+			background: no-repeat center/cover url("src/assets/showcase-title-palette.png");
+			&.absolute {
+				left: 26%;
+				width: 125% !important;
+			}
+		}
+
+		&_title {
+			line-height: 1rem;
+		}
+
 		& .q-separator:after {
 			display:block;
 			content: '';
