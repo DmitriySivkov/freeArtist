@@ -1,6 +1,8 @@
 <script setup>
 import MainDrawer from "src/layouts/MainDrawer.vue"
 import MainFooter from "src/layouts/MainFooter.vue"
+// todo - из-за хедера и футера происходит прыжок по высоте при transition с одного роута на другой.
+// todo - также q-page-container неверно считает паддинг для хедера: добавляет к нему высоту футера (без футера все норм)
 </script>
 
 <template>
@@ -8,18 +10,26 @@ import MainFooter from "src/layouts/MainFooter.vue"
 		<MainDrawer v-if="$q.screen.width >= $q.screen.sizes.md"/>
 		<MainFooter v-if="$q.screen.width < $q.screen.sizes.md" />
 
-		<q-page-container>
-			<router-view v-slot="{ Component }">
-				<transition
-					enter-active-class="animated fadeInRight"
-					leave-active-class="animated fadeOutRight"
-					appear
-					:duration="200"
-					mode="out-in"
+		<router-view v-slot="{ Component, route }">
+			<transition
+				enter-active-class="animated slideInLeft"
+				leave-active-class="animated slideOutRight"
+				appear
+			>
+				<q-page-container
+					:key="route.name"
+					class="main-layout"
 				>
 					<component :is="Component" />
-				</transition>
-			</router-view>
-		</q-page-container>
+				</q-page-container>
+			</transition>
+		</router-view>
 	</q-layout>
 </template>
+
+<style>
+.main-layout {
+	position: absolute;
+	width: 100%
+}
+</style>

@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { Dialog } from "quasar"
-import ProducerShowcaseHome from "src/components/producers/ProducerShowcaseHome.vue"
 import ProducerFilterHome from "src/components/producers/ProducerFilterHome.vue"
 import ProducerCategoriesHome from "src/components/producers/ProducerCategoriesHome.vue"
 import SelectLocationDialog from "components/dialogs/SelectLocationDialog.vue"
@@ -21,11 +20,6 @@ const setCategories = (categoryIds) => {
 const homePage = ref(null)
 const homeHeader = ref(null)
 const homeCategories = ref(null)
-
-//todo - посчитать нормально, сейчас есть отклонение в несколько пикселей (хардкод "-4" в подсчете)
-const producerListMaxHeight = computed(() =>
-	homePage.value?.$el.clientHeight - homeHeader.value?.$el?.offsetHeight - homeCategories.value?.$el?.offsetHeight - 4
-)
 
 onMounted(() => {
 	if (!userLocation.value) {
@@ -48,38 +42,54 @@ onMounted(() => {
 </script>
 
 <template>
+	<q-header class="main-layout-header">
+		<div class="column no-wrap q-px-sm">
+			<div class="col-auto q-mb-xs">
+				<div class="row justify-center">
+					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+						<ProducerFilterHome ref="homeHeader"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-auto q-mb-xs">
+				<div class="row justify-center">
+					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+						<ProducerCategoriesHome
+							ref="homeCategories"
+							@change="setCategories"
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</q-header>
+
 	<q-page
 		ref="homePage"
 		class="column no-wrap q-px-sm bg-primary"
 	>
-		<div class="col-auto q-mb-xs">
+
+		<div class="col-grow scroll">
 			<div class="row justify-center">
 				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<ProducerFilterHome ref="homeHeader"/>
+					<router-view v-slot="{ Component }">
+						<transition
+							enter-active-class="animated slideInLeft"
+							leave-active-class="animated slideOutRight"
+							appear
+						>
+							<component :is="Component" />
+						</transition>
+					</router-view>
 				</div>
 			</div>
 		</div>
-		<div class="col-auto q-mb-xs">
-			<div class="row justify-center">
-				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<ProducerCategoriesHome
-						ref="homeCategories"
-						@change="setCategories"
-					/>
-				</div>
-			</div>
-		</div>
-		<div
-			class="col-grow scroll"
-			:style="{'max-height': `${producerListMaxHeight}px`}"
-		>
-			<div class="row justify-center">
-				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<ProducerShowcaseHome
-						:categories="selectedCategories"
-					/>
-				</div>
-			</div>
-		</div>
+
 	</q-page>
 </template>
+
+<style>
+.main-layout-header {
+	z-index: 999;
+}
+</style>

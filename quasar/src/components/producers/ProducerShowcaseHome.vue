@@ -1,8 +1,9 @@
 <script setup>
-import { computed, ref, watch } from "vue"
+import { ref, computed, watch } from "vue"
 import { api } from "src/boot/axios"
 import { useCartStore } from "src/stores/cart"
 import { useUserStore } from "src/stores/user"
+import { useMiscStore } from "src/stores/misc"
 import { debounce } from "lodash"
 import { useRouter } from "vue-router"
 import ProducerPublicListHome from "src/components/producers/ProducerPublicListHome.vue"
@@ -16,12 +17,14 @@ const $router = useRouter()
 
 const cartStore = useCartStore()
 const userStore = useUserStore()
+const miscStore = useMiscStore()
 
 const userLocation = computed(() => userStore.location)
 
 const userRange = computed(() => userStore.location_range)
 
-const producers = ref([])
+const producers = computed(() => miscStore.homePageProducers)
+const selectedProducer = computed(() => miscStore.homePageSelectedProducer)
 
 const cart = computed(() => cartStore.data)
 
@@ -44,7 +47,7 @@ const fetchProducers = async() => {
 		}
 	})
 
-	producers.value = [...producers.value, ...response.data]
+	miscStore.setHomePageProducers(response.data)
 
 	if (response.data.length < limit && scrollComponent.value) {
 		scrollComponent.value.stop()
@@ -60,7 +63,7 @@ const fetchProducts = async() => {
 	}
 
 	const response = await api.get(
-		`producers/${producerId.value}/products`,
+		`producers/${selectedProducer.value.id}/products`,
 		{ params }
 	)
 
@@ -71,31 +74,44 @@ const fetchProducts = async() => {
 	}
 }
 
-const producerId = computed(() =>
-	$router.currentRoute.value.query.pid
-)
-
 const producerProducts = ref([])
 
-const navigationProducer = ref(null)
+const showProducerProductsIndex = ({ producerId, scrollPosition }) => {
+	scrollComponent.value.stop() // in case infinite scroll is still uploading stuff
 
-const showProducerProducts = ({ producerId, scrollPosition }) => {
-	$router.push({ query: { pid: producerId } })
-	navigationProducer.value = { producerId, scrollPosition }
+	miscStore.setHomePageSelectedProducer({ id: producerId, scrollPosition })
 
 	producerProducts.value = []
 
 	reinit()
 }
 
+const showProducerProductsDetail = ({ producerId, productId, scrollPosition }) => {
+	scrollComponent.value.stop() // in case infinite scroll is still uploading stuff
+
+	$router.push({
+		name: "producer_public_products_detail",
+		params: {
+			producer_id: producerId,
+			product_id: productId
+		},
+		query: {
+			pid: producerId,
+			sp: scrollPosition
+		}
+	})
+}
+
 const checkProducerList = () => {
+	miscStore.setHomePageSelectedProducer({ id: null, scrollPosition: selectedProducer.value.scrollPosition })
+
 	if (!producers.value.length && scrollComponent.value) {
 		reinit()
 	}
 }
 
 const load = async (index, done) => {
-	if (!producerId.value) {
+	if (!selectedProducer.value.id) {
 		await fetchProducers()
 	} else {
 		await fetchProducts()
@@ -119,7 +135,7 @@ watch([
 	() => userLocation.value,
 	() => props.categories
 ],() => {
-	producers.value = []
+	miscStore.emptyHomePageProducers()
 	producerProducts.value = []
 	isInitializing.value = true
 	reinit()
@@ -134,14 +150,15 @@ watch([
 		:offset="100"
 		@load="load"
 	>
-		<template v-if="producers.length && !isInitializing && !producerId">
+		<template v-if="!selectedProducer.id && !isInitializing">
 			<ProducerPublicListHome
 				:producers="producers"
-				:navigation-producer="navigationProducer"
-				@show="showProducerProducts"
+				:selected-producer="selectedProducer"
+				@show-index="showProducerProductsIndex"
+				@show-detail="showProducerProductsDetail"
 			/>
 		</template>
-		<template v-if="producerProducts.length && !isInitializing && producerId">
+		<template v-if="selectedProducer.id && !isInitializing">
 			<ProducerPublicProductListHome
 				:products="producerProducts"
 				@unmount="checkProducerList"

@@ -33,7 +33,7 @@ export const useUser = () => {
 	const hasPermission = (teamId, permissionName) => {
 		return !!userStore.teams.find((t) => t.id === teamId)
 			?.permissions
-			.find((p) => p.name === permissionName)
+			?.find((p) => p.name === permissionName)
 	}
 
 	const hasRole = (roleId) => {

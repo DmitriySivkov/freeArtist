@@ -31,7 +31,7 @@ const logout = () => {
 </script>
 
 <template>
-	<q-footer class="footer bg-indigo-8">
+	<q-footer class="footer bg-indigo-8 main-layout-footer">
 		<q-toolbar class="q-pa-sm">
 			<div class="col-xs-12 col-lg-8">
 				<div class="row q-gutter-sm">
@@ -50,7 +50,7 @@ const logout = () => {
 						<q-btn
 							class="q-pa-md"
 							icon="home"
-							:color="route.name === 'home' ? 'primary': 'secondary'"
+							:color="['producer_public_list', 'producer_public_product_list'].includes(route.name) ? 'primary' : 'secondary'"
 							to="/"
 						/>
 					</div>

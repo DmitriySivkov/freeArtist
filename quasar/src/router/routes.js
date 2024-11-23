@@ -2,7 +2,7 @@ import Error404 from "src/pages/Error404.vue"
 import MainLayout from "src/layouts/MainLayout.vue"
 import PersonalEditableLayout from "src/layouts/PersonalEditableLayout.vue"
 
-import common from "src/router/common"
+import publicRoutes from "src/router/public"
 import personal from "src/router/personal"
 import auth from "src/router/auth"
 import producer from "src/router/producer"
@@ -11,15 +11,15 @@ import user from "src/router/user"
 
 import ProductShow from "src/pages/personal/producer/ProductShow.vue"
 import ProductCreate from "src/pages/personal/producer/ProductCreate.vue"
-import ProducerPermissions from "pages/personal/producer/ProducerPermissions.vue"
-import ProducerOrders from "pages/personal/producer/Orders.vue"
+import ProducerPermissions from "src/pages/personal/producer/ProducerPermissions.vue"
+import ProducerOrders from "src/pages/personal/producer/Orders.vue"
 
 const routes = [
 	{
 		path: "/",
 		component: MainLayout,
 		children: [
-			...common,
+			...publicRoutes,
 			...auth,
 			...personal,
 			...producer,

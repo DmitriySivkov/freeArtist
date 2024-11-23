@@ -3,6 +3,7 @@ import { useRouter } from "vue-router"
 import { ref } from "vue"
 import { api } from "src/boot/axios"
 import { useNotification } from "src/composables/notification"
+import { useUserStore } from "src/stores/user"
 
 const $router = useRouter()
 
@@ -10,6 +11,8 @@ const { notifySuccess, notifyError } = useNotification()
 
 const location = ref(null)
 const locationOptions = ref(null)
+
+const userStore = useUserStore()
 
 const producer = ref(null)
 
