@@ -1,20 +1,21 @@
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { Dialog } from "quasar"
+import ProducerShowcaseHome from "src/components/producers/ProducerShowcaseHome.vue"
 import ProducerFilterHome from "src/components/producers/ProducerFilterHome.vue"
 import ProducerCategoriesHome from "src/components/producers/ProducerCategoriesHome.vue"
-import SelectLocationDialog from "components/dialogs/SelectLocationDialog.vue"
+import SelectLocationDialog from "src/components/dialogs/SelectLocationDialog.vue"
 import { useUserStore } from "src/stores/user"
+import { useMiscStore } from "src/stores/misc"
 import { LOCATION_RANGE, LOCATION_UNKNOWN_ID } from "src/const/userLocation"
 
 const userStore = useUserStore()
+const miscStore = useMiscStore()
 
 const userLocation = computed(() => userStore.location)
 
-const selectedCategories = ref([])
-
 const setCategories = (categoryIds) => {
-	selectedCategories.value = categoryIds
+	miscStore.setHomePageSelectedCategories(categoryIds)
 }
 
 const homePage = ref(null)
@@ -42,49 +43,42 @@ onMounted(() => {
 </script>
 
 <template>
-	<q-header class="main-layout-header">
-		<div class="column no-wrap q-px-sm">
-			<div class="col-auto q-mb-xs">
-				<div class="row justify-center">
-					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-						<ProducerFilterHome ref="homeHeader"/>
-					</div>
-				</div>
-			</div>
-			<div class="col-auto q-mb-xs">
-				<div class="row justify-center">
-					<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-						<ProducerCategoriesHome
-							ref="homeCategories"
-							@change="setCategories"
-						/>
-					</div>
-				</div>
-			</div>
-		</div>
-	</q-header>
-
 	<q-page
 		ref="homePage"
-		class="column no-wrap q-px-sm bg-primary"
+		class="column q-px-sm bg-primary"
 	>
+		<q-header class="main-layout-header">
+			<div class="column no-wrap q-px-sm">
+				<div class="col-auto q-mb-xs">
+					<div class="row justify-center">
+						<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+							<ProducerFilterHome ref="homeHeader"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto q-mb-xs">
+					<div class="row justify-center">
+						<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+							<ProducerCategoriesHome
+								ref="homeCategories"
+								@change="setCategories"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</q-header>
 
-		<div class="col-grow scroll">
+		<div
+			class="col scroll"
+			id="home-scroll-container"
+		>
 			<div class="row justify-center">
 				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<router-view v-slot="{ Component }">
-						<transition
-							enter-active-class="animated slideInLeft"
-							leave-active-class="animated slideOutRight"
-							appear
-						>
-							<component :is="Component" />
-						</transition>
-					</router-view>
+					<ProducerShowcaseHome />
 				</div>
 			</div>
 		</div>
-
 	</q-page>
 </template>
 

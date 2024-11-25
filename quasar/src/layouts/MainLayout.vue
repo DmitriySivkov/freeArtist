@@ -1,8 +1,6 @@
 <script setup>
 import MainDrawer from "src/layouts/MainDrawer.vue"
 import MainFooter from "src/layouts/MainFooter.vue"
-// todo - из-за хедера и футера происходит прыжок по высоте при transition с одного роута на другой.
-// todo - также q-page-container неверно считает паддинг для хедера: добавляет к нему высоту футера (без футера все норм)
 </script>
 
 <template>

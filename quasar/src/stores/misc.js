@@ -3,10 +3,9 @@ import { defineStore } from "pinia"
 export const useMiscStore = defineStore("misc", {
 	state: () => ({
 		homePageProducers: [],
-		homePageSelectedProducer: {
-			id: null,
-			scrollPosition: null
-		}
+		homePageSelectedProducer: null,
+		homePageVerticalScroll: 0,
+		homePageSelectedCategories: [],
 	}),
 
 	actions: {
@@ -18,15 +17,20 @@ export const useMiscStore = defineStore("misc", {
 			this.homePageProducers = []
 		},
 
-		setHomePageSelectedProducer({ id, scrollPosition }) {
-			this.homePageSelectedProducer = { id, scrollPosition }
+		setHomePageSelectedProducer(producerId) {
+			this.homePageSelectedProducer = producerId
 		},
 
-		emptyHomePageSelectedProducer() {
-			this.homePageProducers = {
-				id: null,
-				scrollPosition: null
-			}
-		}
+		setHomePageVerticalScroll(scrollPosition) {
+			this.homePageVerticalScroll = scrollPosition
+		},
+
+		setHomePageSelectedCategories(categories) {
+			this.homePageSelectedCategories = categories
+		},
+
+		emptyHomePageSelectedCategories() {
+			this.homePageSelectedCategories = []
+		},
 	}
 })

@@ -6,12 +6,9 @@ import { useUserStore } from "src/stores/user"
 import { useMiscStore } from "src/stores/misc"
 import { debounce } from "lodash"
 import { useRouter } from "vue-router"
-import ProducerPublicListHome from "src/components/producers/ProducerPublicListHome.vue"
-import ProducerPublicProductListHome from "src/components/producers/ProducerPublicProductListHome.vue"
-
-const props = defineProps({
-	categories: Array
-})
+import { HOME_VIEW_TYPES } from "src/const/homeViewTypes"
+import ProducerPublicList from "src/components/producers/ProducerPublicList.vue"
+import ProducerPublicProductList from "src/components/producers/ProducerPublicProductList.vue"
 
 const $router = useRouter()
 
@@ -20,11 +17,15 @@ const userStore = useUserStore()
 const miscStore = useMiscStore()
 
 const userLocation = computed(() => userStore.location)
-
 const userRange = computed(() => userStore.location_range)
 
 const producers = computed(() => miscStore.homePageProducers)
 const selectedProducer = computed(() => miscStore.homePageSelectedProducer)
+const categories = computed(() => miscStore.homePageSelectedCategories)
+
+const isProductsView = computed(() =>
+	$router.currentRoute.value.query?.view === String(HOME_VIEW_TYPES.PRODUCTS)
+)
 
 const cart = computed(() => cartStore.data)
 
@@ -43,7 +44,7 @@ const fetchProducers = async() => {
 				producers.value.length : 0,
 			location: userLocation.value,
 			range: userRange.value,
-			categories: props.categories
+			categories: categories.value
 		}
 	})
 
@@ -59,11 +60,11 @@ const fetchProducts = async() => {
 
 	let params = {
 		offset: producerProducts.value.length,
-		categories: props.categories
+		categories: categories.value
 	}
 
 	const response = await api.get(
-		`producers/${selectedProducer.value.id}/products`,
+		`producers/${selectedProducer.value}/products`,
 		{ params }
 	)
 
@@ -76,17 +77,21 @@ const fetchProducts = async() => {
 
 const producerProducts = ref([])
 
-const showProducerProductsIndex = ({ producerId, scrollPosition }) => {
+const showProducerProductsIndex = (producerId) => {
 	scrollComponent.value.stop() // in case infinite scroll is still uploading stuff
 
-	miscStore.setHomePageSelectedProducer({ id: producerId, scrollPosition })
+	$router.push({
+		query: { view: HOME_VIEW_TYPES.PRODUCTS }
+	})
+
+	miscStore.setHomePageSelectedProducer(producerId)
 
 	producerProducts.value = []
 
 	reinit()
 }
 
-const showProducerProductsDetail = ({ producerId, productId, scrollPosition }) => {
+const showProducerProductsDetail = ({ producerId, productId }) => {
 	scrollComponent.value.stop() // in case infinite scroll is still uploading stuff
 
 	$router.push({
@@ -94,24 +99,18 @@ const showProducerProductsDetail = ({ producerId, productId, scrollPosition }) =
 		params: {
 			producer_id: producerId,
 			product_id: productId
-		},
-		query: {
-			pid: producerId,
-			sp: scrollPosition
 		}
 	})
 }
 
 const checkProducerList = () => {
-	miscStore.setHomePageSelectedProducer({ id: null, scrollPosition: selectedProducer.value.scrollPosition })
-
 	if (!producers.value.length && scrollComponent.value) {
 		reinit()
 	}
 }
 
 const load = async (index, done) => {
-	if (!selectedProducer.value.id) {
+	if (!isProductsView.value) {
 		await fetchProducers()
 	} else {
 		await fetchProducts()
@@ -133,10 +132,12 @@ const reinit = debounce(() => {
 watch([
 	() => userRange.value,
 	() => userLocation.value,
-	() => props.categories
+	() => categories.value
 ],() => {
+	miscStore.setHomePageVerticalScroll(0)
 	miscStore.emptyHomePageProducers()
 	producerProducts.value = []
+
 	isInitializing.value = true
 	reinit()
 },{
@@ -150,17 +151,17 @@ watch([
 		:offset="100"
 		@load="load"
 	>
-		<template v-if="!selectedProducer.id && !isInitializing">
-			<ProducerPublicListHome
+		<template v-if="!isProductsView && !isInitializing">
+			<ProducerPublicList
 				:producers="producers"
-				:selected-producer="selectedProducer"
 				@show-index="showProducerProductsIndex"
 				@show-detail="showProducerProductsDetail"
 			/>
 		</template>
-		<template v-if="selectedProducer.id && !isInitializing">
-			<ProducerPublicProductListHome
+		<template v-if="isProductsView && !isInitializing">
+			<ProducerPublicProductList
 				:products="producerProducts"
+				:selected-producer="selectedProducer"
 				@unmount="checkProducerList"
 			/>
 		</template>

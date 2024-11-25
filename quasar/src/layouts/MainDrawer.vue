@@ -44,7 +44,7 @@ const cartCounter = computed(() =>
 		style="background-color: #dce1e6"
 	>
 		<q-scroll-area class="fit">
-			<q-list class="text-dark">
+			<q-list>
 				<q-item
 					v-if="!isUserLogged"
 					clickable
@@ -71,7 +71,7 @@ const cartCounter = computed(() =>
 				<q-item
 					clickable
 					to="/"
-					:class="{'bg-primary text-white': ['producer_public_list', 'producer_public_product_list'].includes(route.name)}"
+					:class="route.name === 'home' ? 'bg-primary text-white' : 'text-dark'"
 				>
 					<q-item-section avatar>
 						<q-icon name="home" />
