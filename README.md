@@ -49,8 +49,8 @@ build with debug mode works
 чтобы добавить новый плагин в капаситор нужно добавить его и в /quasar/package.json и /quasar/src-capacitor/package.json
 после этого нужно открыть android studio чтобы он проиндексировал изменения, иначе билд будет падать в ошибку
 
-подписать выполняем zipalign:
-сначала cd "<android dir>\Android\Sdk\build-tools\35.0.0", затем
+###подписать apk
+выполняем zipalign: сначала cd "\AppData\Local\Android\Sdk\build-tools\35.0.0", затем
 .\zipalign -v 4 "<path_to_apk>\<unsigned-apk-file.apk>" <some_name.apk>
 
 в папке тулзов появится апк - забираем его на подпись
@@ -60,6 +60,12 @@ build with debug mode works
 .\apksigner sign --ks "<path_to_generated_key>\<my-release-key.keystore>" --ks-key-alias alias_name "<path_to_apk>\<some_name.apk>"
 
 гайд по генерации ключа и подписи: https://quasar.dev/quasar-cli-vite/developing-capacitor-apps/publishing-to-store
+### production билд
+- quasar build -m capacitor -T android
+
+### ошибка при билде: Host version "0.23.1" does not match binary version "0.24.0"
+удалить package.json и node-modules. Прописать npm install не из контейнера
+
 ### q-card
 q-card inside v-for with columns works this way:
 dont add gutters to row.

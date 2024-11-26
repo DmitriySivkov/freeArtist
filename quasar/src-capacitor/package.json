@@ -1,7 +1,7 @@
 {
-  "name": "quasar-project",
+  "name": "Булки",
   "version": "0.0.1",
-  "description": "A Quasar Project",
+  "description": "Печём булки",
   "author": "Dmitrii Sivkov <sivkovdw@yandex.ru>",
   "private": true,
   "dependencies": {

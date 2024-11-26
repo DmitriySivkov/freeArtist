@@ -163,7 +163,18 @@ export default configure(function (ctx) {
 
 		// Full list of options: https://v2.quasar.dev/quasar-cli/developing-capacitor-apps/configuring-capacitor
 		capacitor: {
-			hideSplashscreen: true
+			// (Optional!)
+			hideSplashscreen: false, // disables auto-hiding the Splashscreen by Quasar CLI
+
+			// // (Optional!)
+			// capacitorCliPreparationParams: [ 'sync', ctx.targetName ],
+
+			// (Optional) If not present, will look for package.json > name
+			appName: "Булки", // string
+			// (Optional) If not present, will look for package.json > version
+			// version: '...', // string
+			// (Optional) If not present, will look for package.json > description
+			description: "Печём булки", // string
 		},
 
 		// Full list of options: https://v2.quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
