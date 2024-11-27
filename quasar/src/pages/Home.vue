@@ -45,7 +45,9 @@ onMounted(() => {
 <template>
 	<q-page
 		ref="homePage"
-		class="column q-px-sm bg-primary"
+		class="q-px-sm bg-primary scroll"
+		id="home-scroll-container"
+		style="height:1px"
 	>
 		<q-header class="main-layout-header">
 			<div class="column no-wrap q-px-sm">
@@ -69,16 +71,12 @@ onMounted(() => {
 			</div>
 		</q-header>
 
-		<div
-			class="col scroll"
-			id="home-scroll-container"
-		>
-			<div class="row justify-center">
-				<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
-					<ProducerShowcaseHome />
-				</div>
+		<div class="row justify-center">
+			<div class="col-xs-12 col-sm-8 col-lg-6 col-xl-5">
+				<ProducerShowcaseHome />
 			</div>
 		</div>
+
 	</q-page>
 </template>
 

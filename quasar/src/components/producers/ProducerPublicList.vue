@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router"
-import { ref, watch, onBeforeUnmount, onMounted } from "vue"
+import { ref, watch, onBeforeUnmount, onMounted, nextTick } from "vue"
 import { useScreen } from "src/composables/screen.js"
 import { useMiscStore } from "src/stores/misc.js"
 import { scroll } from "quasar"
@@ -36,10 +36,12 @@ const { getVerticalScrollPosition, setVerticalScrollPosition, getScrollTarget } 
 
 onMounted(() => {
 	if (miscStore.homePageVerticalScroll) {
-		setVerticalScrollPosition(
-			getScrollTarget(document.getElementById("home-scroll-container")),
-			miscStore.homePageVerticalScroll,
-		)
+		nextTick(() => { // let appearance animation through - then set scroll
+			setVerticalScrollPosition(
+				getScrollTarget(document.getElementById("home-scroll-container")),
+				miscStore.homePageVerticalScroll,
+			)
+		})
 	}
 })
 

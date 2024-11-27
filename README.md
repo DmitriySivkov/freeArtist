@@ -63,6 +63,11 @@ build with debug mode works
 ### production билд
 - quasar build -m capacitor -T android
 
+### dev билд
+- если в android IDE ip адресс отличается от указанного при билде, то нужно "перезапустить" эмулятор в android IDE (как кнопка включения)
+- если ошибка "INSTALL_FAILED_INSUFFICIENT_STORAGE", то в android IDE: run -> edit configurations -> clear app storage before deployment
+- если не работает HMR в android IDE - попробовать с запуском квазара в контейнере / попробовать "перезапустить" эмулятор
+
 ### ошибка при билде: Host version "0.23.1" does not match binary version "0.24.0"
 удалить package.json и node-modules. Прописать npm install не из контейнера
 

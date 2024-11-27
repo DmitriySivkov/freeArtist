@@ -85,7 +85,7 @@ export default configure(function (ctx) {
 			hmr: {
 				clientPort: 443,
 			},
-			open: false // open browser on load
+			open: false, // open browser on load
 		},
 
 		framework: {
@@ -166,8 +166,8 @@ export default configure(function (ctx) {
 			// (Optional!)
 			hideSplashscreen: false, // disables auto-hiding the Splashscreen by Quasar CLI
 
-			// // (Optional!)
-			// capacitorCliPreparationParams: [ 'sync', ctx.targetName ],
+			// (Optional!)
+			capacitorCliPreparationParams: [ "sync", ctx.targetName ],
 
 			// (Optional) If not present, will look for package.json > name
 			appName: "Булки", // string
