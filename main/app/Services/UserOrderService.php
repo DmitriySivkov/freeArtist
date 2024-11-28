@@ -44,6 +44,7 @@ class UserOrderService implements OrderServiceContract
 	 */
 	public function getOrderList()
 	{
+		info(print_r(request()->cookies,true));
 		$orderUuid = json_decode(request()->cookie('orders'));
 
 		$query = Order::query()

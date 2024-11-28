@@ -59,7 +59,9 @@ export default configure(function (ctx) {
 				BACKEND_SERVER: ctx.dev ? (ctx.mode.spa ? process.env.BACKEND_SERVER : (ctx.mode.capacitor ? "https://192.168.1.2" : null)) :
 					process.env.BACKEND_SERVER_PRODUCTION,
 				BACKEND_HOST: ctx.dev ? process.env.BACKEND_HOST : process.env.BACKEND_HOST_PRODUCTION,
-				SESSION_DOMAIN: ctx.dev ? process.env.SESSION_DOMAIN : process.env.SESSION_DOMAIN_PRODUCTION
+				SESSION_DOMAIN: ctx.dev ?
+					(ctx.mode.capacitor ? process.env.SESSION_DOMAIN_TEST : process.env.SESSION_DOMAIN) :
+					(ctx.mode.capacitor ? process.env.SESSION_DOMAIN_CAPACITOR : process.env.SESSION_DOMAIN_PRODUCTION)
 			},
 			// rawDefine: {}
 			// ignorePublicFolder: true,
@@ -175,6 +177,12 @@ export default configure(function (ctx) {
 			// version: '...', // string
 			// (Optional) If not present, will look for package.json > description
 			description: "Печём булки", // string
+
+			plugins: {
+				CapacitorCookies: {
+					enabled: true,
+				},
+			}
 		},
 
 		// Full list of options: https://v2.quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
