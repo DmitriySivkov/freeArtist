@@ -1,3 +1,37 @@
+<script setup>
+import { ref, onMounted } from "vue"
+import { api } from "src/boot/axios"
+import { ORDER_STATUS_NAMES } from "src/const/orderStatuses"
+import { TRANSACTION_STATUS_NAMES } from "src/const/transactionStatuses"
+import { useStorage } from "src/composables/storage"
+
+const backendServer = process.env.BACKEND_SERVER
+
+const orders = ref([])
+const storage = useStorage()
+
+const isMounting = ref(true)
+
+onMounted(async() => {
+	let unauthTransactionUuids = []
+
+	if (await storage.has("orders")) {
+		unauthTransactionUuids = await storage.get("orders")
+	}
+
+	// todo - fetch orders by specific amount (10-20 at once?)
+	const promise = api.get("orders", {
+		params: { unauthTransactionUuids }
+	})
+
+	promise.then((response) => {
+		orders.value = response.data
+	})
+
+	promise.finally(() => isMounting.value = false)
+})
+</script>
+
 <template>
 	<q-linear-progress
 		v-if="isMounting"
@@ -52,28 +86,6 @@
 		</div>
 	</q-card>
 </template>
-
-<script setup>
-import { ref, onMounted } from "vue"
-import { api } from "src/boot/axios"
-import { ORDER_STATUS_NAMES } from "src/const/orderStatuses"
-import { TRANSACTION_STATUS_NAMES } from "src/const/transactionStatuses"
-
-const backendServer = process.env.BACKEND_SERVER
-
-const orders = ref([])
-const isMounting = ref(true)
-
-onMounted(() => {
-	const promise = api.get("orders")
-
-	promise.then((response) => {
-		orders.value = response.data
-	})
-
-	promise.finally(() => isMounting.value = false)
-})
-</script>
 
 <style lang="scss" module>
 .rounded {

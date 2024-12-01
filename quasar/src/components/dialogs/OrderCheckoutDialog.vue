@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue"
 import { api } from "src/boot/axios"
-import { Dialog, date, useDialogPluginComponent, Cookies } from "quasar"
+import { Dialog, date, useDialogPluginComponent, Platform } from "quasar"
 import YookassaPaymentPageDialog from "src/components/dialogs/YookassaPaymentPageDialog.vue"
 import TbankPaymentPageDialog from "src/components/dialogs/TbankPaymentPageDialog.vue"
 import { ORDER_TIME_PERIODS, ORDER_TIME_PERIOD_NAMES } from "src/const/orderTimePeriods"
@@ -10,6 +10,7 @@ import { PAYMENT_PROVIDERS } from "src/const/paymentProviders"
 import { useUserStore } from "src/stores/user"
 import { useNotification } from "src/composables/notification"
 import { useScreen } from "src/composables/screen"
+import { useStorage } from "src/composables/storage"
 
 const props = defineProps({
 	totalPrice: String,
@@ -27,11 +28,13 @@ const emit = defineEmits([
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
+const userStore = useUserStore()
+
+const storage = useStorage()
+
 const { notifyError } = useNotification()
 
 const { isSmallScreen } = useScreen()
-
-const userStore = useUserStore()
 
 const isLoading = ref(false)
 
@@ -50,7 +53,7 @@ const makeTransaction = async () => {
 		phone: formData.value.phone
 	})
 
-	promise.then((response) => {
+	promise.then(async(response) => {
 		const transactionData = response.data
 
 		if (formData.value.paymentMethod === PAYMENT_METHODS.CASH) {
@@ -61,7 +64,7 @@ const makeTransaction = async () => {
 			cardAction(transactionData)
 		}
 
-		setOrderCookie(transactionData.transaction_uuid)
+		await saveOrderToStorage(transactionData.transaction_uuid) // for getting unauth user orders
 	})
 
 	promise.catch((error) => {
@@ -136,28 +139,21 @@ const orderAction = (transactionUuid) => {
 	promise.finally(() => isLoading.value = false)
 }
 
-const setOrderCookie = (orderUuid) => {
-	const cookieParams = {
-		domain: process.env.SESSION_DOMAIN,
-		sameSite: "lax",
-		path: "/",
-		expires: 365
-	}
+// todo - clear order storage after certain time to avoid overbulk ?
+const saveOrderToStorage = async(orderUuid) => {
+	if (await storage.has("orders")) {
+		const storageOrderUuids = await storage.get("orders")
 
-	if (Cookies.has("orders")) {
-		const cookieOrders = Cookies.get("orders")
-
-		Cookies.set(
-			"orders",
-			JSON.stringify([orderUuid, ...cookieOrders]),
-			{...cookieParams}
-		)
+		// todo - if from mobile app theres a chance that no space available on device. Then only allow to make order after authorization
+		await storage.set({
+			key: "orders",
+			value: [orderUuid, ...storageOrderUuids],
+		})
 	} else {
-		Cookies.set(
-			"orders",
-			JSON.stringify([orderUuid]),
-			{...cookieParams}
-		)
+		await storage.set({
+			key: "orders",
+			value: [orderUuid],
+		})
 	}
 }
 

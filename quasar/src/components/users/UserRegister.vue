@@ -107,10 +107,11 @@ const onSubmit = () => {
 		is_mobile: $q.platform.is.capacitor
 	})
 
-	promise.then((response) => {
-		afterLogin(response)
+	promise.then(async(response) => {
+		await afterLogin(response)
+		await $router.push({name:"personal"})
+
 		notifySuccess("Добро пожаловать")
-		$router.push({name:"personal"})
 	})
 
 	// todo - errors refactor

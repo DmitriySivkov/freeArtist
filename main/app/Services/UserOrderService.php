@@ -16,10 +16,11 @@ class UserOrderService implements OrderServiceContract
 {
 	private ?User $user;
 	private Carbon $prepareByDate;
+	private array $unauthTransactionUuids = [];
 
 	/**
 	 * @param User|null $user
-	 * @return UserOrderService
+	 * @return $this
 	 */
 	public function setUser(?User $user)
 	{
@@ -30,7 +31,7 @@ class UserOrderService implements OrderServiceContract
 
 	/**
 	 * @param Carbon $date
-	 * @return UserOrderService
+	 * @return $this
 	 */
 	public function setPreparationDate(Carbon $date)
 	{
@@ -40,17 +41,25 @@ class UserOrderService implements OrderServiceContract
 	}
 
 	/**
+	 * @param array $transactionUuids
+	 * @return $this
+	 */
+	public function setUnauthTransactionUuids(array $transactionUuids) {
+		$this->unauthTransactionUuids = $transactionUuids;
+
+		return $this;
+	}
+
+	/**
 	 * @return Order[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
 	 */
 	public function getOrderList()
 	{
-		$orderUuid = json_decode(request()->cookie('orders'));
-
 		$query = Order::query()
 			->when(
 				$this->user,
 				fn($query) => $query->where('user_id', $this->user->id),
-				fn($query) => $query->whereHas('transaction', fn($q) => $q->whereIn('uuid', $orderUuid ?? [])),
+				fn($query) => $query->whereHas('transaction', fn($q) => $q->whereIn('uuid', $this->unauthTransactionUuids)),
 			)
 			->orderBy('id', 'desc')
 			->withCasts([

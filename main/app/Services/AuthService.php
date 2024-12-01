@@ -7,6 +7,7 @@ use App\Http\Resources\UserTeamResource;
 use App\Models\Order;
 use App\Models\Producer;
 use App\Models\Team;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\JsonResponse;
@@ -50,8 +51,9 @@ class AuthService
 
 		$this->setUser($user);
 
-		$this->onCredentialsAuthAction();
+		[$authTransactionUuids] = $this->onCredentialsAuthAction();
 
+		// todo - one authorization for all devices
 		$tokenName = $this->user->phone . '-' . ($isMobile ? 'mobile' : 'desktop');
 
 		$this->revokeOldTokensOnCurrentDevice($tokenName);
@@ -59,7 +61,10 @@ class AuthService
 		$token = $this->user->createToken($tokenName)->plainTextToken;
 
 		if ($isMobile) {
-			return $this->makeResponse(['token' => $token]);
+			return $this->makeResponse([
+				'token' => $token,
+				'auth_transaction_uuids' => $authTransactionUuids
+			]);
 		}
 
 		// todo - move to cookie helper (service)
@@ -69,7 +74,10 @@ class AuthService
 			true, true, false, 'lax'
 		);
 
-		return $this->makeResponse()->withCookie($cookie);
+		return $this->makeResponse([
+			'auth_transaction_uuids' => $authTransactionUuids
+		])
+			->withCookie($cookie);
 	}
 
 	/**
@@ -167,16 +175,27 @@ class AuthService
 
 	private function onCredentialsAuthAction()
 	{
-		$uuid = json_decode(request()->cookie('orders'));
+		// todo - what to do if theres large amount of transaction uuids
+		$unauthTransactionUuids = request()->input('unauthTransactionUuids', []);
 
-		if ($uuid) {
+		$authTransactionUuids = Transaction::whereHas('order', fn($query) =>
+			$query->where('user_id', $this->user->id)
+		)
+			->whereNotIn('uuid', $unauthTransactionUuids)
+			->pluck('uuid');
+
+		if (!empty($unauthTransactionUuids)) {
 			Order::whereHas('transaction', fn($query) =>
-				$query->where('uuid', $uuid)
+				$query->whereIn('uuid', $unauthTransactionUuids)
 			)
 				->whereNull('user_id')
 				->update([
 					'user_id' => $this->user->id
 				]);
 		}
+
+		return [
+			$authTransactionUuids
+		];
 	}
 }

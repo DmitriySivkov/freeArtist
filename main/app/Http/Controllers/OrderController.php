@@ -14,19 +14,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
-	public function index(UserOrderService $orderService)
+	public function index(Request $request, UserOrderService $orderService)
     {
+		// todo - unify obtaining 'token' from cookie with capacitor secure-storage
 		/** @var User|null $user */
 		$user = TokenHelper::getUserByToken(request()->cookie('token'));
 
-		$orderService->setUser($user);
+		$unauthTransactionUuids = $request->input('unauthTransactionUuids', []);
+
+		$orderService
+			->setUser($user)
+			->setUnauthTransactionUuids($unauthTransactionUuids);
 
         return $orderService->getOrderList();
     }
 
     public function store(Request $request, UserOrderService $orderService)
 	{
-		$token = request()->cookie('token');
+		$token = request()->cookie('token'); // todo - unify obtaining 'token' from cookie with capacitor secure-storage
 
 		/** @var User|null $user */
 		$user = TokenHelper::getUserByToken($token);

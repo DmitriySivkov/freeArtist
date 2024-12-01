@@ -61,7 +61,7 @@ export default configure(function (ctx) {
 				BACKEND_HOST: ctx.dev ? process.env.BACKEND_HOST : process.env.BACKEND_HOST_PRODUCTION,
 				SESSION_DOMAIN: ctx.dev ?
 					(ctx.mode.capacitor ? process.env.SESSION_DOMAIN_TEST : process.env.SESSION_DOMAIN) :
-					(ctx.mode.capacitor ? process.env.SESSION_DOMAIN_CAPACITOR : process.env.SESSION_DOMAIN_PRODUCTION)
+					process.env.SESSION_DOMAIN_PRODUCTION
 			},
 			// rawDefine: {}
 			// ignorePublicFolder: true,
@@ -88,6 +88,8 @@ export default configure(function (ctx) {
 				clientPort: 443,
 			},
 			open: false, // open browser on load
+
+			/** best to leave capacitor host as localhost: https://capacitorjs.com/docs/config#schema (section 'server') **/
 		},
 
 		framework: {
@@ -180,7 +182,7 @@ export default configure(function (ctx) {
 
 			plugins: {
 				CapacitorCookies: {
-					enabled: true,
+					enabled: true, // todo - not sure if required
 				},
 			}
 		},

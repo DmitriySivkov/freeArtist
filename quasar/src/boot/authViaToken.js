@@ -25,9 +25,8 @@ export default async () => {
 
 	const response = await api.post("auth/viaToken")
 
-	// todo - remove heavy payload (user requests / user team requests / etc)
 	if (response.data) {
-		afterLogin(response)
+		await afterLogin(response)
 
 		userStore.setIsLogged(true)
 	}
