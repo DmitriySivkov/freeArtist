@@ -99,9 +99,9 @@ watch(
 					<div class="col-5">
 						<q-img
 							no-spinner
-							class="rounded-borders"
 							:src="`${backendServer}/storage/${producer.logo.path}`"
 							fit="contain"
+							style="border-top-right-radius: 4px"
 						/>
 					</div>
 				</div>
@@ -136,7 +136,7 @@ watch(
 					<q-carousel
 						:ref="el => carousel.push(el)"
 						v-model="slide[producer.id]"
-						class="col-12 bg-grey-4 product__card-carousel"
+						class="col-12 bg-grey-4 product__card-carousel rounded-borders"
 						transition-prev="slide-right"
 						transition-next="slide-left"
 						swipeable

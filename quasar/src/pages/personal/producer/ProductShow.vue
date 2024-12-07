@@ -69,6 +69,10 @@ const update = () => {
 
 	for (let i in product.value.committed_images) {
 		data.append("images[]", product.value.committed_images[i].instance)
+
+		if (product.value.committed_images[i].src === product.value.thumbnail_id) {
+			data.append("committed_image_thumbnail_index", i)
+		}
 	}
 
 	return api.post("personal/products/" + product.value.id, data)
@@ -151,7 +155,10 @@ onMounted(() => {
 					animated
 					keep-alive
 				>
-					<q-tab-panel name="common">
+					<q-tab-panel
+						name="common"
+						class="q-pa-sm"
+					>
 						<ProducerProductSettingCommonTab
 							ref="commonTab"
 							:model-value="product"
@@ -159,7 +166,10 @@ onMounted(() => {
 						/>
 					</q-tab-panel>
 
-					<q-tab-panel name="composition">
+					<q-tab-panel
+						name="composition"
+						class="q-pa-sm"
+					>
 						<ProducerProductSettingCompositionTab
 							ref="compositionTab"
 							:model-value="product"
@@ -167,14 +177,20 @@ onMounted(() => {
 						/>
 					</q-tab-panel>
 
-					<q-tab-panel name="images">
+					<q-tab-panel
+						name="images"
+						class="q-pa-sm"
+					>
 						<ProducerProductSettingImagesTab
 							:model-value="product"
 							@update:model-value="product = $event"
 						/>
 					</q-tab-panel>
 
-					<q-tab-panel name="tags">
+					<q-tab-panel
+						name="tags"
+						class="q-pa-sm"
+					>
 						<ProducerProductSettingTagsTab
 							ref="tagsTab"
 							:model-value="product"

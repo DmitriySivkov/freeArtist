@@ -1,96 +1,5 @@
-<template>
-	<div class="row justify-center">
-		<div
-			class="relative-position col-xs-12 col-sm-9 col-md-8 col-lg-6"
-			:class="$style.tag__container"
-		>
-			<div
-				v-if="!tags.length"
-				class="absolute flex flex-center fit text-body1"
-			>
-				Переместите теги из окна ниже
-			</div>
-			<draggable
-				:list="tags"
-				group="tags"
-				@start="drag=true"
-				@end="drag=false"
-				@add="addTag"
-				@sort="sortTag"
-				item-key="id"
-				class="row"
-				:class="$style.tag__container_draggable"
-				:component-data="{
-					type: 'transition-group',
-					name: 'fade'
-				}"
-				v-bind="dragOptions"
-			>
-				<template #item="{ element }">
-					<q-item
-						clickable
-						class="col-xs-4 col-md-3 flex-center text-center bg-primary"
-						:class="$style.tag"
-					>
-						<q-item-section class="text-body1">
-							{{ element.name }}
-						</q-item-section>
-					</q-item>
-				</template>
-			</draggable>
-			<q-linear-progress
-				v-if="isLoadingTagCloud"
-				indeterminate
-				color="primary"
-			/>
-		</div>
-	</div>
-
-	<div class="row justify-center q-my-md">
-		<q-icon
-			name="swap_vert"
-			size="md"
-		/>
-	</div>
-
-	<div class="row justify-center">
-		<div class="col-xs-12 col-sm-9 col-md-8 col-lg-6">
-			<q-scroll-area
-				visible
-				style="height:25vh"
-				:thumb-style="{ width: '15px' }"
-			>
-				<draggable
-					:list="tagCloud"
-					group="tags"
-					:sort="false"
-					@start="drag=true"
-					@end="drag=false"
-					item-key="id"
-					class="row relative-position"
-					:component-data="{
-						type: 'transition-group',
-						name: 'fade',
-					}"
-					v-bind="dragOptions"
-				>
-					<template #item="{ element }">
-						<q-item
-							clickable
-							class="col-xs-4 col-md-3 flex-center text-center text-body1 bg-secondary"
-							:class="$style.tag"
-						>
-							{{ element.name }}
-						</q-item>
-					</template>
-				</draggable>
-			</q-scroll-area>
-		</div>
-	</div>
-</template>
-
 <script setup>
-import { onMounted, ref } from "vue"
+import { onMounted, ref, computed } from "vue"
 import { useNotification } from "src/composables/notification"
 import { api } from "src/boot/axios"
 
@@ -107,86 +16,79 @@ const emit = defineEmits([
 
 const { notifyError } = useNotification()
 
-const drag = ref(false)
+const tags = ref([])
+const isLoadingTags = ref(true)
 
-// todo - ghost block does not get valid position when dragging from bottom to top
-const tagCloud = ref([])
-const isLoadingTagCloud = ref(true)
+const selectedTags = ref(props.modelValue.tags)
+const selectedTagIds = computed(() =>
+	selectedTags.value.map((t) => t.id)
+)
 
-const tags = ref(props.modelValue.tags)
+const toggleTag = (tag) => {
+	if (selectedTagIds.value.includes(tag.id)) {
+		selectedTags.value = selectedTags.value.filter((t) => t.id !== tag.id)
+	} else {
+		if (selectedTags.value.length >= 5) {
+			notifyError("Нельзя добавить больше тегов")
+			return
+		}
 
-const addTag = (e) => {
-	if (tags.value.length > 8) {
-		const index = tags.value.findIndex(
-			(t) => t.id === e.item.__draggable_context.element.id
-		)
-
-		const extraTag = tags.value.splice(index, 1)[0]
-
-		tagCloud.value.push(extraTag)
-
-		notifyError("Нельзя добавить больше тегов")
+		selectedTags.value.push(tag)
 	}
 
 	emit(
 		"update:modelValue",
 		Object.assign(
 			props.modelValue,
-			{tags: tags.value}
+			{ tags: selectedTags.value }
 		)
 	)
-}
-
-const sortTag = () => {
-	emit(
-		"update:modelValue",
-		Object.assign(
-			props.modelValue,
-			{tags: tags.value}
-		)
-	)
-}
-
-const dragOptions = {
-	animation: 200,
-	disabled: false,
-	ghostClass: "low-opacity"
 }
 
 onMounted(() => {
 	const promise = api.get("personal/tags")
 
 	promise.then((response) => {
-		tagCloud.value = response.data.filter(
-			(t) => !props.modelValue.tags.map((t) => t.id).includes(t.id)
-		)
+		tags.value = response.data
 	})
 
-	promise.finally(() => isLoadingTagCloud.value = false)
+	promise.finally(() => isLoadingTags.value = false)
 })
 </script>
 
-<style lang="scss" module>
-.tag {
-	position:relative;
-	height: 70px !important;
-	overflow:hidden;
-	color: white;
-	background: $primary;
-	border-bottom: 1px dotted rgba(0, 0, 0, 0.12);
-	border-right: 1px dotted rgba(0, 0, 0, 0.12);
+<template>
+	<div class="row justify-center">
+		<div class="col-xs-12 col-sm">
+			<div class="text-body1 text-center bg-secondary rounded-borders text-white q-pa-md q-mb-sm">
+				Выберите теги
+			</div>
+			<q-linear-progress
+				v-if="isLoadingTags"
+				indeterminate
+				color="primary"
+			/>
+		</div>
+	</div>
 
-	&__container {
-		border:1px dotted rgba(0, 0, 0, 0.4);
-		min-height:140px
-	}
-
-	&__container_draggable {
-		background: #F1F1F1;
-		display: flex;
-		flex-flow: row wrap;
-		align-content: flex-start;
-		height: 100%;
-	}
-}
-</style>
+	<div class="row justify-center">
+		<div class="col-xs-12 col-sm">
+			<q-scroll-area
+				style="height:45vh"
+				class="rounded-borders"
+			>
+				<div class="row q-gutter-xs">
+					<q-card
+						v-for="tag in tags"
+						:key="tag.id"
+						class="col-grow text-white flex flex-center text-center q-pa-xs"
+						:class="selectedTagIds.includes(tag.id) ? 'bg-primary' : 'bg-secondary'"
+						style="min-height:70px; width:25%"
+						@click="toggleTag(tag)"
+					>
+						{{ tag.name }}
+					</q-card>
+				</div>
+			</q-scroll-area>
+		</div>
+	</div>
+</template>

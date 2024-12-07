@@ -37,19 +37,21 @@ const commonPropChanged = (field) => {
 		<q-input
 			filled
 			label="Название *"
+			class="q-mb-sm"
+			hide-bottom-space
 			:model-value="modelValue.title"
 			@update:model-value="commonPropChanged({title: $event})"
 			lazy-rules="ondemand"
 			:rules="[ val => !!val ]"
-			class="q-pb-lg"
 		/>
 
 		<q-field
 			filled
+			hide-bottom-space
+			class="q-mb-sm"
 			:model-value="modelValue.price"
 			@update:model-value="commonPropChanged({price: $event})"
 			label="Стоимость *"
-			class="q-pb-lg"
 			:rules="[ val => val > 0 ]"
 			lazy-rules="ondemand"
 		>

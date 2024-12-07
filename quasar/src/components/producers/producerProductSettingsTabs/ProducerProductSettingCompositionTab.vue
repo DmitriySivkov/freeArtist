@@ -73,7 +73,8 @@ const restoreIngredient = (item_index) => {
 			<q-btn
 				label="Добавить ингредиент"
 				color="indigo-6"
-				class="q-pa-md text-body2 full-width"
+				class="q-pa-md text-body1 full-width"
+				no-caps
 				@click="addIngredient"
 			/>
 		</div>

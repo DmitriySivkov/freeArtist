@@ -145,7 +145,10 @@ const validate = () => {
 				keep-alive
 				class="full-width"
 			>
-				<q-tab-panel name="common">
+				<q-tab-panel
+					name="common"
+					class="q-pa-sm"
+				>
 					<ProducerProductSettingCommonTab
 						ref="commonTab"
 						:model-value="product"
@@ -153,7 +156,10 @@ const validate = () => {
 					/>
 				</q-tab-panel>
 
-				<q-tab-panel name="composition">
+				<q-tab-panel
+					name="composition"
+					class="q-pa-sm"
+				>
 					<ProducerProductSettingCompositionTab
 						ref="compositionTab"
 						:model-value="product"
@@ -161,14 +167,20 @@ const validate = () => {
 					/>
 				</q-tab-panel>
 
-				<q-tab-panel name="images">
+				<q-tab-panel
+					name="images"
+					class="q-pa-sm"
+				>
 					<ProducerProductSettingImagesTab
 						:model-value="product"
 						@update:model-value="product = $event"
 					/>
 				</q-tab-panel>
 
-				<q-tab-panel name="tags">
+				<q-tab-panel
+					name="tags"
+					class="q-pa-sm"
+				>
 					<ProducerProductSettingTagsTab
 						ref="tagsTab"
 						:model-value="product"

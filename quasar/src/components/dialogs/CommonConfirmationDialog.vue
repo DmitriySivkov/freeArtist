@@ -4,7 +4,7 @@
 		@hide="onDialogHide"
 	>
 		<q-card class="q-dialog-plugin q-pa-md">
-			<div class="text-right">
+			<div class="text-right q-mb-md">
 				<q-icon
 					v-close-popup
 					name="close"
@@ -15,14 +15,14 @@
 
 			<q-card-section
 				v-if="headline"
-				class="q-pa-none q-mb-md"
+				class="q-pa-none q-mb-md text-center"
 			>
 				<div class="text-h5">{{ headline }}</div>
 			</q-card-section>
 
 			<q-card-section
 				v-if="text"
-				class="q-pa-none text-h6"
+				class="q-pa-none text-h6 text-center"
 			>
 				<div v-html="text"></div>
 			</q-card-section>

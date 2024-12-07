@@ -165,22 +165,31 @@ class ProductService
 			}
 
 			$committedImages = request()->file('images');
+			$committedImageThumbnailIndex = request()->input('committed_image_thumbnail_index');
 
 			if ($committedImages) {
 				$basePath = 'team_' . $this->product->producer->team->id . '/product_images';
 
-				foreach ($committedImages as $image) {
-
+				foreach ($committedImages as $index => $image) {
 					$path = Storage::disk('public')->putFile(
 						$basePath,
 						$image
 					);
 
-					Image::create([
+					$image = Image::create([
 						'imageable_id' => $this->product->id,
 						'imageable_type' => Product::class,
 						'path' => $path
 					]);
+
+					if (
+						$committedImageThumbnailIndex !== null &&
+						(int)$committedImageThumbnailIndex === $index
+					) {
+						$this->product->fill([
+							'thumbnail_id' => $image->id
+						]);
+					}
 				}
 			}
 
