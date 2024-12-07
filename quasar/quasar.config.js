@@ -174,16 +174,29 @@ export default configure(function (ctx) {
 			capacitorCliPreparationParams: [ "sync", ctx.targetName ],
 
 			// (Optional) If not present, will look for package.json > name
-			appName: "Булки", // string
+			appName: "Хлебная лавка", // string
 			// (Optional) If not present, will look for package.json > version
 			// version: '...', // string
 			// (Optional) If not present, will look for package.json > description
 			description: "Печём булки", // string
 
 			plugins: {
-				CapacitorCookies: {
-					enabled: true, // todo - not sure if required
-				},
+				SplashScreen: {
+					// launchShowDuration: 3000,
+					// launchAutoHide: true,
+					// launchFadeOutDuration: 3000,
+					// backgroundColor: "#ffffffff",
+					// androidSplashResourceName: "splash",
+					// androidScaleType: "CENTER_CROP",
+					// showSpinner: true,
+					// androidSpinnerStyle: "large",
+					// iosSpinnerStyle: "small",
+					// spinnerColor: "#999999",
+					// splashFullScreen: true,
+					// splashImmersive: true,
+					// layoutName: "launch_screen",
+					// useDialog: true,
+				}
 			}
 		},
 
