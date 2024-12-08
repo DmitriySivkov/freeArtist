@@ -3,9 +3,8 @@
 		ref="dialogRef"
 		@hide="onDialogHide"
 	>
-		<!-- todo - class q-dialog-plugin -->
 		<q-card
-			class="q-pa-md"
+			class="q-dialog-plugin q-pa-md"
 			style="min-height:200px; width:100%"
 		>
 			<div class="row">

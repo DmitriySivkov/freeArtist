@@ -103,13 +103,31 @@
 									class="cursor-pointer"
 									no-spinner
 									:src="`${backendServer}/storage/${image.path}`"
+									@click="showProductExistingImagesMenuDialog(image)"
 								>
 									<div
-										v-if="image.id === modelValue.thumbnail_id"
-										class="absolute-bottom text-center"
+										v-if="image.id === modelValue.thumbnail_id || image.to_delete"
+										class="row absolute-bottom"
 										style="padding:0 !important;"
 									>
-										Заставка
+										<div
+											v-if="image.id === modelValue.thumbnail_id"
+											class="col text-center content-center"
+										>
+											Заставка
+										</div>
+										<q-separator
+											v-if="image.id === modelValue.thumbnail_id && image.to_delete"
+											vertical
+											color="white"
+											class="q-my-xs"
+										/>
+										<div
+											v-if="image.to_delete"
+											class="col text-center content-center"
+										>
+											К удалению
+										</div>
 									</div>
 								</q-img>
 							</q-card>
@@ -228,6 +246,7 @@ import { clone, omit } from "lodash"
 import { Cropper } from "vue-advanced-cropper"
 import { useScreen } from "src/composables/screen"
 import CommonConfirmationDialog from "src/components/dialogs/CommonConfirmationDialog.vue"
+import ProductExistingImagesMenuDialog from "src/components/dialogs/ProductExistingImagesMenuDialog.vue"
 
 const props = defineProps({
 	modelValue: {
@@ -286,6 +305,26 @@ const commitImage = () => {
 	})
 }
 
+const showProductExistingImagesMenuDialog = (image) => {
+	Dialog.create({
+		component: ProductExistingImagesMenuDialog,
+		componentProps: {
+			image,
+			isThumbnail: image.id === props.modelValue.thumbnail_id,
+			toDelete: image.to_delete === 1,
+			togglePropFn: (prop) => {
+				if (prop === "thumbnail_id") {
+					toggleThumbnail(image.id)
+				}
+
+				if (prop === "to_delete") {
+					toggleImageRemoval(image.id)
+				}
+			}
+		}
+	})
+}
+
 const showRemoveCommittedImageDialog = (imgSrc) => {
 	Dialog.create({
 		component: CommonConfirmationDialog,
@@ -325,18 +364,18 @@ const showFilePrompt = () => {
 	filePicker.value.pickFiles()
 }
 
-const toggleImageRemoval = (image_id) => {
+const toggleImageRemoval = (imageId) => {
 	let images = clone(props.modelValue.images)
-	let image_index = images.findIndex((i) => i.id === image_id)
-	let image = images.find((i) => i.id === image_id)
+	let imageIndex = images.findIndex((i) => i.id === imageId)
+	let image = images.find((i) => i.id === imageId)
 
-	if (image.hasOwnProperty("to_delete")) {
-		delete image.to_delete
-	} else {
+	if (!image.hasOwnProperty("to_delete")) {
 		image.to_delete = 1
+	} else {
+		image.to_delete = Number(!image.to_delete)
 	}
 
-	images[image_index] = image
+	images[imageIndex] = image
 
 	emit("update:modelValue", {
 		...props.modelValue,
@@ -345,10 +384,8 @@ const toggleImageRemoval = (image_id) => {
 }
 
 const toggleThumbnail = (imageId) => {
-	if (props.modelValue.thumbnail_id === imageId) return
-
 	emit("update:modelValue", Object.assign(props.modelValue, {
-		thumbnail_id: imageId
+		thumbnail_id: props.modelValue.thumbnail_id !== imageId ? imageId : null
 	}))
 }
 

@@ -59,8 +59,7 @@ onMounted(() => {
 		ref="dialogRef"
 		@hide="onDialogHide"
 	>
-		<!-- todo - class q-dialog-plugin -->
-		<q-card class="q-pa-md">
+		<q-card class="q-dialog-plugin q-pa-md">
 			<span class="text-h5">Выберите ваше местоположение</span>
 			<div
 				class="row relative-position"

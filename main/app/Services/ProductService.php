@@ -161,7 +161,10 @@ class ProductService
 
 			if ($data['images']) {
 				$removeImages = collect($data['images'])
-					->filter(fn($image) => array_key_exists('to_delete', $image));
+					->filter(fn($image) =>
+						array_key_exists('to_delete', $image) &&
+						$image['to_delete'] === 1
+					);
 			}
 
 			if ($removeImages->isNotEmpty()) {
