@@ -115,5 +115,7 @@ php artisan sxgeo:update & set 'LOCAL_IP' key in 'env'
 ### certbot для ssl
 основной гайд: https://mindsers.blog/en/post/https-using-nginx-certbot-docker/
 
+обновить сертификаты на проде:  docker compose -f docker-compose.production.yml run --rm certbot renew
+
 перед запуском команд - вытащить все прокиды ssl ключей из nginx конфигов
 нужно сделать сайт доступным просто по http на 80 порту
