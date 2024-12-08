@@ -60,9 +60,16 @@ class ProductService
 				'title' => $data['title'],
 				'price' => $data['price'],
 				'amount' => !$data['amount'] ? 0 : $data['amount'],
-				'thumbnail_id' => $data['thumbnail_id'] ?? null,
 				'composition' => $composition
 			]);
+
+			$committedImageThumbnailIndex = request()->input('committed_image_thumbnail_index');
+
+			if ($committedImageThumbnailIndex === null) {
+				$this->product->fill([
+					'thumbnail_id' => $data['thumbnail_id'] ?? null
+				]);
+			}
 
 			$this->product->save();
 
@@ -75,17 +82,26 @@ class ProductService
 			if ($committedImages) {
 				$basePath = 'team_' . $team->id . '/product_images';
 
-				foreach ($committedImages as $image) {
+				foreach ($committedImages as $index => $image) {
 					$path = Storage::disk('public')->putFile(
 						$basePath,
 						$image
 					);
 
-					Image::create([
+					$image = Image::create([
 						'imageable_id' => $this->product->id,
 						'imageable_type' => Product::class,
 						'path' => $path
 					]);
+
+					if (
+						$committedImageThumbnailIndex !== null &&
+						(int)$committedImageThumbnailIndex === $index
+					) {
+						$this->product->update([
+							'thumbnail_id' => $image->id
+						]);
+					}
 				}
 			}
 
@@ -122,9 +138,7 @@ class ProductService
 			]);
 
 			$tagIds = collect($data['tags'])->pluck('id');
-			// detach/attach instead of 'sync' to reorder
-			$this->product->tags()->detach();
-			$this->product->tags()->attach($tagIds);
+			$this->product->tags()->sync($tagIds);
 
 			if (\Arr::exists($data, 'composition')) {
 				$composition = array_values(

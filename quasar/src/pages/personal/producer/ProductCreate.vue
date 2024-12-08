@@ -84,6 +84,10 @@ const store = () => {
 
 	for (let i in product.value.committed_images) {
 		data.append("images[]", product.value.committed_images[i].instance)
+
+		if (product.value.committed_images[i].src === product.value.thumbnail_id) {
+			data.append("committed_image_thumbnail_index", i)
+		}
 	}
 
 	return api.post("personal/products", data)
